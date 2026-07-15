@@ -5,6 +5,7 @@ import json
 import http.client
 import os
 import re
+import socket
 import time
 import urllib.error
 import urllib.parse
@@ -87,7 +88,7 @@ class ASCClient:
                     with urllib.request.urlopen(req, timeout=120) as resp:
                         raw = resp.read().decode()
                         return json.loads(raw) if raw else {}
-                except (http.client.RemoteDisconnected, urllib.error.URLError):
+                except (http.client.RemoteDisconnected, urllib.error.URLError, socket.timeout):
                     if attempt == 3:
                         raise
                     time.sleep(2 ** attempt)
