@@ -1,0 +1,1 @@
+kondition,aerob,sundhed,fitness,ur,tracker,træning,udholdenhed,restitution,vo2max,cardiofitness

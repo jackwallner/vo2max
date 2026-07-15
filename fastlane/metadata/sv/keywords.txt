@@ -1,0 +1,1 @@
+kondition,aerob,hälsa,fitness,klocka,mätare,träning,uthållighet,återhämtning,vo2max,cardiofitness

@@ -12,7 +12,7 @@
 <key>CFBundleVersion</key><string>$(CURRENT_PROJECT_VERSION)</string>
 <key>ITSAppUsesNonExemptEncryption</key><false/>
 <key>NSHealthShareUsageDescription</key><string>VO2 Max reads cardio fitness estimates from Apple Health to show your latest value and trend. It never writes Health data.</string>
+<key>NSHealthUpdateUsageDescription</key><string>VO2 Max does not write data to Apple Health.</string>
 <key>WKApplication</key><true/>
 <key>WKCompanionAppBundleIdentifier</key><string>com.jackwallner.vo2max</string>
 </dict></plist>
-

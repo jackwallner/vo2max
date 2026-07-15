@@ -1,0 +1,1 @@
+kardio,aerobno,zdravlje,fitness,sat,praćenje,trening,izdržljivost,oporavak,vo2max,cardiofitness
