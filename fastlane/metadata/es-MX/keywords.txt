@@ -1,0 +1,1 @@
+cardio,aeróbico,salud,fitness,reloj,seguimiento,entreno,resistencia,recuperación,vo2max,healthkit

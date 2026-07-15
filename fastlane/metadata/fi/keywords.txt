@@ -1,0 +1,1 @@
+kardio,aerobinen,terveys,kunto,kello,seuranta,harjoittelu,kestävyys,palautuminen,vo2max,healthkit

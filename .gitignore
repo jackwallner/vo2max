@@ -14,9 +14,9 @@ Package.resolved
 # Local configuration and credentials
 .env*
 Config/Secrets.xcconfig
+scripts/.asc-state.json
 
 # Miscellaneous
 .DS_Store
 *.swp
 *~
-

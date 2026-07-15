@@ -6,7 +6,6 @@ enum RevenueCatConfig {
     /// Replace with the app-specific public key that begins with `appl_`.
     /// Secret `sk_` keys must never ship in an app binary.
     static let publicSDKKey = "appl_fRNEUFcviKvUbOLAnHkzIrbyFPA"
-    static let proEntitlement = "pro"
 }
 
 @MainActor
@@ -14,7 +13,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     static let shared = StoreService()
 
     @Published private(set) var isPro = false
-    @Published private(set) var lifetimePackage: Package?
+    @Published private(set) var packages: [Package] = []
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
 
@@ -35,15 +34,13 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         }
     }
 
-    func purchaseLifetime() async {
-        guard let lifetimePackage else {
-            errorMessage = "The lifetime unlock is not available yet."
-            return
-        }
+    var yearlyPackage: Package? { packages.first { $0.packageType == .annual } }
+
+    func purchase(_ package: Package) async {
         isLoading = true
         defer { isLoading = false }
         do {
-            let result = try await Purchases.shared.purchase(package: lifetimePackage)
+            let result = try await Purchases.shared.purchase(package: package)
             update(customerInfo: result.customerInfo)
         } catch {
             let nsError = error as NSError
@@ -103,14 +100,25 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     private func loadOffering() async {
         do {
             let offering = try await Purchases.shared.offerings().current
-            lifetimePackage = offering?.lifetime
+            packages = offering?.availablePackages.sorted { lhs, rhs in
+                rank(lhs.packageType) < rank(rhs.packageType)
+            } ?? []
         } catch {
-            errorMessage = "Could not load the lifetime unlock."
+            errorMessage = "Could not load purchase options."
         }
     }
 
     private func update(customerInfo: CustomerInfo) {
-        isPro = customerInfo.entitlements[RevenueCatConfig.proEntitlement]?.isActive == true
+        isPro = !customerInfo.entitlements.active.isEmpty
         defaults.set(isPro, forKey: "isPro")
+    }
+
+    private func rank(_ type: PackageType) -> Int {
+        switch type {
+        case .annual: 0
+        case .monthly: 1
+        case .lifetime: 2
+        default: 3
+        }
     }
 }

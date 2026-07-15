@@ -1,7 +1,36 @@
 #!/usr/bin/env bash
+# Bump, archive, and upload VO2 Max to TestFlight.
 set -euo pipefail
 
-cd "$(dirname "$0")/.."
-xcodegen generate
-bundle exec fastlane beta
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
+CURRENT_BUILD=$(grep -E '^\s*CURRENT_PROJECT_VERSION:' project.yml | sed -E 's/.*CURRENT_PROJECT_VERSION:[[:space:]]*"?([0-9]+)"?.*/\1/')
+NEXT_BUILD=$((CURRENT_BUILD + 1))
+echo "==> Bump build $CURRENT_BUILD -> $NEXT_BUILD"
+sed -i '' -E "s/(CURRENT_PROJECT_VERSION:[[:space:]]*\")$CURRENT_BUILD/\1$NEXT_BUILD/" project.yml
+
+echo "==> Generate project"
+xcodegen generate
+
+echo "==> Resolve packages"
+xcodebuild -resolvePackageDependencies -project VO2Max.xcodeproj -scheme VO2Max
+
+ARCHIVE="$ROOT/build/VO2Max.xcarchive"
+rm -rf "$ARCHIVE"
+
+echo "==> Archive Release"
+xcodebuild -project VO2Max.xcodeproj \
+  -scheme VO2Max \
+  -configuration Release \
+  -destination 'generic/platform=iOS' \
+  -archivePath "$ARCHIVE" \
+  -allowProvisioningUpdates \
+  archive
+
+echo "==> Upload build $NEXT_BUILD"
+"$ROOT/scripts/upload-testflight.sh" "$ARCHIVE"
+
+git add project.yml
+git commit -m "chore: bump build $CURRENT_BUILD to $NEXT_BUILD for TestFlight"
+echo "==> Build $NEXT_BUILD uploaded"

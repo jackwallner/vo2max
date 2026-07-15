@@ -1,4 +1,5 @@
 import SwiftUI
+@preconcurrency import RevenueCat
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: GoalSettings
@@ -81,7 +82,7 @@ struct SettingsView: View {
     }
 }
 
-private struct PaywallView: View {
+struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: StoreService
 
@@ -94,41 +95,81 @@ private struct PaywallView: View {
                     .foregroundStyle(Theme.cardioGradient)
                 Text("VO2 Max Pro")
                     .font(.largeTitle.bold())
-                Text("Unlock advanced trend context and future premium dashboard features with one payment. No subscription.")
+                Text("Unlock advanced trend context and future premium dashboard features.")
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                 VStack(alignment: .leading, spacing: 14) {
-                    Label("Lifetime access", systemImage: "infinity")
+                    Label("Monthly, yearly, or lifetime", systemImage: "calendar.badge.checkmark")
                     Label("Advanced trend insights", systemImage: "chart.xyaxis.line")
                     Label("Support independent development", systemImage: "heart.fill")
                 }
                 .font(.headline)
                 Spacer()
-                Button {
-                    Task {
-                        await store.purchaseLifetime()
-                        if store.isPro { dismiss() }
+                VStack(spacing: 10) {
+                    if store.packages.isEmpty {
+                        fallbackPlan("Yearly, 7-day free trial", "$14.99")
+                        fallbackPlan("Monthly, 7-day free trial", "$1.99")
+                        fallbackPlan("Lifetime", "$29.99")
                     }
-                } label: {
-                    Text(store.lifetimePackage.map { "Unlock forever · \($0.storeProduct.localizedPriceString)" } ?? "Lifetime unlock")
-                        .frame(maxWidth: .infinity)
+                    ForEach(store.packages, id: \.identifier) { package in
+                        Button {
+                            Task {
+                                await store.purchase(package)
+                                if store.isPro { dismiss() }
+                            }
+                        } label: {
+                            HStack {
+                                Text(planName(package.packageType))
+                                Spacer()
+                                Text(package.storeProduct.localizedPriceString)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .tint(Theme.cardio)
+                        .disabled(store.isLoading)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(Theme.cardio)
-                .disabled(store.isLoading)
                 if let error = store.errorMessage {
                     Text(error).font(.caption).foregroundStyle(Theme.negative)
                 }
                 Button("Restore purchases") { Task { await store.restore() } }
                     .font(.footnote)
-                Text("Payment is charged to your Apple Account. This is a one-time, non-consumable purchase.")
+                Text("Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Payment is charged to your Apple Account. Lifetime is a one-time purchase.")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                HStack {
+                    Link("Terms", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
+                    Text("·")
+                    Link("Privacy", destination: URL(string: "https://jackwallner.github.io/vo2max/privacy-policy.html")!)
+                }
+                .font(.caption2)
             }
             .padding(24)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
         }
+    }
+
+    private func planName(_ type: PackageType) -> String {
+        switch type {
+        case .annual: "Yearly, 7-day free trial"
+        case .monthly: "Monthly, 7-day free trial"
+        case .lifetime: "Lifetime"
+        default: "VO2 Max Pro"
+        }
+    }
+
+    private func fallbackPlan(_ name: String, _ price: String) -> some View {
+        HStack {
+            Text(name)
+            Spacer()
+            Text(price)
+        }
+        .padding(.horizontal, 18)
+        .frame(maxWidth: .infinity, minHeight: 50)
+        .foregroundStyle(.white)
+        .background(Theme.cardio, in: RoundedRectangle(cornerRadius: 12))
     }
 }

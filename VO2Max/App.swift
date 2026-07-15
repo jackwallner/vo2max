@@ -26,6 +26,9 @@ private struct RootView: View {
     @State private var showOnboarding = false
 
     var body: some View {
+        if ProcessInfo.processInfo.arguments.contains("-PaywallSnapshot") {
+            PaywallView()
+        } else {
         TabView {
             NavigationStack {
                 DashboardView()
@@ -48,6 +51,6 @@ private struct RootView: View {
             OnboardingView(isPresented: $showOnboarding)
                 .interactiveDismissDisabled()
         }
+        }
     }
 }
-
