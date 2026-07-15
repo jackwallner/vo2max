@@ -1,0 +1,14 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Upload a release build to TestFlight"
+  lane :beta do
+    build_app(
+      project: "VO2Max.xcodeproj",
+      scheme: "VO2Max",
+      export_method: "app-store"
+    )
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+end
+

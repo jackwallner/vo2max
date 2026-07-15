@@ -1,0 +1,17 @@
+See your Apple Health VO2 max estimate without the noise of a full training platform.
+
+VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+
+• Latest Apple Health VO2 max estimate
+• Improving, stable, or declining trend
+• Personal target range
+• One-year history chart
+• Fitness age estimate with transparent methodology
+• Home Screen and Lock Screen widgets
+• Apple Watch app and complications
+• Clear guidance when no estimate is available yet
+
+Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+
+VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+
