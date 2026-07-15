@@ -1,0 +1,2 @@
+cardio,aerobic,health,fitness,applewatch,tracker,training,endurance,recovery,notifications
+

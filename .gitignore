@@ -1,0 +1,22 @@
+# Xcode
+*.xcodeproj
+DerivedData/
+build/
+*.xcuserdata/
+*.ipa
+*.dSYM*
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# Local configuration and credentials
+.env*
+Config/Secrets.xcconfig
+
+# Miscellaneous
+.DS_Store
+*.swp
+*~
+

@@ -1,0 +1,126 @@
+name: VO2Max
+options:
+  bundleIdPrefix: com.jackwallner
+  deploymentTarget:
+    iOS: "17.0"
+    watchOS: "10.0"
+  xcodeVersion: "16.0"
+  minimumXcodeGenVersion: "2.38"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: YXG4MP6W39
+    CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: NO
+
+packages:
+  RevenueCat:
+    url: https://github.com/RevenueCat/purchases-ios-spm.git
+    from: 5.14.0
+
+schemes:
+  VO2Max:
+    build:
+      targets:
+        VO2Max: all
+        VO2MaxWatch: all
+        VO2MaxTests: [test]
+    test:
+      targets:
+        - VO2MaxTests
+    run:
+      config: Debug
+  VO2MaxWatch:
+    build:
+      targets:
+        VO2MaxWatch: all
+    run:
+      config: Debug
+
+targets:
+  VO2Max:
+    type: application
+    platform: iOS
+    sources:
+      - path: VO2Max
+      - path: Shared
+      - path: VO2Max.storekit
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max
+        PRODUCT_NAME: VO2Max
+        INFOPLIST_FILE: VO2Max/Info.plist
+        CODE_SIGN_ENTITLEMENTS: VO2Max/VO2Max.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - package: RevenueCat
+        product: RevenueCat
+      - target: VO2MaxWidget
+      - target: VO2MaxWatch
+        embed: true
+
+  VO2MaxWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: VO2MaxWidget
+      - path: Shared/Models
+      - path: Shared/Services/DataService.swift
+      - path: Shared/Utilities/CardioFitnessAnalysis.swift
+      - path: Shared/Utilities/Theme.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max.widget
+        INFOPLIST_FILE: VO2MaxWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: VO2MaxWidget/VO2MaxWidget.entitlements
+
+  VO2MaxWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: VO2MaxWatch
+      - path: Shared
+        excludes:
+          - Services/StoreService.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max.watch
+        INFOPLIST_FILE: VO2MaxWatch/Info.plist
+        CODE_SIGN_ENTITLEMENTS: VO2MaxWatch/VO2MaxWatch.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        WATCHOS_DEPLOYMENT_TARGET: "10.0"
+    dependencies:
+      - target: VO2MaxWatchWidget
+
+  VO2MaxWatchWidget:
+    type: app-extension
+    platform: watchOS
+    sources:
+      - path: VO2MaxWatchWidget
+      - path: Shared/Models
+      - path: Shared/Services/DataService.swift
+      - path: Shared/Utilities/CardioFitnessAnalysis.swift
+      - path: Shared/Utilities/Theme.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max.watch.widget
+        INFOPLIST_FILE: VO2MaxWatchWidget/Info.plist
+        CODE_SIGN_ENTITLEMENTS: VO2MaxWatchWidget/VO2MaxWatchWidget.entitlements
+        WATCHOS_DEPLOYMENT_TARGET: "10.0"
+
+  VO2MaxTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: VO2MaxTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max.tests
+    dependencies:
+      - target: VO2Max
