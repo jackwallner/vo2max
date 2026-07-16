@@ -35,6 +35,27 @@ final class GoalSettings: ObservableObject {
     @Published var referenceSex: ReferenceSex { didSet { save() } }
     @Published var appearance: AppAppearance { didSet { save() } }
 
+    // VO2+ feature toggles. Persisted regardless of entitlement; views gate on
+    // `store.isPro && toggle` so a lapse hides features without erasing choices.
+    @Published var showDeepTrends: Bool { didSet { defaults.set(showDeepTrends, forKey: "showDeepTrends"); save() } }
+    @Published var showProjection: Bool { didSet { defaults.set(showProjection, forKey: "showProjection"); save() } }
+    @Published var showFitnessBand: Bool { didSet { defaults.set(showFitnessBand, forKey: "showFitnessBand"); save() } }
+    @Published var showPersonalBest: Bool { didSet { defaults.set(showPersonalBest, forKey: "showPersonalBest"); save() } }
+
+    /// Last time the passive VO2+ trial offer was shown. nil = never. Explicit
+    /// intent taps (locked toggles, locked cards) bypass the cooldown.
+    var lastTrialOfferShownDate: Date? {
+        get { defaults.object(forKey: "lastTrialOfferShownDate") as? Date }
+        set { defaults.set(newValue, forKey: "lastTrialOfferShownDate") }
+    }
+
+    static let trialOfferCooldownDays = 14
+
+    func passiveTrialOfferAllowed(now: Date = .now) -> Bool {
+        guard let last = lastTrialOfferShownDate else { return true }
+        return now.timeIntervalSince(last) >= TimeInterval(Self.trialOfferCooldownDays) * 86_400
+    }
+
     private let defaults: UserDefaults
     private var isNormalizing = false
 
@@ -46,6 +67,10 @@ final class GoalSettings: ObservableObject {
         chronologicalAge = defaults.object(forKey: "chronologicalAge") as? Int ?? 35
         referenceSex = ReferenceSex(rawValue: defaults.integer(forKey: "referenceSex")) ?? .unspecified
         appearance = AppAppearance(rawValue: defaults.integer(forKey: "appearance")) ?? .system
+        showDeepTrends = defaults.object(forKey: "showDeepTrends") as? Bool ?? true
+        showProjection = defaults.object(forKey: "showProjection") as? Bool ?? true
+        showFitnessBand = defaults.object(forKey: "showFitnessBand") as? Bool ?? true
+        showPersonalBest = defaults.object(forKey: "showPersonalBest") as? Bool ?? true
     }
 
     private func normalizeTargets(changedLower: Bool) {

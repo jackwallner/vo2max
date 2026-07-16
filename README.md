@@ -6,11 +6,23 @@ A local-first iPhone and Apple Watch dashboard for Apple Health cardio fitness e
 
 - Latest VO2 max estimate with a configurable target range
 - 30-day and 90-day trend analysis
-- One-year chart history
+- One-year chart history with target-range band and period stats
 - Clear guidance when Apple Health has not recorded a value yet
-- iPhone widgets and Apple Watch complications
+- iPhone widgets and Apple Watch complications (with sparkline)
 - Local SwiftData cache shared with widgets
-- Optional one-time Pro unlock prepared through RevenueCat
+
+## VO2+ (premium)
+
+Subscription/lifetime unlock through RevenueCat (any active entitlement unlocks):
+
+- Deep Trends: 30/90/180-day period-over-period comparisons
+- Target outlook: broad time-to-range estimate from the recent trend slope
+- Typical-range context vs. broad age/sex reference values
+- Personal best tracking
+
+Free users see a locked teaser card and locked Settings toggles that open a
+focused paywall. Trial copy only appears when StoreKit intro eligibility is
+confirmed (Apple 3.1.2).
 
 VO2 max values are Apple Health estimates, not medical measurements. The app is for fitness awareness and does not diagnose, treat, or predict health conditions.
 

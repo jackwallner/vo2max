@@ -7,7 +7,7 @@ Local-first Apple Health cardio fitness tracker. XcodeGen project/scheme: `VO2Ma
 - Swift 6 / SwiftUI with strict concurrency
 - HealthKit read-only access to `vo2Max`
 - SwiftData local cache for widgets and complications
-- RevenueCat entitlement `pro`, one-time lifetime unlock
+- RevenueCat premium tier "VO2+": monthly/yearly/lifetime; any active entitlement unlocks (permissive check, mirrors Vitals+)
 - XcodeGen targets: iOS 17+, watchOS 10+
 
 ## Targets / bundle IDs

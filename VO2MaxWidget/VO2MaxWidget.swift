@@ -88,6 +88,8 @@ struct VO2MaxWidgetView: View {
             Label(entry.trend.label, systemImage: entry.trend.symbol)
                 .font(.caption.bold())
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("VO2 max \(value.formatted(.number.precision(.fractionLength(1)))) milliliters per kilogram per minute, trend \(entry.trend.label)")
         .containerBackground(.fill.tertiary, for: .widget)
     }
 
@@ -108,6 +110,10 @@ struct VO2MaxWidgetView: View {
                 Text(entry.trend.label).font(.headline)
                 Text("Target \(entry.targetLower.formatted(.number.precision(.fractionLength(0))))–\(entry.targetUpper.formatted(.number.precision(.fractionLength(0))))")
                     .font(.caption).foregroundStyle(.secondary)
+                if let readingDate = entry.readingDate {
+                    Text(readingDate, format: .dateTime.month(.abbreviated).day())
+                        .font(.caption2).foregroundStyle(.tertiary)
+                }
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)
