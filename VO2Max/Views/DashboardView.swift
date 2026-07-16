@@ -3,8 +3,11 @@ import SwiftUI
 
 struct DashboardView: View {
     @EnvironmentObject private var settings: GoalSettings
+    @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @StateObject private var health = HealthKitService.shared
+    @State private var paywallFocus: PlusFeature?
+    @State private var showPaywall = false
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -17,6 +20,11 @@ struct DashboardView: View {
                     currentCard(latest)
                     trendCard
                     targetCard(value: latest.value)
+                    PlusInsightsSection(
+                        points: points,
+                        paywallFocus: $paywallFocus,
+                        showPaywall: $showPaywall
+                    )
                     fitnessAgeCard(value: latest.value)
                     estimateNotice
                 } else {
@@ -28,6 +36,7 @@ struct DashboardView: View {
         .background(Theme.background)
         .navigationTitle("Cardio Fitness")
         .refreshable { await health.refreshCache() }
+        .sheet(isPresented: $showPaywall) { PaywallView(focus: paywallFocus) }
         .toolbar {
             if health.isRefreshing {
                 ToolbarItem(placement: .topBarTrailing) { ProgressView() }
