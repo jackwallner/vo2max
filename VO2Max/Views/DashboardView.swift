@@ -56,7 +56,7 @@ struct DashboardView: View {
 
             Text("Latest Apple Health estimate")
                 .font(.headline)
-            Text(latest.date, format: .dateTime.month(.abbreviated).day().year())
+            Text("\(latest.date, format: .dateTime.month(.abbreviated).day().year()) · \(latest.date, format: .relative(presentation: .named))")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Text(latest.sourceName)

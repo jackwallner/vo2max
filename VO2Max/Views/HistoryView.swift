@@ -3,6 +3,7 @@ import SwiftData
 import SwiftUI
 
 struct HistoryView: View {
+    @EnvironmentObject private var settings: GoalSettings
     @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
     @State private var period = 90
 
@@ -12,10 +13,35 @@ struct HistoryView: View {
     }
 
     private var chartDomain: ClosedRange<Double> {
-        let values = visibleSamples.map(\.value)
+        var values = visibleSamples.map(\.value)
+        values.append(contentsOf: [settings.targetLower, settings.targetUpper])
         let lower = max((values.min() ?? 20) - 4, 0)
         let upper = (values.max() ?? 60) + 4
         return lower...max(upper, lower + 8)
+    }
+
+    private var statsCard: some View {
+        let values = visibleSamples.map(\.value)
+        let average = values.reduce(0, +) / Double(values.count)
+        return HStack {
+            statBlock("Readings", "\(values.count)")
+            Divider().frame(height: 34)
+            statBlock("Average", average.formatted(.number.precision(.fractionLength(1))))
+            Divider().frame(height: 34)
+            statBlock("Best", (values.max() ?? 0).formatted(.number.precision(.fractionLength(1))))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 14)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private func statBlock(_ title: String, _ value: String) -> some View {
+        VStack(spacing: 3) {
+            Text(value).font(Theme.numberFont(22))
+            Text(title).font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 
     var body: some View {
@@ -24,9 +50,14 @@ struct HistoryView: View {
                 Picker("Period", selection: $period) {
                     Text("30D").tag(30)
                     Text("90D").tag(90)
+                    Text("6M").tag(180)
                     Text("1Y").tag(365)
                 }
                 .pickerStyle(.segmented)
+
+                if !visibleSamples.isEmpty {
+                    statsCard
+                }
 
                 if visibleSamples.isEmpty {
                     ContentUnavailableView(
@@ -37,6 +68,11 @@ struct HistoryView: View {
                     .frame(minHeight: 340)
                 } else {
                     Chart(visibleSamples) { sample in
+                        RectangleMark(
+                            yStart: .value("Target lower", settings.targetLower),
+                            yEnd: .value("Target upper", settings.targetUpper)
+                        )
+                        .foregroundStyle(Theme.positive.opacity(0.08))
                         LineMark(
                             x: .value("Date", sample.date),
                             y: .value("VO2 max", sample.value)

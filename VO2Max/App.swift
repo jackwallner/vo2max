@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct VO2MaxApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var settings = GoalSettings.shared
     @StateObject private var store = StoreService.shared
 
@@ -15,6 +16,10 @@ struct VO2MaxApp: App {
                 .task {
                     store.start()
                     await HealthKitService.shared.synchronizeAuthorization()
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    guard phase == .active else { return }
+                    Task { await HealthKitService.shared.refreshCache() }
                 }
         }
         .modelContainer(DataService.sharedModelContainer)
