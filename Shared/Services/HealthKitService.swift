@@ -126,6 +126,18 @@ final class HealthKitService: ObservableObject {
         let existing = try context.fetch(FetchDescriptor<CardioFitnessSample>())
         var byID = Dictionary(uniqueKeysWithValues: existing.map { ($0.healthKitID, $0) })
 
+        // Samples deleted from Apple Health must disappear here too. An empty
+        // fetch is left alone: HealthKit returns nothing when read access is
+        // off, and that must not wipe a previously valid cache.
+        if !readings.isEmpty {
+            let fetchedIDs = Set(readings.map(\.id))
+            let cutoff = Calendar.current.date(byAdding: .day, value: -365, to: .now) ?? .distantPast
+            for record in existing where record.date >= cutoff && !fetchedIDs.contains(record.healthKitID) {
+                context.delete(record)
+                byID.removeValue(forKey: record.healthKitID)
+            }
+        }
+
         for reading in readings {
             if let record = byID[reading.id] {
                 record.date = reading.date

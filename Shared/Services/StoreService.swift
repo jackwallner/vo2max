@@ -37,6 +37,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     var yearlyPackage: Package? { packages.first { $0.packageType == .annual } }
 
     func purchase(_ package: Package) async {
+        guard isConfigured else { return }
         isLoading = true
         defer { isLoading = false }
         do {

@@ -71,7 +71,7 @@ struct SettingsView: View {
             }
 
             Section("About") {
-                LabeledContent("Version", value: "1.0.0")
+                LabeledContent("Version", value: Bundle.main.appVersionLabel)
                 Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/vo2max/privacy-policy.html")!)
                 Text("VO2 Max Daily Tracker is for fitness awareness. It does not diagnose, treat, cure, or prevent any condition. Discuss health concerns with a qualified clinician.")
                     .font(.caption)

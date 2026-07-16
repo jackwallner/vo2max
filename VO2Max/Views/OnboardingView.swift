@@ -56,6 +56,12 @@ struct OnboardingView: View {
                 .controlSize(.large)
                 .tint(Theme.cardio)
                 .disabled(isConnecting)
+                Button("Not now") {
+                    settings.hasCompletedSetup = true
+                    isPresented = false
+                }
+                .font(.subheadline)
+                .disabled(isConnecting)
                 Text("VO2 max values are fitness estimates, not medical measurements. This app does not diagnose or treat health conditions.")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
