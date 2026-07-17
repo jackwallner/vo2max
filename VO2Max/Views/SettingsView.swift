@@ -4,6 +4,7 @@ struct SettingsView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
     @StateObject private var health = HealthKitService.shared
+    @Environment(\.dismiss) private var dismiss
     @State private var showPaywall = false
 
     var body: some View {
@@ -28,25 +29,54 @@ struct SettingsView: View {
             }
 
             Section {
-                Stepper(value: $settings.targetLower, in: 10...89, step: 1) {
-                    LabeledContent("Lower", value: settings.targetLower, format: .number.precision(.fractionLength(0)))
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("Target").font(.subheadline.weight(.medium))
+                        Spacer()
+                        Text("\(Int(settings.targetLower))–\(Int(settings.targetUpper))")
+                            .font(.headline.monospacedDigit())
+                            .foregroundStyle(Theme.cardio)
+                        Text("mL/kg/min").font(.caption).foregroundStyle(.secondary)
+                    }
+                    RangeSlider(
+                        lowerValue: $settings.targetLower,
+                        upperValue: $settings.targetUpper,
+                        bounds: 20...70
+                    )
                 }
-                Stepper(value: $settings.targetUpper, in: 11...90, step: 1) {
-                    LabeledContent("Upper", value: settings.targetUpper, format: .number.precision(.fractionLength(0)))
-                }
+                .padding(.vertical, 4)
             } header: {
                 Text("Your target range")
             } footer: {
-                Text("A personal fitness target, not a medical threshold. Drives the Today ring and Trends band.")
+                Text("A personal fitness target, not a medical threshold. Drag the handles to set the band that drives the Today ring and Trends band.")
             }
 
             Section {
-                Stepper("Age: \(settings.chronologicalAge)", value: $settings.chronologicalAge, in: 18...90)
-                Picker("Reference curve", selection: $settings.referenceSex) {
-                    ForEach(ReferenceSex.allCases, id: \.rawValue) { sex in
-                        Text(sex.label).tag(sex)
+                VStack(spacing: 10) {
+                    HStack {
+                        Text("Age").font(.subheadline.weight(.medium))
+                        Spacer()
+                        Text("\(settings.chronologicalAge)")
+                            .font(.headline.monospacedDigit())
+                            .foregroundStyle(Theme.cardio)
                     }
+                    Slider(
+                        value: Binding(
+                            get: { Double(settings.chronologicalAge) },
+                            set: { settings.chronologicalAge = Int($0) }
+                        ),
+                        in: 18...90,
+                        step: 1
+                    )
+                    .tint(Theme.cardio)
                 }
+                .padding(.vertical, 4)
+                Picker("Reference", selection: $settings.referenceSex) {
+                    Text("Female").tag(ReferenceSex.female)
+                    Text("Male").tag(ReferenceSex.male)
+                    Text("Not set").tag(ReferenceSex.unspecified)
+                }
+                .pickerStyle(.segmented)
             } header: {
                 Text("Profile")
             } footer: {
@@ -97,6 +127,12 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done") { dismiss() }
+            }
+        }
         .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 }

@@ -45,31 +45,46 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
+    /// When embedded in the VO2+ tab there's no sheet to dismiss and no Done
+    /// button; the tab swaps to the Pro insights hub on its own when `isPro`
+    /// flips. Standalone (sheet) presentation keeps the Done button + dismiss.
+    var embedded: Bool = false
+    var impressionID: String = "vo2plus_paywall"
     @State private var selectedPackage: Package?
     @State private var restoreMessage: String?
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if store.isLoadingProducts && store.packages.isEmpty {
-                    loadingState
-                } else if store.packages.isEmpty {
-                    emptyState
-                } else {
-                    content
+        Group {
+            if embedded {
+                gated
+            } else {
+                NavigationStack {
+                    gated
+                        .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
                 }
             }
-            .background(Theme.background)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
         }
         .onAppear {
-            store.trackPaywallImpression(id: "vo2plus_paywall")
+            store.trackPaywallImpression(id: impressionID)
             selectDefaultPackageIfNeeded()
         }
         .onChange(of: store.packages) { _, _ in selectDefaultPackageIfNeeded() }
         .onChange(of: store.isPro) { _, isPro in
-            if isPro { dismiss() }
+            if isPro, !embedded { dismiss() }
         }
+    }
+
+    private var gated: some View {
+        Group {
+            if store.isLoadingProducts && store.packages.isEmpty {
+                loadingState
+            } else if store.packages.isEmpty {
+                emptyState
+            } else {
+                content
+            }
+        }
+        .background(Theme.background)
     }
 
     private var content: some View {
@@ -92,8 +107,9 @@ struct PaywallView: View {
                 .foregroundStyle(.white)
                 .frame(width: 92, height: 92)
                 .background(Theme.cardioGradient, in: Circle())
-            Text(focus?.intentHeadline ?? "VO2+")
+            Text(focus?.intentHeadline ?? (embedded ? "Go further with VO2+" : "VO2+"))
                 .font(.largeTitle.bold())
+                .multilineTextAlignment(.center)
             Text("Deeper context for your cardio fitness trend.")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

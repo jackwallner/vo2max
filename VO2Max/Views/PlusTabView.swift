@@ -8,26 +8,29 @@ struct PlusTabView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
-    @State private var showPaywall = false
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                if store.isPro {
-                    proContent
-                } else {
-                    pitch
+        Group {
+            if store.isPro {
+                ScrollView {
+                    VStack(spacing: 16) { proContent }
+                        .padding()
                 }
+                .background(Theme.background)
+                .navigationTitle("VO2+")
+            } else {
+                // Free users see the actual paywall inline (Total Calories
+                // pattern): real plan cards, live prices, one purchase CTA — not
+                // a separate pitch that punts to a second screen.
+                PaywallView(embedded: true, impressionID: "vo2plus_tab")
+                    .navigationTitle("VO2+")
+                    .navigationBarTitleDisplayMode(.inline)
             }
-            .padding()
         }
-        .background(Theme.background)
-        .navigationTitle("VO2+")
-        .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 
     // MARK: Pro insights hub
@@ -194,70 +197,6 @@ struct PlusTabView: View {
             } else {
                 EmptyView()
             }
-        }
-    }
-
-    // MARK: Free pitch
-
-    private var pitch: some View {
-        VStack(spacing: 18) {
-            VStack(spacing: 10) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 40))
-                    .foregroundStyle(.white)
-                    .frame(width: 84, height: 84)
-                    .background(Theme.cardioGradient, in: Circle())
-                Text("VO2+")
-                    .font(.largeTitle.bold())
-                Text("Go beyond today's number with deeper context for your cardio fitness trend.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .padding(.top, 8)
-
-            VStack(spacing: 12) {
-                pitchRow("chart.bar.xaxis", "Deep Trends", "30 / 90 / 180-day period comparisons")
-                pitchRow("scope", "Target outlook", "A broad time-to-target estimate")
-                pitchRow("person.2.crop.square.stack", "Typical-range context", "How your number compares for your age")
-                pitchRow("trophy", "Personal best", "Track and celebrate your best readings")
-            }
-            .padding(18)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-
-            Button {
-                showPaywall = true
-            } label: {
-                Text(store.shortConversionCTALabel)
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(Theme.cardio)
-
-            Button("Restore Purchases") { Task { await store.restore() } }
-                .font(.footnote)
-
-            Text("Your free dashboard keeps its current reading, trend, target, and fitness-age estimate.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-    }
-
-    private func pitchRow(_ symbol: String, _ title: String, _ detail: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: symbol)
-                .font(.title3)
-                .foregroundStyle(Theme.cardio)
-                .frame(width: 30)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.subheadline.bold())
-                Text(detail).font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 0)
         }
     }
 

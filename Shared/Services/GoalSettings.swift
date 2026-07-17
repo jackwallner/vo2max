@@ -42,20 +42,6 @@ final class GoalSettings: ObservableObject {
     @Published var showFitnessBand: Bool { didSet { defaults.set(showFitnessBand, forKey: "showFitnessBand"); save() } }
     @Published var showPersonalBest: Bool { didSet { defaults.set(showPersonalBest, forKey: "showPersonalBest"); save() } }
 
-    /// Last time the passive VO2+ trial offer was shown. nil = never. Explicit
-    /// intent taps (locked toggles, locked cards) bypass the cooldown.
-    var lastTrialOfferShownDate: Date? {
-        get { defaults.object(forKey: "lastTrialOfferShownDate") as? Date }
-        set { defaults.set(newValue, forKey: "lastTrialOfferShownDate") }
-    }
-
-    static let trialOfferCooldownDays = 14
-
-    func passiveTrialOfferAllowed(now: Date = .now) -> Bool {
-        guard let last = lastTrialOfferShownDate else { return true }
-        return now.timeIntervalSince(last) >= TimeInterval(Self.trialOfferCooldownDays) * 86_400
-    }
-
     private let defaults: UserDefaults
     private var isNormalizing = false
 
