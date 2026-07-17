@@ -1,27 +1,85 @@
+import SwiftData
 import SwiftUI
 
-/// VO2+ dashboard cards. Pro users see live insights; free users see a locked
-/// teaser card that opens the focused paywall (feature stays visible, Vitals
-/// style, so the upgrade has a concrete "what you get").
-struct PlusInsightsSection: View {
+/// The VO2+ tab. Pro users get a dedicated insights hub (Deep Trends, target
+/// outlook, typical-range context, personal best). Free users get a focused
+/// pitch that opens the paywall — mirrors the Vitals+ "Pro tab" structure.
+struct PlusTabView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
-    let points: [CardioFitnessPoint]
-    @Binding var paywallFocus: PlusFeature?
-    @Binding var showPaywall: Bool
+    @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
+    @State private var showPaywall = false
+
+    private var points: [CardioFitnessPoint] {
+        samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
+    }
 
     var body: some View {
-        if store.isPro {
-            if settings.showDeepTrends { deepTrendsCard }
-            if settings.showProjection { projectionCard }
-            if settings.showFitnessBand { fitnessBandCard }
-            if settings.showPersonalBest { personalBestCard }
+        ScrollView {
+            VStack(spacing: 16) {
+                if store.isPro {
+                    proContent
+                } else {
+                    pitch
+                }
+            }
+            .padding()
+        }
+        .background(Theme.background)
+        .navigationTitle("VO2+")
+        .sheet(isPresented: $showPaywall) { PaywallView() }
+    }
+
+    // MARK: Pro insights hub
+
+    @ViewBuilder
+    private var proContent: some View {
+        activeHeader
+        if points.isEmpty {
+            emptyProNotice
         } else {
-            lockedCard
+            deepTrendsCard
+            projectionCard
+            fitnessBandCard
+            personalBestCard
         }
     }
 
-    // MARK: Pro cards
+    private var activeHeader: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "checkmark.seal.fill")
+                .font(.title2)
+                .foregroundStyle(Theme.positive)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("VO2+ active").font(.headline)
+                Text("Deeper context for your cardio fitness trend.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private var emptyProNotice: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 40))
+                .foregroundStyle(Theme.cardio)
+            Text("Insights appear here as you build readings")
+                .font(.headline)
+                .multilineTextAlignment(.center)
+            Text("Once Apple Health records a few VO2 max estimates, your Deep Trends, target outlook, and personal best show up on this tab.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
 
     private var deepTrendsCard: some View {
         let comparisons = [30, 90, 180].compactMap {
@@ -103,6 +161,7 @@ struct PlusInsightsSection: View {
                     Spacer()
                 }
                 .padding(18)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
             } else {
                 EmptyView()
@@ -130,6 +189,7 @@ struct PlusInsightsSection: View {
                     Spacer()
                 }
                 .padding(18)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
             } else {
                 EmptyView()
@@ -137,49 +197,67 @@ struct PlusInsightsSection: View {
         }
     }
 
-    // MARK: Locked teaser
+    // MARK: Free pitch
 
-    private var lockedCard: some View {
-        Button {
-            paywallFocus = .deepTrends
-            showPaywall = true
-        } label: {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Label("VO2+ insights", systemImage: "sparkles")
-                        .font(.headline)
-                    Spacer()
-                    Image(systemName: "lock.fill")
-                        .foregroundStyle(.secondary)
-                }
-                VStack(alignment: .leading, spacing: 8) {
-                    teaserRow("chart.bar.xaxis", "30/90/180-day period comparisons")
-                    teaserRow("scope", "Broad time-to-target outlook")
-                    teaserRow("person.2.crop.square.stack", "Typical-range context for your age")
-                    teaserRow("trophy", "Personal best tracking")
-                }
-                Text(store.shortConversionCTALabel)
-                    .font(.subheadline.bold())
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(Theme.cardio, in: Capsule())
+    private var pitch: some View {
+        VStack(spacing: 18) {
+            VStack(spacing: 10) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 40))
                     .foregroundStyle(.white)
+                    .frame(width: 84, height: 84)
+                    .background(Theme.cardioGradient, in: Circle())
+                Text("VO2+")
+                    .font(.largeTitle.bold())
+                Text("Go beyond today's number with deeper context for your cardio fitness trend.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.top, 8)
+
+            VStack(spacing: 12) {
+                pitchRow("chart.bar.xaxis", "Deep Trends", "30 / 90 / 180-day period comparisons")
+                pitchRow("scope", "Target outlook", "A broad time-to-target estimate")
+                pitchRow("person.2.crop.square.stack", "Typical-range context", "How your number compares for your age")
+                pitchRow("trophy", "Personal best", "Track and celebrate your best readings")
             }
             .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+
+            Button {
+                showPaywall = true
+            } label: {
+                Text(store.shortConversionCTALabel)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(Theme.cardio)
+
+            Button("Restore Purchases") { Task { await store.restore() } }
+                .font(.footnote)
+
+            Text("Your free dashboard keeps its current reading, trend, target, and fitness-age estimate.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel("VO2+ insights (locked). \(store.shortConversionCTALabel)")
     }
 
-    private func teaserRow(_ symbol: String, _ text: String) -> some View {
-        HStack(spacing: 10) {
+    private func pitchRow(_ symbol: String, _ title: String, _ detail: String) -> some View {
+        HStack(spacing: 12) {
             Image(systemName: symbol)
+                .font(.title3)
                 .foregroundStyle(Theme.cardio)
-                .frame(width: 22)
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .frame(width: 30)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.subheadline.bold())
+                Text(detail).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
         }
     }
 

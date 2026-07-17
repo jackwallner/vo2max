@@ -12,11 +12,15 @@ struct HistoryView: View {
         return samples.filter { $0.date >= cutoff }
     }
 
+    /// Domain spans the readings plus the target bounds so both dashed target
+    /// lines stay visible. It's safe to include the target here now that the
+    /// range is drawn as thin lines rather than a filled band (the filled band
+    /// was what ballooned into the old "gigantic green space").
     private var chartDomain: ClosedRange<Double> {
         var values = visibleSamples.map(\.value)
         values.append(contentsOf: [settings.targetLower, settings.targetUpper])
-        let lower = max((values.min() ?? 20) - 4, 0)
-        let upper = (values.max() ?? 60) + 4
+        let lower = max((values.min() ?? 20) - 3, 0)
+        let upper = (values.max() ?? 60) + 3
         return lower...max(upper, lower + 8)
     }
 
@@ -65,29 +69,43 @@ struct HistoryView: View {
                         systemImage: "chart.xyaxis.line",
                         description: Text("New Apple Health estimates will appear here automatically.")
                     )
-                    .frame(minHeight: 340)
+                    .frame(minHeight: 280)
                 } else {
-                    Chart(visibleSamples) { sample in
-                        RectangleMark(
-                            yStart: .value("Target lower", settings.targetLower),
-                            yEnd: .value("Target upper", settings.targetUpper)
-                        )
-                        .foregroundStyle(Theme.positive.opacity(0.08))
-                        LineMark(
-                            x: .value("Date", sample.date),
-                            y: .value("VO2 max", sample.value)
-                        )
-                        .foregroundStyle(Theme.cardioGradient)
-                        .interpolationMethod(.catmullRom)
-                        PointMark(
-                            x: .value("Date", sample.date),
-                            y: .value("VO2 max", sample.value)
-                        )
-                        .foregroundStyle(Theme.cardio)
+                    VStack(alignment: .leading, spacing: 10) {
+                        Chart(visibleSamples) { sample in
+                            // Target range shown as two dashed boundary lines, not
+                            // a filled band: when readings sit inside a wide target
+                            // the fill balloons to cover the whole plot (the old
+                            // "gigantic green space"). Lines read cleanly either way.
+                            RuleMark(y: .value("Target lower", settings.targetLower))
+                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                                .foregroundStyle(Theme.positive.opacity(0.6))
+                                .annotation(position: .top, alignment: .leading) {
+                                    Text("Target").font(.caption2).foregroundStyle(Theme.positive)
+                                }
+                            RuleMark(y: .value("Target upper", settings.targetUpper))
+                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                                .foregroundStyle(Theme.positive.opacity(0.6))
+                            LineMark(
+                                x: .value("Date", sample.date),
+                                y: .value("VO2 max", sample.value)
+                            )
+                            .foregroundStyle(Theme.cardioGradient)
+                            .interpolationMethod(.catmullRom)
+                            PointMark(
+                                x: .value("Date", sample.date),
+                                y: .value("VO2 max", sample.value)
+                            )
+                            .foregroundStyle(Theme.cardio)
+                        }
+                        .chartYAxisLabel("mL/kg/min")
+                        .chartYScale(domain: chartDomain)
+                        .frame(height: 260)
+
+                        Label("Dashed lines mark your target range", systemImage: "scope")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
-                    .chartYAxisLabel("mL/kg/min")
-                    .chartYScale(domain: chartDomain)
-                    .frame(height: 320)
                     .padding()
                     .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
 
@@ -101,7 +119,6 @@ struct HistoryView: View {
                                 Spacer()
                                 Text(sample.value, format: .number.precision(.fractionLength(1)))
                                     .font(.headline.monospacedDigit())
-                                Text("mL/kg/min").font(.caption).foregroundStyle(.secondary)
                             }
                             .padding(.vertical, 12)
                             if sample.healthKitID != visibleSamples.first?.healthKitID { Divider() }
