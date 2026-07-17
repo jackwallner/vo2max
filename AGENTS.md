@@ -32,3 +32,6 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
 ---
 Shared iOS conventions come from the global AGENTS.md and the `ios-dev` skill.
 
+## Subagent delegation
+Follow the global CLAUDE.md subagent rules: ask Jack for the model before spawning, spawn at most one at a time unless Jack explicitly approves more, and never allow a subagent to spawn another subagent.
+
