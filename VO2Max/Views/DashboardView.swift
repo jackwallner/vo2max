@@ -6,8 +6,6 @@ struct DashboardView: View {
     @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @StateObject private var health = HealthKitService.shared
-    @State private var paywallFocus: PlusFeature?
-    @State private var showPaywall = false
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -19,12 +17,6 @@ struct DashboardView: View {
                 if let latest = samples.first {
                     currentCard(latest)
                     trendCard
-                    targetCard(value: latest.value)
-                    PlusInsightsSection(
-                        points: points,
-                        paywallFocus: $paywallFocus,
-                        showPaywall: $showPaywall
-                    )
                     fitnessAgeCard(value: latest.value)
                     estimateNotice
                 } else {
@@ -36,7 +28,6 @@ struct DashboardView: View {
         .background(Theme.background)
         .navigationTitle("Cardio Fitness")
         .refreshable { await health.refreshCache() }
-        .sheet(isPresented: $showPaywall) { PaywallView(focus: paywallFocus) }
         .toolbar {
             if health.isRefreshing {
                 ToolbarItem(placement: .topBarTrailing) { ProgressView() }
@@ -45,29 +36,53 @@ struct DashboardView: View {
     }
 
     private func currentCard(_ latest: CardioFitnessSample) -> some View {
-        VStack(spacing: 12) {
+        // Ring is a progress-toward-target gauge: entering the band reads near
+        // half, hitting the upper bound fills it. Anchoring the floor one band
+        // width below the lower bound keeps normal reading-to-reading noise a
+        // small, smooth, meaningful move instead of a jump on an arbitrary scale.
+        let status = CardioFitnessAnalysis.targetStatus(
+            value: latest.value,
+            lower: settings.targetLower,
+            upper: settings.targetUpper
+        )
+        let bandWidth = max(settings.targetUpper - settings.targetLower, 1)
+        let floor = settings.targetLower - bandWidth
+        let progress = min(max((latest.value - floor) / (settings.targetUpper - floor), 0.02), 1)
+        return VStack(spacing: 12) {
             ZStack {
                 Circle()
                     .stroke(Theme.cardio.opacity(0.16), lineWidth: 18)
                 Circle()
-                    .trim(from: 0, to: min(max(latest.value / 65, 0.05), 1))
+                    .trim(from: 0, to: progress)
                     .stroke(Theme.cardioGradient, style: StrokeStyle(lineWidth: 18, lineCap: .round))
                     .rotationEffect(.degrees(-90))
+                    .animation(.easeOut(duration: 0.7), value: progress)
                 VStack(spacing: 2) {
                     Text(latest.value, format: .number.precision(.fractionLength(1)))
-                        .font(Theme.numberFont(58))
+                        .font(Theme.numberFont(56))
+                        .contentTransition(.numericText())
                     Text("mL/kg/min")
-                        .font(.subheadline.weight(.medium))
+                        .font(.caption.weight(.medium))
                         .foregroundStyle(Theme.secondaryText)
+                    Text(status.label)
+                        .font(.subheadline.bold())
+                        .foregroundStyle(statusColor(status))
+                        .padding(.top, 2)
                 }
             }
-            .frame(width: 230, height: 230)
+            .frame(width: 220, height: 220)
 
             Text("Latest Apple Health estimate")
                 .font(.headline)
             Text("\(latest.date, format: .dateTime.month(.abbreviated).day().year()) · \(latest.date, format: .relative(presentation: .named))")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+            HStack(spacing: 6) {
+                Image(systemName: "scope").font(.caption)
+                Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
             Text(latest.sourceName)
                 .font(.caption)
                 .foregroundStyle(.tertiary)
@@ -76,6 +91,7 @@ struct DashboardView: View {
         .padding(24)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         .accessibilityElement(children: .combine)
+        .accessibilityLabel("Latest estimate \(latest.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min, \(status.label)")
     }
 
     private var trendCard: some View {
@@ -100,37 +116,6 @@ struct DashboardView: View {
                 }
             }
             Spacer()
-        }
-        .padding(18)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private func targetCard(value: Double) -> some View {
-        let status = CardioFitnessAnalysis.targetStatus(
-            value: value,
-            lower: settings.targetLower,
-            upper: settings.targetUpper
-        )
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label("Your target", systemImage: "scope")
-                    .font(.headline)
-                Spacer()
-                Text(status.label)
-                    .font(.caption.bold())
-                    .foregroundStyle(status == .inRange ? Theme.positive : Theme.coral)
-            }
-            GeometryReader { geometry in
-                let progress = min(max((value - 10) / 70, 0), 1)
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Theme.cardio.opacity(0.14))
-                    Capsule().fill(Theme.cardioGradient).frame(width: geometry.size.width * progress)
-                }
-            }
-            .frame(height: 10)
-            Text("\(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0))) mL/kg/min")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
         }
         .padding(18)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
@@ -211,6 +196,13 @@ struct DashboardView: View {
         case .improving: Theme.positive
         case .declining: Theme.negative
         case .stable, .insufficientData: Theme.cardio
+        }
+    }
+
+    private func statusColor(_ status: TargetRangeStatus) -> Color {
+        switch status {
+        case .below: Theme.coral
+        case .inRange, .above: Theme.positive
         }
     }
 }
