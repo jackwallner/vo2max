@@ -29,13 +29,24 @@ struct VO2MaxApp: App {
 private struct RootView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
-    @State private var showOnboarding = false
-    @State private var showTrialOffer = false
 
     var body: some View {
         if ProcessInfo.processInfo.arguments.contains("-PaywallSnapshot") {
             PaywallView()
+        } else if !settings.hasCompletedSetup {
+            // Onboarding is the root view, not a sheet, so pages simply exist
+            // instead of swiping up from the bottom. The trial pitch is folded
+            // in as the final onboarding step (zero-shift CTA), so there's no
+            // separate pop-up after setup.
+            OnboardingView()
         } else {
+            MainTabView()
+        }
+    }
+}
+
+private struct MainTabView: View {
+    var body: some View {
         TabView {
             NavigationStack {
                 DashboardView()
@@ -51,38 +62,7 @@ private struct RootView: View {
                 PlusTabView()
             }
             .tabItem { Label("VO2+", systemImage: "sparkles") }
-
-            NavigationStack {
-                SettingsView()
-            }
-            .tabItem { Label("Settings", systemImage: "gearshape") }
         }
         .tint(Theme.cardio)
-        .onAppear { showOnboarding = !settings.hasCompletedSetup }
-        .sheet(isPresented: $showOnboarding, onDismiss: maybeShowTrialOffer) {
-            OnboardingView(isPresented: $showOnboarding)
-                .interactiveDismissDisabled()
-        }
-        .sheet(isPresented: $showTrialOffer) { TrialOfferView() }
-        .onChange(of: store.introEligibilityResolved) { _, _ in maybeShowTrialOffer() }
-        }
-    }
-
-    /// Shows the focused first-run trial sheet once, after onboarding, only when
-    /// the yearly plan is genuinely trial-eligible and the 14-day cooldown has
-    /// elapsed. RC eligibility resolves asynchronously, so this is retried when
-    /// `introEligibilityResolved` flips as well as on onboarding dismiss.
-    private func maybeShowTrialOffer() {
-        guard settings.hasCompletedSetup, !showOnboarding, !showTrialOffer else { return }
-        #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("-DemoTrial") {
-            showTrialOffer = true
-            return
-        }
-        #endif
-        guard !store.isPro, store.canPitchFreeTrial else { return }
-        guard settings.passiveTrialOfferAllowed() else { return }
-        settings.lastTrialOfferShownDate = .now
-        showTrialOffer = true
     }
 }

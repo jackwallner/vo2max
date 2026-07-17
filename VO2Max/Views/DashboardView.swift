@@ -6,6 +6,7 @@ struct DashboardView: View {
     @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @StateObject private var health = HealthKitService.shared
+    @State private var showSettings = false
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -30,8 +31,19 @@ struct DashboardView: View {
         .refreshable { await health.refreshCache() }
         .toolbar {
             if health.isRefreshing {
-                ToolbarItem(placement: .topBarTrailing) { ProgressView() }
+                ToolbarItem(placement: .topBarLeading) { ProgressView() }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel("Settings")
+            }
+        }
+        .sheet(isPresented: $showSettings) {
+            NavigationStack { SettingsView() }
         }
     }
 
@@ -136,7 +148,9 @@ struct DashboardView: View {
                         .font(.system(size: 48)).foregroundStyle(Theme.cardio)
                 }
             } else {
-                NavigationLink(destination: SettingsView()) {
+                Button {
+                    showSettings = true
+                } label: {
                     HStack {
                         Label("Set a reference profile to estimate fitness age", systemImage: "person.crop.circle.badge.questionmark")
                         Spacer()
