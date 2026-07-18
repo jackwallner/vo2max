@@ -113,7 +113,13 @@ struct OnboardingView: View {
     private func advance() { withAnimation { page = min(page + 1, trialPage) } }
 
     private func finish() {
-        // Persist any edits the user made but didn't explicitly commit via Continue.
+        // Persist any edits the user made but didn't explicitly commit via
+        // Continue — e.g. adjusting age/target then swiping the pager forward
+        // and tapping Get Started. Declined pages just rewrite the defaults.
+        settings.chronologicalAge = Int(age)
+        settings.referenceSex = referenceSex
+        settings.targetLower = targetLower
+        settings.targetUpper = targetUpper
         settings.hasCompletedSetup = true
     }
 
