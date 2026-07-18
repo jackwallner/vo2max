@@ -11,6 +11,7 @@ struct RangeSlider: View {
     let bounds: ClosedRange<Double>
     var step: Double = 1
     var tint: Color = Theme.cardio
+    var referenceRange: ClosedRange<Double>? = nil
 
     private let thumb: CGFloat = 30
     private let trackHeight: CGFloat = 7
@@ -28,6 +29,16 @@ struct RangeSlider: View {
                 Capsule()
                     .fill(tint.opacity(0.16))
                     .frame(height: trackHeight)
+
+                if let referenceRange {
+                    let referenceStart = position(referenceRange.lowerBound, usable: usable, span: span)
+                    let referenceEnd = position(referenceRange.upperBound, usable: usable, span: span)
+                    Capsule()
+                        .fill(Theme.cardio.opacity(0.24))
+                        .frame(width: max(referenceEnd - referenceStart, 0), height: 16)
+                        .offset(x: referenceStart + thumb / 2)
+                }
+
                 Capsule()
                     .fill(tint)
                     .frame(width: max(upperX - lowerX, 0), height: trackHeight)

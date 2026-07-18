@@ -80,7 +80,7 @@ struct OnboardingLegalFooter: View {
             Button(action: onRestore) {
                 Text(isRestoring ? "Restoring…" : "Restore")
                     .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.onboardingSecondaryText)
             }
             .buttonStyle(.plain)
             .disabled(isRestoring)
