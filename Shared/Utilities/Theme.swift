@@ -15,7 +15,7 @@ enum Theme {
 
     static let cardio = Color(red: 0.06, green: 0.76, blue: 0.78)
     static let cardioBlue = Color(red: 0.08, green: 0.48, blue: 0.95)
-    static let onboardingBackground = Color(red: 0.025, green: 0.075, blue: 0.17)
+    static let onboardingBackground = cardioBlue
     static let onboardingCard = Color(red: 0.06, green: 0.13, blue: 0.25)
     static let onboardingPrimaryText = Color.white
     static let onboardingSecondaryText = Color(red: 0.66, green: 0.74, blue: 0.84)
