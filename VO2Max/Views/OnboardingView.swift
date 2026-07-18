@@ -45,12 +45,25 @@ struct OnboardingView: View {
         }
         .background(Theme.onboardingBackground)
         .foregroundStyle(Theme.onboardingPrimaryText)
+        // Onboarding has a fixed dark identity (blue background, navy cards).
+        // Force the subtree to dark scheme so native controls (age wheel,
+        // segmented reference picker, slider) render light-on-dark instead of
+        // dark-on-navy in a light-mode device. The slider knob is passed an
+        // explicit light color below since systemBackground now resolves dark.
+        .environment(\.colorScheme, .dark)
         .task {
             age = settings.chronologicalAge > 0 ? settings.chronologicalAge : 35
             referenceSex = settings.referenceSex
             targetLower = settings.targetLower
             targetUpper = settings.targetUpper
             store.trackPaywallImpression(id: "vo2plus_onboarding_trial")
+            #if DEBUG
+            let args = ProcessInfo.processInfo.arguments
+            if let idx = args.firstIndex(of: "-OnboardingPage"), idx + 1 < args.count,
+               let p = Int(args[idx + 1]) {
+                page = min(max(p, 0), trialPage)
+            }
+            #endif
         }
         .onChange(of: store.isPro) { _, isPro in if isPro { finish() } }
         .sheet(isPresented: $showFallbackPaywall) { PaywallView() }
@@ -234,6 +247,7 @@ struct OnboardingView: View {
                     lowerValue: $targetLower,
                     upperValue: $targetUpper,
                     bounds: 20...70,
+                    handleColor: .white,
                     referenceRange: typical
                 )
             }

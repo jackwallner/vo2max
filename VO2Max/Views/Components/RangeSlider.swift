@@ -11,6 +11,10 @@ struct RangeSlider: View {
     let bounds: ClosedRange<Double>
     var step: Double = 1
     var tint: Color = Theme.cardio
+    /// Knob fill. Defaults to the adaptive system background (correct in the
+    /// Settings form); onboarding forces its subtree to dark scheme, so it
+    /// passes an explicit light color to keep the knob visible on navy cards.
+    var handleColor: Color = Color(.systemBackground)
     var referenceRange: ClosedRange<Double>? = nil
 
     private let thumb: CGFloat = 30
@@ -67,7 +71,7 @@ struct RangeSlider: View {
 
     private var handle: some View {
         Circle()
-            .fill(Color(.systemBackground))
+            .fill(handleColor)
             .frame(width: thumb, height: thumb)
             .overlay(Circle().stroke(tint, lineWidth: 3))
             .shadow(color: .black.opacity(0.18), radius: 3, y: 1)
