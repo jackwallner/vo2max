@@ -192,6 +192,20 @@ enum CardioFitnessAnalysis {
         return latest.value - baseline.value
     }
 
+    /// Broad reference band for target-setting context. This is motivational
+    /// context, not a medical threshold or a performance prescription.
+    static func typicalRange(age: Int, referenceSex: ReferenceSex) -> ClosedRange<Double> {
+        switch referenceSex {
+        case .female, .male:
+            let reference = referenceValue(age: age, referenceSex: referenceSex) ?? 35
+            return (reference * 0.85)...(reference * 1.15)
+        case .unspecified:
+            let female = referenceValue(age: age, referenceSex: .female) ?? 35
+            let male = referenceValue(age: age, referenceSex: .male) ?? 35
+            return (min(female, male) * 0.85)...(max(female, male) * 1.15)
+        }
+    }
+
     /// Broad qualitative band for the latest estimate relative to age/sex
     /// reference curves. Purely motivational context, mirroring the coarse
     /// "cardio fitness levels" idea without claiming clinical meaning.

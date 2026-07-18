@@ -30,6 +30,25 @@ struct CardioFitnessAnalysisTests {
         #expect(CardioFitnessAnalysis.estimatedFitnessAge(value: 35, referenceSex: .female) == 40)
     }
 
+    @Test func typicalRangeUsesAgeReference() {
+        let range = CardioFitnessAnalysis.typicalRange(age: 40, referenceSex: .male)
+        #expect(abs(range.lowerBound - 35.7) < 0.001)
+        #expect(abs(range.upperBound - 48.3) < 0.001)
+    }
+
+    @Test func typicalRangeUsesBroadEnvelopeWithoutReferenceSex() {
+        let range = CardioFitnessAnalysis.typicalRange(age: 40, referenceSex: .unspecified)
+        #expect(range.lowerBound == 29.75)
+        #expect(range.upperBound == 48.3)
+    }
+
+    @Test func typicalRangeClampsAgeToReferenceCurves() {
+        let young = CardioFitnessAnalysis.typicalRange(age: 12, referenceSex: .female)
+        let oldest = CardioFitnessAnalysis.typicalRange(age: 90, referenceSex: .female)
+        #expect(abs(young.lowerBound - 34.85) < 0.001)
+        #expect(abs(oldest.upperBound - 27.6) < 0.001)
+    }
+
     @Test func fitnessBandTracksReferenceRatio() {
         #expect(CardioFitnessAnalysis.fitnessBand(value: 40, age: 35, referenceSex: .unspecified) == nil)
         // Male age 35 reference = 44. 30/44 < 0.85 -> below.

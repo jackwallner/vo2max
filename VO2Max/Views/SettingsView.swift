@@ -38,10 +38,18 @@ struct SettingsView: View {
                             .foregroundStyle(Theme.cardio)
                         Text("mL/kg/min").font(.caption).foregroundStyle(.secondary)
                     }
+                    let typical = CardioFitnessAnalysis.typicalRange(
+                        age: settings.chronologicalAge,
+                        referenceSex: settings.referenceSex
+                    )
+                    Text("Typical range: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     RangeSlider(
                         lowerValue: $settings.targetLower,
                         upperValue: $settings.targetUpper,
-                        bounds: 20...70
+                        bounds: 20...70,
+                        referenceRange: typical
                     )
                 }
                 .padding(.vertical, 4)
@@ -60,15 +68,7 @@ struct SettingsView: View {
                             .font(.headline.monospacedDigit())
                             .foregroundStyle(Theme.cardio)
                     }
-                    Slider(
-                        value: Binding(
-                            get: { Double(settings.chronologicalAge) },
-                            set: { settings.chronologicalAge = Int($0) }
-                        ),
-                        in: 18...90,
-                        step: 1
-                    )
-                    .tint(Theme.cardio)
+                    AgeWheelPicker(age: $settings.chronologicalAge)
                 }
                 .padding(.vertical, 4)
                 Picker("Reference", selection: $settings.referenceSex) {

@@ -22,7 +22,7 @@ struct OnboardingView: View {
     @State private var showFallbackPaywall = false
 
     // Local edit buffers so declining leaves the stored defaults untouched.
-    @State private var age: Double = 35
+    @State private var age: Int = 35
     @State private var referenceSex: ReferenceSex = .unspecified
     @State private var targetLower: Double = 35
     @State private var targetUpper: Double = 45
@@ -43,9 +43,10 @@ struct OnboardingView: View {
 
             bottomBar
         }
-        .background(Theme.background)
+        .background(Theme.onboardingBackground)
+        .foregroundStyle(Theme.onboardingPrimaryText)
         .task {
-            age = settings.chronologicalAge > 0 ? Double(settings.chronologicalAge) : 35
+            age = settings.chronologicalAge > 0 ? settings.chronologicalAge : 35
             referenceSex = settings.referenceSex
             targetLower = settings.targetLower
             targetUpper = settings.targetUpper
@@ -75,7 +76,7 @@ struct OnboardingView: View {
                     if let disclosure = trialDisclosure {
                         Text(disclosure)
                             .font(.caption2)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.onboardingSecondaryText)
                             .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -116,7 +117,7 @@ struct OnboardingView: View {
         // Persist any edits the user made but didn't explicitly commit via
         // Continue — e.g. adjusting age/target then swiping the pager forward
         // and tapping Get Started. Declined pages just rewrite the defaults.
-        settings.chronologicalAge = Int(age)
+        settings.chronologicalAge = age
         settings.referenceSex = referenceSex
         settings.targetLower = targetLower
         settings.targetUpper = targetUpper
@@ -127,7 +128,7 @@ struct OnboardingView: View {
         Button(action: action) {
             Text(title)
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(Theme.cardio)
+                .foregroundStyle(Theme.onboardingMuted)
                 .frame(maxWidth: .infinity)
                 .frame(height: 30)
         }
@@ -157,7 +158,7 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
             Text("See your latest Apple Health VO2 max estimate, understand where your trend is heading, and keep it on your Home Screen and Apple Watch.")
                 .font(.body)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.onboardingSecondaryText)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
             VStack(spacing: 10) {
@@ -176,19 +177,19 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text("Optional. Used only to estimate your fitness age and typical-range context. You can skip this and set it later.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.onboardingSecondaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text("Age").font(.headline)
                     Spacer()
-                    Text("\(Int(age))").font(Theme.numberFont(24)).foregroundStyle(Theme.cardio)
+                    Text("\(age)").font(Theme.numberFont(24)).foregroundStyle(Theme.cardio)
                 }
-                Slider(value: $age, in: 18...90, step: 1).tint(Theme.cardio)
+                AgeWheelPicker(age: $age)
             }
             .padding(16)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Reference").font(.headline)
@@ -200,7 +201,7 @@ struct OnboardingView: View {
                 .pickerStyle(.segmented)
             }
             .padding(16)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -211,7 +212,7 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text("A personal fitness target, not a medical threshold. It drives the Today ring and Trends band. Keep the default if you're not sure.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.onboardingSecondaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(spacing: 16) {
@@ -220,12 +221,24 @@ struct OnboardingView: View {
                     Spacer()
                     Text("\(Int(targetLower))–\(Int(targetUpper))")
                         .font(Theme.numberFont(26)).foregroundStyle(Theme.cardio)
-                    Text("mL/kg/min").font(.caption).foregroundStyle(Theme.secondaryText)
+                    Text("mL/kg/min").font(.caption).foregroundStyle(Theme.onboardingSecondaryText)
                 }
-                RangeSlider(lowerValue: $targetLower, upperValue: $targetUpper, bounds: 20...70)
+                let typical = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: referenceSex)
+                Text("Typical range for your age")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.onboardingSecondaryText)
+                Text("\(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+                    .font(.caption)
+                    .foregroundStyle(Theme.onboardingSecondaryText)
+                RangeSlider(
+                    lowerValue: $targetLower,
+                    upperValue: $targetUpper,
+                    bounds: 20...70,
+                    referenceRange: typical
+                )
             }
             .padding(18)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -238,7 +251,7 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
             Text("VO2 Max reads your cardio fitness estimates from Apple Health, read-only. Nothing is written back, and your data never leaves your devices.")
                 .font(.body)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.onboardingSecondaryText)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
             VStack(spacing: 10) {
@@ -253,7 +266,7 @@ struct OnboardingView: View {
             }
             Text("Fitness estimates are not medical measurements. This app does not diagnose or treat health conditions.")
                 .font(.caption2)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.onboardingSecondaryText)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 4)
@@ -269,7 +282,7 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
             Text("You're set up. Try everything VO2+ adds free — your dashboard stays free either way.")
                 .font(.body)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.onboardingSecondaryText)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
             VStack(spacing: 10) {
@@ -285,11 +298,11 @@ struct OnboardingView: View {
     // MARK: - Building blocks
 
     private var iconGlyph: some View {
-        Image(systemName: "chart.line.uptrend.xyaxis")
-            .font(.system(size: 40, weight: .semibold))
-            .foregroundStyle(.white)
+        Image("OnboardingMark")
+            .resizable()
+            .scaledToFit()
             .frame(width: 84, height: 84)
-            .background(Theme.cardioGradient, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
             .frame(maxWidth: .infinity)
     }
 
@@ -314,13 +327,13 @@ struct OnboardingView: View {
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.headline)
-                Text(detail).font(.subheadline).foregroundStyle(Theme.secondaryText)
+                Text(detail).font(.subheadline).foregroundStyle(Theme.onboardingSecondaryText)
             }
             Spacer(minLength: 0)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private func benefitCard(_ symbol: String, _ title: String, _ detail: String) -> some View {
@@ -331,13 +344,13 @@ struct OnboardingView: View {
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.bold())
-                Text(detail).font(.caption).foregroundStyle(Theme.secondaryText)
+                Text(detail).font(.caption).foregroundStyle(Theme.onboardingSecondaryText)
             }
             Spacer(minLength: 0)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     // MARK: - Trial copy
