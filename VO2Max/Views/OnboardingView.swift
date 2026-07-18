@@ -327,7 +327,10 @@ struct OnboardingView: View {
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.headline)
-                Text(detail).font(.subheadline).foregroundStyle(Theme.onboardingSecondaryText)
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.onboardingSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }
@@ -344,7 +347,10 @@ struct OnboardingView: View {
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.bold())
-                Text(detail).font(.caption).foregroundStyle(Theme.onboardingSecondaryText)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(Theme.onboardingSecondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }
