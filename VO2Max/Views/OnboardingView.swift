@@ -1,54 +1,70 @@
 import SwiftUI
 @preconcurrency import RevenueCat
 
-/// The first-run flow, presented as the root view (not a sheet) so pages simply
-/// *exist* rather than swiping up from the bottom. The user learns what the app
-/// does, sets an optional reference profile and target, connects Apple Health,
-/// and lands on a trial page that reads as the final onboarding step.
-///
-/// The primary CTA sits in a byte-identical frame on every page via
-/// `OnboardingBottomBar` (see the thumb-zone contract), so the trial CTA lands
-/// exactly where "Continue" was — no thumb travel, no context switch.
+/// Static legal URLs shared by onboarding, Settings, and the paywall.
+enum VO2Links {
+    static let privacyPolicy = URL(string: "https://jackwallner.github.io/vo2max/privacy-policy.html")!
+    static let standardEULA = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
+}
+
+/// First-run flow. Direct port of the Vitals onboarding structure: adaptive
+/// system colors (no fixed painted background, so text/pickers render correctly
+/// in light and dark), a welcome page that requests Health access on Continue,
+/// a setup page, and a trial page whose primary CTA sits in the exact frame the
+/// Continue button occupied (zero-shift, fixed-height legal footer slot).
 struct OnboardingView: View {
+    private enum Step {
+        case welcome
+        case setup
+        case trial
+    }
+
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
     @StateObject private var health = HealthKitService.shared
 
-    @State private var page = 0
-    @State private var isConnecting = false
-    @State private var isPurchasing = false
+    @State private var step: Step = .welcome
+    @State private var hasRequestedHealthAccess = false
+    @State private var isStartingTrial = false
     @State private var isRestoring = false
-    @State private var errorMessage: String?
-    @State private var showFallbackPaywall = false
+    @State private var trialError: String?
+    /// Fallback: presented only when the yearly package failed to load, so the
+    /// primary CTA is never a dead button.
+    @State private var showPaywallFallback = false
 
-    // Local edit buffers so declining leaves the stored defaults untouched.
+    // Local edit buffers so a skipped setup leaves stored defaults untouched.
     @State private var age: Int = 35
     @State private var referenceSex: ReferenceSex = .unspecified
     @State private var targetLower: Double = 35
     @State private var targetUpper: Double = 45
 
-    private let trialPage = 4
-
     var body: some View {
         VStack(spacing: 0) {
-            TabView(selection: $page) {
-                welcomePage.tag(0)
-                profilePage.tag(1)
-                targetPage.tag(2)
-                healthPage.tag(3)
-                trialPage_.tag(4)
+            if step == .trial {
+                // Trial must NOT live in a ScrollView: Spacers need a bounded
+                // height to center the pitch above the zero-shift CTA bar.
+                trialPage
+                    .padding(.horizontal, 24)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    Group {
+                        switch step {
+                        case .welcome: welcomePage
+                        case .setup: setupPage
+                        case .trial: EmptyView()
+                        }
+                    }
+                    .padding(.top, 48)
+                    .padding(.bottom, 24)
+                    .padding(.horizontal, 24)
+                }
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.easeInOut, value: page)
 
             bottomBar
         }
-        .background(Theme.onboardingBackground)
-        .foregroundStyle(Theme.onboardingPrimaryText)
-        // Onboarding owns a fixed visual theme. Input controls use explicit light
-        // surfaces and dark text, so they never inherit a dark-mode system-gray
-        // treatment before the user has chosen an app appearance.
-        .environment(\.colorScheme, .light)
+        .background(Theme.background.ignoresSafeArea())
         .task {
             age = settings.chronologicalAge > 0 ? settings.chronologicalAge : 35
             referenceSex = settings.referenceSex
@@ -59,75 +75,19 @@ struct OnboardingView: View {
             let args = ProcessInfo.processInfo.arguments
             if let idx = args.firstIndex(of: "-OnboardingPage"), idx + 1 < args.count,
                let p = Int(args[idx + 1]) {
-                page = min(max(p, 0), trialPage)
+                step = [Step.welcome, .setup, .trial][min(max(p, 0), 2)]
             }
             #endif
         }
-        .onChange(of: store.isPro) { _, isPro in if isPro { finish() } }
-        .sheet(isPresented: $showFallbackPaywall) { PaywallView() }
-    }
-
-    // MARK: - Bottom bar (zero-shift primary CTA)
-
-    private var bottomBar: some View {
-        OnboardingBottomBar(
-            primaryTitle: primaryTitle,
-            isBusy: (page == 3 && isConnecting) || (page == trialPage && isPurchasing),
-            isDisabled: isConnecting || isPurchasing || isRestoring,
-            primaryAction: primaryAction,
-            footer: page == trialPage
-                ? OnboardingLegalFooter(isRestoring: isRestoring, onRestore: startRestore)
-                : OnboardingLegalFooter(isPlaceholder: true)
-        ) {
-            VStack(spacing: 10) {
-                if page == 3 {
-                    softExit("Skip for now") { advance() }
-                } else if page == trialPage {
-                    softExit("Get Started") { finish() }
-                    if let disclosure = trialDisclosure {
-                        Text(disclosure)
-                            .font(.caption2)
-                            .foregroundStyle(Theme.onboardingSecondaryText)
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                } else {
-                    pageDots
-                }
-                if let errorMessage {
-                    Text(errorMessage)
-                        .font(.caption2)
-                        .foregroundStyle(Theme.negative)
-                        .multilineTextAlignment(.center)
-                }
-            }
+        // A direct purchase (or restore) that flips Pro on finishes onboarding.
+        .onChange(of: store.isPro) { _, isPro in
+            if isPro { finishOnboarding() }
         }
+        .sheet(isPresented: $showPaywallFallback) { PaywallView() }
     }
 
-    private var primaryTitle: String {
-        switch page {
-        case 3: return health.isAuthorized ? "Continue" : "Connect Apple Health"
-        case trialPage: return trialCTATitle
-        default: return "Continue"
-        }
-    }
-
-    private func primaryAction() {
-        switch page {
-        case 1: settings.chronologicalAge = Int(age); settings.referenceSex = referenceSex; advance()
-        case 2: settings.targetLower = targetLower; settings.targetUpper = targetUpper; advance()
-        case 3: connectHealth()
-        case trialPage: startTrial()
-        default: advance()
-        }
-    }
-
-    private func advance() { withAnimation { page = min(page + 1, trialPage) } }
-
-    private func finish() {
-        // Persist any edits the user made but didn't explicitly commit via
-        // Continue — e.g. adjusting age/target then swiping the pager forward
-        // and tapping Get Started. Declined pages just rewrite the defaults.
+    /// Persists edits and hands the app to the main tab view.
+    private func finishOnboarding() {
         settings.chronologicalAge = age
         settings.referenceSex = referenceSex
         settings.targetLower = targetLower
@@ -135,281 +95,332 @@ struct OnboardingView: View {
         settings.hasCompletedSetup = true
     }
 
-    private func softExit(_ title: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(Theme.onboardingMuted)
-                .frame(maxWidth: .infinity)
-                .frame(height: 30)
+    /// Fire the HealthKit prompt once, when the user leaves the welcome screen —
+    /// never on appear, so the first thing they see is our heads-up rather than
+    /// the system permission sheet.
+    private func requestHealthAccessIfNeeded() async {
+        guard !hasRequestedHealthAccess else { return }
+        hasRequestedHealthAccess = true
+        do {
+            try await health.requestAuthorization()
+            // Warm the cache while the user finishes setup so the dashboard can
+            // paint the instant onboarding completes.
+            Task { await health.refreshCache() }
+        } catch {
+            // Non-fatal: the dashboard's empty state offers a retry.
         }
-        .buttonStyle(.plain)
-        .disabled(isPurchasing || isConnecting)
-    }
-
-    private var pageDots: some View {
-        HStack(spacing: 8) {
-            ForEach(0...trialPage, id: \.self) { i in
-                Circle()
-                    .fill(i == page ? Theme.cardio : Theme.secondaryText.opacity(0.3))
-                    .frame(width: 7, height: 7)
-            }
-        }
-        .frame(height: 30)
     }
 
     // MARK: - Pages
 
     private var welcomePage: some View {
-        pageScaffold {
-            iconGlyph
-            Text("Your cardio fitness, at a glance")
-                .font(.largeTitle.bold())
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-            Text("See your latest Apple Health VO2 max estimate, understand where your trend is heading, and keep it on your Home Screen and Apple Watch.")
-                .font(.body)
-                .foregroundStyle(Theme.onboardingSecondaryText)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-            VStack(spacing: 10) {
-                featureCard("waveform.path.ecg", "Focused", "One calm dashboard, not a training platform")
-                featureCard("lock.shield", "Private", "Your fitness data stays on your devices")
-                featureCard("applewatch", "Glanceable", "Widgets and real Watch complications")
+        VStack(spacing: 28) {
+            VStack(spacing: 12) {
+                Image("OnboardingMark")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 76, height: 76)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                Text("Welcome to VO2 Max")
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .multilineTextAlignment(.center)
+                Text("See your cardio fitness from Apple Health in one simple view.")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.top, 4)
-        }
-    }
-
-    private var profilePage: some View {
-        pageScaffold {
-            Text("A little about you")
-                .font(.title.bold())
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text("Optional. Used only to estimate your fitness age and typical-range context. You can skip this and set it later.")
-                .font(.subheadline)
-                .foregroundStyle(Theme.onboardingSecondaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("Age").font(.headline)
-                    Spacer()
-                    Text("\(age)").font(Theme.numberFont(24)).foregroundStyle(Theme.cardioBlue)
-                }
-                AgeWheelPicker(age: $age, textColor: Theme.onboardingInputText)
-            }
-            .foregroundStyle(Theme.onboardingInputText)
-            .padding(16)
-            .background(Theme.onboardingInputCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Reference").font(.headline)
-                referenceControl
-            }
-            .foregroundStyle(Theme.onboardingInputText)
-            .padding(16)
-            .background(Theme.onboardingInputCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-        }
-    }
-
-    private var targetPage: some View {
-        pageScaffold {
-            Text("Set a target range")
-                .font(.title.bold())
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text("A personal fitness target, not a medical threshold. It drives the Today ring and Trends band. Keep the default if you're not sure.")
-                .font(.subheadline)
-                .foregroundStyle(Theme.onboardingSecondaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(spacing: 16) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Target").font(.headline)
-                    Spacer()
-                    Text("\(Int(targetLower))–\(Int(targetUpper))")
-                        .font(Theme.numberFont(26)).foregroundStyle(Theme.cardioBlue)
-                    Text("mL/kg/min")
-                        .font(.caption)
-                        .foregroundStyle(Theme.onboardingInputSecondaryText)
+                WelcomePoint(
+                    icon: "heart.fill",
+                    color: Theme.cardio,
+                    title: "Reads from Apple Health",
+                    detail: "Next we'll ask permission to read your VO2 max estimates. The app only reads; it never writes anything back."
+                )
+                WelcomePoint(
+                    icon: "lock.fill",
+                    color: Theme.cardioBlue,
+                    title: "Stays on your device",
+                    detail: "Your health data never leaves your devices. No account, no cloud sync."
+                )
+                WelcomePoint(
+                    icon: "applewatch",
+                    color: Theme.positive,
+                    title: "Glanceable",
+                    detail: "Widgets and real Apple Watch complications keep your latest estimate in view."
+                )
+            }
+        }
+    }
+
+    private var setupPage: some View {
+        VStack(spacing: 28) {
+            VStack(spacing: 8) {
+                Image(systemName: "target")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Theme.cardio)
+                Text("Make it yours")
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .multilineTextAlignment(.center)
+                Text("Optional. Your profile powers the fitness age estimate; the target range drives the Today ring. You can change both later in Settings.")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            VStack(spacing: 16) {
+                profileCard
+                targetCard
+            }
+        }
+    }
+
+    private var profileCard: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Image(systemName: "person.crop.circle")
+                    .foregroundStyle(Theme.cardio)
+                Text("About you")
+                    .font(.system(.headline, design: .rounded))
+                Spacer()
+                Text("\(age)")
+                    .font(Theme.bigNumber(22))
+                    .foregroundStyle(Theme.cardio)
+            }
+            AgeWheelPicker(age: $age)
+            Picker("Reference", selection: $referenceSex) {
+                Text("Female").tag(ReferenceSex.female)
+                Text("Male").tag(ReferenceSex.male)
+                Text("Not set").tag(ReferenceSex.unspecified)
+            }
+            .pickerStyle(.segmented)
+        }
+        .padding(16)
+        .background(Theme.cardSurface.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var targetCard: some View {
+        let typical = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: referenceSex)
+        return VStack(spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Image(systemName: "scope")
+                    .foregroundStyle(Theme.cardio)
+                Text("Target range")
+                    .font(.system(.headline, design: .rounded))
+                Spacer()
+                Text("\(Int(targetLower))–\(Int(targetUpper))")
+                    .font(Theme.bigNumber(22))
+                    .foregroundStyle(Theme.cardio)
+            }
+            Text("Typical for your profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+                .font(.system(.caption, design: .rounded))
+                .foregroundStyle(Theme.textSecondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            RangeSlider(
+                lowerValue: $targetLower,
+                upperValue: $targetUpper,
+                bounds: 20...70,
+                referenceRange: typical
+            )
+        }
+        .padding(16)
+        .background(Theme.cardSurface.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    /// Final step: compact pitch centered above the zero-shift CTA bar.
+    private var trialPage: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 8)
+
+            VStack(spacing: 18) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 44))
+                    .foregroundStyle(Theme.cardioGradient)
+
+                VStack(spacing: 6) {
+                    Text("Go further with VO2+")
+                        .font(.system(.title, design: .rounded, weight: .bold))
+                        .multilineTextAlignment(.center)
+                    Text("Extras that sit on top of your Apple Health estimates.")
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                let typical = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: referenceSex)
-                Text("Typical range for your age: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
-                    .font(.caption)
-                    .foregroundStyle(Theme.onboardingInputSecondaryText)
-                RangeSlider(
-                    lowerValue: $targetLower,
-                    upperValue: $targetUpper,
-                    bounds: 20...70,
-                    tint: Theme.cardioBlue,
-                    handleColor: .white,
-                    referenceRange: typical
-                )
+
+                VStack(alignment: .leading, spacing: 12) {
+                    TrialSellingPoint(
+                        icon: "chart.bar.xaxis",
+                        color: Theme.cardio,
+                        title: "Deep Trends",
+                        detail: "Compare 30, 90, and 180-day windows"
+                    )
+                    TrialSellingPoint(
+                        icon: "scope",
+                        color: Theme.cardioBlue,
+                        title: "Target outlook",
+                        detail: "Direction and broad timeframe to your target"
+                    )
+                    TrialSellingPoint(
+                        icon: "person.2.crop.square.stack",
+                        color: Theme.positive,
+                        title: "Age-reference context",
+                        detail: "Broad typical-range context for your profile"
+                    )
+                    TrialSellingPoint(
+                        icon: "trophy",
+                        color: Theme.coral,
+                        title: "Personal bests",
+                        detail: "Keep your strongest estimate visible"
+                    )
+                }
             }
-            .foregroundStyle(Theme.onboardingInputText)
-            .padding(18)
-            .background(Theme.onboardingInputCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+
+            Spacer(minLength: 8)
         }
     }
 
-    private var healthPage: some View {
-        pageScaffold {
-            iconGlyph
-            Text("Connect Apple Health")
-                .font(.title.bold())
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-            Text("VO2 Max reads your cardio fitness estimates from Apple Health, read-only. Nothing is written back, and your data never leaves your devices.")
-                .font(.body)
-                .foregroundStyle(Theme.onboardingSecondaryText)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-            VStack(spacing: 10) {
-                featureCard("heart.fill", "Read-only", "We only read your VO2 max estimates")
-                featureCard("bolt.horizontal", "Automatic", "New readings sync in on their own")
+    // MARK: - Bottom bar (zero-shift primary CTA, ported from Vitals)
+
+    private var bottomBar: some View {
+        VStack(spacing: 12) {
+            aboveButtonContent
+
+            primaryButton
+
+            // Fixed legal-footer slot. Identical view on every page so its
+            // height never changes; only visible on the trial page.
+            legalFooter
+                .opacity(step == .trial ? 1 : 0)
+                .allowsHitTesting(step == .trial)
+                .accessibilityHidden(step != .trial)
+        }
+        .padding(.top, 12)
+        .padding(.bottom, 24)
+        .background(Theme.background)
+    }
+
+    @ViewBuilder
+    private var aboveButtonContent: some View {
+        switch step {
+        case .welcome: welcomeTrustLine
+        case .setup: EmptyView()
+        case .trial: trialSoftExitAndDisclosure
+        }
+    }
+
+    @ViewBuilder
+    private var primaryButton: some View {
+        switch step {
+        case .welcome:
+            Button {
+                Task { await requestHealthAccessIfNeeded() }
+                withAnimation(.easeInOut(duration: 0.25)) { step = .setup }
+            } label: {
+                primaryLabel("Continue")
             }
-            .padding(.top, 4)
-            if health.isAuthorized {
-                Label("Apple Health connected", systemImage: "checkmark.circle.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.positive)
+            .padding(.horizontal, 24)
+        case .setup:
+            Button {
+                settings.chronologicalAge = age
+                settings.referenceSex = referenceSex
+                settings.targetLower = targetLower
+                settings.targetUpper = targetUpper
+                withAnimation(.easeInOut(duration: 0.25)) { step = .trial }
+            } label: {
+                primaryLabel("Continue")
             }
-            Text("Fitness estimates are not medical measurements. This app does not diagnose or treat health conditions.")
-                .font(.caption2)
-                .foregroundStyle(Theme.onboardingSecondaryText)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 4)
-        }
-    }
-
-    private var trialPage_: some View {
-        pageScaffold {
-            iconGlyph
-            Text(trialHeadline)
-                .font(.largeTitle.bold())
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-            Text("Compare periods, understand your direction toward target, see broad age-reference context, and recognize personal bests. Your latest estimate and basic trend stay free.")
-                .font(.body)
-                .foregroundStyle(Theme.onboardingSecondaryText)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-            VStack(spacing: 10) {
-                benefitCard("chart.bar.xaxis", "Compare periods", "See each window beside the matching one before it")
-                benefitCard("scope", "Understand direction", "Put your recent cardio fitness trend in target context")
-                benefitCard("person.2.crop.square.stack", "Add broad context", "See typical-range context for your age and reference")
-                benefitCard("trophy", "Recognize progress", "Keep your personal best visible as readings build")
+            .padding(.horizontal, 24)
+        case .trial:
+            Button {
+                startTrial()
+            } label: {
+                ZStack {
+                    primaryLabel(trialCTATitle)
+                        .opacity(isStartingTrial ? 0 : 1)
+                    if isStartingTrial {
+                        ProgressView().tint(.white)
+                    }
+                }
             }
-            .padding(.top, 4)
+            .disabled(isStartingTrial)
+            .padding(.horizontal, 24)
         }
     }
 
-    // MARK: - Building blocks
-
-    /// Custom segmented control themed to the fixed onboarding input palette.
-    /// Drawing it ourselves prevents system appearance from turning the control
-    /// gray or reducing contrast before the user selects an app theme.
-    private var referenceControl: some View {
-        HStack(spacing: 4) {
-            referenceSegment("Female", .female)
-            referenceSegment("Male", .male)
-            referenceSegment("Not set", .unspecified)
-        }
-        .padding(4)
-        .background(Theme.onboardingInputTrack, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-    }
-
-    private func referenceSegment(_ title: String, _ value: ReferenceSex) -> some View {
-        let isSelected = referenceSex == value
-        return Button {
-            withAnimation(.easeInOut(duration: 0.15)) { referenceSex = value }
-        } label: {
-            Text(title)
-                .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                .lineLimit(1)
-                .minimumScaleFactor(0.55)
-                .foregroundStyle(isSelected ? Color.white : Theme.onboardingInputText)
-                .frame(maxWidth: .infinity)
-                .frame(height: 36)
-                .background(
-                    isSelected ? Theme.cardioBlue : Color.clear,
-                    in: RoundedRectangle(cornerRadius: 9, style: .continuous)
-                )
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(title)
-        .accessibilityValue(isSelected ? "Selected" : "Not selected")
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-
-    private var iconGlyph: some View {
-        Image("OnboardingMark")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 84, height: 84)
-            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+    private func primaryLabel(_ title: String) -> some View {
+        Text(title)
+            .font(.system(.headline, design: .rounded))
             .frame(maxWidth: .infinity)
+            .padding(.vertical, 14)
+            .background(Theme.cardio, in: RoundedRectangle(cornerRadius: 14))
+            .foregroundStyle(.white)
     }
 
-    private func pageScaffold<Content: View>(@ViewBuilder _ content: @escaping () -> Content) -> some View {
-        GeometryReader { geo in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    content()
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 20)
-                .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: .center)
-            }
-        }
-    }
-
-    private func featureCard(_ symbol: String, _ title: String, _ detail: String) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: symbol)
-                .font(.title3)
+    private var welcomeTrustLine: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Theme.cardio)
-                .frame(width: 32)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.headline)
-                Text(detail)
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.onboardingSecondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
+            Text("Read-only. Stays on your device. No account.")
+                .font(.system(.caption2, design: .rounded))
+                .foregroundStyle(Theme.textTertiary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .padding(.horizontal, 24)
+        .accessibilityElement(children: .combine)
     }
 
-    private func benefitCard(_ symbol: String, _ title: String, _ detail: String) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: symbol)
-                .font(.title3)
-                .foregroundStyle(Theme.cardio)
-                .frame(width: 32)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.subheadline.bold())
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(Theme.onboardingSecondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
+    /// Trial-page content ABOVE the primary button: the de-emphasized free
+    /// exit, then disclosure or error — none of it can shift the CTA.
+    private var trialSoftExitAndDisclosure: some View {
+        VStack(spacing: 12) {
+            Button {
+                finishOnboarding()
+            } label: {
+                Text("Get Started")
+                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                    .foregroundStyle(Theme.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
             }
-            Spacer(minLength: 0)
+            .buttonStyle(.plain)
+            .padding(.horizontal, 24)
+
+            // Render no disclosure until the package loads — never a phantom
+            // price. Error replaces disclosure in the same slot.
+            if let trialError {
+                Text(trialError)
+                    .font(.system(.caption2, design: .rounded))
+                    .foregroundStyle(Theme.negative)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+            } else if let disclosure = trialDisclosure {
+                Text(disclosure)
+                    .font(.system(.caption2, design: .rounded))
+                    .foregroundStyle(Theme.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 24)
+            }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private var legalFooter: some View {
+        HStack(spacing: 14) {
+            Button(isRestoring ? "Restoring…" : "Restore") { startRestore() }
+                .buttonStyle(.plain)
+                .disabled(isRestoring)
+            Link("Terms", destination: VO2Links.standardEULA)
+            Link("Privacy", destination: VO2Links.privacyPolicy)
+        }
+        .font(.system(.caption2, design: .rounded, weight: .semibold))
+        .foregroundStyle(Theme.textTertiary)
     }
 
     // MARK: - Trial copy
-
-    private var trialHeadline: String {
-        (store.yearlyPackage.flatMap { store.eligibleIntroLabel(for: $0) } != nil) ? "Try VO2+ free" : "Unlock VO2+"
-    }
 
     private var trialCTATitle: String {
         if let yearly = store.yearlyPackage, let label = store.eligibleIntroLabel(for: yearly) {
@@ -429,40 +440,88 @@ struct OnboardingView: View {
 
     // MARK: - Actions
 
-    private func connectHealth() {
-        isConnecting = true
-        errorMessage = nil
-        Task {
-            do { try await health.requestAuthorization() }
-            catch { errorMessage = "Apple Health access could not be completed." }
-            isConnecting = false
-            advance()
-        }
-    }
-
     private func startTrial() {
         guard let yearly = store.yearlyPackage else {
-            showFallbackPaywall = true
+            showPaywallFallback = true
             return
         }
-        errorMessage = nil
-        isPurchasing = true
+        trialError = nil
+        isStartingTrial = true
         Task {
             _ = await store.purchase(yearly)
-            isPurchasing = false
-            if let message = store.errorMessage { errorMessage = message }
-            // Success routes through onChange(store.isPro) -> finish().
+            isStartingTrial = false
+            if let message = store.errorMessage { trialError = message }
+            // Success routes through onChange(store.isPro) -> finishOnboarding().
         }
     }
 
     private func startRestore() {
         isRestoring = true
-        errorMessage = nil
+        trialError = nil
         Task {
             await store.restore()
             isRestoring = false
-            if store.isPro { finish() }
-            else { errorMessage = store.errorMessage ?? "No active VO2+ purchase was found." }
+            if store.isPro { finishOnboarding() }
+            else { trialError = store.errorMessage ?? "No active VO2+ purchase was found." }
         }
+    }
+}
+
+private struct WelcomePoint: View {
+    let icon: String
+    let color: Color
+    let title: String
+    let detail: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: icon)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Theme.textPrimary)
+                Text(detail)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.cardSurface.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Compact selling point for the onboarding trial step (Vitals pattern).
+private struct TrialSellingPoint: View {
+    let icon: String
+    let color: Color
+    let title: String
+    let detail: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 36, height: 36)
+                .background(color.opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(Theme.textPrimary)
+                Text(detail)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .combine)
     }
 }

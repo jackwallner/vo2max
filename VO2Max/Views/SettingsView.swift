@@ -28,15 +28,16 @@ struct SettingsView: View {
 
     private var healthSection: some View {
         Section {
-            LabeledContent {
-                Label(
-                    health.isAuthorized ? "Connected" : "Needs access",
-                    systemImage: health.isAuthorized ? "checkmark.circle.fill" : "exclamationmark.circle.fill"
-                )
-                .foregroundStyle(health.isAuthorized ? Theme.positive : Theme.coral)
-            } label: {
+            HStack {
                 Text("Apple Health status")
+                Spacer()
+                HStack(spacing: 5) {
+                    Image(systemName: health.isAuthorized ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                    Text(health.isAuthorized ? "Connected" : "Needs access")
+                }
+                .foregroundStyle(health.isAuthorized ? Theme.positive : Theme.coral)
             }
+            .accessibilityElement(children: .combine)
 
             Button {
                 Task {
@@ -85,7 +86,7 @@ struct SettingsView: View {
                         .foregroundStyle(Theme.cardio)
                     Text("mL/kg/min")
                         .font(.caption)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                 }
 
                 let typical = CardioFitnessAnalysis.typicalRange(
@@ -94,7 +95,7 @@ struct SettingsView: View {
                 )
                 Text("Broad typical range for your current profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
                     .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 RangeSlider(
@@ -114,18 +115,16 @@ struct SettingsView: View {
 
     private var profileSection: some View {
         Section {
-            VStack(spacing: 10) {
-                HStack {
-                    Text("Age")
-                        .font(.subheadline.weight(.medium))
-                    Spacer()
-                    Text("\(settings.chronologicalAge)")
-                        .font(.headline.monospacedDigit())
-                        .foregroundStyle(Theme.cardio)
+            // A menu picker instead of an inline wheel: a 132pt wheel in the
+            // middle of a Form swallows vertical drags, so scrolling Settings
+            // kept spinning the age instead.
+            Picker("Age", selection: $settings.chronologicalAge) {
+                ForEach(18...90, id: \.self) { value in
+                    Text("\(value)").tag(value)
                 }
-                AgeWheelPicker(age: $settings.chronologicalAge)
             }
-            .padding(.vertical, 4)
+            .pickerStyle(.menu)
+            .tint(Theme.cardio)
 
             Picker("Reference", selection: $settings.referenceSex) {
                 Text("Female").tag(ReferenceSex.female)
@@ -192,8 +191,8 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section("About") {
             LabeledContent("Version", value: Bundle.main.appVersionLabel)
-            Link("Privacy Policy", destination: OnboardingLegalFooter.privacyURL)
-            Link("Terms of Use", destination: OnboardingLegalFooter.termsURL)
+            Link("Privacy Policy", destination: VO2Links.privacyPolicy)
+            Link("Terms of Use", destination: VO2Links.standardEULA)
             Text("VO2 Max Daily Tracker is for fitness awareness. Apple Health estimates and broad reference context are not medical measurements. This app does not diagnose, treat, cure, or prevent any condition. Discuss health concerns with a qualified clinician.")
                 .font(.caption)
         }
@@ -209,7 +208,7 @@ struct SettingsView: View {
                     .font(.subheadline.weight(.semibold))
                 Text(detail)
                     .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
             }
         }
     }

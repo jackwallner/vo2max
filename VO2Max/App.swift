@@ -31,7 +31,13 @@ struct VO2MaxApp: App {
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard phase == .active else { return }
-                    Task { await HealthKitService.shared.refreshCache() }
+                    Task {
+                        // Refreshing before Health access is granted throws and
+                        // painted a red "Could not refresh" error on every
+                        // foreground of a fresh install.
+                        guard HealthKitService.shared.isAuthorized else { return }
+                        await HealthKitService.shared.refreshCache()
+                    }
                 }
         }
         .modelContainer(DataService.sharedModelContainer)
@@ -118,7 +124,7 @@ private struct MainTabView: View {
         ZStack(alignment: .bottom) {
             tabContent(NavigationStack { DashboardView() }, tab: 0)
             tabContent(NavigationStack { HistoryView() }, tab: 1)
-            tabContent(NavigationStack { PlusTabView() }, tab: 2, reservesTabBarSpace: true)
+            tabContent(NavigationStack { PlusTabView() }, tab: 2)
 
             HStack(spacing: 0) {
                 TabButton(icon: "heart.fill", label: "Today", isSelected: selection == 0) { selection = 0 }
@@ -136,22 +142,16 @@ private struct MainTabView: View {
         .onAppear { selection = initialTab }
     }
 
-    @ViewBuilder
-    private func tabContent(
-        _ content: some View,
-        tab: Int,
-        reservesTabBarSpace: Bool = false
-    ) -> some View {
-        if reservesTabBarSpace {
-            content
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    Color.clear.frame(height: 68)
-                }
-                .tabVisibility(selection == tab)
-        } else {
-            content
-                .tabVisibility(selection == tab)
-        }
+    /// Every tab (and every view pushed inside it) reserves space for the
+    /// floating capsule via the safe area, so scroll content and bottom-pinned
+    /// footers clear the tab bar automatically instead of each screen guessing
+    /// a magic bottom padding.
+    private func tabContent(_ content: some View, tab: Int) -> some View {
+        content
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                Color.clear.frame(height: 76)
+            }
+            .tabVisibility(selection == tab)
     }
 }
 

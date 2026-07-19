@@ -39,7 +39,7 @@ struct WatchTodayView: View {
                     Image(systemName: "heart.fill")
                         .foregroundStyle(Theme.cardio)
                     Text(latest.value, format: .number.precision(.fractionLength(1)))
-                        .font(Theme.numberFont(40))
+                        .font(Theme.bigNumber(40))
                     Text("mL/kg/min")
                         .font(.caption2).foregroundStyle(.secondary)
                     Label(trend.label, systemImage: trend.symbol)

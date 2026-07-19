@@ -35,7 +35,7 @@ struct PlusTabView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
-            .padding(.bottom, 92)
+            .padding(.bottom, 28)
         }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
@@ -55,12 +55,12 @@ struct PlusTabView: View {
                     .font(.title3.bold())
                 Text("Premium context is now integrated across the app.")
                     .font(.subheadline)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
             }
             Spacer()
         }
         .padding(16)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     @ViewBuilder
@@ -74,12 +74,12 @@ struct PlusTabView: View {
                     .font(.headline)
                 Text("As Apple Health records estimates, VO2+ will compare periods, add target context, and keep your personal best visible.")
                     .font(.subheadline)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
             }
             .padding(22)
             .frame(maxWidth: .infinity)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         } else {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Current highlights")
@@ -118,7 +118,7 @@ struct PlusTabView: View {
                 }
             }
             .padding(16)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -158,7 +158,7 @@ struct PlusTabView: View {
     private var accountNote: some View {
         Text("VO2+ is active on this Apple ID. Restore Purchases remains available in Settings if access ever looks incorrect.")
             .font(.caption)
-            .foregroundStyle(Theme.secondaryText)
+            .foregroundStyle(Theme.textSecondary)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 12)
     }
@@ -178,10 +178,10 @@ struct PlusTabView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.primaryText)
+                    .foregroundStyle(Theme.textPrimary)
                 Text(detail)
                     .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
             }
             Spacer()
         }
@@ -197,10 +197,10 @@ struct PlusTabView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.headline)
-                    .foregroundStyle(Theme.primaryText)
+                    .foregroundStyle(Theme.textPrimary)
                 Text(detail)
                     .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .lineLimit(2)
             }
             Spacer()
@@ -209,7 +209,7 @@ struct PlusTabView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(14)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         .contentShape(Rectangle())
     }
 
