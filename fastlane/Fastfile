@@ -50,6 +50,7 @@ platform :ios do
       app_version: version,
       skip_app_version_update: true,
       force: true,
+      ignore_language_directory_validation: true,
       overwrite_screenshots: true,
       skip_binary_upload: true,
       skip_metadata: true,
