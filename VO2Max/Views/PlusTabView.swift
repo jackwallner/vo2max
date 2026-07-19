@@ -1,9 +1,9 @@
 import SwiftData
 import SwiftUI
 
-/// The VO2+ tab. Pro users get a dedicated insights hub (Deep Trends, target
-/// outlook, typical-range context, personal best). Free users get a focused
-/// pitch that opens the paywall — mirrors the Vitals+ "Pro tab" structure.
+/// VO2+ is both the purchase surface for free users and a concise subscriber
+/// hub. Premium results also appear in Today, Trends, and their detail screens,
+/// so this tab explains the toolkit and links back to those useful contexts.
 struct PlusTabView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
@@ -16,16 +16,8 @@ struct PlusTabView: View {
     var body: some View {
         Group {
             if store.isPro {
-                ScrollView {
-                    VStack(spacing: 16) { proContent }
-                        .padding()
-                }
-                .background(Theme.background)
-                .navigationTitle("VO2+")
+                subscriberHub
             } else {
-                // Free users see the actual paywall inline (Total Calories
-                // pattern): real plan cards, live prices, one purchase CTA — not
-                // a separate pitch that punts to a second screen.
                 PaywallView(embedded: true, impressionID: "vo2plus_tab")
                     .navigationTitle("VO2+")
                     .navigationBarTitleDisplayMode(.inline)
@@ -33,19 +25,22 @@ struct PlusTabView: View {
         }
     }
 
-    // MARK: Pro insights hub
-
-    @ViewBuilder
-    private var proContent: some View {
-        activeHeader
-        if points.isEmpty {
-            emptyProNotice
-        } else {
-            deepTrendsCard
-            projectionCard
-            fitnessBandCard
-            personalBestCard
+    private var subscriberHub: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 14) {
+                activeHeader
+                currentHighlights
+                destinationLinks
+                accountNote
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 10)
+            .padding(.bottom, 92)
         }
+        .scrollBounceBehavior(.basedOnSize)
+        .background(Theme.background)
+        .navigationTitle("VO2+")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var activeHeader: some View {
@@ -53,196 +48,181 @@ struct PlusTabView: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.title2)
                 .foregroundStyle(Theme.positive)
+                .frame(width: 44, height: 44)
+                .background(Theme.positive.opacity(0.12), in: Circle())
             VStack(alignment: .leading, spacing: 2) {
-                Text("VO2+ active").font(.headline)
-                Text("Deeper context for your cardio fitness trend.")
+                Text("VO2+ active")
+                    .font(.title3.bold())
+                Text("Premium context is now integrated across the app.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.secondaryText)
             }
             Spacer()
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
-    private var emptyProNotice: some View {
+    @ViewBuilder
+    private var currentHighlights: some View {
+        if points.isEmpty {
+            VStack(spacing: 10) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 34))
+                    .foregroundStyle(Theme.cardio)
+                Text("Insights build with your readings")
+                    .font(.headline)
+                Text("As Apple Health records estimates, VO2+ will compare periods, add target context, and keep your personal best visible.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.secondaryText)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(22)
+            .frame(maxWidth: .infinity)
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        } else {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Current highlights")
+                    .font(.headline)
+                if let best = CardioFitnessAnalysis.personalBest(points: points) {
+                    highlightRow(
+                        icon: "trophy.fill",
+                        color: Theme.coral,
+                        title: "Personal best \(best.value.formatted(.number.precision(.fractionLength(1))))",
+                        detail: best.date.formatted(.dateTime.month(.abbreviated).day().year())
+                    )
+                }
+                if let latest = points.max(by: { $0.date < $1.date }),
+                   let band = CardioFitnessAnalysis.fitnessBand(
+                       value: latest.value,
+                       age: settings.chronologicalAge,
+                       referenceSex: settings.referenceSex
+                   ) {
+                    highlightRow(
+                        icon: "person.2.crop.square.stack",
+                        color: Theme.cardio,
+                        title: band,
+                        detail: "Broad context for age \(settings.chronologicalAge)"
+                    )
+                }
+                if let projection = CardioFitnessAnalysis.projection(
+                    points: points,
+                    targetLower: settings.targetLower
+                ) {
+                    highlightRow(
+                        icon: "scope",
+                        color: Theme.positive,
+                        title: projectionHeadline(projection),
+                        detail: "Based on the recent cardio fitness trend"
+                    )
+                }
+            }
+            .padding(16)
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        }
+    }
+
+    private var destinationLinks: some View {
         VStack(spacing: 10) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 40))
-                .foregroundStyle(Theme.cardio)
-            Text("Insights appear here as you build readings")
-                .font(.headline)
-                .multilineTextAlignment(.center)
-            Text("Once Apple Health records a few VO2 max estimates, your Deep Trends, target outlook, and personal best show up on this tab.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .padding(24)
-        .frame(maxWidth: .infinity)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private var deepTrendsCard: some View {
-        let comparisons = [30, 90, 180].compactMap {
-            CardioFitnessAnalysis.periodComparison(points: points, days: $0)
-        }
-        return Group {
-            if comparisons.isEmpty {
-                EmptyView()
-            } else {
-                VStack(alignment: .leading, spacing: 12) {
-                    Label("Deep Trends", systemImage: "chart.bar.xaxis")
-                        .font(.headline)
-                    ForEach(comparisons, id: \.days) { comparison in
-                        HStack {
-                            Text("Last \(comparison.days) days")
-                                .font(.subheadline)
-                            Spacer()
-                            Text(comparison.currentAverage, format: .number.precision(.fractionLength(1)))
-                                .font(.subheadline.bold().monospacedDigit())
-                            changeLabel(comparison.change)
-                        }
-                    }
-                    Text("Average of readings in each period vs. the period before.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            NavigationLink {
+                HistoryView()
+            } label: {
+                destinationRow(
+                    icon: "chart.bar.xaxis",
+                    title: "Open Deep Trends",
+                    detail: "Compare 30, 90, and 180-day windows in context"
+                )
+            }
+            NavigationLink {
+                TrendDetailView()
+            } label: {
+                destinationRow(
+                    icon: "scope",
+                    title: "Open Target Outlook",
+                    detail: "See direction and a broad timeframe when supported"
+                )
+            }
+            NavigationLink {
+                FitnessAgeDetailView()
+            } label: {
+                destinationRow(
+                    icon: "person.crop.circle",
+                    title: "Open Fitness Context",
+                    detail: "Review fitness age methodology and broad references"
+                )
             }
         }
+        .buttonStyle(.plain)
     }
 
-    private var projectionCard: some View {
-        let projection = CardioFitnessAnalysis.projection(
-            points: points,
-            targetLower: settings.targetLower
-        )
-        return Group {
-            if let projection {
-                VStack(alignment: .leading, spacing: 8) {
-                    Label("Target outlook", systemImage: "scope")
-                        .font(.headline)
-                    Text(projectionText(projection))
-                        .font(.subheadline)
-                    Text("A broad extrapolation of your recent Apple Health estimates, not a prediction or guarantee.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-            } else {
-                EmptyView()
-            }
-        }
+    private var accountNote: some View {
+        Text("VO2+ is active on this Apple ID. Restore Purchases remains available in Settings if access ever looks incorrect.")
+            .font(.caption)
+            .foregroundStyle(Theme.secondaryText)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 12)
     }
 
-    private var fitnessBandCard: some View {
-        Group {
-            if let latest = points.max(by: { $0.date < $1.date }),
-               let band = CardioFitnessAnalysis.fitnessBand(
-                   value: latest.value,
-                   age: settings.chronologicalAge,
-                   referenceSex: settings.referenceSex
-               ) {
-                HStack(spacing: 14) {
-                    Image(systemName: "person.2.crop.square.stack")
-                        .font(.title2)
-                        .foregroundStyle(Theme.cardio)
-                        .frame(width: 46, height: 46)
-                        .background(Theme.cardio.opacity(0.14), in: Circle())
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(band).font(.headline)
-                        Text("vs. broad age \(settings.chronologicalAge) reference values")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-            } else {
-                EmptyView()
-            }
-        }
-    }
-
-    private var personalBestCard: some View {
-        Group {
-            if let best = CardioFitnessAnalysis.personalBest(points: points),
-               let latest = points.max(by: { $0.date < $1.date }) {
-                HStack(spacing: 14) {
-                    Image(systemName: "trophy.fill")
-                        .font(.title2)
-                        .foregroundStyle(Theme.coral)
-                        .frame(width: 46, height: 46)
-                        .background(Theme.coral.opacity(0.14), in: Circle())
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("Personal best \(best.value, format: .number.precision(.fractionLength(1)))")
-                            .font(.headline)
-                        Text(bestDetail(best: best, latest: latest))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-            } else {
-                EmptyView()
-            }
-        }
-    }
-
-    // MARK: Helpers
-
-    private func changeLabel(_ change: Double?) -> some View {
-        Group {
-            if let change {
-                Text(change, format: .number.precision(.fractionLength(1)).sign(strategy: .always()))
-                    .font(.caption.bold().monospacedDigit())
-                    .foregroundStyle(change >= 0 ? Theme.positive : Theme.negative)
-                    .frame(width: 44, alignment: .trailing)
-            } else {
-                Text("—")
+    private func highlightRow(
+        icon: String,
+        color: Color,
+        title: String,
+        detail: String
+    ) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 34, height: 34)
+                .background(color.opacity(0.12), in: Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.primaryText)
+                Text(detail)
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .frame(width: 44, alignment: .trailing)
+                    .foregroundStyle(Theme.secondaryText)
             }
+            Spacer()
         }
     }
 
-    private func projectionText(_ projection: TrendProjection) -> String {
-        guard let latest = points.max(by: { $0.date < $1.date }) else { return "" }
+    private func destinationRow(icon: String, title: String, detail: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(Theme.cardio)
+                .frame(width: 40, height: 40)
+                .background(Theme.cardio.opacity(0.12), in: Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(Theme.primaryText)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(Theme.secondaryText)
+                    .lineLimit(2)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(14)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .contentShape(Rectangle())
+    }
+
+    private func projectionHeadline(_ projection: TrendProjection) -> String {
+        guard let latest = points.max(by: { $0.date < $1.date }) else { return "Target outlook available" }
         if latest.value >= settings.targetLower {
-            return "You're in your target range. Recent trend: \(slopeText(projection.slopePerMonth)) per month."
+            return "Latest estimate is in your target range"
         }
         if let months = projection.monthsToTarget {
-            let unit = months == 1 ? "month" : "months"
-            return "At your recent pace (\(slopeText(projection.slopePerMonth))/month), you could reach your target range in roughly \(months) \(unit)."
+            return "Roughly \(months) \(months == 1 ? "month" : "months") to target at recent pace"
         }
-        if projection.slopePerMonth <= 0.05 {
-            return "Your recent trend is flat or declining, so a time-to-target estimate isn't meaningful yet."
-        }
-        return "Progress toward your target is too gradual to estimate a timeframe."
-    }
-
-    private func slopeText(_ slope: Double) -> String {
-        slope.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always()))
-    }
-
-    private func bestDetail(best: CardioFitnessPoint, latest: CardioFitnessPoint) -> String {
-        let dateText = best.date.formatted(.dateTime.month(.abbreviated).day().year())
-        if abs(latest.value - best.value) < 0.05 {
-            return "Your latest reading is your best yet (\(dateText))."
-        }
-        let gap = (best.value - latest.value).formatted(.number.precision(.fractionLength(1)))
-        return "Set \(dateText) · \(gap) above your latest reading."
+        return projection.slopePerMonth > 0.05
+            ? "Recent direction is positive"
+            : "Recent direction is flat or declining"
     }
 }

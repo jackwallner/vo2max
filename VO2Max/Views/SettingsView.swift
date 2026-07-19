@@ -9,122 +9,12 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section {
-                Button {
-                    Task {
-                        do { try await health.requestAuthorization() } catch { }
-                    }
-                } label: {
-                    Label("Reconnect Apple Health", systemImage: "heart.fill")
-                }
-                Button {
-                    if let url = URL(string: "x-apple-health://") { UIApplication.shared.open(url) }
-                } label: {
-                    Label("Open Health", systemImage: "arrow.up.forward.app")
-                }
-            } header: {
-                Text("Apple Health")
-            } footer: {
-                Text("VO2 max estimates sync automatically from Apple Health. Reconnect if readings stop appearing.")
-            }
-
-            Section {
-                VStack(spacing: 12) {
-                    HStack {
-                        Text("Target").font(.subheadline.weight(.medium))
-                        Spacer()
-                        Text("\(Int(settings.targetLower))–\(Int(settings.targetUpper))")
-                            .font(.headline.monospacedDigit())
-                            .foregroundStyle(Theme.cardio)
-                        Text("mL/kg/min").font(.caption).foregroundStyle(.secondary)
-                    }
-                    let typical = CardioFitnessAnalysis.typicalRange(
-                        age: settings.chronologicalAge,
-                        referenceSex: settings.referenceSex
-                    )
-                    Text("Typical range: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    RangeSlider(
-                        lowerValue: $settings.targetLower,
-                        upperValue: $settings.targetUpper,
-                        bounds: 20...70,
-                        referenceRange: typical
-                    )
-                }
-                .padding(.vertical, 4)
-            } header: {
-                Text("Your target range")
-            } footer: {
-                Text("A personal fitness target, not a medical threshold. Drag the handles to set the band that drives the Today ring and Trends band.")
-            }
-
-            Section {
-                VStack(spacing: 10) {
-                    HStack {
-                        Text("Age").font(.subheadline.weight(.medium))
-                        Spacer()
-                        Text("\(settings.chronologicalAge)")
-                            .font(.headline.monospacedDigit())
-                            .foregroundStyle(Theme.cardio)
-                    }
-                    AgeWheelPicker(age: $settings.chronologicalAge)
-                }
-                .padding(.vertical, 4)
-                Picker("Reference", selection: $settings.referenceSex) {
-                    Text("Female").tag(ReferenceSex.female)
-                    Text("Male").tag(ReferenceSex.male)
-                    Text("Not set").tag(ReferenceSex.unspecified)
-                }
-                .pickerStyle(.segmented)
-            } header: {
-                Text("Profile")
-            } footer: {
-                Text("Used to estimate your fitness age and typical-range context. Motivational context, not a clinical result.")
-            }
-
-            Section {
-                if store.isPro {
-                    Label("VO2+ active", systemImage: "checkmark.seal.fill")
-                        .foregroundStyle(Theme.positive)
-                } else {
-                    Button {
-                        showPaywall = true
-                    } label: {
-                        Label(store.shortConversionCTALabel, systemImage: "sparkles")
-                    }
-                }
-                Button("Restore purchases") { Task { await store.restore() } }
-                #if DEBUG
-                Toggle("Local Pro override", isOn: Binding(
-                    get: { store.isPro },
-                    set: { store.setLocalOverride(isPro: $0) }
-                ))
-                #endif
-            } header: {
-                Text("VO2+")
-            } footer: {
-                if store.isPro {
-                    Text("Thanks for supporting independent development. Your insights live in the VO2+ tab.")
-                } else {
-                    Text("VO2+ adds Deep Trends, target outlook, and personal best in the VO2+ tab.")
-                }
-            }
-
-            Section("Appearance") {
-                Picker("Theme", selection: $settings.appearance) {
-                    ForEach(AppAppearance.allCases, id: \.rawValue) { appearance in
-                        Text(appearance.label).tag(appearance)
-                    }
-                }
-            }
-
-            Section("About") {
-                LabeledContent("Version", value: Bundle.main.appVersionLabel)
-                Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/vo2max/privacy-policy.html")!)
-                Text("VO2 Max Daily Tracker is for fitness awareness. It does not diagnose, treat, cure, or prevent any condition. Discuss health concerns with a qualified clinician.")
-                    .font(.caption)
-            }
+            healthSection
+            targetSection
+            profileSection
+            plusSection
+            appearanceSection
+            aboutSection
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
@@ -134,5 +24,193 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $showPaywall) { PaywallView() }
+    }
+
+    private var healthSection: some View {
+        Section {
+            LabeledContent {
+                Label(
+                    health.isAuthorized ? "Connected" : "Needs access",
+                    systemImage: health.isAuthorized ? "checkmark.circle.fill" : "exclamationmark.circle.fill"
+                )
+                .foregroundStyle(health.isAuthorized ? Theme.positive : Theme.coral)
+            } label: {
+                Text("Apple Health status")
+            }
+
+            Button {
+                Task {
+                    if health.isAuthorized {
+                        await health.refreshCache()
+                    } else {
+                        try? await health.requestAuthorization()
+                    }
+                }
+            } label: {
+                Label(
+                    health.isAuthorized ? "Refresh Apple Health" : "Connect Apple Health",
+                    systemImage: health.isAuthorized ? "arrow.clockwise" : "heart.fill"
+                )
+            }
+
+            Button {
+                if let url = URL(string: "x-apple-health://") {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Label("Open Apple Health", systemImage: "arrow.up.forward.app")
+            }
+
+            if let error = health.lastError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(Theme.negative)
+            }
+        } header: {
+            Text("Apple Health")
+        } footer: {
+            Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. Refresh if a new estimate is not appearing; use Apple Health to manage source data and permissions.")
+        }
+    }
+
+    private var targetSection: some View {
+        Section {
+            VStack(spacing: 12) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Target range")
+                        .font(.subheadline.weight(.medium))
+                    Spacer()
+                    Text("\(Int(settings.targetLower))–\(Int(settings.targetUpper))")
+                        .font(.headline.monospacedDigit())
+                        .foregroundStyle(Theme.cardio)
+                    Text("mL/kg/min")
+                        .font(.caption)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+
+                let typical = CardioFitnessAnalysis.typicalRange(
+                    age: settings.chronologicalAge,
+                    referenceSex: settings.referenceSex
+                )
+                Text("Broad typical range for your current profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+                    .font(.caption)
+                    .foregroundStyle(Theme.secondaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                RangeSlider(
+                    lowerValue: $settings.targetLower,
+                    upperValue: $settings.targetUpper,
+                    bounds: 20...70,
+                    referenceRange: typical
+                )
+            }
+            .padding(.vertical, 4)
+        } header: {
+            Text("Your target")
+        } footer: {
+            Text("A personal fitness target, not a medical threshold. It drives the Today ring and target lines in Trends.")
+        }
+    }
+
+    private var profileSection: some View {
+        Section {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("Age")
+                        .font(.subheadline.weight(.medium))
+                    Spacer()
+                    Text("\(settings.chronologicalAge)")
+                        .font(.headline.monospacedDigit())
+                        .foregroundStyle(Theme.cardio)
+                }
+                AgeWheelPicker(age: $settings.chronologicalAge)
+            }
+            .padding(.vertical, 4)
+
+            Picker("Reference", selection: $settings.referenceSex) {
+                Text("Female").tag(ReferenceSex.female)
+                Text("Male").tag(ReferenceSex.male)
+                Text("Not set").tag(ReferenceSex.unspecified)
+            }
+            .pickerStyle(.segmented)
+        } header: {
+            Text("Reference profile")
+        } footer: {
+            Text("Used for the broad fitness age estimate and VO2+ typical-range context. These are motivational estimates, not clinical results.")
+        }
+    }
+
+    private var plusSection: some View {
+        Section {
+            if store.isPro {
+                Label("VO2+ active", systemImage: "checkmark.seal.fill")
+                    .foregroundStyle(Theme.positive)
+            } else {
+                Button {
+                    showPaywall = true
+                } label: {
+                    Label(store.shortConversionCTALabel, systemImage: "sparkles")
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                plusBenefit("chart.bar.xaxis", "Compare periods", "See matching 30, 90, and 180-day windows.")
+                plusBenefit("scope", "Understand direction", "Add target outlook when recent data supports it.")
+                plusBenefit("person.2.crop.square.stack", "Add context", "See broad age-reference context and personal bests.")
+            }
+            .padding(.vertical, 4)
+
+            Button("Restore Purchases") {
+                Task { await store.restore() }
+            }
+
+            #if DEBUG
+            Toggle("Local Pro override", isOn: Binding(
+                get: { store.isPro },
+                set: { store.setLocalOverride(isPro: $0) }
+            ))
+            #endif
+        } header: {
+            Text("VO2+")
+        } footer: {
+            Text(store.isPro
+                ? "Premium context appears inside Today, Trends, reading details, and the VO2+ hub."
+                : "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free.")
+        }
+    }
+
+    private var appearanceSection: some View {
+        Section("Appearance") {
+            Picker("Theme", selection: $settings.appearance) {
+                ForEach(AppAppearance.allCases, id: \.rawValue) { appearance in
+                    Text(appearance.label).tag(appearance)
+                }
+            }
+        }
+    }
+
+    private var aboutSection: some View {
+        Section("About") {
+            LabeledContent("Version", value: Bundle.main.appVersionLabel)
+            Link("Privacy Policy", destination: OnboardingLegalFooter.privacyURL)
+            Link("Terms of Use", destination: OnboardingLegalFooter.termsURL)
+            Text("VO2 Max Daily Tracker is for fitness awareness. Apple Health estimates and broad reference context are not medical measurements. This app does not diagnose, treat, cure, or prevent any condition. Discuss health concerns with a qualified clinician.")
+                .font(.caption)
+        }
+    }
+
+    private func plusBenefit(_ icon: String, _ title: String, _ detail: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: icon)
+                .foregroundStyle(Theme.cardio)
+                .frame(width: 22)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(Theme.secondaryText)
+            }
+        }
     }
 }

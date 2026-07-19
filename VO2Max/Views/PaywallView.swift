@@ -1,8 +1,9 @@
 import SwiftUI
 @preconcurrency import RevenueCat
 
-/// Single source of truth for what VO2+ sells. Each case can headline a
-/// focused paywall when the user tapped that specific locked feature.
+/// Single source of truth for what VO2+ sells. Focused paywalls lead with the
+/// capability the user just reached for, while the VO2+ tab shows the strongest
+/// overall outcomes in one compact screen.
 enum PlusFeature: CaseIterable {
     case deepTrends
     case targetProjection
@@ -12,11 +13,11 @@ enum PlusFeature: CaseIterable {
 
     var title: String {
         switch self {
-        case .deepTrends: "Deep Trends: every period vs. the one before"
-        case .targetProjection: "Target outlook: broad time-to-range estimate"
-        case .fitnessBand: "Typical-range context for your age and sex"
-        case .personalBest: "Personal best tracking and milestones"
-        case .extendedInsights: "All future VO2+ insights included"
+        case .deepTrends: "Compare every period with the one before"
+        case .targetProjection: "Understand direction toward your target"
+        case .fitnessBand: "Add broad age-reference context"
+        case .personalBest: "Keep personal bests visible"
+        case .extendedInsights: "Get new VO2+ insights as they arrive"
         }
     }
 
@@ -33,10 +34,20 @@ enum PlusFeature: CaseIterable {
     var intentHeadline: String {
         switch self {
         case .deepTrends: "Compare every period"
-        case .targetProjection: "See your target outlook"
-        case .fitnessBand: "Context for your number"
-        case .personalBest: "Track your personal best"
+        case .targetProjection: "Understand your target direction"
+        case .fitnessBand: "Add context to your estimate"
+        case .personalBest: "Recognize your progress"
         case .extendedInsights: "Go further with VO2+"
+        }
+    }
+
+    var intentSubheadline: String {
+        switch self {
+        case .deepTrends: "See matching-window averages and changes across 30, 90, and 180 days."
+        case .targetProjection: "Put the recent cardio fitness trend in target context when the data supports it."
+        case .fitnessBand: "Compare the latest estimate with broad reference values for your age and selected reference."
+        case .personalBest: "Keep the strongest Apple Health estimate and its date easy to find."
+        case .extendedInsights: "Deeper context that appears inside the screens you already use."
         }
     }
 }
@@ -45,13 +56,18 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
-    /// When embedded in the VO2+ tab there's no sheet to dismiss and no Done
-    /// button; the tab swaps to the Pro insights hub on its own when `isPro`
-    /// flips. Standalone (sheet) presentation keeps the Done button + dismiss.
-    var embedded: Bool = false
-    var impressionID: String = "vo2plus_paywall"
+    var embedded = false
+    var impressionID = "vo2plus_paywall"
+
     @State private var selectedPackage: Package?
     @State private var restoreMessage: String?
+
+    private var bullets: [PlusFeature] {
+        if let focus {
+            return [focus] + PlusFeature.allCases.filter { $0 != focus }.prefix(3)
+        }
+        return [.deepTrends, .targetProjection, .fitnessBand, .personalBest]
+    }
 
     var body: some View {
         Group {
@@ -60,7 +76,11 @@ struct PaywallView: View {
             } else {
                 NavigationStack {
                     gated
-                        .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } } }
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button("Done") { dismiss() }
+                            }
+                        }
                 }
             }
         }
@@ -88,61 +108,71 @@ struct PaywallView: View {
     }
 
     private var content: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                header
-                featureList
-                planCards
-                ctaSection
-                footer
+        GeometryReader { geometry in
+            let compact = geometry.size.height < 730
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: compact ? 8 : 10) {
+                    header(compact: compact)
+                    featureList(compact: compact)
+                    planCards(compact: compact)
+                }
+                .padding(.horizontal, 22)
+                .padding(.top, embedded ? 10 : 4)
+                .padding(.bottom, compact ? 136 : 148)
+                .frame(minHeight: geometry.size.height, alignment: .top)
             }
-            .padding(.horizontal, 22)
-            .padding(.vertical, 12)
-        }
-        .scrollBounceBehavior(.basedOnSize)
-    }
-
-    // Compact header: small inline glyph instead of a hero circle, so the
-    // whole paywall (features + plans + CTA) fits on screen without scrolling.
-    private var header: some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 10) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 40, height: 40)
-                    .background(Theme.cardioGradient, in: Circle())
-                Text(focus?.intentHeadline ?? (embedded ? "Go further with VO2+" : "VO2+"))
-                    .font(.title2.bold())
-                    .multilineTextAlignment(.leading)
+            .scrollBounceBehavior(.basedOnSize)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                checkoutFooter(compact: compact)
             }
-            Text("Deeper context for your cardio fitness trend.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
         }
     }
 
-    private var featureList: some View {
-        let bullets: [PlusFeature] = {
-            if let focus {
-                return [focus] + PlusFeature.allCases.filter { $0 != focus }
+    private func header(compact: Bool) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "sparkles")
+                .font(.system(size: compact ? 18 : 20, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: compact ? 40 : 44, height: compact ? 40 : 44)
+                .background(Theme.cardioGradient, in: Circle())
+                .shadow(color: Theme.cardio.opacity(0.25), radius: 8, y: 3)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(focus?.intentHeadline ?? "Go further with VO2+")
+                    .font(.system(compact ? .headline : .title3, design: .rounded, weight: .bold))
+                    .foregroundStyle(Theme.primaryText)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                Text(focus?.intentSubheadline ?? "More useful context inside Today, Trends, and your reading details.")
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(Theme.secondaryText)
+                    .lineLimit(compact ? 2 : 3)
+                    .minimumScaleFactor(0.88)
             }
-            return PlusFeature.allCases
-        }()
-        return VStack(alignment: .leading, spacing: 13) {
+            Spacer(minLength: 0)
+        }
+        .padding(.bottom, 2)
+    }
+
+    private func featureList(compact: Bool) -> some View {
+        VStack(alignment: .leading, spacing: compact ? 5 : 7) {
             ForEach(bullets, id: \.self) { feature in
-                HStack(spacing: 12) {
+                let highlighted = feature == focus
+                HStack(spacing: 10) {
                     Image(systemName: feature.symbol)
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(Theme.cardio)
-                        .frame(width: 26)
+                        .frame(width: 24)
                     Text(feature.title)
-                        .font(feature == focus ? .subheadline.bold() : .subheadline)
+                        .font(.system(.subheadline, design: .rounded, weight: highlighted ? .semibold : .regular))
+                        .foregroundStyle(Theme.primaryText)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
                     Spacer(minLength: 0)
                 }
-                .padding(feature == focus ? 10 : 0)
+                .padding(.horizontal, highlighted ? 9 : 0)
+                .padding(.vertical, highlighted ? 6 : 0)
                 .background(
-                    feature == focus ? Theme.cardio.opacity(0.10) : Color.clear,
+                    highlighted ? Theme.cardio.opacity(0.1) : Color.clear,
                     in: RoundedRectangle(cornerRadius: 10)
                 )
             }
@@ -150,14 +180,15 @@ struct PaywallView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var planCards: some View {
-        VStack(spacing: 10) {
+    private func planCards(compact: Bool) -> some View {
+        VStack(spacing: compact ? 6 : 8) {
             ForEach(store.packages, id: \.identifier) { package in
                 PlanCard(
                     package: package,
                     isSelected: selectedPackage?.identifier == package.identifier,
                     savingsPercent: savingsPercent(for: package),
-                    trialLabel: store.eligibleIntroLabel(for: package)
+                    trialLabel: store.eligibleIntroLabel(for: package),
+                    compact: compact
                 ) {
                     selectedPackage = package
                 }
@@ -165,19 +196,24 @@ struct PaywallView: View {
         }
     }
 
-    private var ctaSection: some View {
-        VStack(spacing: 10) {
+    private func checkoutFooter(compact: Bool) -> some View {
+        VStack(spacing: compact ? 4 : 6) {
             Button {
                 guard let package = selectedPackage else { return }
                 Task { await store.purchase(package) }
             } label: {
-                Text(ctaTitle)
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity)
+                ZStack {
+                    Text(ctaTitle)
+                        .font(.system(.headline, design: .rounded, weight: .bold))
+                        .foregroundStyle(.white)
+                        .opacity(store.isLoading ? 0 : 1)
+                    if store.isLoading { ProgressView().tint(.white) }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: compact ? 46 : 50)
+                .background(Theme.cardioGradient, in: Capsule())
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(Theme.cardio)
+            .buttonStyle(.plain)
             .disabled(store.isLoading || selectedPackage == nil)
 
             Group {
@@ -190,34 +226,37 @@ struct PaywallView: View {
                 }
             }
             .font(.caption2)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Theme.secondaryText)
             .multilineTextAlignment(.center)
-            .frame(minHeight: 44)
-        }
-    }
+            .lineLimit(compact ? 3 : 4)
+            .minimumScaleFactor(0.88)
+            .frame(maxWidth: .infinity, minHeight: compact ? 30 : 38, alignment: .top)
 
-    private var footer: some View {
-        VStack(spacing: 8) {
-            Button("Restore Purchases") {
-                Task {
-                    await store.restore()
-                    if !store.isPro { restoreMessage = store.errorMessage }
+            HStack(spacing: 12) {
+                Button("Restore") {
+                    Task {
+                        await store.restore()
+                        if !store.isPro {
+                            restoreMessage = store.errorMessage ?? "No active VO2+ purchase was found."
+                        }
+                    }
                 }
+                Link("Terms", destination: OnboardingLegalFooter.termsURL)
+                Link("Privacy", destination: OnboardingLegalFooter.privacyURL)
             }
-            .font(.footnote)
-            HStack {
-                Link("Terms", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
-                Text("·")
-                Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/vo2max/privacy-policy.html")!)
-            }
-            .font(.caption2)
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(Theme.secondaryText)
         }
+        .padding(.horizontal, 22)
+        .padding(.top, 8)
+        .padding(.bottom, embedded ? 16 : 10)
+        .background(Theme.background)
     }
 
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text("Loading plans…").foregroundStyle(.secondary)
+            Text("Loading plans…").foregroundStyle(Theme.secondaryText)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -226,18 +265,18 @@ struct PaywallView: View {
         VStack(spacing: 14) {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 42))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.secondaryText)
             Text("Couldn't Load Plans").font(.title3.bold())
             Text("Check your connection and try again.")
-                .font(.subheadline).foregroundStyle(.secondary)
-            Button("Try Again") {
-                store.start()
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(Theme.cardio)
+                .font(.subheadline)
+                .foregroundStyle(Theme.secondaryText)
+            Button("Try Again") { store.start() }
+                .buttonStyle(.borderedProminent)
+                .tint(Theme.cardio)
             #if targetEnvironment(simulator)
-            Text("RevenueCat is disabled in the simulator. Use the local Pro override in Settings.")
-                .font(.caption2).foregroundStyle(.tertiary)
+            Text("Purchases are disabled in the simulator. Use the local Pro override in Settings to inspect subscriber screens.")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
             #endif
@@ -271,7 +310,6 @@ struct PaywallView: View {
         selectedPackage = store.yearlyPackage ?? store.packages.first
     }
 
-    /// "SAVE X%" for annual vs 12 monthly payments; only when actually cheaper.
     private func savingsPercent(for package: Package) -> Int? {
         guard package.vo2PackageKind == .yearly,
               let monthly = store.packages.first(where: { $0.vo2PackageKind == .monthly }) else { return nil }
@@ -288,51 +326,72 @@ private struct PlanCard: View {
     let isSelected: Bool
     let savingsPercent: Int?
     let trialLabel: String?
+    let compact: Bool
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 12) {
-                Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
-                    .foregroundStyle(isSelected ? Theme.cardio : .secondary)
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 8) {
-                        Text(package.vo2DisplayName).font(.headline)
+                ZStack {
+                    Circle()
+                        .stroke(isSelected ? Theme.cardio : Theme.secondaryText.opacity(0.35), lineWidth: 2)
+                        .frame(width: 22, height: 22)
+                    if isSelected {
+                        Circle().fill(Theme.cardio).frame(width: 12, height: 12)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(package.vo2DisplayName)
+                            .font(.system(.subheadline, design: .rounded, weight: .bold))
+                            .foregroundStyle(Theme.primaryText)
                         if let savingsPercent {
                             badge("SAVE \(savingsPercent)%")
                         } else if package.vo2PackageKind == .yearly {
                             badge("BEST VALUE")
                         }
                     }
-                    if let trialLabel {
-                        Text(trialLabel)
-                            .font(.caption)
-                            .foregroundStyle(Theme.positive)
-                    } else if package.vo2PackageKind == .yearly, let perWeek = package.vo2PricePerWeekLabel {
-                        Text("Just \(perWeek)/week")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                    Group {
+                        if let trialLabel {
+                            Text(trialLabel.capitalized)
+                        } else if package.vo2PackageKind == .yearly,
+                                  let perWeek = package.vo2PricePerWeekLabel {
+                            Text("Just \(perWeek)/week")
+                        } else {
+                            Text(" ")
+                        }
                     }
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Theme.positive)
+                    .lineLimit(1)
                 }
-                Spacer()
-                Text(package.storeProduct.localizedPriceString)
-                    .font(.headline.monospacedDigit())
+
+                Spacer(minLength: 8)
+
+                Text(package.vo2PriceLabel)
+                    .font(.system(.subheadline, design: .rounded, weight: .semibold).monospacedDigit())
+                    .foregroundStyle(Theme.secondaryText)
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(2)
             }
-            .padding(14)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 14))
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
+            .frame(minHeight: compact ? 48 : 54)
+            .padding(.horizontal, 14)
+            .padding(.vertical, compact ? 7 : 9)
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16)
                     .stroke(isSelected ? Theme.cardio : Color.clear, lineWidth: 2)
-            )
+            }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(package.vo2DisplayName), \(package.storeProduct.localizedPriceString)\(trialLabel.map { ", \($0)" } ?? "")")
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 
     private func badge(_ text: String) -> some View {
         Text(text)
-            .font(.caption2.bold())
+            .font(.system(size: 9, weight: .bold, design: .rounded))
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(Theme.cardio.opacity(0.15), in: Capsule())

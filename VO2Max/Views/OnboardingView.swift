@@ -45,12 +45,10 @@ struct OnboardingView: View {
         }
         .background(Theme.onboardingBackground)
         .foregroundStyle(Theme.onboardingPrimaryText)
-        // Onboarding has a fixed dark identity (blue background, navy cards).
-        // Force the subtree to dark scheme so native controls (age wheel,
-        // segmented reference picker, slider) render light-on-dark instead of
-        // dark-on-navy in a light-mode device. The slider knob is passed an
-        // explicit light color below since systemBackground now resolves dark.
-        .environment(\.colorScheme, .dark)
+        // Onboarding owns a fixed visual theme. Input controls use explicit light
+        // surfaces and dark text, so they never inherit a dark-mode system-gray
+        // treatment before the user has chosen an app appearance.
+        .environment(\.colorScheme, .light)
         .task {
             age = settings.chronologicalAge > 0 ? settings.chronologicalAge : 35
             referenceSex = settings.referenceSex
@@ -197,19 +195,21 @@ struct OnboardingView: View {
                 HStack {
                     Text("Age").font(.headline)
                     Spacer()
-                    Text("\(age)").font(Theme.numberFont(24)).foregroundStyle(Theme.cardio)
+                    Text("\(age)").font(Theme.numberFont(24)).foregroundStyle(Theme.cardioBlue)
                 }
-                AgeWheelPicker(age: $age, textColor: Theme.onboardingPrimaryText)
+                AgeWheelPicker(age: $age, textColor: Theme.onboardingInputText)
             }
+            .foregroundStyle(Theme.onboardingInputText)
             .padding(16)
-            .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.onboardingInputCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Reference").font(.headline)
                 referenceControl
             }
+            .foregroundStyle(Theme.onboardingInputText)
             .padding(16)
-            .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.onboardingInputCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -224,30 +224,31 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(spacing: 16) {
-                HStack {
+                HStack(alignment: .firstTextBaseline) {
                     Text("Target").font(.headline)
                     Spacer()
                     Text("\(Int(targetLower))–\(Int(targetUpper))")
-                        .font(Theme.numberFont(26)).foregroundStyle(Theme.cardio)
-                    Text("mL/kg/min").font(.caption).foregroundStyle(Theme.onboardingSecondaryText)
+                        .font(Theme.numberFont(26)).foregroundStyle(Theme.cardioBlue)
+                    Text("mL/kg/min")
+                        .font(.caption)
+                        .foregroundStyle(Theme.onboardingInputSecondaryText)
                 }
                 let typical = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: referenceSex)
-                Text("Typical range for your age")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.onboardingSecondaryText)
-                Text("\(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+                Text("Typical range for your age: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
                     .font(.caption)
-                    .foregroundStyle(Theme.onboardingSecondaryText)
+                    .foregroundStyle(Theme.onboardingInputSecondaryText)
                 RangeSlider(
                     lowerValue: $targetLower,
                     upperValue: $targetUpper,
                     bounds: 20...70,
+                    tint: Theme.cardioBlue,
                     handleColor: .white,
                     referenceRange: typical
                 )
             }
+            .foregroundStyle(Theme.onboardingInputText)
             .padding(18)
-            .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.onboardingInputCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -289,16 +290,16 @@ struct OnboardingView: View {
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
-            Text("You're set up. Try everything VO2+ adds free — your dashboard stays free either way.")
+            Text("Compare periods, understand your direction toward target, see broad age-reference context, and recognize personal bests. Your latest estimate and basic trend stay free.")
                 .font(.body)
                 .foregroundStyle(Theme.onboardingSecondaryText)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
             VStack(spacing: 10) {
-                benefitCard("chart.bar.xaxis", "Deep Trends", "Every period compared to the one before")
-                benefitCard("scope", "Target outlook", "A broad time-to-target estimate")
-                benefitCard("person.2.crop.square.stack", "Typical-range context", "How your number compares for your age")
-                benefitCard("trophy", "Personal best", "Track and celebrate your best readings")
+                benefitCard("chart.bar.xaxis", "Compare periods", "See each window beside the matching one before it")
+                benefitCard("scope", "Understand direction", "Put your recent cardio fitness trend in target context")
+                benefitCard("person.2.crop.square.stack", "Add broad context", "See typical-range context for your age and reference")
+                benefitCard("trophy", "Recognize progress", "Keep your personal best visible as readings build")
             }
             .padding(.top, 4)
         }
@@ -306,9 +307,9 @@ struct OnboardingView: View {
 
     // MARK: - Building blocks
 
-    /// Custom segmented control themed to the onboarding palette. The native
-    /// segmented picker renders as a system-gray dark-mode control on the navy
-    /// card (illegible), so onboarding draws its own.
+    /// Custom segmented control themed to the fixed onboarding input palette.
+    /// Drawing it ourselves prevents system appearance from turning the control
+    /// gray or reducing contrast before the user selects an app theme.
     private var referenceControl: some View {
         HStack(spacing: 4) {
             referenceSegment("Female", .female)
@@ -316,7 +317,7 @@ struct OnboardingView: View {
             referenceSegment("Not set", .unspecified)
         }
         .padding(4)
-        .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(Theme.onboardingInputTrack, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
     private func referenceSegment(_ title: String, _ value: ReferenceSex) -> some View {
@@ -326,11 +327,13 @@ struct OnboardingView: View {
         } label: {
             Text(title)
                 .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                .foregroundStyle(isSelected ? Theme.onboardingCard : Theme.onboardingPrimaryText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.55)
+                .foregroundStyle(isSelected ? Color.white : Theme.onboardingInputText)
                 .frame(maxWidth: .infinity)
-                .frame(height: 34)
+                .frame(height: 36)
                 .background(
-                    isSelected ? Color.white : Color.clear,
+                    isSelected ? Theme.cardioBlue : Color.clear,
                     in: RoundedRectangle(cornerRadius: 9, style: .continuous)
                 )
         }

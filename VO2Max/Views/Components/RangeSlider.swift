@@ -11,9 +11,8 @@ struct RangeSlider: View {
     let bounds: ClosedRange<Double>
     var step: Double = 1
     var tint: Color = Theme.cardio
-    /// Knob fill. Defaults to the adaptive system background (correct in the
-    /// Settings form); onboarding forces its subtree to dark scheme, so it
-    /// passes an explicit light color to keep the knob visible on navy cards.
+    /// Knob fill. Defaults to the adaptive system background for Settings;
+    /// onboarding passes white for its fixed light input cards.
     var handleColor: Color = Color(.systemBackground)
     var referenceRange: ClosedRange<Double>? = nil
 

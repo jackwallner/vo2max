@@ -14,10 +14,6 @@ struct HistoryView: View {
         return samples.filter { $0.date >= cutoff }
     }
 
-    /// Domain spans the readings plus the target bounds so both dashed target
-    /// lines stay visible. It's safe to include the target here now that the
-    /// range is drawn as thin lines rather than a filled band (the filled band
-    /// was what ballooned into the old "gigantic green space").
     private var chartDomain: ClosedRange<Double> {
         var values = visibleSamples.map(\.value)
         values.append(contentsOf: [settings.targetLower, settings.targetUpper])
@@ -26,131 +22,179 @@ struct HistoryView: View {
         return lower...max(upper, lower + 8)
     }
 
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 16) {
+                periodPicker
+
+                if visibleSamples.isEmpty {
+                    emptyState
+                } else {
+                    statsCard
+                    chartCard
+                    allReadingsLink
+                    plusTeaserCard
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 10)
+            .padding(.bottom, 92)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .background(Theme.background)
+        .navigationTitle("Trends")
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showPlusPaywall) {
+            PaywallView(focus: .deepTrends)
+        }
+    }
+
+    private var periodPicker: some View {
+        Picker("Period", selection: $period) {
+            Text("30D").tag(30)
+            Text("90D").tag(90)
+            Text("6M").tag(180)
+            Text("1Y").tag(365)
+        }
+        .pickerStyle(.segmented)
+        .accessibilityLabel("Trend period")
+    }
+
     private var statsCard: some View {
         let values = visibleSamples.map(\.value)
         let average = values.reduce(0, +) / Double(values.count)
-        return HStack {
+        let change = CardioFitnessAnalysis.change(
+            points: samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) },
+            days: period
+        )
+
+        return HStack(spacing: 0) {
             statBlock("Readings", "\(values.count)")
-            Divider().frame(height: 34)
+            Divider().frame(height: 36)
             statBlock("Average", average.formatted(.number.precision(.fractionLength(1))))
-            Divider().frame(height: 34)
-            statBlock("Best", (values.max() ?? 0).formatted(.number.precision(.fractionLength(1))))
+            Divider().frame(height: 36)
+            statBlock(
+                "Change",
+                change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "—",
+                color: change.map { $0 >= 0 ? Theme.positive : Theme.negative }
+            )
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
-    private func statBlock(_ title: String, _ value: String) -> some View {
+    private func statBlock(_ title: String, _ value: String, color: Color? = nil) -> some View {
         VStack(spacing: 3) {
-            Text(value).font(Theme.numberFont(22))
-            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(value)
+                .font(Theme.numberFont(21))
+                .foregroundStyle(color ?? Theme.primaryText)
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(Theme.secondaryText)
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
     }
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 18) {
-                Picker("Period", selection: $period) {
-                    Text("30D").tag(30)
-                    Text("90D").tag(90)
-                    Text("6M").tag(180)
-                    Text("1Y").tag(365)
+    private var chartCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Cardio fitness trend")
+                        .font(.headline)
+                    Text("Apple Health estimates in the selected period")
+                        .font(.caption)
+                        .foregroundStyle(Theme.secondaryText)
                 }
-                .pickerStyle(.segmented)
-
-                if !visibleSamples.isEmpty {
-                    statsCard
-                }
-
-                if visibleSamples.isEmpty {
-                    ContentUnavailableView(
-                        "No readings in this period",
-                        systemImage: "chart.xyaxis.line",
-                        description: Text("New Apple Health estimates will appear here automatically.")
-                    )
-                    .frame(minHeight: 280)
-                } else {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Chart(visibleSamples) { sample in
-                            // Target range shown as two dashed boundary lines, not
-                            // a filled band: when readings sit inside a wide target
-                            // the fill balloons to cover the whole plot (the old
-                            // "gigantic green space"). Lines read cleanly either way.
-                            RuleMark(y: .value("Target lower", settings.targetLower))
-                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                                .foregroundStyle(Theme.positive.opacity(0.6))
-                                .annotation(position: .top, alignment: .leading) {
-                                    Text("Target").font(.caption2).foregroundStyle(Theme.positive)
-                                }
-                            RuleMark(y: .value("Target upper", settings.targetUpper))
-                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                                .foregroundStyle(Theme.positive.opacity(0.6))
-                            LineMark(
-                                x: .value("Date", sample.date),
-                                y: .value("VO2 max", sample.value)
-                            )
-                            .foregroundStyle(Theme.cardioGradient)
-                            .interpolationMethod(.catmullRom)
-                            PointMark(
-                                x: .value("Date", sample.date),
-                                y: .value("VO2 max", sample.value)
-                            )
-                            .foregroundStyle(Theme.cardio)
-                        }
-                        .chartYAxisLabel("mL/kg/min")
-                        .chartYScale(domain: chartDomain)
-                        .frame(height: 220)
-
-                        Label("Dashed lines mark your target range", systemImage: "scope")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                    .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-
-                    plusTeaserCard
-
-                    VStack(spacing: 0) {
-                        ForEach(visibleSamples.reversed()) { sample in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(sample.date, format: .dateTime.month(.abbreviated).day().year())
-                                    Text(sample.sourceName).font(.caption).foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Text(sample.value, format: .number.precision(.fractionLength(1)))
-                                    .font(.headline.monospacedDigit())
-                            }
-                            .padding(.vertical, 12)
-                            if sample.healthKitID != visibleSamples.first?.healthKitID { Divider() }
-                        }
-                    }
-                    .padding(.horizontal)
-                    .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-                }
+                Spacer()
+                Label("Target", systemImage: "scope")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.positive)
             }
-            .padding()
+
+            Chart(visibleSamples) { sample in
+                RuleMark(y: .value("Target lower", settings.targetLower))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                    .foregroundStyle(Theme.positive.opacity(0.65))
+                RuleMark(y: .value("Target upper", settings.targetUpper))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                    .foregroundStyle(Theme.positive.opacity(0.65))
+                LineMark(
+                    x: .value("Date", sample.date),
+                    y: .value("VO2 max", sample.value)
+                )
+                .foregroundStyle(Theme.cardioGradient)
+                .interpolationMethod(.catmullRom)
+                PointMark(
+                    x: .value("Date", sample.date),
+                    y: .value("VO2 max", sample.value)
+                )
+                .foregroundStyle(Theme.cardio)
+            }
+            .chartYAxisLabel("mL/kg/min")
+            .chartYScale(domain: chartDomain)
+            .frame(height: 210)
         }
-        .background(Theme.background)
-        .navigationTitle("Trends")
-        .sheet(isPresented: $showPlusPaywall) { PaywallView(focus: .deepTrends) }
+        .padding(16)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
-    // MARK: - VO2+ Deep Trends (teaser for free users, live data for Pro)
+    private var allReadingsLink: some View {
+        NavigationLink {
+            ReadingHistoryDetailView()
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "list.bullet.rectangle")
+                    .font(.title3)
+                    .foregroundStyle(Theme.cardio)
+                    .frame(width: 38, height: 38)
+                    .background(Theme.cardio.opacity(0.12), in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("All Readings")
+                        .font(.headline)
+                        .foregroundStyle(Theme.primaryText)
+                    Text("View every Apple Health estimate and source date")
+                        .font(.caption)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(14)
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        }
+        .buttonStyle(.plain)
+    }
 
-    /// The Vitals+ pattern: free users see the *shape* of Deep Trends built
-    /// from their real data, blurred, with an Unlock CTA on top. Pro users see
-    /// the real thing here too, so the Trends tab shows the advantage in place.
+    private var emptyState: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "chart.xyaxis.line")
+                .font(.system(size: 42))
+                .foregroundStyle(Theme.cardio)
+            Text("No estimates in this period")
+                .font(.title3.bold())
+            Text("Choose a longer window, or return after Apple Health records another cardio fitness estimate.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.secondaryText)
+                .multilineTextAlignment(.center)
+            if !samples.isEmpty, period != 365 {
+                Button("Show 1 Year") { period = 365 }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Theme.cardio)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 48)
+        .padding(.horizontal, 20)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
     @ViewBuilder
     private var plusTeaserCard: some View {
-        if store.isPro {
-            deepTrendsContent(locked: false)
-        } else {
-            deepTrendsContent(locked: true)
-        }
+        deepTrendsContent(locked: !store.isPro)
     }
 
     private func deepTrendsContent(locked: Bool) -> some View {
@@ -158,6 +202,7 @@ struct HistoryView: View {
         let comparisons = [30, 90, 180].compactMap {
             CardioFitnessAnalysis.periodComparison(points: points, days: $0)
         }
+
         return VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 Image(systemName: locked ? "lock.fill" : "chart.bar.xaxis")
@@ -177,9 +222,10 @@ struct HistoryView: View {
             if locked {
                 lockedTeaser(comparisons: comparisons)
             } else if comparisons.isEmpty {
-                Text("Deep Trends compare each period to the one before once you have readings in back-to-back periods.")
+                Text("Deep Trends compare each period with the matching one before it once both windows contain Apple Health estimates.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
             } else {
                 comparisonRows(comparisons)
             }
@@ -193,7 +239,13 @@ struct HistoryView: View {
         VStack(alignment: .leading, spacing: 10) {
             ForEach(comparisons, id: \.days) { comparison in
                 HStack {
-                    Text("Last \(comparison.days) days").font(.subheadline)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Last \(comparison.days) days")
+                            .font(.subheadline.weight(.medium))
+                        Text("vs. previous \(comparison.days) days")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.secondaryText)
+                    }
                     Spacer()
                     Text(comparison.currentAverage, format: .number.precision(.fractionLength(1)))
                         .font(.subheadline.bold().monospacedDigit())
@@ -203,19 +255,16 @@ struct HistoryView: View {
                             .foregroundStyle(change >= 0 ? Theme.positive : Theme.negative)
                             .frame(width: 44, alignment: .trailing)
                     } else {
-                        Text("—").font(.caption).foregroundStyle(.tertiary)
+                        Text("—")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
                             .frame(width: 44, alignment: .trailing)
                     }
                 }
             }
-            Text("Average of readings in each period vs. the period before.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 
-    /// Real rows (or representative placeholders) crushed under a blur with an
-    /// unlock CTA stamped on top. Blurred content takes no taps.
     private func lockedTeaser(comparisons: [PeriodComparison]) -> some View {
         ZStack {
             Group {
@@ -225,21 +274,36 @@ struct HistoryView: View {
                     comparisonRows(comparisons)
                 }
             }
-            .blur(radius: 12)
+            .blur(radius: 14)
             .allowsHitTesting(false)
             .accessibilityHidden(true)
+            .overlay(
+                LinearGradient(
+                    colors: [
+                        Theme.card.opacity(0.3),
+                        Theme.card.opacity(0.55),
+                        Theme.card.opacity(0.82)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
 
-            VStack(spacing: 8) {
-                Text("Unlock Deep Trends")
+            VStack(spacing: 9) {
+                Image(systemName: "lock.fill")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Theme.cardio)
+                Text("Compare every period")
                     .font(.headline)
-                Text("Every period compared to the one before, target outlook, typical-range context, and personal best.")
+                Text("See matching-window averages, direction toward target, broad age-reference context, and personal bests.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.secondaryText)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 Button {
                     showPlusPaywall = true
                 } label: {
-                    Text(store.yearlyPackage.flatMap { store.eligibleIntroLabel(for: $0) } != nil ? "Try VO2+ Free" : "Unlock VO2+")
+                    Text(store.shortConversionCTALabel)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -247,9 +311,9 @@ struct HistoryView: View {
                         .background(Theme.cardioGradient, in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, 28)
+                .padding(.top, 2)
             }
-            .padding(.vertical, 6)
+            .padding(14)
         }
     }
 
@@ -257,7 +321,12 @@ struct HistoryView: View {
         VStack(alignment: .leading, spacing: 10) {
             ForEach([30, 90, 180], id: \.self) { days in
                 HStack {
-                    Text("Last \(days) days").font(.subheadline)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Last \(days) days").font(.subheadline.weight(.medium))
+                        Text("vs. previous \(days) days")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.secondaryText)
+                    }
                     Spacer()
                     Text("41.3").font(.subheadline.bold().monospacedDigit())
                     Text("+0.8")
@@ -266,9 +335,6 @@ struct HistoryView: View {
                         .frame(width: 44, alignment: .trailing)
                 }
             }
-            Text("Average of readings in each period vs. the period before.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 }
