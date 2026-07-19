@@ -44,9 +44,9 @@ struct ReadingHistoryDetailView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text("Latest Apple Health estimate")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                 Text(latest.value, format: .number.precision(.fractionLength(1)))
-                    .font(Theme.numberFont(38))
+                    .font(Theme.bigNumber(38))
                     .foregroundStyle(Theme.cardio)
                 Text("mL/kg/min · \(status.label)")
                     .font(.subheadline)
@@ -58,11 +58,11 @@ struct ReadingHistoryDetailView: View {
                     .font(.subheadline.weight(.semibold))
                 Text(latest.date, format: .relative(presentation: .named))
                     .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
             }
         }
         .padding(18)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private var chartCard: some View {
@@ -71,7 +71,7 @@ struct ReadingHistoryDetailView: View {
                 .font(.headline)
             Text("Every cached Apple Health estimate, shown read-only.")
                 .font(.caption)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
             Chart(samples) { sample in
                 RuleMark(y: .value("Target lower", settings.targetLower))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
@@ -95,7 +95,7 @@ struct ReadingHistoryDetailView: View {
             .frame(height: 210)
         }
         .padding()
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private var listCard: some View {
@@ -112,22 +112,22 @@ struct ReadingHistoryDetailView: View {
                             .font(.subheadline.weight(.semibold))
                         Text("\(sample.sourceName) · \(status.label)")
                             .font(.caption)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.textSecondary)
                     }
                     Spacer()
                     Text(sample.value, format: .number.precision(.fractionLength(1)))
                         .font(.headline.monospacedDigit())
-                        .foregroundStyle(Theme.primaryText)
+                        .foregroundStyle(Theme.textPrimary)
                     Text("mL/kg/min")
                         .font(.caption2)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                 }
                 .padding(.vertical, 12)
                 if index < samples.count - 1 { Divider() }
             }
         }
         .padding(.horizontal)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private var sourceNotice: some View {
@@ -136,7 +136,7 @@ struct ReadingHistoryDetailView: View {
                 .font(.headline)
             Text("This app reads these estimates and keeps a local display cache. To change or remove source health data, use Apple Health.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
             Button("Open Apple Health") {
                 if let url = URL(string: "x-apple-health://") {
                     UIApplication.shared.open(url)
@@ -147,7 +147,7 @@ struct ReadingHistoryDetailView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private func statusColor(_ status: TargetRangeStatus) -> Color {
@@ -200,12 +200,12 @@ struct TrendDetailView: View {
                 .font(.title2.bold())
             Text(summaryText(trend))
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(20)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private var changeWindows: some View {
@@ -224,14 +224,14 @@ struct TrendDetailView: View {
                     } else {
                         Text("Not enough data")
                             .font(.caption)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.textSecondary)
                     }
                 }
             }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     @ViewBuilder
@@ -262,16 +262,16 @@ struct TrendDetailView: View {
                         .font(.subheadline)
                     Text("Broad extrapolation from recent Apple Health estimates, not a prediction or guarantee.")
                         .font(.caption)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                 } else {
                     Text("Target outlook needs at least five readings across the last 180 days.")
                         .font(.subheadline)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                 }
             } else {
                 Text("See whether recent estimates are moving toward your target range and get a broad timeframe when the data supports one.")
                     .font(.subheadline)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                 Button(store.shortConversionCTALabel) { showPaywall = true }
                     .buttonStyle(.borderedProminent)
                     .tint(Theme.cardio)
@@ -279,7 +279,7 @@ struct TrendDetailView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private var trendMethodology: some View {
@@ -288,14 +288,14 @@ struct TrendDetailView: View {
                 .font(.headline)
             Text("The main trend compares averages from the older and newer halves of the last 90 days. It needs at least four readings and ignores small changes that are likely normal estimate-to-estimate variation.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
             Text("A cardio fitness trend is motivational context, not a medical assessment.")
                 .font(.caption)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private func summaryText(_ trend: CardioTrend) -> String {
@@ -375,20 +375,20 @@ struct FitnessAgeDetailView: View {
            ) {
             VStack(spacing: 8) {
                 Text("About \(estimate)")
-                    .font(Theme.numberFont(44))
+                    .font(Theme.bigNumber(44))
                     .foregroundStyle(Theme.cardio)
                 Text("Fitness age estimate")
                     .font(.headline)
                 Text("Chronological age: \(settings.chronologicalAge)")
                     .font(.subheadline)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                 Button("Edit reference profile") { showSettings = true }
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.cardioBlue)
             }
             .frame(maxWidth: .infinity)
             .padding(20)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         } else {
             VStack(spacing: 12) {
                 Image(systemName: "person.crop.circle.badge.questionmark")
@@ -398,7 +398,7 @@ struct FitnessAgeDetailView: View {
                     .font(.headline)
                 Text("Fitness age needs your age and a reference option plus at least one Apple Health estimate.")
                     .font(.subheadline)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
                 Button("Open Settings") { showSettings = true }
                     .buttonStyle(.borderedProminent)
@@ -406,7 +406,7 @@ struct FitnessAgeDetailView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(20)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -438,16 +438,16 @@ struct FitnessAgeDetailView: View {
                             .foregroundStyle(Theme.cardio)
                         Text("Your latest Apple Health estimate compared with broad reference values for age \(settings.chronologicalAge) and your selected reference.")
                             .font(.subheadline)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.textSecondary)
                     } else {
                         Text("Choose a reference option in Settings to see this context.")
                             .font(.subheadline)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.textSecondary)
                     }
                 } else {
                     Text("See how your latest estimate sits within broad age-reference context, alongside the fitness age methodology.")
                         .font(.subheadline)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                     Button(store.shortConversionCTALabel) { showPaywall = true }
                         .buttonStyle(.borderedProminent)
                         .tint(Theme.cardio)
@@ -455,7 +455,7 @@ struct FitnessAgeDetailView: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
@@ -465,13 +465,13 @@ struct FitnessAgeDetailView: View {
                 .font(.headline)
             Text("Your latest cardio fitness estimate is compared with broad age and sex reference curves to find the age whose typical value most closely matches your number. Higher relative cardio fitness maps to a younger estimate.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
             Text("Fitness age is a broad motivational estimate. It is not clinically validated, does not diagnose anything, and does not predict longevity or health outcomes.")
                 .font(.caption)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 }

@@ -38,7 +38,9 @@ struct HistoryView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
-            .padding(.bottom, 92)
+            // The tab bar's height is already reserved via the safe-area inset;
+            // this keeps the Deep Trends CTA from sitting flush against it.
+            .padding(.bottom, 28)
         }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
@@ -81,17 +83,17 @@ struct HistoryView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private func statBlock(_ title: String, _ value: String, color: Color? = nil) -> some View {
         VStack(spacing: 3) {
             Text(value)
-                .font(Theme.numberFont(21))
-                .foregroundStyle(color ?? Theme.primaryText)
+                .font(Theme.bigNumber(21))
+                .foregroundStyle(color ?? Theme.textPrimary)
             Text(title)
                 .font(.caption)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
@@ -105,7 +107,7 @@ struct HistoryView: View {
                         .font(.headline)
                     Text("Apple Health estimates in the selected period")
                         .font(.caption)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                 }
                 Spacer()
                 Label("Target", systemImage: "scope")
@@ -137,7 +139,7 @@ struct HistoryView: View {
             .frame(height: 210)
         }
         .padding(16)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private var allReadingsLink: some View {
@@ -153,10 +155,10 @@ struct HistoryView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("All Readings")
                         .font(.headline)
-                        .foregroundStyle(Theme.primaryText)
+                        .foregroundStyle(Theme.textPrimary)
                     Text("View every Apple Health estimate and source date")
                         .font(.caption)
-                        .foregroundStyle(Theme.secondaryText)
+                        .foregroundStyle(Theme.textSecondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
@@ -164,7 +166,7 @@ struct HistoryView: View {
                     .foregroundStyle(.tertiary)
             }
             .padding(14)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
         .buttonStyle(.plain)
     }
@@ -178,7 +180,7 @@ struct HistoryView: View {
                 .font(.title3.bold())
             Text("Choose a longer window, or return after Apple Health records another cardio fitness estimate.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
             if !samples.isEmpty, period != 365 {
                 Button("Show 1 Year") { period = 365 }
@@ -189,7 +191,7 @@ struct HistoryView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 48)
         .padding(.horizontal, 20)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     @ViewBuilder
@@ -224,7 +226,7 @@ struct HistoryView: View {
             } else if comparisons.isEmpty {
                 Text("Deep Trends compare each period with the matching one before it once both windows contain Apple Health estimates.")
                     .font(.subheadline)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 comparisonRows(comparisons)
@@ -232,7 +234,7 @@ struct HistoryView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
     private func comparisonRows(_ comparisons: [PeriodComparison]) -> some View {
@@ -244,7 +246,7 @@ struct HistoryView: View {
                             .font(.subheadline.weight(.medium))
                         Text("vs. previous \(comparison.days) days")
                             .font(.caption2)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.textSecondary)
                     }
                     Spacer()
                     Text(comparison.currentAverage, format: .number.precision(.fractionLength(1)))
@@ -280,9 +282,9 @@ struct HistoryView: View {
             .overlay(
                 LinearGradient(
                     colors: [
-                        Theme.card.opacity(0.3),
-                        Theme.card.opacity(0.55),
-                        Theme.card.opacity(0.82)
+                        Theme.cardSurface.opacity(0.3),
+                        Theme.cardSurface.opacity(0.55),
+                        Theme.cardSurface.opacity(0.82)
                     ],
                     startPoint: .top,
                     endPoint: .bottom
@@ -297,7 +299,7 @@ struct HistoryView: View {
                     .font(.headline)
                 Text("See matching-window averages, direction toward target, broad age-reference context, and personal bests.")
                     .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Button {
@@ -325,7 +327,7 @@ struct HistoryView: View {
                         Text("Last \(days) days").font(.subheadline.weight(.medium))
                         Text("vs. previous \(days) days")
                             .font(.caption2)
-                            .foregroundStyle(Theme.secondaryText)
+                            .foregroundStyle(Theme.textSecondary)
                     }
                     Spacer()
                     Text("41.3").font(.subheadline.bold().monospacedDigit())

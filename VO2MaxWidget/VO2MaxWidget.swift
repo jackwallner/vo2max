@@ -82,7 +82,7 @@ struct VO2MaxWidgetView: View {
                 .foregroundStyle(Theme.cardio)
             Spacer()
             Text(value, format: .number.precision(.fractionLength(1)))
-                .font(Theme.numberFont(40))
+                .font(Theme.bigNumber(40))
                 .minimumScaleFactor(0.7)
             Text("mL/kg/min").font(.caption2).foregroundStyle(.secondary)
             Label(entry.trend.label, systemImage: entry.trend.symbol)
@@ -100,7 +100,7 @@ struct VO2MaxWidgetView: View {
                     .font(.caption.bold()).foregroundStyle(Theme.cardio)
                 Spacer()
                 Text(value, format: .number.precision(.fractionLength(1)))
-                    .font(Theme.numberFont(46))
+                    .font(Theme.bigNumber(46))
                 Text("mL/kg/min").font(.caption).foregroundStyle(.secondary)
             }
             Spacer()

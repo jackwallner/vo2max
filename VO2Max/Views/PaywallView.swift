@@ -107,19 +107,27 @@ struct PaywallView: View {
         .background(Theme.background)
     }
 
+    /// One-page layout that adapts to the device instead of squeezing every
+    /// screen into a "compact" mode: content is measured against the actual
+    /// available height (the tab bar's safe-area inset is already excluded) and
+    /// flexible Spacers distribute the slack. Falls back to a bounce-free
+    /// ScrollView only when accessibility text sizes genuinely overflow.
     private var content: some View {
         GeometryReader { geometry in
-            let compact = geometry.size.height < 730
+            let height = geometry.size.height
+            let compact = height < 640
             ScrollView(showsIndicators: false) {
-                VStack(spacing: compact ? 8 : 10) {
+                VStack(spacing: 0) {
                     header(compact: compact)
+                    Spacer(minLength: compact ? 10 : 18)
                     featureList(compact: compact)
+                    Spacer(minLength: compact ? 10 : 18)
                     planCards(compact: compact)
                 }
                 .padding(.horizontal, 22)
                 .padding(.top, embedded ? 10 : 4)
-                .padding(.bottom, compact ? 136 : 148)
-                .frame(minHeight: geometry.size.height, alignment: .top)
+                .padding(.bottom, 4)
+                .frame(minHeight: height, alignment: .top)
             }
             .scrollBounceBehavior(.basedOnSize)
             .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -129,51 +137,53 @@ struct PaywallView: View {
     }
 
     private func header(compact: Bool) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: "sparkles")
-                .font(.system(size: compact ? 18 : 20, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: compact ? 40 : 44, height: compact ? 40 : 44)
-                .background(Theme.cardioGradient, in: Circle())
-                .shadow(color: Theme.cardio.opacity(0.25), radius: 8, y: 3)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(focus?.intentHeadline ?? "Go further with VO2+")
-                    .font(.system(compact ? .headline : .title3, design: .rounded, weight: .bold))
-                    .foregroundStyle(Theme.primaryText)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.85)
-                Text(focus?.intentSubheadline ?? "More useful context inside Today, Trends, and your reading details.")
-                    .font(.system(.caption, design: .rounded))
-                    .foregroundStyle(Theme.secondaryText)
-                    .lineLimit(compact ? 2 : 3)
-                    .minimumScaleFactor(0.88)
+        VStack(spacing: compact ? 6 : 10) {
+            ZStack {
+                Circle()
+                    .fill(Theme.cardioGradient)
+                    .frame(width: compact ? 48 : 60, height: compact ? 48 : 60)
+                    .shadow(color: Theme.cardio.opacity(0.3), radius: 10, y: 4)
+                Image(systemName: "sparkles")
+                    .font(.system(size: compact ? 20 : 25, weight: .bold))
+                    .foregroundStyle(.white)
             }
-            Spacer(minLength: 0)
+            Text(focus?.intentHeadline ?? "Go further with VO2+")
+                .font(.system(compact ? .title3 : .title2, design: .rounded, weight: .bold))
+                .foregroundStyle(Theme.textPrimary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+            Text(focus?.intentSubheadline ?? "More useful context inside Today, Trends, and your reading details.")
+                .font(.system(compact ? .caption : .footnote, design: .rounded))
+                .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(compact ? 2 : 3)
+                .minimumScaleFactor(0.88)
         }
-        .padding(.bottom, 2)
+        .frame(maxWidth: .infinity)
     }
 
     private func featureList(compact: Bool) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 5 : 7) {
+        VStack(alignment: .leading, spacing: compact ? 8 : 12) {
             ForEach(bullets, id: \.self) { feature in
                 let highlighted = feature == focus
-                HStack(spacing: 10) {
+                HStack(spacing: 12) {
                     Image(systemName: feature.symbol)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Theme.cardio)
                         .frame(width: 24)
                     Text(feature.title)
                         .font(.system(.subheadline, design: .rounded, weight: highlighted ? .semibold : .regular))
-                        .foregroundStyle(Theme.primaryText)
+                        .foregroundStyle(Theme.textPrimary)
                         .lineLimit(2)
                         .minimumScaleFactor(0.85)
                     Spacer(minLength: 0)
                 }
-                .padding(.horizontal, highlighted ? 9 : 0)
-                .padding(.vertical, highlighted ? 6 : 0)
+                .padding(.horizontal, highlighted ? 10 : 0)
+                .padding(.vertical, highlighted ? 8 : 0)
                 .background(
                     highlighted ? Theme.cardio.opacity(0.1) : Color.clear,
-                    in: RoundedRectangle(cornerRadius: 10)
+                    in: RoundedRectangle(cornerRadius: 12)
                 )
             }
         }
@@ -226,7 +236,7 @@ struct PaywallView: View {
                 }
             }
             .font(.caption2)
-            .foregroundStyle(Theme.secondaryText)
+            .foregroundStyle(Theme.textSecondary)
             .multilineTextAlignment(.center)
             .lineLimit(compact ? 3 : 4)
             .minimumScaleFactor(0.88)
@@ -241,11 +251,11 @@ struct PaywallView: View {
                         }
                     }
                 }
-                Link("Terms", destination: OnboardingLegalFooter.termsURL)
-                Link("Privacy", destination: OnboardingLegalFooter.privacyURL)
+                Link("Terms", destination: VO2Links.standardEULA)
+                Link("Privacy", destination: VO2Links.privacyPolicy)
             }
             .font(.caption2.weight(.semibold))
-            .foregroundStyle(Theme.secondaryText)
+            .foregroundStyle(Theme.textSecondary)
         }
         .padding(.horizontal, 22)
         .padding(.top, 8)
@@ -256,7 +266,7 @@ struct PaywallView: View {
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text("Loading plans…").foregroundStyle(Theme.secondaryText)
+            Text("Loading plans…").foregroundStyle(Theme.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -265,11 +275,11 @@ struct PaywallView: View {
         VStack(spacing: 14) {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 42))
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
             Text("Couldn't Load Plans").font(.title3.bold())
             Text("Check your connection and try again.")
                 .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+                .foregroundStyle(Theme.textSecondary)
             Button("Try Again") { store.start() }
                 .buttonStyle(.borderedProminent)
                 .tint(Theme.cardio)
@@ -334,7 +344,7 @@ private struct PlanCard: View {
             HStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .stroke(isSelected ? Theme.cardio : Theme.secondaryText.opacity(0.35), lineWidth: 2)
+                        .stroke(isSelected ? Theme.cardio : Theme.textSecondary.opacity(0.35), lineWidth: 2)
                         .frame(width: 22, height: 22)
                     if isSelected {
                         Circle().fill(Theme.cardio).frame(width: 12, height: 12)
@@ -345,7 +355,7 @@ private struct PlanCard: View {
                     HStack(spacing: 6) {
                         Text(package.vo2DisplayName)
                             .font(.system(.subheadline, design: .rounded, weight: .bold))
-                            .foregroundStyle(Theme.primaryText)
+                            .foregroundStyle(Theme.textPrimary)
                         if let savingsPercent {
                             badge("SAVE \(savingsPercent)%")
                         } else if package.vo2PackageKind == .yearly {
@@ -371,14 +381,14 @@ private struct PlanCard: View {
 
                 Text(package.vo2PriceLabel)
                     .font(.system(.subheadline, design: .rounded, weight: .semibold).monospacedDigit())
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.trailing)
                     .lineLimit(2)
             }
             .frame(minHeight: compact ? 48 : 54)
             .padding(.horizontal, 14)
             .padding(.vertical, compact ? 7 : 9)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: 16))
             .overlay {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(isSelected ? Theme.cardio : Color.clear, lineWidth: 2)
