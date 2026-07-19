@@ -191,9 +191,9 @@ def main() -> None:
     finally:
         asc_lib.API = "https://api.appstoreconnect.apple.com/v1"
 
-    version = asc_lib.find_version_by_string(client, app_id, "1.0")
+    version = asc_lib.find_editable_version(client, app_id)
     if not version:
-        raise SystemExit("error: draft version 1.0 not found")
+        raise SystemExit("error: editable draft version not found")
     client.patch(
         f"/appStoreVersions/{version['id']}",
         {
