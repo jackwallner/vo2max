@@ -199,19 +199,14 @@ struct OnboardingView: View {
                     Spacer()
                     Text("\(age)").font(Theme.numberFont(24)).foregroundStyle(Theme.cardio)
                 }
-                AgeWheelPicker(age: $age)
+                AgeWheelPicker(age: $age, textColor: Theme.onboardingPrimaryText)
             }
             .padding(16)
             .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Reference").font(.headline)
-                Picker("Reference", selection: $referenceSex) {
-                    Text("Female").tag(ReferenceSex.female)
-                    Text("Male").tag(ReferenceSex.male)
-                    Text("Not set").tag(ReferenceSex.unspecified)
-                }
-                .pickerStyle(.segmented)
+                referenceControl
             }
             .padding(16)
             .background(Theme.onboardingCard, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
@@ -310,6 +305,40 @@ struct OnboardingView: View {
     }
 
     // MARK: - Building blocks
+
+    /// Custom segmented control themed to the onboarding palette. The native
+    /// segmented picker renders as a system-gray dark-mode control on the navy
+    /// card (illegible), so onboarding draws its own.
+    private var referenceControl: some View {
+        HStack(spacing: 4) {
+            referenceSegment("Female", .female)
+            referenceSegment("Male", .male)
+            referenceSegment("Not set", .unspecified)
+        }
+        .padding(4)
+        .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func referenceSegment(_ title: String, _ value: ReferenceSex) -> some View {
+        let isSelected = referenceSex == value
+        return Button {
+            withAnimation(.easeInOut(duration: 0.15)) { referenceSex = value }
+        } label: {
+            Text(title)
+                .font(.subheadline.weight(isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? Theme.onboardingCard : Theme.onboardingPrimaryText)
+                .frame(maxWidth: .infinity)
+                .frame(height: 34)
+                .background(
+                    isSelected ? Color.white : Color.clear,
+                    in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
 
     private var iconGlyph: some View {
         Image("OnboardingMark")
