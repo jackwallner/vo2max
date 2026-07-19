@@ -4,8 +4,10 @@ import SwiftUI
 
 struct HistoryView: View {
     @EnvironmentObject private var settings: GoalSettings
+    @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
     @State private var period = 90
+    @State private var showPlusPaywall = false
 
     private var visibleSamples: [CardioFitnessSample] {
         let cutoff = Calendar.current.date(byAdding: .day, value: -period, to: .now) ?? .distantPast
@@ -100,7 +102,7 @@ struct HistoryView: View {
                         }
                         .chartYAxisLabel("mL/kg/min")
                         .chartYScale(domain: chartDomain)
-                        .frame(height: 260)
+                        .frame(height: 220)
 
                         Label("Dashed lines mark your target range", systemImage: "scope")
                             .font(.caption)
@@ -108,6 +110,8 @@ struct HistoryView: View {
                     }
                     .padding()
                     .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+
+                    plusTeaserCard
 
                     VStack(spacing: 0) {
                         ForEach(visibleSamples.reversed()) { sample in
@@ -132,5 +136,139 @@ struct HistoryView: View {
         }
         .background(Theme.background)
         .navigationTitle("Trends")
+        .sheet(isPresented: $showPlusPaywall) { PaywallView(focus: .deepTrends) }
+    }
+
+    // MARK: - VO2+ Deep Trends (teaser for free users, live data for Pro)
+
+    /// The Vitals+ pattern: free users see the *shape* of Deep Trends built
+    /// from their real data, blurred, with an Unlock CTA on top. Pro users see
+    /// the real thing here too, so the Trends tab shows the advantage in place.
+    @ViewBuilder
+    private var plusTeaserCard: some View {
+        if store.isPro {
+            deepTrendsContent(locked: false)
+        } else {
+            deepTrendsContent(locked: true)
+        }
+    }
+
+    private func deepTrendsContent(locked: Bool) -> some View {
+        let points = samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
+        let comparisons = [30, 90, 180].compactMap {
+            CardioFitnessAnalysis.periodComparison(points: points, days: $0)
+        }
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: locked ? "lock.fill" : "chart.bar.xaxis")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Theme.cardio)
+                Text("Deep Trends")
+                    .font(.headline)
+                Spacer()
+                Text(locked ? "VO2+" : "Active")
+                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Theme.cardio.opacity(0.15), in: Capsule())
+                    .foregroundStyle(Theme.cardio)
+            }
+
+            if locked {
+                lockedTeaser(comparisons: comparisons)
+            } else if comparisons.isEmpty {
+                Text("Deep Trends compare each period to the one before once you have readings in back-to-back periods.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                comparisonRows(comparisons)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private func comparisonRows(_ comparisons: [PeriodComparison]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(comparisons, id: \.days) { comparison in
+                HStack {
+                    Text("Last \(comparison.days) days").font(.subheadline)
+                    Spacer()
+                    Text(comparison.currentAverage, format: .number.precision(.fractionLength(1)))
+                        .font(.subheadline.bold().monospacedDigit())
+                    if let change = comparison.change {
+                        Text(change, format: .number.precision(.fractionLength(1)).sign(strategy: .always()))
+                            .font(.caption.bold().monospacedDigit())
+                            .foregroundStyle(change >= 0 ? Theme.positive : Theme.negative)
+                            .frame(width: 44, alignment: .trailing)
+                    } else {
+                        Text("—").font(.caption).foregroundStyle(.tertiary)
+                            .frame(width: 44, alignment: .trailing)
+                    }
+                }
+            }
+            Text("Average of readings in each period vs. the period before.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    /// Real rows (or representative placeholders) crushed under a blur with an
+    /// unlock CTA stamped on top. Blurred content takes no taps.
+    private func lockedTeaser(comparisons: [PeriodComparison]) -> some View {
+        ZStack {
+            Group {
+                if comparisons.isEmpty {
+                    placeholderRows
+                } else {
+                    comparisonRows(comparisons)
+                }
+            }
+            .blur(radius: 12)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+
+            VStack(spacing: 8) {
+                Text("Unlock Deep Trends")
+                    .font(.headline)
+                Text("Every period compared to the one before, target outlook, typical-range context, and personal best.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                Button {
+                    showPlusPaywall = true
+                } label: {
+                    Text(store.yearlyPackage.flatMap { store.eligibleIntroLabel(for: $0) } != nil ? "Try VO2+ Free" : "Unlock VO2+")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 11)
+                        .background(Theme.cardioGradient, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 28)
+            }
+            .padding(.vertical, 6)
+        }
+    }
+
+    private var placeholderRows: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach([30, 90, 180], id: \.self) { days in
+                HStack {
+                    Text("Last \(days) days").font(.subheadline)
+                    Spacer()
+                    Text("41.3").font(.subheadline.bold().monospacedDigit())
+                    Text("+0.8")
+                        .font(.caption.bold().monospacedDigit())
+                        .foregroundStyle(Theme.positive)
+                        .frame(width: 44, alignment: .trailing)
+                }
+            }
+            Text("Average of readings in each period vs. the period before.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
     }
 }

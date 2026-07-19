@@ -89,28 +89,35 @@ struct PaywallView: View {
 
     private var content: some View {
         ScrollView {
-            VStack(spacing: 22) {
+            VStack(spacing: 16) {
                 header
                 featureList
                 planCards
                 ctaSection
                 footer
             }
-            .padding(22)
+            .padding(.horizontal, 22)
+            .padding(.vertical, 12)
         }
+        .scrollBounceBehavior(.basedOnSize)
     }
 
+    // Compact header: small inline glyph instead of a hero circle, so the
+    // whole paywall (features + plans + CTA) fits on screen without scrolling.
     private var header: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 46))
-                .foregroundStyle(.white)
-                .frame(width: 92, height: 92)
-                .background(Theme.cardioGradient, in: Circle())
-            Text(focus?.intentHeadline ?? (embedded ? "Go further with VO2+" : "VO2+"))
-                .font(.largeTitle.bold())
-                .multilineTextAlignment(.center)
+        VStack(spacing: 6) {
+            HStack(spacing: 10) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(Theme.cardioGradient, in: Circle())
+                Text(focus?.intentHeadline ?? (embedded ? "Go further with VO2+" : "VO2+"))
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.leading)
+            }
             Text("Deeper context for your cardio fitness trend.")
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }

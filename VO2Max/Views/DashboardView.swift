@@ -13,21 +13,32 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                if let latest = samples.first {
-                    currentCard(latest)
-                    trendCard
-                    fitnessAgeCard(value: latest.value)
-                    estimateNotice
-                } else {
-                    noReadingCard
+        // Everything sized to fit a single screen; ScrollView is only a backup
+        // for small devices / large text sizes.
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 12) {
+                    if let latest = samples.first {
+                        NavigationLink { ReadingHistoryDetailView() } label: { currentCard(latest) }
+                            .buttonStyle(.plain)
+                        NavigationLink { TrendDetailView() } label: { trendCard }
+                            .buttonStyle(.plain)
+                        NavigationLink { FitnessAgeDetailView() } label: { fitnessAgeCard(value: latest.value) }
+                            .buttonStyle(.plain)
+                    } else {
+                        noReadingCard
+                    }
                 }
+                .padding(.horizontal)
+                .padding(.top, 4)
+                .padding(.bottom, 12)
+                .frame(minHeight: geometry.size.height, alignment: .top)
             }
-            .padding()
+            .scrollBounceBehavior(.basedOnSize)
         }
         .background(Theme.background)
         .navigationTitle("Cardio Fitness")
+        .navigationBarTitleDisplayMode(.inline)
         .refreshable { await health.refreshCache() }
         .toolbar {
             if health.isRefreshing {
@@ -60,18 +71,18 @@ struct DashboardView: View {
         let bandWidth = max(settings.targetUpper - settings.targetLower, 1)
         let floor = settings.targetLower - bandWidth
         let progress = min(max((latest.value - floor) / (settings.targetUpper - floor), 0.02), 1)
-        return VStack(spacing: 12) {
+        return VStack(spacing: 10) {
             ZStack {
                 Circle()
-                    .stroke(Theme.cardio.opacity(0.16), lineWidth: 18)
+                    .stroke(Theme.cardio.opacity(0.16), lineWidth: 16)
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(Theme.cardioGradient, style: StrokeStyle(lineWidth: 18, lineCap: .round))
+                    .stroke(Theme.cardioGradient, style: StrokeStyle(lineWidth: 16, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .animation(.easeOut(duration: 0.7), value: progress)
                 VStack(spacing: 2) {
                     Text(latest.value, format: .number.precision(.fractionLength(1)))
-                        .font(Theme.numberFont(56))
+                        .font(Theme.numberFont(48))
                         .contentTransition(.numericText())
                     Text("mL/kg/min")
                         .font(.caption.weight(.medium))
@@ -82,28 +93,21 @@ struct DashboardView: View {
                         .padding(.top, 2)
                 }
             }
-            .frame(width: 220, height: 220)
+            .frame(width: 180, height: 180)
 
             Text("Latest Apple Health estimate")
                 .font(.headline)
-            Text("\(latest.date, format: .dateTime.month(.abbreviated).day().year()) · \(latest.date, format: .relative(presentation: .named))")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            HStack(spacing: 6) {
-                Image(systemName: "scope").font(.caption)
-                Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
-            }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-            Text(latest.sourceName)
+            Text("\(latest.date, format: .dateTime.month(.abbreviated).day().year()) · \(latest.date, format: .relative(presentation: .named)) · Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(24)
+        .padding(.vertical, 18)
+        .padding(.horizontal, 20)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .overlay(alignment: .topTrailing) { cardChevron }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Latest estimate \(latest.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min, \(status.label)")
+        .accessibilityLabel("Latest estimate \(latest.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min, \(status.label). Tap for reading history.")
     }
 
     private var trendCard: some View {
@@ -129,46 +133,43 @@ struct DashboardView: View {
             }
             Spacer()
         }
-        .padding(18)
+        .padding(16)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .overlay(alignment: .topTrailing) { cardChevron }
+    }
+
+    private var cardChevron: some View {
+        Image(systemName: "chevron.right")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.tertiary)
+            .padding(12)
     }
 
     private func fitnessAgeCard(value: Double) -> some View {
         Group {
             if let estimate = CardioFitnessAnalysis.estimatedFitnessAge(value: value, referenceSex: settings.referenceSex) {
                 HStack {
-                    VStack(alignment: .leading, spacing: 5) {
+                    VStack(alignment: .leading, spacing: 4) {
                         Text("Fitness age estimate").font(.headline)
-                        Text("About \(estimate)").font(Theme.numberFont(34)).foregroundStyle(Theme.cardio)
+                        Text("About \(estimate)").font(Theme.numberFont(30)).foregroundStyle(Theme.cardio)
                         Text("Chronological age: \(settings.chronologicalAge)")
                             .font(.subheadline).foregroundStyle(.secondary)
                     }
                     Spacer()
                     Image(systemName: "figure.run.circle.fill")
-                        .font(.system(size: 48)).foregroundStyle(Theme.cardio)
+                        .font(.system(size: 40)).foregroundStyle(Theme.cardio)
                 }
             } else {
-                Button {
-                    showSettings = true
-                } label: {
-                    HStack {
-                        Label("Set a reference profile to estimate fitness age", systemImage: "person.crop.circle.badge.questionmark")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                    }
+                HStack {
+                    Label("Set a reference profile to estimate fitness age", systemImage: "person.crop.circle.badge.questionmark")
+                    Spacer()
+                    Image(systemName: "chevron.right")
                 }
-                .buttonStyle(.plain)
             }
         }
-        .padding(18)
+        .padding(16)
         .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private var estimateNotice: some View {
-        Label("Fitness age uses broad age and sex reference curves. It is a motivational estimate, not a medical assessment.", systemImage: "info.circle")
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 4)
+        .overlay(alignment: .topTrailing) { cardChevron }
     }
 
     private var noReadingCard: some View {
