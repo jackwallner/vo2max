@@ -15,7 +15,8 @@ enum VO2Links {
 struct OnboardingView: View {
     private enum Step {
         case welcome
-        case setup
+        case profile
+        case target
         case trial
     }
 
@@ -37,6 +38,9 @@ struct OnboardingView: View {
     @State private var referenceSex: ReferenceSex = .unspecified
     @State private var targetLower: Double = 35
     @State private var targetUpper: Double = 45
+    /// Once the user drags the target slider we stop re-anchoring it to age, so a
+    /// deliberate choice is never overwritten by a later age tweak.
+    @State private var hasEditedTarget = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -51,7 +55,8 @@ struct OnboardingView: View {
                     Group {
                         switch step {
                         case .welcome: welcomePage
-                        case .setup: setupPage
+                        case .profile: profilePage
+                        case .target: targetPage
                         case .trial: EmptyView()
                         }
                     }
@@ -68,14 +73,15 @@ struct OnboardingView: View {
         .task {
             age = settings.chronologicalAge > 0 ? settings.chronologicalAge : 35
             referenceSex = settings.referenceSex
-            targetLower = settings.targetLower
-            targetUpper = settings.targetUpper
+            // Seed the target from the age-anchored typical range so the target
+            // step opens already tuned to the profile, no manual dialing needed.
+            anchorTargetToAge()
             store.trackPaywallImpression(id: "vo2plus_onboarding_trial")
             #if DEBUG
             let args = ProcessInfo.processInfo.arguments
             if let idx = args.firstIndex(of: "-OnboardingPage"), idx + 1 < args.count,
                let p = Int(args[idx + 1]) {
-                step = [Step.welcome, .setup, .trial][min(max(p, 0), 2)]
+                step = [Step.welcome, .profile, .target, .trial][min(max(p, 0), 3)]
             }
             #endif
         }
@@ -154,25 +160,42 @@ struct OnboardingView: View {
         }
     }
 
-    private var setupPage: some View {
+    private var profilePage: some View {
         VStack(spacing: 28) {
             VStack(spacing: 8) {
-                Image(systemName: "target")
+                Image(systemName: "person.crop.circle")
                     .font(.system(size: 48))
                     .foregroundStyle(Theme.cardio)
-                Text("Make it yours")
+                Text("About you")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("Optional. Your profile powers the fitness age estimate; the target range drives the Today ring. You can change both later in Settings.")
+                Text("Optional. Your age and reference power the fitness age estimate and set a target range tuned to you. Change both later in Settings.")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
             }
 
-            VStack(spacing: 16) {
-                profileCard
-                targetCard
+            profileCard
+        }
+    }
+
+    private var targetPage: some View {
+        let typical = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: referenceSex)
+        return VStack(spacing: 28) {
+            VStack(spacing: 8) {
+                Image(systemName: "scope")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Theme.cardio)
+                Text("Your target range")
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .multilineTextAlignment(.center)
+                Text("Anchored to age \(age): typical cardio fitness for your profile is \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min. Fine-tune it if you like.")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
             }
+
+            targetCard
         }
     }
 
@@ -198,6 +221,10 @@ struct OnboardingView: View {
         }
         .padding(16)
         .background(Theme.cardSurface.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+        // Re-anchor the target to the profile until the user overrides it, so the
+        // target step always opens matched to the age they just picked.
+        .onChange(of: age) { _, _ in anchorTargetToAge() }
+        .onChange(of: referenceSex) { _, _ in anchorTargetToAge() }
     }
 
     private var targetCard: some View {
@@ -226,6 +253,17 @@ struct OnboardingView: View {
         }
         .padding(16)
         .background(Theme.cardSurface.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+        .onChange(of: targetLower) { _, _ in hasEditedTarget = true }
+        .onChange(of: targetUpper) { _, _ in hasEditedTarget = true }
+    }
+
+    /// Snap the target range to the age/reference-anchored typical band unless the
+    /// user has manually dragged the slider.
+    private func anchorTargetToAge() {
+        guard !hasEditedTarget else { return }
+        let typical = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: referenceSex)
+        targetLower = typical.lowerBound.rounded()
+        targetUpper = typical.upperBound.rounded()
     }
 
     /// Final step: compact pitch centered above the zero-shift CTA bar.
@@ -242,7 +280,7 @@ struct OnboardingView: View {
                     Text("Go further with VO2+")
                         .font(.system(.title, design: .rounded, weight: .bold))
                         .multilineTextAlignment(.center)
-                    Text("Extras that sit on top of your Apple Health estimates.")
+                    Text("Your number, trend, and fitness age stay free. VO2+ adds deeper context on top:")
                         .font(.system(.subheadline, design: .rounded))
                         .foregroundStyle(Theme.textSecondary)
                         .multilineTextAlignment(.center)
@@ -254,13 +292,13 @@ struct OnboardingView: View {
                         icon: "chart.bar.xaxis",
                         color: Theme.cardio,
                         title: "Deep Trends",
-                        detail: "Compare 30, 90, and 180-day windows"
+                        detail: "Compare 30, 90, and 180-day windows side by side"
                     )
                     TrialSellingPoint(
                         icon: "scope",
                         color: Theme.cardioBlue,
                         title: "Target outlook",
-                        detail: "Direction and broad timeframe to your target"
+                        detail: "Direction and broad timeframe toward your target"
                     )
                     TrialSellingPoint(
                         icon: "person.2.crop.square.stack",
@@ -305,7 +343,7 @@ struct OnboardingView: View {
     private var aboveButtonContent: some View {
         switch step {
         case .welcome: welcomeTrustLine
-        case .setup: EmptyView()
+        case .profile, .target: EmptyView()
         case .trial: trialSoftExitAndDisclosure
         }
     }
@@ -316,15 +354,23 @@ struct OnboardingView: View {
         case .welcome:
             Button {
                 Task { await requestHealthAccessIfNeeded() }
-                withAnimation(.easeInOut(duration: 0.25)) { step = .setup }
+                withAnimation(.easeInOut(duration: 0.25)) { step = .profile }
             } label: {
                 primaryLabel("Continue")
             }
             .padding(.horizontal, 24)
-        case .setup:
+        case .profile:
             Button {
                 settings.chronologicalAge = age
                 settings.referenceSex = referenceSex
+                anchorTargetToAge()
+                withAnimation(.easeInOut(duration: 0.25)) { step = .target }
+            } label: {
+                primaryLabel("Continue")
+            }
+            .padding(.horizontal, 24)
+        case .target:
+            Button {
                 settings.targetLower = targetLower
                 settings.targetUpper = targetUpper
                 withAnimation(.easeInOut(duration: 0.25)) { step = .trial }
@@ -380,11 +426,11 @@ struct OnboardingView: View {
             Button {
                 finishOnboarding()
             } label: {
-                Text("Get Started")
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                    .foregroundStyle(Theme.textSecondary)
+                Text("Continue with the free version")
+                    .font(.system(.caption, design: .rounded, weight: .medium))
+                    .foregroundStyle(Theme.textTertiary)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 6)
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 24)
