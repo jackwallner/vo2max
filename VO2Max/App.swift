@@ -112,18 +112,17 @@ private struct MainTabView: View {
     @State private var selection = 0
 
     var body: some View {
-        // Floating glass capsule tab bar (the Total Calories pattern): content
-        // lives in a ZStack and scrolls edge-to-edge under a custom
-        // ultraThinMaterial capsule, instead of the opaque native tab bar.
-        // Tabs stay alive and toggle via opacity so switching is instant.
+        // Floating translucent material capsule tab bar, matching Total Calories:
+        // no full-width opaque bar, content extends beneath the capsule, and the
+        // selected tab gets a lighter tinted pill inside the glass container.
         ZStack(alignment: .bottom) {
             tabContent(NavigationStack { DashboardView() }, tab: 0)
-            tabContent(NavigationStack { HistoryView() }, tab: 1, reservesTabBarSpace: true)
+            tabContent(NavigationStack { HistoryView() }, tab: 1)
             tabContent(NavigationStack { PlusTabView() }, tab: 2, reservesTabBarSpace: true)
 
             HStack(spacing: 0) {
-                TabButton(icon: "heart.text.square", label: "Today", isSelected: selection == 0) { selection = 0 }
-                TabButton(icon: "chart.xyaxis.line", label: "Trends", isSelected: selection == 1) { selection = 1 }
+                TabButton(icon: "heart.fill", label: "Today", isSelected: selection == 0) { selection = 0 }
+                TabButton(icon: "chart.bar.fill", label: "Trends", isSelected: selection == 1) { selection = 1 }
                 TabButton(icon: "sparkles", label: "VO2+", isSelected: selection == 2) { selection = 2 }
             }
             .padding(.horizontal, 8)

@@ -3,8 +3,8 @@ import SwiftUI
 struct AgeWheelPicker: View {
     @Binding var age: Int
     let range: ClosedRange<Int>
-    /// Explicit row text color. Onboarding renders the wheel on a fixed navy
-    /// card, so it passes white; Settings keeps the adaptive default.
+    /// Explicit row text color. Onboarding uses a fixed light input surface;
+    /// Settings keeps the adaptive system default.
     let textColor: Color?
 
     init(age: Binding<Int>, range: ClosedRange<Int> = 18...90, textColor: Color? = nil) {
