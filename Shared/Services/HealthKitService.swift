@@ -10,7 +10,7 @@ private let healthLogger = Logger(subsystem: "com.jackwallner.vo2max", category:
 final class HealthKitService: ObservableObject {
     static let shared = HealthKitService()
 
-    @Published private(set) var isAuthorized = false
+    @Published private(set) var isAuthorized: Bool
     @Published private(set) var isRefreshing = false
     @Published private(set) var lastError: String?
 
@@ -21,7 +21,34 @@ final class HealthKitService: ObservableObject {
         .unitDivided(by: .minute())
     private var observerQuery: HKObserverQuery?
 
-    private init() {}
+    private static let grantedKey = "hasGrantedHealthAccess"
+
+    /// Persisted proof that Health read access was granted at least once. HealthKit
+    /// never reveals read-grant state, and the request-status probe can transiently
+    /// fail (healthd not ready right after a cold launch), so deriving "connected"
+    /// live from the probe made the Settings chip and empty-state copy flap on
+    /// random launches. This flag seeds `isAuthorized` from the first frame and is
+    /// only ever set true — a flaky probe can never clear it.
+    private var hasGrantedHealthAccess: Bool {
+        get { (UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard).bool(forKey: Self.grantedKey) }
+        set { (UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard).set(newValue, forKey: Self.grantedKey) }
+    }
+
+    private init() {
+        // Read defaults directly: instance members aren't available until init
+        // completes. Returning users who granted before start out connected.
+        isAuthorized = (UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard).bool(forKey: Self.grantedKey)
+    }
+
+    /// Lock in the connected state from positive evidence: a granted authorization
+    /// request, an `.unnecessary` probe, or a fetch that returned rows. Persists
+    /// across launches and only ever moves toward authorized, so a later transient
+    /// probe failure can't downgrade a working install.
+    private func markAuthorized() {
+        hasGrantedHealthAccess = true
+        if !isAuthorized { isAuthorized = true }
+        installObserver()  // idempotent: no-op if already running
+    }
 
     func requestAuthorization() async throws {
         #if DEBUG
@@ -36,8 +63,7 @@ final class HealthKitService: ObservableObject {
             return
         }
         try await store.requestAuthorization(toShare: [], read: [vo2Type])
-        isAuthorized = true
-        installObserver()
+        markAuthorized()
         await refreshCache()
     }
 
@@ -50,12 +76,20 @@ final class HealthKitService: ObservableObject {
         }
         #endif
         guard HKHealthStore.isHealthDataAvailable() else { return }
-        let status = await authorizationRequestStatus()
-        if status == .unnecessary {
-            isAuthorized = true
-            installObserver()
-            await refreshCache()
+
+        // The request-status probe only tells us whether the permission sheet
+        // still needs showing; it can also transiently fail and return nil.
+        // `.unnecessary` proves we were already prompted, so lock in access; any
+        // other result is left to the fetch below and never downgrades the flag.
+        if await authorizationRequestStatus() == .unnecessary {
+            markAuthorized()
         }
+
+        // Always attempt a fetch regardless of the probe. For reads, "no data"
+        // and "denied" are indistinguishable, so a flaky probe must never stop
+        // us from loading data; a fetch that returns rows is itself proof of
+        // access and locks in the connected state (see refreshCache).
+        await refreshCache()
     }
 
     func refreshCache() async {
@@ -66,8 +100,20 @@ final class HealthKitService: ObservableObject {
             let readings = try await fetchReadings(days: 365)
             try cache(readings: readings)
             lastError = nil
+            // Rows came back, which is only possible with read access granted.
+            // Lock in the connected state so a later flaky probe can't undo it.
+            if !readings.isEmpty {
+                markAuthorized()
+            }
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
+            // A never-determined authorization state throws here (fresh install
+            // before onboarding grants access). That's expected, not a failure,
+            // and must not paint a user-facing "Could not refresh" error.
+            if (error as? HKError)?.code == .errorAuthorizationNotDetermined {
+                healthLogger.info("Refresh skipped: HealthKit authorization not yet determined")
+                return
+            }
             healthLogger.error("Refresh failed: \(String(describing: error), privacy: .public)")
             lastError = "Could not refresh Apple Health data."
         }

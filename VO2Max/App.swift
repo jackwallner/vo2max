@@ -32,10 +32,12 @@ struct VO2MaxApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     guard phase == .active else { return }
                     Task {
-                        // Refreshing before Health access is granted throws and
-                        // painted a red "Could not refresh" error on every
-                        // foreground of a fresh install.
-                        guard HealthKitService.shared.isAuthorized else { return }
+                        // Always refresh on foreground: "no data" and "denied" are
+                        // indistinguishable for reads, so gating on isAuthorized
+                        // meant a flaky launch-time probe blanked the screen.
+                        // refreshCache self-guards the never-authorized case (it
+                        // swallows errorAuthorizationNotDetermined) so this no
+                        // longer paints a red error on a fresh install.
                         await HealthKitService.shared.refreshCache()
                     }
                 }
