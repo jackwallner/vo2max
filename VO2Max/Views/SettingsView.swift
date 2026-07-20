@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+@preconcurrency import RevenueCat
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: GoalSettings
@@ -10,6 +11,11 @@ struct SettingsView: View {
 
     @State private var showPaywall = false
     @State private var paywallFocus: PlusFeature?
+    @State private var showTrialOffer = false
+    @State private var trialOfferFocus: PlusFeature?
+    @State private var trialOfferDetent: PresentationDetent = .fraction(0.68)
+    @State private var trialPurchaseInFlight = false
+    @State private var trialPurchaseError: String?
     @State private var reportPreview: ReportPreview?
     @State private var isGeneratingReport = false
     @State private var reportError: String?
@@ -45,14 +51,89 @@ struct SettingsView: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: paywallFocus)
         }
+        .sheet(isPresented: $showTrialOffer, onDismiss: {
+            trialPurchaseInFlight = false
+            trialPurchaseError = nil
+        }) {
+            let package = directConversionPackage
+            TrialOfferSheet(
+                focus: trialOfferFocus,
+                // Only pass a trial label when this Apple ID is still eligible —
+                // otherwise the sheet frames a straight yearly purchase.
+                offerLabel: package.flatMap { store.eligibleIntroLabel(for: $0) },
+                priceLabel: package?.vo2PriceLabel,
+                ctaTitle: trialCTATitle(for: package),
+                disclosureText: trialDisclosure(for: package),
+                directPurchase: package != nil,
+                isPurchasing: trialPurchaseInFlight,
+                errorMessage: trialPurchaseError,
+                onStartTrial: { startDirectTrialPurchase() },
+                onDismiss: { showTrialOffer = false }
+            )
+            .presentationDetents([.fraction(0.68), .large], selection: $trialOfferDetent)
+            .presentationDragIndicator(.visible)
+            .interactiveDismissDisabled(trialPurchaseInFlight)
+        }
         .sheet(item: $reportPreview) { preview in
             PDFPreviewSheet(title: preview.title, url: preview.url, shareText: preview.shareText)
         }
     }
 
-    private func presentPaywall(focus: PlusFeature? = nil) {
-        paywallFocus = focus
-        showPaywall = true
+    /// Always the yearly package. StoreKit applies the free trial when eligible;
+    /// used-trial accounts pay the yearly price on the same product — no separate
+    /// SKU and no nested plan picker required.
+    private var directConversionPackage: Package? {
+        store.yearlyPackage ?? store.packages.first
+    }
+
+    /// Present the personalized trial offer sheet, leading with the capability
+    /// the user just reached for. Mirrors the Vitals+ settings behavior.
+    private func presentTrialOffer(focus: PlusFeature? = nil) {
+        trialOfferFocus = focus
+        trialPurchaseError = nil
+        trialOfferDetent = .fraction(0.68)
+        showTrialOffer = true
+    }
+
+    private func trialCTATitle(for package: Package?) -> String {
+        guard let package else { return "Continue with VO2+" }
+        return VO2ConversionCopy.ctaLabel(
+            trialLabel: package.vo2IntroOfferLabel,
+            priceLabel: package.vo2PriceLabel,
+            eligibleForTrial: store.isEligibleForIntroOffer(package)
+        )
+    }
+
+    private func trialDisclosure(for package: Package?) -> String? {
+        guard let package else { return nil }
+        return VO2ConversionCopy.sheetDisclosure(
+            trialLabel: package.vo2IntroOfferLabel,
+            priceLabel: package.vo2PriceLabel,
+            eligibleForTrial: store.isEligibleForIntroOffer(package)
+        )
+    }
+
+    /// Buy the yearly product in place (Apple confirm sheet). The trial applies
+    /// only when eligible; otherwise it's a straight yearly purchase. Falls back
+    /// to the full plan picker if products never loaded.
+    private func startDirectTrialPurchase() {
+        guard let package = directConversionPackage else {
+            showTrialOffer = false
+            paywallFocus = trialOfferFocus
+            showPaywall = true
+            return
+        }
+        trialPurchaseError = nil
+        trialPurchaseInFlight = true
+        Task { @MainActor in
+            defer { trialPurchaseInFlight = false }
+            switch await store.purchase(package) {
+            case .purchased, .pending:
+                showTrialOffer = false
+            case .cancelled, .none:
+                trialPurchaseError = store.errorMessage
+            }
+        }
     }
 
     /// Opens the Apple Health app, where read-only access toggles live (profile ›
@@ -182,7 +263,7 @@ struct SettingsView: View {
                     .foregroundStyle(Theme.positive)
             } else {
                 Button {
-                    presentPaywall()
+                    presentTrialOffer()
                 } label: {
                     Label(store.shortConversionCTALabel, systemImage: "sparkles")
                 }
@@ -223,7 +304,7 @@ struct SettingsView: View {
                 .disabled(isGeneratingReport || points.isEmpty)
             } else {
                 Button {
-                    presentPaywall(focus: .reports)
+                    presentTrialOffer(focus: .reports)
                 } label: {
                     lockedRow(feature: .reports)
                 }
@@ -294,7 +375,7 @@ struct SettingsView: View {
             .tint(Theme.cardio)
         } else {
             Button {
-                presentPaywall(focus: feature)
+                presentTrialOffer(focus: feature)
             } label: {
                 lockedRow(feature: feature)
             }
