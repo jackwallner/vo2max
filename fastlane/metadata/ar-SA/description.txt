@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+اطلع على تقدير Apple Health VO2 max واتجاه اللياقة البدنية للقلب في لوحة معلومات هادئة ومركزة.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+يظهر متتبع VO2 Max اليومي:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• أحدث تقديرات Apple Health
+• تحسن أو استقرار أو انخفاض الاتجاه
+• نطاق الهدف الشخصي
+• تاريخ لمدة سنة واحدة
+• تقدير واسع لسن اللياقة البدنية بمنهجية واضحة
+• الشاشة الرئيسية والحاجيات شاشة القفل
+• تطبيق Apple Watch ومضاعفاتها
+• التوجيه عندما لا يتوفر أي تقدير
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+تبقى بيانات اللياقة البدنية الخاصة بك على أجهزتك. يقرأ التطبيق تقديرات Cardio Fitness من Apple Health ولا يكتب البيانات الصحية مطلقًا.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+يعد VO2 max وعمر اللياقة البدنية تقديرات واسعة النطاق للوعي باللياقة البدنية. لا يقوم هذا التطبيق بتشخيص أو علاج أو علاج أو منع أي حالة صحية. إنه ليس بديلاً عن المشورة الطبية المتخصصة.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro اختياري. اختر 1.99 دولارًا أمريكيًا شهريًا، أو 14.99 دولارًا أمريكيًا سنويًا، أو شراء بقيمة 29.99 دولارًا أمريكيًا مدى الحياة. تتضمن الخطط الشهرية والسنوية نسخة تجريبية مجانية مدتها 7 أيام للمشتركين الجدد المؤهلين. الأسعار المعروضة هي أسعار الولايات المتحدة وقد تختلف حسب المنطقة. يتم تحميل الدفع على حساب Apple الخاص بك عند التأكيد. يتم تجديد الاشتراكات تلقائيًا ما لم يتم إلغاؤها قبل 24 ساعة على الأقل من انتهاء الفترة الحالية. يتم تحميل حسابك للتجديد خلال 24 ساعة قبل انتهاء الفترة الحالية. إدارة الاشتراكات أو إلغاؤها في إعدادات حساب Apple.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+شروط الاستخدام (اتفاقية ترخيص المستخدم النهائي القياسية من Apple): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+سياسة الخصوصية: https://jackwallner.github.io/vo2max/privacy-policy.html

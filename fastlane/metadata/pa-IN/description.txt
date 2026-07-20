@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+ਇੱਕ ਸ਼ਾਂਤ, ਫੋਕਸਡ ਡੈਸ਼ਬੋਰਡ ਵਿੱਚ ਆਪਣਾ Apple Health VO2 ਅਧਿਕਤਮ ਅਨੁਮਾਨ ਅਤੇ ਕਾਰਡੀਓ ਫਿਟਨੈਸ ਰੁਝਾਨ ਦੇਖੋ।
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 ਮੈਕਸ ਡੇਲੀ ਟਰੈਕਰ ਦਿਖਾਉਂਦਾ ਹੈ:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• ਤੁਹਾਡਾ ਤਾਜ਼ਾ ਐਪਲ ਹੈਲਥ ਅਨੁਮਾਨ
+• ਸੁਧਾਰ, ਸਥਿਰ, ਜਾਂ ਘਟਦੇ ਰੁਝਾਨ
+• ਇੱਕ ਨਿੱਜੀ ਟੀਚਾ ਸੀਮਾ
+• ਇੱਕ ਸਾਲ ਦਾ ਇਤਿਹਾਸ
+• ਸਪਸ਼ਟ ਕਾਰਜਪ੍ਰਣਾਲੀ ਦੇ ਨਾਲ ਇੱਕ ਵਿਆਪਕ ਤੰਦਰੁਸਤੀ-ਉਮਰ ਦਾ ਅਨੁਮਾਨ
+• ਹੋਮ ਸਕ੍ਰੀਨ ਅਤੇ ਲੌਕ ਸਕ੍ਰੀਨ ਵਿਜੇਟਸ
+• ਐਪਲ ਵਾਚ ਐਪ ਅਤੇ ਜਟਿਲਤਾਵਾਂ
+• ਕੋਈ ਅਨੁਮਾਨ ਉਪਲਬਧ ਨਾ ਹੋਣ 'ਤੇ ਮਾਰਗਦਰਸ਼ਨ
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+ਤੁਹਾਡਾ ਫਿਟਨੈਸ ਡੇਟਾ ਤੁਹਾਡੀਆਂ ਡਿਵਾਈਸਾਂ 'ਤੇ ਰਹਿੰਦਾ ਹੈ। ਐਪ ਐਪਲ ਹੈਲਥ ਤੋਂ ਕਾਰਡੀਓ ਫਿਟਨੈਸ ਅਨੁਮਾਨ ਪੜ੍ਹਦੀ ਹੈ ਅਤੇ ਕਦੇ ਵੀ ਹੈਲਥ ਡੇਟਾ ਨਹੀਂ ਲਿਖਦੀ ਹੈ।
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 ਅਧਿਕਤਮ ਅਤੇ ਤੰਦਰੁਸਤੀ ਦੀ ਉਮਰ ਤੰਦਰੁਸਤੀ ਜਾਗਰੂਕਤਾ ਲਈ ਵਿਆਪਕ ਅਨੁਮਾਨ ਹਨ। ਇਹ ਐਪ ਕਿਸੇ ਵੀ ਸਿਹਤ ਸਥਿਤੀ ਦਾ ਨਿਦਾਨ, ਇਲਾਜ, ਇਲਾਜ ਜਾਂ ਰੋਕਥਾਮ ਨਹੀਂ ਕਰਦਾ ਹੈ। ਇਹ ਪੇਸ਼ੇਵਰ ਡਾਕਟਰੀ ਸਲਾਹ ਦਾ ਬਦਲ ਨਹੀਂ ਹੈ।
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 ਮੈਕਸ ਪ੍ਰੋ ਵਿਕਲਪਿਕ ਹੈ। $1.99 ਮਹੀਨਾਵਾਰ, $14.99 ਸਾਲਾਨਾ, ਜਾਂ $29.99 ਜੀਵਨ ਭਰ ਦੀ ਖਰੀਦ ਚੁਣੋ। ਮਾਸਿਕ ਅਤੇ ਸਾਲਾਨਾ ਯੋਜਨਾਵਾਂ ਵਿੱਚ ਯੋਗ ਨਵੇਂ ਗਾਹਕਾਂ ਲਈ 7-ਦਿਨ ਦੀ ਮੁਫ਼ਤ ਅਜ਼ਮਾਇਸ਼ ਸ਼ਾਮਲ ਹੈ। ਦਿਖਾਈਆਂ ਗਈਆਂ ਕੀਮਤਾਂ ਯੂ.ਐੱਸ. ਦੀਆਂ ਕੀਮਤਾਂ ਹਨ ਅਤੇ ਖੇਤਰ ਮੁਤਾਬਕ ਵੱਖ-ਵੱਖ ਹੋ ਸਕਦੀਆਂ ਹਨ। ਪੁਸ਼ਟੀਕਰਨ 'ਤੇ ਤੁਹਾਡੇ Apple ਖਾਤੇ ਤੋਂ ਭੁਗਤਾਨ ਦਾ ਚਾਰਜ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਗਾਹਕੀ ਆਪਣੇ ਆਪ ਰੀਨਿਊ ਹੋ ਜਾਂਦੀ ਹੈ ਜਦੋਂ ਤੱਕ ਮੌਜੂਦਾ ਮਿਆਦ ਖਤਮ ਹੋਣ ਤੋਂ ਘੱਟੋ-ਘੱਟ 24 ਘੰਟੇ ਪਹਿਲਾਂ ਰੱਦ ਨਹੀਂ ਕੀਤੀ ਜਾਂਦੀ। ਮੌਜੂਦਾ ਮਿਆਦ ਦੇ ਖਤਮ ਹੋਣ ਤੋਂ 24 ਘੰਟਿਆਂ ਦੇ ਅੰਦਰ ਤੁਹਾਡੇ ਖਾਤੇ ਨੂੰ ਨਵਿਆਉਣ ਲਈ ਚਾਰਜ ਕੀਤਾ ਜਾਂਦਾ ਹੈ। ਐਪਲ ਖਾਤਾ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਗਾਹਕੀਆਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ ਜਾਂ ਰੱਦ ਕਰੋ।
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+ਵਰਤੋਂ ਦੀਆਂ ਸ਼ਰਤਾਂ (ਐਪਲ ਸਟੈਂਡਰਡ EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+ਗੋਪਨੀਯਤਾ ਨੀਤੀ: https://jackwallner.github.io/vo2max/privacy-policy.html

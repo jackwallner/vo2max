@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+உங்கள் Apple Health VO2 அதிகபட்ச மதிப்பீடு மற்றும் கார்டியோ ஃபிட்னஸ் போக்கை அமைதியான, கவனம் செலுத்தும் டாஷ்போர்டில் பார்க்கவும்.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 மேக்ஸ் டெய்லி டிராக்கர் நிகழ்ச்சிகள்:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• உங்களின் சமீபத்திய Apple Health மதிப்பீடு
+• மேம்படுத்துதல், நிலையானது அல்லது குறைந்துவரும் போக்கு
+• தனிப்பட்ட இலக்கு வரம்பு
+• ஒரு வருட வரலாறு
+• தெளிவான வழிமுறையுடன் கூடிய பரந்த உடற்பயிற்சி வயது மதிப்பீடு
+• முகப்புத் திரை மற்றும் பூட்டுத் திரை விட்ஜெட்டுகள்
+• Apple Watch பயன்பாடு மற்றும் சிக்கல்கள்
+• மதிப்பீடு எதுவும் கிடைக்காதபோது வழிகாட்டுதல்
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+உங்கள் உடற்பயிற்சி தரவு உங்கள் சாதனங்களில் இருக்கும். ஆப்பிள் ஹெல்த் வழங்கும் கார்டியோ ஃபிட்னஸ் மதிப்பீடுகளை ஆப்ஸ் படிக்கிறது மற்றும் ஹெல்த் தரவை எழுதாது.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 அதிகபட்சம் மற்றும் உடற்பயிற்சி வயது ஆகியவை உடற்பயிற்சி விழிப்புணர்வுக்கான பரந்த மதிப்பீடுகள். இந்த ஆப்ஸ் எந்தவொரு உடல்நலக் குறைவையும் கண்டறியவோ, சிகிச்சையளிக்கவோ, குணப்படுத்தவோ அல்லது தடுக்கவோ முடியாது. இது தொழில்முறை மருத்துவ ஆலோசனைக்கு மாற்றாக இல்லை.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro விருப்பமானது. மாதந்தோறும் $1.99, ஆண்டுக்கு $14.99 அல்லது வாழ்நாள் முழுவதும் $29.99 வாங்குவதைத் தேர்ந்தெடுக்கவும். மாதாந்திர மற்றும் வருடாந்திர திட்டங்களில் தகுதியுள்ள புதிய சந்தாதாரர்களுக்கு 7 நாள் இலவச சோதனை அடங்கும். காட்டப்படும் விலைகள் அமெரிக்க விலைகள் மற்றும் பிராந்தியத்தின் அடிப்படையில் மாறுபடலாம். உறுதிப்படுத்தலின் போது உங்கள் ஆப்பிள் கணக்கிற்கு கட்டணம் வசூலிக்கப்படும். தற்போதைய காலம் முடிவடைவதற்கு குறைந்தபட்சம் 24 மணிநேரத்திற்கு முன்பு சந்தாக்கள் தானாகவே புதுப்பிக்கப்படும். தற்போதைய காலம் முடிவடைவதற்கு 24 மணி நேரத்திற்குள் உங்கள் கணக்கைப் புதுப்பிக்க கட்டணம் விதிக்கப்படும். Apple கணக்கு அமைப்புகளில் சந்தாக்களை நிர்வகிக்கவும் அல்லது ரத்து செய்யவும்.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+பயன்பாட்டு விதிமுறைகள் (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+தனியுரிமைக் கொள்கை: https://jackwallner.github.io/vo2max/privacy-policy.html

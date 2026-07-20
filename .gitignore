@@ -15,8 +15,18 @@ Package.resolved
 .env*
 Config/Secrets.xcconfig
 scripts/.asc-state.json
+scripts/.astro-app.json
+scripts/metadata-translations-cache.json
+fastlane/metadata.bak.*/
+fastlane/report.xml
 
 # Miscellaneous
 .DS_Store
 *.swp
 *~
+
+fastlane/README.md
+fastlane/metadata/primary_first_sub_category.txt
+fastlane/metadata/primary_second_sub_category.txt
+fastlane/metadata/secondary_first_sub_category.txt
+fastlane/metadata/secondary_second_sub_category.txt

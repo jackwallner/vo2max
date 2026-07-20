@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+మీ Apple Health VO2 గరిష్ట అంచనా మరియు కార్డియో ఫిట్‌నెస్ ట్రెండ్‌ను ప్రశాంతంగా, కేంద్రీకృతమైన డాష్‌బోర్డ్‌లో చూడండి.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 మాక్స్ డైలీ ట్రాకర్ షోలు:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• మీ తాజా Apple హెల్త్ అంచనా
+• మెరుగుపరచడం, స్థిరంగా లేదా క్షీణిస్తున్న ధోరణి
+• వ్యక్తిగత లక్ష్య పరిధి
+• ఒక సంవత్సరం చరిత్ర
+• స్పష్టమైన పద్దతితో విస్తృత ఫిట్‌నెస్-వయస్సు అంచనా
+• హోమ్ స్క్రీన్ మరియు లాక్ స్క్రీన్ విడ్జెట్‌లు
+• Apple వాచ్ యాప్ మరియు సమస్యలు
+• అంచనా అందుబాటులో లేనప్పుడు మార్గదర్శకత్వం
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+మీ ఫిట్‌నెస్ డేటా మీ పరికరాల్లోనే ఉంటుంది. యాప్ ఆపిల్ హెల్త్ నుండి కార్డియో ఫిట్‌నెస్ అంచనాలను చదువుతుంది మరియు ఆరోగ్య డేటాను ఎప్పుడూ వ్రాయదు.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 గరిష్టం మరియు ఫిట్‌నెస్ వయస్సు ఫిట్‌నెస్ అవగాహన కోసం విస్తృత అంచనాలు. ఈ యాప్ ఎలాంటి ఆరోగ్య పరిస్థితిని నిర్ధారించదు, చికిత్స చేయదు, నయం చేయదు లేదా నిరోధించదు. ఇది వృత్తిపరమైన వైద్య సలహాకు ప్రత్యామ్నాయం కాదు.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 మాక్స్ ప్రో ఐచ్ఛికం. నెలవారీ $1.99, సంవత్సరానికి $14.99 లేదా జీవితకాల కొనుగోలు $29.99ని ఎంచుకోండి. అర్హత ఉన్న కొత్త సబ్‌స్క్రైబర్‌ల కోసం నెలవారీ మరియు వార్షిక ప్లాన్‌లలో 7-రోజుల ఉచిత ట్రయల్ ఉంటుంది. చూపబడిన ధరలు U.S. ధరలు మరియు ప్రాంతాల వారీగా మారవచ్చు. నిర్ధారణ వద్ద మీ Apple ఖాతాకు చెల్లింపు ఛార్జ్ చేయబడుతుంది. ప్రస్తుత వ్యవధి ముగియడానికి కనీసం 24 గంటల ముందు రద్దు చేయకపోతే సభ్యత్వాలు స్వయంచాలకంగా పునరుద్ధరించబడతాయి. ప్రస్తుత వ్యవధి ముగిసే ముందు 24 గంటలలోపు పునరుద్ధరణ కోసం మీ ఖాతాకు ఛార్జీ విధించబడుతుంది. Apple ఖాతా సెట్టింగ్‌లలో సభ్యత్వాలను నిర్వహించండి లేదా రద్దు చేయండి.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+ఉపయోగ నిబంధనలు (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+గోప్యతా విధానం: https://jackwallner.github.io/vo2max/privacy-policy.html

@@ -1,1 +1,1 @@
-Welcome to VO2 Max Daily Tracker. View your latest Apple Health estimate, trend, target range, widgets, and Watch complications.
+Üdvözöljük a VO2 Max Daily Trackerben. Tekintse meg az Apple Health becslését, a kardiofitnesz-trendet, a céltartományt, az edzettségi kort, a modulokat és az óra komplikációit.

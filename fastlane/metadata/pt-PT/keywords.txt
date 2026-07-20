@@ -1,1 +1,1 @@
-cardio,aeróbico,saúde,fitness,relógio,monitor,treino,resistência,recuperação,vo2max,cardiofitness
+cardio,aeróbico,saúde,relógio,treino,resistência,recuperação,vo2max,cardiofitness,healthkit,insights

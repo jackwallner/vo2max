@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+Lihat estimasi VO2 max Apple Health dan tren kebugaran kardio Anda di dasbor yang tenang dan fokus.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+Pelacak Harian VO2 Max menunjukkan:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• Perkiraan Apple Health terbaru Anda
+• Tren membaik, stabil, atau menurun
+• Rentang target pribadi
+• Sejarah satu tahun
+• Perkiraan usia kebugaran yang luas dengan metodologi yang jelas
+• Widget Layar Beranda dan Layar Kunci
+• Aplikasi Apple Watch dan komplikasinya
+• Panduan ketika perkiraan tidak tersedia
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+Data kebugaran Anda tetap ada di perangkat Anda. Aplikasi ini membaca perkiraan Cardio Fitness dari Apple Health dan tidak pernah menulis data Kesehatan.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 max dan usia kebugaran merupakan perkiraan luas untuk kesadaran kebugaran. Aplikasi ini tidak mendiagnosis, mengobati, menyembuhkan, atau mencegah kondisi kesehatan apa pun. Ini bukan pengganti nasihat medis profesional.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro bersifat opsional. Pilih $1,99 per bulan, $14,99 per tahun, atau pembelian seumur hidup $29,99. Paket bulanan dan tahunan mencakup uji coba gratis 7 hari untuk pelanggan baru yang memenuhi syarat. Harga yang ditampilkan adalah harga AS dan mungkin berbeda di setiap wilayah. Pembayaran dibebankan ke Akun Apple Anda di konfirmasi. Langganan diperpanjang secara otomatis kecuali dibatalkan setidaknya 24 jam sebelum periode berjalan berakhir. Akun Anda dikenakan biaya untuk perpanjangan dalam waktu 24 jam sebelum periode berjalan berakhir. Kelola atau batalkan langganan di pengaturan Akun Apple.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+Ketentuan Penggunaan (EULA Standar Apple): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Kebijakan Privasi: https://jackwallner.github.io/vo2max/privacy-policy.html

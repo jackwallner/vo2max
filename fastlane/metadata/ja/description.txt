@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+Apple Health の VO2 max 推定値と有酸素運動フィットネスの傾向を、落ち着いた集中的なダッシュボードで確認できます。
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 Max Daily Tracker は以下を示します:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• 最新の Apple 健康診断結果
+• 改善傾向、安定傾向、または減少傾向
+• 個人的な目標範囲
+• 1 年間の履歴
+• 明確な方法論による広範なフィットネス年齢の推定
+• ホーム画面とロック画面のウィジェット
+• Apple Watchアプリとコンプリケーション
+• 見積りが利用できない場合のガイダンス
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+フィットネス データはデバイス上に残ります。このアプリは Apple Health から Cardio Fitness の推定値を読み取りますが、Health データを書き込むことはありません。
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 max とフィットネス年齢は、フィットネス意識の広範な推定値です。このアプリは、いかなる健康状態も診断、治療、治癒、予防するものではありません。専門的な医学的アドバイスに代わるものではありません。
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max プロはオプションです。月額 1.99 ドル、年間 14.99 ドル、または生涯購入 29.99 ドルからお選びください。月額プランと年間プランには、対象となる新規加入者向けの 7 日間の無料トライアルが含まれています。表示されている価格は米国の価格であり、地域によって異なる場合があります。支払いは確認時に Apple アカウントに請求されます。現在の期間が終了する少なくとも 24 時間前にキャンセルしない限り、サブスクリプションは自動的に更新されます。現在の期間が終了する 24 時間以内に、アカウントに更新料金が請求されます。 Apple アカウント設定でサブスクリプションを管理またはキャンセルします。
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+利用規約 (Apple 標準 EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+プライバシーポリシー: https://jackwallner.github.io/vo2max/privacy-policy.html

@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+Sakin, odaklanmış bir kontrol panelinde Apple Health VO2 maksimum tahmininizi ve kardiyo fitness trendinizi görün.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 Max Günlük Takipçi şunları gösterir:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• En son Apple Health tahmininiz
+• İyileşen, istikrarlı veya azalan trend
+• Kişisel hedef aralığı
+• Bir yıllık geçmiş
+• Açık metodolojiye sahip geniş bir kondisyon yaşı tahmini
+• Ana Ekran ve Kilit Ekranı widget'ları
+• Apple Watch uygulaması ve komplikasyonları
+• Tahmin mevcut olmadığında rehberlik
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+Fitness verileriniz cihazlarınızda kalır. Uygulama, Apple Health'ten Cardio Fitness tahminlerini okur ve hiçbir zaman Sağlık verilerini yazmaz.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 max ve kondisyon yaşı, kondisyon farkındalığına ilişkin genel tahminlerdir. Bu uygulama herhangi bir sağlık durumunu teşhis etmez, tedavi etmez, tedavi etmez veya engellemez. Profesyonel tıbbi tavsiyenin yerini tutmaz.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro isteğe bağlıdır. Aylık 1,99 ABD Doları, yıllık 14,99 ABD Doları veya ömür boyu 29,99 ABD Doları satın alma seçeneğini seçin. Aylık ve yıllık planlar, uygun yeni aboneler için 7 günlük ücretsiz deneme sürümünü içerir. Gösterilen fiyatlar ABD fiyatlarıdır ve bölgeye göre değişiklik gösterebilir. Ödeme onaylandıktan sonra Apple Hesabınızdan tahsil edilir. Abonelikler, geçerli dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir. Cari dönem sona ermeden 24 saat önce hesabınızdan yenileme ücreti alınır. Abonelikleri Apple Hesabı ayarlarından yönetin veya iptal edin.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+Kullanım Koşulları (Apple Standart EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Gizlilik Politikası: https://jackwallner.github.io/vo2max/privacy-policy.html

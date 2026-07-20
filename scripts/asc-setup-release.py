@@ -110,19 +110,33 @@ def main() -> None:
     asc_lib.API = "https://api.appstoreconnect.apple.com/v1"
     existing_locales = {item["attributes"].get("locale") for item in existing_locs}
     locales = json.loads((Path(__file__).parent / "asc-supported-locales.json").read_text())["locales"]
+    localization_by_locale = {item["attributes"].get("locale"): item for item in existing_locs}
     for locale in locales:
-        if locale in existing_locales:
+        product_path = asc_lib.META / locale / "products.json"
+        product = json.loads(product_path.read_text()) if product_path.exists() else {}
+        name = product.get("lifetime_name") or PRODUCT_NAME
+        description = product.get("lifetime_desc") or PRODUCT_DESCRIPTION
+        existing = localization_by_locale.get(locale)
+        if existing:
+            attrs = existing.get("attributes", {})
+            if attrs.get("name") != name or attrs.get("description") != description:
+                client.patch(
+                    f"/inAppPurchaseLocalizations/{existing['id']}",
+                    {
+                        "data": {
+                            "type": "inAppPurchaseLocalizations",
+                            "id": existing["id"],
+                            "attributes": {"name": name, "description": description},
+                        }
+                    },
+                )
             continue
         client.post(
             "/inAppPurchaseLocalizations",
             {
                 "data": {
                     "type": "inAppPurchaseLocalizations",
-                    "attributes": {
-                        "locale": locale,
-                        "name": PRODUCT_NAME,
-                        "description": PRODUCT_DESCRIPTION,
-                    },
+                    "attributes": {"locale": locale, "name": name, "description": description},
                     "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": iap_id}}},
                 }
             },

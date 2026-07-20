@@ -1,1 +1,1 @@
-A calm VO2 max dashboard with cardio fitness trends, widgets, and Apple Watch complications. Private and local-first.
+ראה את הערכת Apple Health VO2 max שלך, מגמת כושר אירובי, גיל כושר, ווידג'טים וסיבוכים של Watch. פרטי ומקומי-ראשון.

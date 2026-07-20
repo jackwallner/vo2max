@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+조용하고 집중된 대시보드에서 Apple Health VO2 최대 추정치 및 심장 강화 피트니스 추세를 확인하세요.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 Max Daily Tracker는 다음을 보여줍니다.
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• 최근 Apple 건강 추정치
+• 개선, 안정 또는 감소 추세
+• 개인 목표 범위
+• 1년의 역사
+• 명확한 방법론을 사용한 광범위한 체력 연령 추정
+• 홈 화면 및 잠금 화면 위젯
+• Apple Watch 앱 및 컴플리케이션
+• 견적이 없을 때 안내
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+귀하의 피트니스 데이터는 귀하의 장치에 유지됩니다. 이 앱은 Apple 건강에서 심장 강화 피트니스 추정치를 읽고 건강 데이터를 쓰지 않습니다.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 최대치와 체력 연령은 체력 인식에 대한 광범위한 추정치입니다. 이 앱은 건강 상태를 진단, 치료, 치료 또는 예방하지 않습니다. 이는 전문적인 의학적 조언을 대체할 수 없습니다.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro는 선택 사항입니다. 월 $1.99, 연간 $14.99 또는 평생 $29.99 구매를 선택하세요. 월간 및 연간 요금제에는 자격을 갖춘 신규 가입자를 위한 7일 무료 평가판이 포함되어 있습니다. 표시된 가격은 미국 가격이며 지역에 따라 다를 수 있습니다. 확인 시 결제 금액은 Apple 계정으로 청구됩니다. 현재 기간이 종료되기 최소 24시간 전에 취소하지 않으면 구독이 자동으로 갱신됩니다. 현재 기간이 종료되기 24시간 이내에 갱신 비용이 귀하의 계정에 청구됩니다. Apple 계정 설정에서 구독을 관리하거나 취소하세요.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+이용 약관(Apple 표준 EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+개인 정보 보호 정책: https://jackwallner.github.io/vo2max/privacy-policy.html
