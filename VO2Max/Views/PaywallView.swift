@@ -88,6 +88,20 @@ enum PlusFeature: CaseIterable {
         case .extendedInsights: "Deeper context that appears inside the screens you already use."
         }
     }
+
+    /// Two related features shown under an intent-driven pitch (not random extras).
+    var companionFeatures: [PlusFeature] {
+        switch self {
+        case .deepTrends: [.targetProjection, .personalBest]
+        case .targetProjection: [.deepTrends, .fitnessBand]
+        case .fitnessBand: [.personalBest, .deepTrends]
+        case .personalBest: [.fitnessBand, .deepTrends]
+        case .readingAlerts: [.monthlyRecap, .reports]
+        case .monthlyRecap: [.readingAlerts, .reports]
+        case .reports: [.deepTrends, .monthlyRecap]
+        case .extendedInsights: [.deepTrends, .targetProjection]
+        }
+    }
 }
 
 struct PaywallView: View {
