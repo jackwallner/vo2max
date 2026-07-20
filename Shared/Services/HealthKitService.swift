@@ -23,14 +23,14 @@ final class HealthKitService: ObservableObject {
 
     private static let grantedKey = "hasGrantedHealthAccess"
 
-    /// Persisted proof that we have actually *read* a VO2 sample at least once —
-    /// the only unambiguous signal of read access. HealthKit never reveals read
-    /// grants, and `requestAuthorization` returns identically whether the user
-    /// allowed or denied, so we must NOT infer "connected" from the request
-    /// returning or from an `.unnecessary` probe (both are true after a denial).
-    /// A real data read is the one thing a denial can't fake. This seeds
-    /// `isAuthorized` from the first frame so users with data never flap, and is
-    /// only ever set true.
+    /// Persisted "we have been through the Health permission prompt" flag, mirror
+    /// of Vitals/Total Calories. HealthKit never reveals read grants and the
+    /// request-status probe can transiently fail (healthd not ready after a cold
+    /// launch), so this seeds `isAuthorized` from the first frame and is only ever
+    /// set true — a flaky probe can never flip it back, which is what caused the
+    /// original "no data connected" flap. Data display is independent of it (the
+    /// dashboard reads cached samples directly), so a denied user still sees a
+    /// graceful "waiting for your first estimate" state, not a dead end.
     private var hasGrantedHealthAccess: Bool {
         get { (UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard).bool(forKey: Self.grantedKey) }
         set { (UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard).set(newValue, forKey: Self.grantedKey) }
@@ -38,16 +38,17 @@ final class HealthKitService: ObservableObject {
 
     private init() {
         // Read defaults directly: instance members aren't available until init
-        // completes. Users who have ever read data start out connected.
+        // completes. Users who have been prompted before start out connected.
         isAuthorized = (UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard).bool(forKey: Self.grantedKey)
     }
 
-    /// Lock in the connected state from the one unambiguous signal: a fetch that
-    /// actually returned rows. Persists across launches and only moves toward
-    /// connected, so a later transient probe failure can't downgrade a working
-    /// install. Never call this merely because a request/probe completed — a
-    /// denied read-only app satisfies both of those.
-    private func markConnected() {
+    /// Mark that we've completed the authorization prompt. Like Vitals, this flips
+    /// on after the request returns or an `.unnecessary` probe — HealthKit can't
+    /// tell us allow vs deny for reads, so "prompted" is the strongest signal we
+    /// get, and treating it as connected is what lets the UI show data (or the
+    /// encouraging waiting state) immediately after the user grants, instead of
+    /// sending them back to Apple Health. Only ever moves toward authorized.
+    private func markAuthorized() {
         hasGrantedHealthAccess = true
         if !isAuthorized { isAuthorized = true }
         installObserver()  // idempotent: no-op if already running
@@ -66,10 +67,10 @@ final class HealthKitService: ObservableObject {
             return
         }
         try await store.requestAuthorization(toShare: [], read: [vo2Type])
-        // The request returns the same for allow and deny, so we can't claim
-        // access here. Install the observer for background delivery and let a
-        // real data read confirm the connection (see refreshCache/markConnected).
-        installObserver()
+        // Prompt complete: show the connected state right away (matches Vitals),
+        // then load data. A denial can't be distinguished here, but the dashboard
+        // reads cached samples independently so that stays graceful.
+        markAuthorized()
         await refreshCache()
     }
 
@@ -83,17 +84,15 @@ final class HealthKitService: ObservableObject {
         #endif
         guard HKHealthStore.isHealthDataAvailable() else { return }
 
-        // If we were already prompted, keep the observer alive for background
-        // delivery, but don't treat that as "connected" — a denial also reports
-        // `.unnecessary`. Only a data read (below) proves access.
+        // Mirror Vitals' re-check: `.unnecessary` means we were already prompted,
+        // so lock in the connected state. Any other result (including a transient
+        // nil) is left as-is and never downgrades the flag.
         if await authorizationRequestStatus() == .unnecessary {
-            installObserver()
+            markAuthorized()
         }
 
         // Always attempt a fetch. "No data" and "denied" are indistinguishable
-        // for reads, so a flaky probe must never stop us loading data; a fetch
-        // that returns rows is itself proof of access and locks in the connected
-        // state (see refreshCache).
+        // for reads, so a flaky probe must never stop us loading cached data.
         await refreshCache()
     }
 
@@ -108,7 +107,7 @@ final class HealthKitService: ObservableObject {
             // Rows came back, which is only possible with read access granted.
             // Lock in the connected state so a later flaky probe can't undo it.
             if !readings.isEmpty {
-                markConnected()
+                markAuthorized()
             }
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
