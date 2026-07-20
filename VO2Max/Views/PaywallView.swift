@@ -75,6 +75,8 @@ struct PaywallView: View {
 
     var body: some View {
         ZStack {
+            Theme.background.ignoresSafeArea()
+
             if store.isLoadingProducts && store.packages.isEmpty {
                 loadingState
             } else if store.packages.isEmpty {
@@ -87,13 +89,6 @@ struct PaywallView: View {
                 closeButton
             }
         }
-        // Full-bleed background as a `.background` modifier, NOT a ZStack child.
-        // As a child, `Theme.background.ignoresSafeArea()` made the ZStack ignore
-        // the bottom safe area, which swallowed both the checkout footer's own
-        // `.safeAreaInset` and the VO2+ tab's floating-capsule reserve — so the
-        // Restore/Terms/Privacy row rendered under the tab bar. Behind the ZStack
-        // instead, the content keeps its safe area and the footer clears the bar.
-        .background(Theme.background.ignoresSafeArea())
         .onAppear {
             store.trackPaywallImpression(id: impressionID)
             selectDefaultPackageIfNeeded()
@@ -270,7 +265,13 @@ struct PaywallView: View {
         }
         .padding(.horizontal, 22)
         .padding(.top, 8)
-        .padding(.bottom, embedded ? 16 : 10)
+        // When embedded in the VO2+ tab, the footer is pinned via `.safeAreaInset`
+        // but the floating capsule tab bar (see MainTabView) sits ~68pt off the
+        // physical bottom and the tab's safe-area reserve does not propagate into
+        // this nested inset through the NavigationStack — so the CTA and the
+        // Restore/Terms/Privacy row rendered under the capsule. Reserve the
+        // capsule's height explicitly here so the whole footer clears it.
+        .padding(.bottom, embedded ? 88 : 10)
         .background(Theme.background)
     }
 

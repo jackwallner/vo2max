@@ -26,11 +26,11 @@ struct SettingsView: View {
         .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 
-    /// Opens this app's Settings page (which carries the Health row and VO2 max
-    /// read toggle) — the only way to re-enable a read-only app that was denied,
-    /// since iOS never re-presents the HealthKit permission sheet.
-    private func openHealthSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
+    /// Opens the Apple Health app, where read-only access toggles live (profile ›
+    /// Privacy › Apps). Read-only apps don't get a Health row under Settings ›
+    /// [app], and iOS never re-presents the one-time permission sheet.
+    private func openAppleHealth() {
+        if let url = URL(string: "x-apple-health://") {
             UIApplication.shared.open(url)
         }
     }
@@ -52,10 +52,8 @@ struct SettingsView: View {
                 Task {
                     if health.isAuthorized {
                         await health.refreshCache()
-                    } else if await health.canPresentAuthorizationSheet() {
-                        try? await health.requestAuthorization()
                     } else {
-                        openHealthSettings()
+                        try? await health.requestAuthorization()
                     }
                 }
             } label: {
@@ -66,15 +64,7 @@ struct SettingsView: View {
             }
 
             Button {
-                openHealthSettings()
-            } label: {
-                Label("Turn on access in Settings", systemImage: "gearshape")
-            }
-
-            Button {
-                if let url = URL(string: "x-apple-health://") {
-                    UIApplication.shared.open(url)
-                }
+                openAppleHealth()
             } label: {
                 Label("Open Apple Health", systemImage: "arrow.up.forward.app")
             }
@@ -87,7 +77,7 @@ struct SettingsView: View {
         } header: {
             Text("Apple Health")
         } footer: {
-            Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. iOS shows the Health permission prompt only once; if you dismissed or denied it, turn VO2 max access on in Settings. \"Connected\" appears once a reading has been read.")
+            Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. iOS shows the permission prompt only once. If VO2 max isn't connecting, open Apple Health › profile picture › Privacy › Apps › VO2 Max Daily Tracker and turn VO2 max on. \"Connected\" appears once a reading has been read.")
         }
     }
 
