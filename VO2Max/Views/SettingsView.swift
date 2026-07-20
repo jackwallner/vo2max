@@ -26,6 +26,15 @@ struct SettingsView: View {
         .sheet(isPresented: $showPaywall) { PaywallView() }
     }
 
+    /// Opens this app's Settings page (which carries the Health row and VO2 max
+    /// read toggle) — the only way to re-enable a read-only app that was denied,
+    /// since iOS never re-presents the HealthKit permission sheet.
+    private func openHealthSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
+        }
+    }
+
     private var healthSection: some View {
         Section {
             HStack {
@@ -43,8 +52,10 @@ struct SettingsView: View {
                 Task {
                     if health.isAuthorized {
                         await health.refreshCache()
-                    } else {
+                    } else if await health.canPresentAuthorizationSheet() {
                         try? await health.requestAuthorization()
+                    } else {
+                        openHealthSettings()
                     }
                 }
             } label: {
@@ -52,6 +63,12 @@ struct SettingsView: View {
                     health.isAuthorized ? "Refresh Apple Health" : "Connect Apple Health",
                     systemImage: health.isAuthorized ? "arrow.clockwise" : "heart.fill"
                 )
+            }
+
+            Button {
+                openHealthSettings()
+            } label: {
+                Label("Turn on access in Settings", systemImage: "gearshape")
             }
 
             Button {
@@ -70,7 +87,7 @@ struct SettingsView: View {
         } header: {
             Text("Apple Health")
         } footer: {
-            Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. Refresh if a new estimate is not appearing; use Apple Health to manage source data and permissions.")
+            Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. iOS shows the Health permission prompt only once; if you dismissed or denied it, turn VO2 max access on in Settings. \"Connected\" appears once a reading has been read.")
         }
     }
 
