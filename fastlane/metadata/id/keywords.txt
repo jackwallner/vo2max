@@ -1,1 +1,1 @@
-kardio,aerobik,kesehatan,kebugaran,jam,pelacak,latihan,daya tahan,pemulihan,vo2max,cardiofitness
+kardio,aerobik,kesehatan,jam,latihan,dayatahan,pemulihan,vo2max,cardiofitness,healthkit,applewatch

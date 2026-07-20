@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+તમારા Apple Health VO2 મહત્તમ અંદાજ અને કાર્ડિયો ફિટનેસ વલણને શાંત, કેન્દ્રિત ડેશબોર્ડમાં જુઓ.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 મેક્સ ડેઇલી ટ્રેકર બતાવે છે:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• તમારો તાજેતરનો Apple Health અંદાજ
+• સુધારી રહ્યું છે, સ્થિર અથવા ઘટી રહ્યું છે
+• વ્યક્તિગત લક્ષ્ય શ્રેણી
+• એક વર્ષનો ઈતિહાસ
+• સ્પષ્ટ પદ્ધતિ સાથે વ્યાપક ફિટનેસ-વયનો અંદાજ
+• હોમ સ્ક્રીન અને લૉક સ્ક્રીન વિજેટ્સ
+• Apple Watch એપ્લિકેશન અને ગૂંચવણો
+• જ્યારે કોઈ અંદાજ ઉપલબ્ધ ન હોય ત્યારે માર્ગદર્શન
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+તમારો ફિટનેસ ડેટા તમારા ઉપકરણો પર રહે છે. એપ એપલ હેલ્થના કાર્ડિયો ફિટનેસ અંદાજો વાંચે છે અને ક્યારેય હેલ્થ ડેટા લખતી નથી.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 મહત્તમ અને ફિટનેસ વય એ ફિટનેસ જાગૃતિ માટે વ્યાપક અંદાજ છે. આ એપ્લિકેશન કોઈપણ સ્વાસ્થ્ય સ્થિતિનું નિદાન, સારવાર, ઉપચાર અથવા અટકાવતી નથી. તે વ્યાવસાયિક તબીબી સલાહનો વિકલ્પ નથી.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro વૈકલ્પિક છે. $1.99 માસિક, $14.99 વાર્ષિક અથવા $29.99 આજીવન ખરીદી પસંદ કરો. માસિક અને વાર્ષિક યોજનાઓમાં પાત્ર નવા સબ્સ્ક્રાઇબર્સ માટે 7-દિવસની મફત અજમાયશનો સમાવેશ થાય છે. બતાવેલ કિંમતો યુ.એસ.ની કિંમતો છે અને પ્રદેશ પ્રમાણે બદલાઈ શકે છે. કન્ફર્મેશન પર તમારા Apple એકાઉન્ટમાંથી ચુકવણી વસૂલવામાં આવે છે. સબ્સ્ક્રિપ્શન્સ આપમેળે રિન્યુ થાય છે સિવાય કે વર્તમાન અવધિ સમાપ્ત થાય તેના ઓછામાં ઓછા 24 કલાક પહેલાં રદ કરવામાં આવે. વર્તમાન સમયગાળો સમાપ્ત થાય તેના 24 કલાકની અંદર તમારા એકાઉન્ટને નવીકરણ માટે શુલ્ક લેવામાં આવે છે. Apple એકાઉન્ટ સેટિંગ્સમાં સબ્સ્ક્રિપ્શન્સ મેનેજ કરો અથવા રદ કરો.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+ઉપયોગની શરતો (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+ગોપનીયતા નીતિ: https://jackwallner.github.io/vo2max/privacy-policy.html

@@ -1,1 +1,1 @@
-A calm VO2 max dashboard with cardio fitness trends, widgets, and Apple Watch complications. Private and local-first.
+നിങ്ങളുടെ Apple Health VO2 മാക്സ് എസ്റ്റിമേറ്റ്, കാർഡിയോ ഫിറ്റ്നസ് ട്രെൻഡ്, ഫിറ്റ്നസ് പ്രായം, വിജറ്റുകൾ, വാച്ച് സങ്കീർണതകൾ എന്നിവ കാണുക. സ്വകാര്യവും പ്രാദേശികവും-ആദ്യം.

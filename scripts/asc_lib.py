@@ -105,6 +105,9 @@ class ASCClient:
     def patch(self, path: str, body: dict) -> dict:
         return self.request("PATCH", path, body)
 
+    def delete(self, path: str) -> dict:
+        return self.request("DELETE", path)
+
 
 def list_all(client: ASCClient, path: str) -> list[dict]:
     items: list[dict] = []
@@ -258,6 +261,6 @@ def description_for_locale(locale: str, source: str = "en-US") -> str:
     if len(desc) < 10:
         desc = (
             read_meta("en-US", "description")
-            or "One Tap Headache Tracker — migraine and headache diary with Apple Watch logging."
+            or "VO2 Max Daily Tracker shows Apple Health cardio fitness estimates and trends."
         )
     return desc[:4000]

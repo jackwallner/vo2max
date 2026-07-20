@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+在平静、专注的仪表板上查看您的 Apple Health 最大摄氧量估计值和有氧健身趋势。
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+最大摄氧量每日追踪器显示：
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• 您最新的 Apple Health 估计
+• 改善、稳定或下降趋势
+• 个人目标范围
+• 一年历史
+• 采用清晰的方法进行广泛的健康年龄估计
+• 主屏幕和锁屏小部件
+• Apple Watch 应用程序和复杂功能
+• 无法估算时的指导
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+您的健身数据保留在您的设备上。该应用程序读取 Apple Health 的有氧健身估计值，但从不写入健康数据。
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+最大摄氧量和健身年龄是健身意识的粗略估计。此应用程序不诊断、治疗、治愈或预防任何健康状况。它不能替代专业的医疗建议。
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro 是可选的。选择每月 1.99 美元、每年 14.99 美元或终身购买 29.99 美元。包月和包年计划包括为符合条件的新订阅者提供 7 天免费试用。显示的价格为美国价格，可能因地区而异。确认后，付款将从您的 Apple 帐户中扣除。订阅会自动续订，除非在当前订阅期结束前至少 24 小时取消。您的帐户将在当前期限结束前 24 小时内收取续订费用。在 Apple 帐户设置中管理或取消订阅。
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+使用条款（Apple 标准 EULA）：https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+隐私政策：https://jackwallner.github.io/vo2max/privacy-policy.html

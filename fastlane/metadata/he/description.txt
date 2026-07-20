@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+ראה את הערכת Apple Health VO2 max ואת מגמת הכושר הקרדיו שלך בלוח מחוונים רגוע וממוקד.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+תוכניות VO2 Max Daily Tracker:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• הערכת Apple Health העדכנית שלך
+• מגמת שיפור, יציבות או ירידה
+• טווח יעד אישי
+• היסטוריה של שנה
+• אומדן גיל כושר רחב עם מתודולוגיה ברורה
+• ווידג'טים למסך הבית ולמסך הנעילה
+• אפליקציית Apple Watch וסיבוכים
+• הדרכה כאשר אין אומדן זמין
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+נתוני הכושר שלך נשארים במכשירים שלך. האפליקציה קוראת הערכות Cardio Fitness מאת Apple Health ולעולם לא כותבת נתוני בריאות.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 max וגיל כושר הם הערכות רחבות למודעות לכושר. אפליקציה זו אינה מאבחנת, מטפלת, מרפאה או מונעת כל מצב בריאותי. זה לא תחליף לייעוץ רפואי מקצועי.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro הוא אופציונלי. בחר 1.99 $ לחודש, 14.99 $ לשנה, או רכישה של 29.99 $ לכל החיים. התוכניות החודשיות והשנתיות כוללות ניסיון חינם למשך 7 ימים למנויים חדשים זכאים. המחירים המוצגים הם מחירים בארה"ב ועשויים להשתנות לפי אזור. התשלום יחויב בחשבון Apple שלך ​​באישור. המנויים מתחדשים אוטומטית אלא אם בוטלו לפחות 24 שעות לפני סיום התקופה הנוכחית. חשבונך יחויב עבור חידוש תוך 24 שעות לפני סיום התקופה הנוכחית. נהל או בטל מנויים בהגדרות חשבון Apple.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+תנאי שימוש (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+מדיניות פרטיות: https://jackwallner.github.io/vo2max/privacy-policy.html

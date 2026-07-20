@@ -1,1 +1,7 @@
-The app is read-only and requests Apple Health Cardio Fitness (VO2 max) access. No account is required. If the review device has no cardio fitness samples, the app shows guidance for obtaining an Apple Watch estimate. VO2 Max Pro offers monthly and yearly auto-renewable subscriptions with a 7-day introductory trial, plus a one-time lifetime unlock. Terms and privacy links appear at the purchase point.
+VO2 Max Daily Tracker is a read-only Apple Health cardio fitness viewer.
+
+No account or login is required. On first launch, connect Apple Health. The app requests read access to Cardio Fitness (VO2 max) and never writes Health data. If the review device has no sample, the app intentionally shows instructions for recording a qualifying outdoor Apple Watch workout.
+
+The app displays the latest Apple Health estimate, a personal target range, trend history, widgets, Watch complications, and a clearly labeled broad fitness-age estimate. It makes no diagnostic or treatment claims.
+
+VO2 Max Pro offers monthly and yearly auto-renewable subscriptions with a 7-day free trial for eligible new subscribers, plus an optional one-time lifetime non-consumable. Terms, renewal disclosure, privacy, and restore controls appear at the purchase point. The app does not use non-exempt encryption.

@@ -1,1 +1,1 @@
-Welcome to VO2 Max Daily Tracker. View your latest Apple Health estimate, trend, target range, widgets, and Watch complications.
+VO2 മാക്സ് ഡെയ്‌ലി ട്രാക്കറിലേക്ക് സ്വാഗതം. നിങ്ങളുടെ ആപ്പിൾ ഹെൽത്ത് എസ്റ്റിമേറ്റ്, കാർഡിയോ ഫിറ്റ്നസ് ട്രെൻഡ്, ടാർഗെറ്റ് ശ്രേണി, ഫിറ്റ്നസ് പ്രായം, വിജറ്റുകൾ, വാച്ച് സങ്കീർണതകൾ എന്നിവ കാണുക.

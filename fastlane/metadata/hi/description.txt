@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+एक शांत, केंद्रित डैशबोर्ड में अपना Apple हेल्थ VO2 अधिकतम अनुमान और कार्डियो फिटनेस रुझान देखें।
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 मैक्स डेली ट्रैकर दिखाता है:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• आपका नवीनतम Apple स्वास्थ्य अनुमान
+• सुधार, स्थिर, या गिरावट की प्रवृत्ति
+• एक व्यक्तिगत लक्ष्य सीमा
+• एक साल का इतिहास
+• स्पष्ट कार्यप्रणाली के साथ एक व्यापक फिटनेस-आयु अनुमान
+• होम स्क्रीन और लॉक स्क्रीन विजेट
+• ऐप्पल वॉच ऐप और जटिलताएँ
+• कोई अनुमान उपलब्ध न होने पर मार्गदर्शन
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+आपका फिटनेस डेटा आपके डिवाइस पर रहता है। ऐप ऐप्पल हेल्थ से कार्डियो फिटनेस अनुमान पढ़ता है और स्वास्थ्य डेटा कभी नहीं लिखता है।
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 अधिकतम और फिटनेस आयु फिटनेस जागरूकता के लिए व्यापक अनुमान हैं। यह ऐप किसी भी स्वास्थ्य स्थिति का निदान, उपचार, इलाज या रोकथाम नहीं करता है। यह पेशेवर चिकित्सकीय सलाह का प्रतिस्थापक नहीं है।
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 मैक्स प्रो वैकल्पिक है. $1.99 मासिक, $14.99 वार्षिक, या $29.99 आजीवन खरीदारी चुनें। मासिक और वार्षिक योजनाओं में पात्र नए ग्राहकों के लिए 7-दिवसीय निःशुल्क परीक्षण शामिल है। दिखाई गई कीमतें अमेरिकी कीमतें हैं और क्षेत्र के अनुसार भिन्न हो सकती हैं। पुष्टिकरण पर भुगतान आपके Apple खाते से लिया जाता है। वर्तमान अवधि समाप्त होने से कम से कम 24 घंटे पहले रद्द किए जाने तक सदस्यताएँ स्वचालित रूप से नवीनीकृत हो जाती हैं। वर्तमान अवधि समाप्त होने से 24 घंटे के भीतर आपके खाते से नवीनीकरण के लिए शुल्क लिया जाता है। Apple खाता सेटिंग में सदस्यताएँ प्रबंधित करें या रद्द करें।
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+उपयोग की शर्तें (Apple मानक EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+गोपनीयता नीति: https://jackwallner.github.io/vo2max/privacy-policy.html

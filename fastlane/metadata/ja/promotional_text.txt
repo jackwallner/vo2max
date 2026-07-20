@@ -1,1 +1,1 @@
-A calm VO2 max dashboard with cardio fitness trends, widgets, and Apple Watch complications. Private and local-first.
+Apple Health の VO2 max 推定値、有酸素運動フィットネスの傾向、フィットネス年齢、ウィジェット、および Watch の合併症を確認します。プライベートかつローカルファースト。

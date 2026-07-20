@@ -1,1 +1,1 @@
-A calm VO2 max dashboard with cardio fitness trends, widgets, and Apple Watch complications. Private and local-first.
+আপনার Apple Health VO2 সর্বাধিক অনুমান, কার্ডিও ফিটনেস প্রবণতা, ফিটনেস বয়স, উইজেট এবং ঘড়ির জটিলতাগুলি দেখুন৷ ব্যক্তিগত এবং স্থানীয়-প্রথম।

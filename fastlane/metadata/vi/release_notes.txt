@@ -1,1 +1,1 @@
-Welcome to VO2 Max Daily Tracker. View your latest Apple Health estimate, trend, target range, widgets, and Watch complications.
+Chào mừng bạn đến với Công cụ theo dõi VO2 Max hàng ngày. Xem ước tính Apple Health, xu hướng tập luyện tim mạch, phạm vi mục tiêu, độ tuổi tập thể dục, tiện ích và các biến chứng của Đồng hồ.

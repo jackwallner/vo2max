@@ -1,1 +1,1 @@
-tim mạch,hiếu khí,sức khỏe,thể lực,đồng hồ,theo dõi,luyện tập,sức bền,phục hồi,vo2max,cardiofitness
+timmạch,hiếukhí,sứckhỏe,thểlực,đồnghồ,theodõi,luyệntập,sứcbền,phụchồi,vo2max,cardiofitness,healthkit

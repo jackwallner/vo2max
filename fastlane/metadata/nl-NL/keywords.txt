@@ -1,1 +1,1 @@
-cardio,aeroob,gezondheid,fitness,horloge,tracker,training,uithouding,herstel,vo2max,cardiofitness
+cardio,aeroob,gezondheid,fitness,horloge,training,uithouding,herstel,vo2max,cardiofitness,healthkit

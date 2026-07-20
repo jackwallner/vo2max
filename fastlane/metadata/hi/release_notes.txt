@@ -1,1 +1,1 @@
-Welcome to VO2 Max Daily Tracker. View your latest Apple Health estimate, trend, target range, widgets, and Watch complications.
+VO2 मैक्स डेली ट्रैकर में आपका स्वागत है। अपना Apple स्वास्थ्य अनुमान, कार्डियो फिटनेस रुझान, लक्ष्य सीमा, फिटनेस आयु, विजेट और वॉच जटिलताएँ देखें।

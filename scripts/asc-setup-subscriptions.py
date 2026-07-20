@@ -64,20 +64,37 @@ def main() -> None:
     if not group:
         group = c.post("/subscriptionGroups", {"data": {"type": "subscriptionGroups", "attributes": {"referenceName": GROUP_NAME}, "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})["data"]
     group_id = group["id"]
-    group_locs = {x["attributes"]["locale"] for x in asc_lib.list_all(c, f"/subscriptionGroups/{group_id}/subscriptionGroupLocalizations")}
+    group_locs = {x["attributes"]["locale"]: x for x in asc_lib.list_all(c, f"/subscriptionGroups/{group_id}/subscriptionGroupLocalizations")}
     for locale in locales:
-        if locale not in group_locs:
-            c.post("/subscriptionGroupLocalizations", {"data": {"type": "subscriptionGroupLocalizations", "attributes": {"locale": locale, "name": GROUP_NAME}, "relationships": {"subscriptionGroup": {"data": {"type": "subscriptionGroups", "id": group_id}}}}})
+        product_path = asc_lib.META / locale / "products.json"
+        product = json.loads(product_path.read_text()) if product_path.exists() else {}
+        group_name = product.get("group") or GROUP_NAME
+        if locale in group_locs:
+            existing = group_locs[locale]
+            if existing["attributes"].get("name") != group_name:
+                c.patch(f"/subscriptionGroupLocalizations/{existing['id']}", {"data": {"type": "subscriptionGroupLocalizations", "id": existing["id"], "attributes": {"name": group_name}}})
+        else:
+            c.post("/subscriptionGroupLocalizations", {"data": {"type": "subscriptionGroupLocalizations", "attributes": {"locale": locale, "name": group_name}, "relationships": {"subscriptionGroup": {"data": {"type": "subscriptionGroups", "id": group_id}}}}})
     existing = {x["attributes"]["productId"]: x for x in asc_lib.list_all(c, f"/subscriptionGroups/{group_id}/subscriptions")}
     for index, (pid, name, period, price, description) in enumerate(SUBS):
         sub = existing.get(pid)
         if not sub:
             sub = c.post("/subscriptions", {"data": {"type": "subscriptions", "attributes": {"name": name, "productId": pid, "subscriptionPeriod": period, "familySharable": False, "groupLevel": 1, "reviewNote": "Unlocks VO2 Max Pro features."}, "relationships": {"group": {"data": {"type": "subscriptionGroups", "id": group_id}}}}})["data"]
         sid = sub["id"]
-        locs = {x["attributes"]["locale"] for x in asc_lib.list_all(c, f"/subscriptions/{sid}/subscriptionLocalizations")}
+        locs = {x["attributes"]["locale"]: x for x in asc_lib.list_all(c, f"/subscriptions/{sid}/subscriptionLocalizations")}
+        product_prefix = "monthly" if period == "ONE_MONTH" else "yearly"
         for locale in locales:
-            if locale not in locs:
-                c.post("/subscriptionLocalizations", {"data": {"type": "subscriptionLocalizations", "attributes": {"locale": locale, "name": name, "description": description}, "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}}}}})
+            product_path = asc_lib.META / locale / "products.json"
+            product = json.loads(product_path.read_text()) if product_path.exists() else {}
+            localized_name = product.get(f"{product_prefix}_name") or name
+            localized_description = product.get(f"{product_prefix}_desc") or description
+            if locale in locs:
+                existing_loc = locs[locale]
+                attrs = existing_loc["attributes"]
+                if attrs.get("name") != localized_name or attrs.get("description") != localized_description:
+                    c.patch(f"/subscriptionLocalizations/{existing_loc['id']}", {"data": {"type": "subscriptionLocalizations", "id": existing_loc["id"], "attributes": {"name": localized_name, "description": localized_description}}})
+            else:
+                c.post("/subscriptionLocalizations", {"data": {"type": "subscriptionLocalizations", "attributes": {"locale": locale, "name": localized_name, "description": localized_description}, "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}}}}})
         try:
             availability = c.get(f"/subscriptions/{sid}/subscriptionAvailability").get("data")
         except RuntimeError:

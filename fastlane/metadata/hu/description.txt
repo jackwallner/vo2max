@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+Tekintse meg az Apple Health VO2 max becslését és a kardiofitnesz trendjét egy nyugodt, koncentrált irányítópulton.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+A VO2 Max Daily Tracker a következőket mutatja:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• Az Apple Health legutóbbi becslése
+• Javuló, stabil vagy csökkenő tendencia
+• Személyes céltartomány
+• Egy éves múlt
+• Átfogó edzettségi életkor becslés világos módszertannal
+• Kezdőképernyő és Lock Screen widgetek
+• Apple Watch alkalmazás és komplikációk
+• Útmutató, ha nem áll rendelkezésre becslés
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+Fitnesz adatai az eszközökön maradnak. Az alkalmazás beolvassa az Apple Health Cardio Fitness becsléseit, és soha nem ír egészségügyi adatokat.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+A VO2 max és az edzettségi életkor a fitnesztudatosság tág becslései. Ez az alkalmazás nem diagnosztizál, kezel, gyógyít vagy akadályoz meg semmilyen egészségügyi állapotot. Nem helyettesíti a szakszerű orvosi tanácsot.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+A VO2 Max Pro opcionális. Válasszon havi 1,99 USD, évi 14,99 USD vagy 29,99 USD élettartamú vásárlást. A havi és éves előfizetések 7 napos ingyenes próbaverziót tartalmaznak a jogosult új előfizetők számára. A feltüntetett árak egyesült államokbeli árak, és régiónként változhatnak. A fizetés a megerősítéskor az Apple-fiókját terheli. Az előfizetések automatikusan megújulnak, hacsak nem mondják le legalább 24 órával az aktuális időszak vége előtt. Fiókjának megújításáért az aktuális időszak lejárta előtt 24 órán belül díjat számítunk fel. Az Apple-fiók beállításaiban kezelheti vagy lemondhatja az előfizetéseket.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+Felhasználási feltételek (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Adatvédelmi szabályzat: https://jackwallner.github.io/vo2max/privacy-policy.html

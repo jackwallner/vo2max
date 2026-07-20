@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+Xem ước tính VO2 tối đa của Apple Health và xu hướng tập luyện tim mạch trong bảng điều khiển tập trung, bình tĩnh.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+Trình theo dõi hàng ngày VO2 Max hiển thị:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• Ước tính Apple Health mới nhất của bạn
+• Xu hướng cải thiện, ổn định hoặc giảm
+• Phạm vi mục tiêu cá nhân
+• Lịch sử một năm
+• Ước tính độ tuổi thể lực tổng thể với phương pháp luận rõ ràng
+• Tiện ích Màn hình chính và Màn hình khóa
+• Ứng dụng Apple Watch và các tính năng phức tạp
+• Hướng dẫn khi không có ước tính
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+Dữ liệu thể dục của bạn vẫn còn trên thiết bị của bạn. Ứng dụng đọc ước tính Cardio Fitness từ Apple Health và không bao giờ ghi dữ liệu Sức khỏe.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 tối đa và tuổi tập thể dục là những ước tính tổng quát về nhận thức về thể chất. Ứng dụng này không chẩn đoán, điều trị, chữa bệnh hoặc ngăn ngừa bất kỳ tình trạng sức khỏe nào. Nó không thể thay thế cho lời khuyên y tế chuyên nghiệp.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro là tùy chọn. Chọn $1,99 hàng tháng, $14,99 hàng năm hoặc $29,99 mua trọn đời. Các gói hàng tháng và hàng năm bao gồm bản dùng thử miễn phí 7 ngày cho những người đăng ký mới đủ điều kiện. Giá hiển thị là giá ở Mỹ và có thể thay đổi tùy theo khu vực. Khoản thanh toán sẽ được tính vào Tài khoản Apple của bạn khi xác nhận. Đăng ký tự động gia hạn trừ khi bị hủy ít nhất 24 giờ trước khi giai đoạn hiện tại kết thúc. Tài khoản của bạn sẽ bị tính phí gia hạn trong vòng 24 giờ trước khi giai đoạn hiện tại kết thúc. Quản lý hoặc hủy đăng ký trong cài đặt Tài khoản Apple.
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+Điều khoản sử dụng (EULA tiêu chuẩn của Apple): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Chính sách quyền riêng tư: https://jackwallner.github.io/vo2max/privacy-policy.html

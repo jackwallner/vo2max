@@ -1,1 +1,1 @@
-cardio,aerobic,health,fitness,applewatch,tracker,training,endurance,recovery,notifications,vo2max
+healthkit,applewatch,tracker,performance,insights,recovery,aerobic,endurance,widget,history,athlete

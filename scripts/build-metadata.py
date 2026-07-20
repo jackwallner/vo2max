@@ -64,32 +64,32 @@ COPY: dict[str, tuple[str, str, str]] = {
     "zh-Hant": ("VO2 Max 每日追蹤", "體能年齡、小工具與 Watch", "有氧,健康,體能,手錶,追蹤,訓練,耐力,恢復,通知"),
 }
 
-DESCRIPTION = """See your Apple Health VO2 max estimate without the noise of a full training platform.
+DESCRIPTION = """See your Apple Health VO2 max estimate and cardio fitness trend in a calm, focused dashboard.
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 Max Daily Tracker shows:
 
-• Latest Apple Health VO2 max estimate
+• Your latest Apple Health estimate
 • Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
+• A personal target range
+• One-year history
+• A broad fitness-age estimate with clear methodology
 • Home Screen and Lock Screen widgets
 • Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• Guidance when no estimate is available
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+Your fitness data stays on your devices. The app reads Cardio Fitness estimates from Apple Health and never writes Health data.
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 max and fitness age are broad estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition. It is not a substitute for professional medical advice.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
 
 Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html"""
 
-PROMO = "A calm VO2 max dashboard with cardio fitness trends, widgets, and Apple Watch complications. Private and local-first."
-RELEASE = "Welcome to VO2 Max Daily Tracker. View your latest Apple Health estimate, trend, target range, widgets, and Watch complications."
+PROMO = "See your Apple Health VO2 max estimate, cardio fitness trend, fitness age, widgets, and Watch complications. Private and local-first."
+RELEASE = "Welcome to VO2 Max Daily Tracker. See your Apple Health estimate, cardio fitness trend, target range, fitness age, widgets, and Watch complications."
 URL = "https://jackwallner.github.io/vo2max/"
-KEYWORD_FILL = "vo2max,cardiofitness,healthkit,heart,training,run,running,cycling,workout,athlete,wellness"
+KEYWORD_FILL = "performance,insights,recovery,athlete,aerobic,endurance,widget,complication,history,goals"
 
 
 def maximize(value: str, minimum: int, maximum: int, fill: str) -> str:
@@ -128,12 +128,15 @@ def main() -> None:
         name, subtitle, keywords = COPY[locale]
         folder = OUT / locale
         folder.mkdir(parents=True, exist_ok=True)
-        write(folder / "name.txt", maximize_text(name, 24, 30, "Health,Fitness,Tracker,App"))
-        write(folder / "subtitle.txt", maximize_text(subtitle, 24, 30, "Cardio,Health,Insights,Tracker"))
+        write(folder / "name.txt", maximize_text(name, 24, 30, "Cardio,Fitness,Tracker"))
+        write(folder / "subtitle.txt", maximize_text(subtitle, 24, 30, "Trends,Insights,Tracker"))
         write(folder / "keywords.txt", maximize(keywords, 94, 100, KEYWORD_FILL))
-        write(folder / "description.txt", DESCRIPTION)
-        write(folder / "promotional_text.txt", PROMO[:170])
-        write(folder / "release_notes.txt", RELEASE)
+        if not (folder / "description.txt").exists():
+            write(folder / "description.txt", DESCRIPTION)
+        if not (folder / "promotional_text.txt").exists():
+            write(folder / "promotional_text.txt", PROMO[:170])
+        if not (folder / "release_notes.txt").exists():
+            write(folder / "release_notes.txt", RELEASE)
         write(folder / "support_url.txt", URL + "support.html")
         write(folder / "marketing_url.txt", URL)
         write(folder / "privacy_url.txt", URL + "privacy-policy.html")

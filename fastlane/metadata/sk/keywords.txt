@@ -1,1 +1,1 @@
-kardio,aeróbne,zdravie,fitness,hodinky,sledovanie,tréning,vytrvalosť,regenerácia,vo2max,healthkit
+kardio,aeróbne,zdravie,hodinky,sledovanie,tréning,vytrvalosť,regenerácia,vo2max,healthkit,applewatch

@@ -1,1 +1,1 @@
-kardio,aerobno,zdravje,fitnes,ura,sledenje,vadba,vzdržljivost,okrevanje,vo2max,cardiofitness,heart
+kardio,aerobno,zdravje,ura,sledenje,vadba,vzdržljivost,okrevanje,vo2max,cardiofitness,heart,insights

@@ -1,21 +1,21 @@
-See your Apple Health VO2 max estimate without the noise of a full training platform.
+اپنے Apple Health VO2 کا زیادہ سے زیادہ تخمینہ اور کارڈیو فٹنس کا رجحان ایک پرسکون، فوکسڈ ڈیش بورڈ میں دیکھیں۔
 
-VO2 Max Daily Tracker gives you a calm, focused view of cardio fitness:
+VO2 میکس ڈیلی ٹریکر دکھاتا ہے:
 
-• Latest Apple Health VO2 max estimate
-• Improving, stable, or declining trend
-• Personal target range
-• One-year history chart
-• Fitness age estimate with transparent methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Clear guidance when no estimate is available yet
+• آپ کا تازہ ترین ایپل ہیلتھ تخمینہ
+• بہتری، مستحکم، یا زوال پذیر رجحان
+• ذاتی ہدف کی حد
+• ایک سال کی تاریخ
+واضح طریقہ کار کے ساتھ فٹنس عمر کا ایک وسیع تخمینہ
+• ہوم اسکرین اور لاک اسکرین ویجیٹس
+• Apple Watch ایپ اور پیچیدگیاں
+کوئی تخمینہ دستیاب نہ ہونے پر رہنمائی
 
-Your fitness data stays on your devices. The app reads cardio fitness estimates from Apple Health and never writes Health data.
+آپ کا فٹنس ڈیٹا آپ کے آلات پر رہتا ہے۔ ایپ ایپل ہیلتھ سے کارڈیو فٹنس کے تخمینے پڑھتی ہے اور کبھی بھی ہیلتھ ڈیٹا نہیں لکھتی ہے۔
 
-VO2 max and fitness age values are estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition.
+VO2 زیادہ سے زیادہ اور فٹنس کی عمر فٹنس بیداری کے لیے وسیع تخمینہ ہیں۔ یہ ایپ کسی بھی صحت کی حالت کی تشخیص، علاج، علاج یا روک تھام نہیں کرتی ہے۔ یہ پیشہ ورانہ طبی مشورے کا متبادل نہیں ہے۔
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown here are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2 Max Pro اختیاری ہے۔ $1.99 ماہانہ، $14.99 سالانہ، یا $29.99 زندگی بھر کی خریداری کا انتخاب کریں۔ ماہانہ اور سالانہ منصوبوں میں اہل نئے سبسکرائبرز کے لیے 7 دن کا مفت ٹرائل شامل ہے۔ دکھائی گئی قیمتیں امریکی قیمتیں ہیں اور علاقے کے لحاظ سے مختلف ہو سکتی ہیں۔ تصدیق پر آپ کے ایپل اکاؤنٹ سے ادائیگی وصول کی جاتی ہے۔ سبسکرپشنز خود بخود تجدید ہو جاتی ہیں جب تک کہ موجودہ مدت ختم ہونے سے کم از کم 24 گھنٹے پہلے منسوخ کر دیا جائے۔ موجودہ مدت ختم ہونے سے پہلے 24 گھنٹوں کے اندر آپ کے اکاؤنٹ سے تجدید کے لیے چارج کیا جاتا ہے۔ ایپل اکاؤنٹ کی ترتیبات میں سبسکرپشنز کا نظم کریں یا منسوخ کریں۔
 
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+استعمال کی شرائط (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+رازداری کی پالیسی: https://jackwallner.github.io/vo2max/privacy-policy.html
