@@ -325,7 +325,7 @@ struct DashboardView: View {
                     .multilineTextAlignment(.center)
                 Text(health.isAuthorized
                      ? "Apple Watch creates cardio fitness estimates during qualifying outdoor walks, runs, and hikes. Wear it snugly and record a brisk outdoor workout for at least 20 minutes."
-                     : "Allow VO2 max access when Apple Health asks. If you already dismissed that prompt, iOS won't show it again, so turn access on in Settings below.")
+                     : "Tap Connect and allow VO2 max. If no prompt appears (iOS only shows it once), open Apple Health, tap your profile picture, then Privacy › Apps › VO2 Max Daily Tracker and turn VO2 max on.")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -336,13 +336,11 @@ struct DashboardView: View {
                 Task {
                     if health.isAuthorized {
                         await health.refreshCache()
-                    } else if await health.canPresentAuthorizationSheet() {
-                        try? await health.requestAuthorization()
                     } else {
-                        // iOS only shows the Health permission sheet once per
-                        // install; after that a re-request does nothing, so send
-                        // the user where access can actually be toggled on.
-                        openHealthSettings()
+                        // Always attempt the real request — it registers the app
+                        // with HealthKit and presents the sheet if iOS still can.
+                        // It's idempotent, so re-tapping never hurts.
+                        try? await health.requestAuthorization()
                     }
                 }
             } label: {
@@ -357,17 +355,9 @@ struct DashboardView: View {
             .buttonStyle(.borderedProminent)
             .tint(Theme.cardio)
 
-            Button("Turn on access in Settings") { openHealthSettings() }
+            Button("Open Apple Health") { openAppleHealth() }
                 .font(.system(.subheadline, design: .rounded, weight: .semibold))
                 .foregroundStyle(Theme.cardioBlue)
-
-            Button("Open Apple Health") {
-                if let url = URL(string: "x-apple-health://") {
-                    UIApplication.shared.open(url)
-                }
-            }
-            .font(.system(.footnote, design: .rounded, weight: .semibold))
-            .foregroundStyle(Theme.textSecondary)
 
             if let error = health.lastError {
                 Text(error)
@@ -385,11 +375,12 @@ struct DashboardView: View {
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
-    /// Opens this app's Settings page, which carries the Health row and the VO2
-    /// max read toggle. This is the only place a previously-denied read-only app
-    /// can be re-enabled, since iOS never re-presents the HealthKit sheet.
-    private func openHealthSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
+    /// Opens the Apple Health app. Read-only access toggles live under the Health
+    /// app's profile › Privacy › Apps, which is where a user must re-enable VO2
+    /// max if they dismissed the one-time permission sheet (iOS never re-shows it,
+    /// and read-only apps don't get a Health row under Settings › [app]).
+    private func openAppleHealth() {
+        if let url = URL(string: "x-apple-health://") {
             UIApplication.shared.open(url)
         }
     }

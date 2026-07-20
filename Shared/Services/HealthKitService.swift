@@ -53,19 +53,6 @@ final class HealthKitService: ObservableObject {
         installObserver()  // idempotent: no-op if already running
     }
 
-    /// Whether the system permission sheet can still be presented. iOS shows the
-    /// HealthKit read sheet exactly once per install; after any response (allow,
-    /// deny, or dismiss) this is false and `requestAuthorization` is a silent
-    /// no-op — the user must change access in Settings. Callers use this to route
-    /// the "Connect" button to Settings instead of a dead re-request.
-    func canPresentAuthorizationSheet() async -> Bool {
-        #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("-DemoData") { return false }
-        #endif
-        guard HKHealthStore.isHealthDataAvailable() else { return false }
-        return await authorizationRequestStatus() == .shouldRequest
-    }
-
     func requestAuthorization() async throws {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-DemoData") {
