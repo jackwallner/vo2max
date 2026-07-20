@@ -8,6 +8,7 @@ struct PlusTabView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
+    @State private var showRecap = false
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -124,6 +125,18 @@ struct PlusTabView: View {
 
     private var destinationLinks: some View {
         VStack(spacing: 10) {
+            Button {
+                showRecap = true
+            } label: {
+                destinationRow(
+                    icon: "calendar.badge.checkmark",
+                    title: "Open Monthly Recap",
+                    detail: "Your 30-day trend, target progress, and best reading"
+                )
+            }
+            .sheet(isPresented: $showRecap) {
+                MonthlyRecapView().environmentObject(settings)
+            }
             NavigationLink {
                 HistoryView()
             } label: {

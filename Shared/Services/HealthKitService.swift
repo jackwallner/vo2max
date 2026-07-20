@@ -102,7 +102,16 @@ final class HealthKitService: ObservableObject {
         defer { isRefreshing = false }
         do {
             let readings = try await fetchReadings(days: 365)
-            try cache(readings: readings)
+            // Snapshot the pre-sync latest reading so we can tell a genuinely new
+            // estimate from a backfill of old data before mutating the cache.
+            let context = DataService.sharedModelContainer.mainContext
+            let existing = (try? context.fetch(FetchDescriptor<CardioFitnessSample>())) ?? []
+            let priorLatest = existing.max { $0.date < $1.date }
+            let priorBest = existing.map(\.value).max()
+
+            let inserted = try cache(readings: readings)
+            handleNewReadings(inserted: inserted, priorLatest: priorLatest, priorBest: priorBest)
+
             lastError = nil
             // Rows came back, which is only possible with read access granted.
             // Lock in the connected state so a later flaky probe can't undo it.
@@ -171,7 +180,11 @@ final class HealthKitService: ObservableObject {
         }
     }
 
-    private func cache(readings: [CardioFitnessReading]) throws {
+    /// Applies the fetched readings to the cache and returns the readings that
+    /// were newly inserted (not previously present), so callers can react to
+    /// genuinely new estimates.
+    @discardableResult
+    private func cache(readings: [CardioFitnessReading]) throws -> [CardioFitnessReading] {
         let context = DataService.sharedModelContainer.mainContext
         let existing = try context.fetch(FetchDescriptor<CardioFitnessSample>())
         var byID = Dictionary(uniqueKeysWithValues: existing.map { ($0.healthKitID, $0) })
@@ -188,6 +201,7 @@ final class HealthKitService: ObservableObject {
             }
         }
 
+        var inserted: [CardioFitnessReading] = []
         for reading in readings {
             if let record = byID[reading.id] {
                 record.date = reading.date
@@ -203,9 +217,73 @@ final class HealthKitService: ObservableObject {
                 )
                 context.insert(record)
                 byID[reading.id] = record
+                inserted.append(reading)
             }
         }
         try context.save()
+        return inserted
+    }
+
+    /// Reacts to genuinely new Apple Health estimates: records review-funnel
+    /// positive moments (new personal best or entering target range) and, for
+    /// entitled opted-in users, posts a new-reading notification with context.
+    ///
+    /// Guards on `priorLatest`: the first-ever sync backfills a year of history,
+    /// and none of that is "new" to the user, so we stay silent until there's an
+    /// established latest reading to compare against.
+    private func handleNewReadings(
+        inserted: [CardioFitnessReading],
+        priorLatest: CardioFitnessSample?,
+        priorBest: Double?
+    ) {
+        guard let priorLatest else { return }
+        guard let newest = inserted.max(by: { $0.date < $1.date }) else { return }
+        // Only treat it as new if it's more recent than everything we already had.
+        guard newest.date > priorLatest.date else { return }
+
+        let defaults = UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard
+        let targetLower = defaults.object(forKey: "targetLower") as? Double ?? 35
+        let targetUpper = defaults.object(forKey: "targetUpper") as? Double ?? 45
+
+        let isNewPersonalBest = priorBest.map { newest.value > $0 + 0.01 } ?? false
+        let nowInRange = newest.value >= targetLower && newest.value <= targetUpper
+        let wasInRange = priorLatest.value >= targetLower && priorLatest.value <= targetUpper
+        let enteredTarget = nowInRange && !wasInRange
+
+        if isNewPersonalBest || enteredTarget {
+            ReviewPromptTracker.recordPositiveMoment()
+            NotificationCenter.default.post(name: .vo2PositiveMomentForReview, object: nil)
+        }
+
+        // Reading alerts are a VO2+ opt-in feature; both flags live in the app group.
+        let isPro = defaults.bool(forKey: vo2CachedProKey)
+        let alertsEnabled = defaults.bool(forKey: GoalSettings.readingAlertsKey)
+        guard isPro, alertsEnabled else { return }
+
+        let context = readingAlertContext(
+            newest: newest.value,
+            previous: priorLatest.value,
+            isNewPersonalBest: isNewPersonalBest,
+            enteredTarget: enteredTarget
+        )
+        Task {
+            await NotificationService.scheduleNewReadingAlert(value: newest.value, context: context)
+        }
+    }
+
+    private func readingAlertContext(
+        newest: Double,
+        previous: Double,
+        isNewPersonalBest: Bool,
+        enteredTarget: Bool
+    ) -> String {
+        if isNewPersonalBest { return "A new personal best." }
+        if enteredTarget { return "That's in your target range." }
+        let delta = newest - previous
+        let magnitude = abs(delta).formatted(.number.precision(.fractionLength(1)))
+        if delta > 0.05 { return "Up \(magnitude) from your last estimate." }
+        if delta < -0.05 { return "Down \(magnitude) from your last estimate." }
+        return "In line with your last estimate."
     }
 
     private func installObserver() {

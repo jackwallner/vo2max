@@ -4,6 +4,11 @@ import SwiftData
 
 let vo2MaxAppGroupID = "group.com.jackwallner.vo2max"
 
+/// App Group key mirroring the live `isPro` entitlement, written by StoreService
+/// and read by widgets and HealthKitService. Defined here (not on StoreService)
+/// so it's reachable from targets that exclude StoreService, e.g. the watch app.
+let vo2CachedProKey = "isPro"
+
 @MainActor
 enum DataService {
     static let appGroupID = vo2MaxAppGroupID

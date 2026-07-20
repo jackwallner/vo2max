@@ -118,7 +118,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     static let shared = StoreService()
 
     /// App Group key mirroring the live `isPro` entitlement for widget gating.
-    static let cachedProKey = "isPro"
+    static let cachedProKey = vo2CachedProKey
 
     @Published private(set) var isPro = false {
         didSet {
