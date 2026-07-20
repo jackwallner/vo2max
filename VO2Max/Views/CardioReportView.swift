@@ -135,8 +135,16 @@ struct CardioReportView: View {
         .background(Color(white: 0.97), in: RoundedRectangle(cornerRadius: 10))
     }
 
+    /// Stride by a fraction of the *date span*, not the reading count — VO2 max
+    /// readings are sparse (a handful over months), so striding by reading count
+    /// drew a label per day across the whole range and scribbled the axis.
+    private var axisStrideDays: Int {
+        let span = Calendar.current.dateComponents([.day], from: report.periodStart, to: report.periodEnd).day ?? 0
+        return max(1, Int((Double(max(span, 1)) / 6).rounded()))
+    }
+
     private var axisMarks: some AxisContent {
-        AxisMarks(values: .stride(by: .day, count: max(1, report.readingCount / 6))) { value in
+        AxisMarks(values: .stride(by: .day, count: axisStrideDays)) { value in
             AxisValueLabel {
                 if let date = value.as(Date.self) {
                     Text(Self.dateFmt.string(from: date))
