@@ -86,7 +86,10 @@ struct DashboardView: View {
                     ringLineWidth: ringLineWidth
                 )
 
-                Spacer(minLength: 16)
+                // Keep the ring, its target caption, and the cards together as one
+                // group so the caption never strands in a large void; the flexible
+                // Spacers above and below center the whole cluster.
+                Color.clear.frame(height: 24)
 
                 trendCard
                     .padding(.horizontal, 24)

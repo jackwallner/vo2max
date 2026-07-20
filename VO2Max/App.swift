@@ -149,7 +149,11 @@ private struct MainTabView: View {
     private func tabContent(_ content: some View, tab: Int) -> some View {
         content
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: 76)
+                // The floating capsule rises ~68pt off the physical bottom, so a
+                // 76pt reserve left pinned bottom content (e.g. the embedded
+                // paywall's Restore/Terms/Privacy row) sitting on the capsule and
+                // stealing its taps. 92pt clears the capsule with real margin.
+                Color.clear.frame(height: 92)
             }
             .tabVisibility(selection == tab)
     }

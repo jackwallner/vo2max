@@ -426,7 +426,7 @@ struct OnboardingView: View {
             Button {
                 finishOnboarding()
             } label: {
-                Text("Continue with the free version")
+                Text("Get Started")
                     .font(.system(.caption, design: .rounded, weight: .medium))
                     .foregroundStyle(Theme.textTertiary)
                     .frame(maxWidth: .infinity)

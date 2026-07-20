@@ -24,7 +24,7 @@ struct HistoryView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 periodPicker
 
                 if visibleSamples.isEmpty {
@@ -37,7 +37,7 @@ struct HistoryView: View {
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.top, 10)
+            .padding(.top, 6)
             // The tab bar's height is already reserved via the safe-area inset;
             // this keeps the Deep Trends CTA from sitting flush against it.
             .padding(.bottom, 28)
@@ -136,7 +136,7 @@ struct HistoryView: View {
             }
             .chartYAxisLabel("mL/kg/min")
             .chartYScale(domain: chartDomain)
-            .frame(height: 210)
+            .frame(height: 156)
         }
         .padding(16)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
