@@ -9,6 +9,9 @@ enum PlusFeature: CaseIterable {
     case targetProjection
     case fitnessBand
     case personalBest
+    case readingAlerts
+    case monthlyRecap
+    case reports
     case extendedInsights
 
     var title: String {
@@ -17,6 +20,9 @@ enum PlusFeature: CaseIterable {
         case .targetProjection: "Understand direction toward your target"
         case .fitnessBand: "Add broad age-reference context"
         case .personalBest: "Keep personal bests visible"
+        case .readingAlerts: "Get notified on every new estimate"
+        case .monthlyRecap: "See your cardio fitness month in review"
+        case .reports: "Export a shareable fitness report"
         case .extendedInsights: "Get new VO2+ insights as they arrive"
         }
     }
@@ -27,7 +33,33 @@ enum PlusFeature: CaseIterable {
         case .targetProjection: "scope"
         case .fitnessBand: "person.2.crop.square.stack"
         case .personalBest: "trophy"
+        case .readingAlerts: "bell.badge"
+        case .monthlyRecap: "calendar.badge.checkmark"
+        case .reports: "doc.richtext"
         case .extendedInsights: "sparkles"
+        }
+    }
+
+    /// Short one-liner for the What's New sheet and Settings rows.
+    var detail: String {
+        switch self {
+        case .deepTrends: "Matching 30, 90, and 180-day windows, compared."
+        case .targetProjection: "A broad outlook toward your target when data supports it."
+        case .fitnessBand: "Where your estimate sits against age references."
+        case .personalBest: "Your strongest Apple Health estimate, always in reach."
+        case .readingAlerts: "A notification each time Apple Health logs a new VO2 max estimate, with context."
+        case .monthlyRecap: "A monthly summary of your trend, target progress, and best reading."
+        case .reports: "A private PDF of any period you can save or share."
+        case .extendedInsights: "New VO2+ context added inside the screens you already use."
+        }
+    }
+
+    /// Tint for the What's New sheet rows.
+    var tint: Color {
+        switch self {
+        case .personalBest: Theme.coral
+        case .monthlyRecap, .reports: Theme.positive
+        default: Theme.cardio
         }
     }
 
@@ -37,6 +69,9 @@ enum PlusFeature: CaseIterable {
         case .targetProjection: "Understand your target direction"
         case .fitnessBand: "Add context to your estimate"
         case .personalBest: "Recognize your progress"
+        case .readingAlerts: "Never miss a new estimate"
+        case .monthlyRecap: "Your month in review"
+        case .reports: "Export your cardio fitness"
         case .extendedInsights: "Go further with VO2+"
         }
     }
@@ -47,6 +82,9 @@ enum PlusFeature: CaseIterable {
         case .targetProjection: "Put the recent cardio fitness trend in target context when the data supports it."
         case .fitnessBand: "Compare the latest estimate with broad reference values for your age and selected reference."
         case .personalBest: "Keep the strongest Apple Health estimate and its date easy to find."
+        case .readingAlerts: "Get a notification the moment Apple Health logs a new VO2 max estimate, with how it compares."
+        case .monthlyRecap: "A monthly recap of your cardio fitness trend, target progress, and best reading."
+        case .reports: "Generate a private PDF report of any period to keep or share with a coach or clinician."
         case .extendedInsights: "Deeper context that appears inside the screens you already use."
         }
     }

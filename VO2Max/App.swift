@@ -1,11 +1,20 @@
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 @main
 struct VO2MaxApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var settings = GoalSettings.shared
     @StateObject private var store = StoreService.shared
+
+    init() {
+        // Route recap / new-reading notification taps, and count this launch for
+        // the review funnel. `App.init()` is main-actor isolated, so the
+        // @MainActor trackers are safe to touch here.
+        UNUserNotificationCenter.current().delegate = VO2NotificationDelegate.shared
+        ReviewPromptTracker.recordAppLaunch()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -71,6 +80,52 @@ struct VO2MaxApp: App {
     #endif
 }
 
+/// Routes a tapped notification to the right surface. The
+/// `UNUserNotificationCenterDelegate` posts here; `MainTabView` observes.
+@MainActor
+final class NotificationRouteCoordinator: ObservableObject {
+    static let shared = NotificationRouteCoordinator()
+
+    /// Set when a monthly-recap notification is tapped.
+    @Published var pendingRecap = false
+    /// Set when a new-reading notification is tapped (open Today).
+    @Published var pendingToday = false
+
+    private init() {}
+
+    func requestRecap() { pendingRecap = true }
+    func requestToday() { pendingToday = true }
+}
+
+/// Handles notification taps (and foreground presentation) and forwards to
+/// `NotificationRouteCoordinator`. Installed as the notification-center delegate
+/// in `VO2MaxApp.init`.
+final class VO2NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @unchecked Sendable {
+    static let shared = VO2NotificationDelegate()
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification
+    ) async -> UNNotificationPresentationOptions {
+        [.banner, .sound]
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        let route = response.notification.request.content.userInfo[NotificationService.routeKey] as? String
+        switch route {
+        case NotificationService.recapRouteValue:
+            await MainActor.run { NotificationRouteCoordinator.shared.requestRecap() }
+        case NotificationService.readingRouteValue:
+            await MainActor.run { NotificationRouteCoordinator.shared.requestToday() }
+        default:
+            break
+        }
+    }
+}
+
 private struct RootView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
@@ -117,12 +172,32 @@ private struct RootView: View {
 
 private struct MainTabView: View {
     var initialTab: Int = 0
+
+    @EnvironmentObject private var settings: GoalSettings
+    @EnvironmentObject private var store: StoreService
+    @StateObject private var routeCoordinator = NotificationRouteCoordinator.shared
+    @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
+    @Environment(\.requestReview) private var requestReview
+
     @State private var selection = 0
 
+    // What's New
+    @State private var showWhatsNew = false
+    @State private var whatsNewEvaluated = false
+    @State private var showSettingsFromWhatsNew = false
+    @State private var showPaywallFromWhatsNew = false
+    @State private var pendingSettingsAfterWhatsNew = false
+    @State private var pendingPaywallAfterWhatsNew = false
+
+    // Monthly recap
+    @State private var showRecap = false
+
+    // Review funnel
+    @State private var showReviewPrompt = false
+    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
+    @State private var reviewPromptShownThisSession = false
+
     var body: some View {
-        // Floating translucent material capsule tab bar, matching Total Calories:
-        // no full-width opaque bar, content extends beneath the capsule, and the
-        // selected tab gets a lighter tinted pill inside the glass container.
         ZStack(alignment: .bottom) {
             tabContent(NavigationStack { DashboardView() }, tab: 0)
             tabContent(NavigationStack { HistoryView() }, tab: 1)
@@ -141,20 +216,118 @@ private struct MainTabView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .tint(Theme.cardio)
-        .onAppear { selection = initialTab }
+        .onAppear {
+            selection = initialTab
+            evaluateWhatsNew()
+            evaluatePendingReviewPrompt()
+        }
+        .task(id: recapSchedulingKey) { await syncMonthlyRecapSchedule() }
+        .onChange(of: routeCoordinator.pendingRecap) { _, pending in
+            guard pending else { return }
+            routeCoordinator.pendingRecap = false
+            showRecap = true
+        }
+        .onChange(of: routeCoordinator.pendingToday) { _, pending in
+            guard pending else { return }
+            routeCoordinator.pendingToday = false
+            selection = 0
+        }
+        .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
+            guard let presentation else { return }
+            defer { reviewPromptCoordinator.clear() }
+            switch presentation {
+            case .enjoymentPrompt: presentReviewPrompt(step: .enjoyment)
+            case .feedbackOnly: presentReviewPrompt(step: .feedback)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .vo2PositiveMomentForReview)) { _ in
+            evaluatePendingReviewPrompt()
+        }
+        .sheet(isPresented: $showWhatsNew, onDismiss: {
+            if pendingSettingsAfterWhatsNew {
+                pendingSettingsAfterWhatsNew = false
+                showSettingsFromWhatsNew = true
+            } else if pendingPaywallAfterWhatsNew {
+                pendingPaywallAfterWhatsNew = false
+                showPaywallFromWhatsNew = true
+            }
+        }) {
+            WhatsNewSheet(
+                isPro: store.isPro,
+                tryFreeCTATitle: store.canPitchFreeTrial ? "Try VO2+ free" : "Explore VO2+",
+                onTryFree: { pendingPaywallAfterWhatsNew = true; showWhatsNew = false },
+                onOpenSettings: { pendingSettingsAfterWhatsNew = true; showWhatsNew = false },
+                onDismiss: { showWhatsNew = false }
+            )
+        }
+        .sheet(isPresented: $showSettingsFromWhatsNew) {
+            NavigationStack { SettingsView() }
+                .environmentObject(settings)
+                .environmentObject(store)
+        }
+        .sheet(isPresented: $showPaywallFromWhatsNew) {
+            PaywallView().environmentObject(store)
+        }
+        .sheet(isPresented: $showRecap) {
+            MonthlyRecapView()
+                .environmentObject(settings)
+        }
+        .sheet(isPresented: $showReviewPrompt, onDismiss: {
+            if reviewPromptCoordinator.pendingPresentation == nil,
+               ReviewPromptTracker.outcome == nil,
+               ReviewPromptTracker.isSoftDeferred {
+                // "Maybe later": Apple often no-ops requestReview(), so we keep a
+                // short cooldown rather than the long jail markShown() would set.
+                requestReview()
+            }
+        }) {
+            ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
+        }
     }
 
-    /// Every tab (and every view pushed inside it) reserves space for the
-    /// floating capsule via the safe area, so scroll content and bottom-pinned
-    /// footers clear the tab bar automatically instead of each screen guessing
-    /// a magic bottom padding.
+    /// Recomputes the recap schedule whenever entitlement or the toggle changes.
+    private var recapSchedulingKey: String { "\(store.isPro)-\(settings.monthlyRecapEnabled)" }
+
+    private func syncMonthlyRecapSchedule() async {
+        if store.isPro, settings.monthlyRecapEnabled {
+            await NotificationService.scheduleMonthlyRecap()
+        } else {
+            NotificationService.cancelMonthlyRecap()
+        }
+    }
+
+    private func evaluateWhatsNew() {
+        guard !whatsNewEvaluated,
+              settings.hasCompletedSetup,
+              !ScreenshotConfig.isEnabled,
+              WhatsNew.shouldShow(lastShown: settings.lastWhatsNewVersionShown),
+              !showReviewPrompt, !showRecap else { return }
+        whatsNewEvaluated = true
+        settings.lastWhatsNewVersionShown = WhatsNew.currentVersion
+        showWhatsNew = true
+    }
+
+    private func evaluatePendingReviewPrompt() {
+        guard !reviewPromptShownThisSession,
+              !showReviewPrompt, !showWhatsNew, !showRecap,
+              ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup) else { return }
+        ReviewPromptTracker.consumePendingPositiveMoment()
+        presentReviewPrompt(step: .enjoyment)
+    }
+
+    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
+        reviewPromptInitialStep = step
+        reviewPromptShownThisSession = true
+        showReviewPrompt = true
+    }
+
+    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
+        showReviewPrompt = false
+    }
+
     private func tabContent(_ content: some View, tab: Int) -> some View {
         content
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                // The floating capsule rises ~68pt off the physical bottom, so a
-                // 76pt reserve left pinned bottom content (e.g. the embedded
-                // paywall's Restore/Terms/Privacy row) sitting on the capsule and
-                // stealing its taps. 92pt clears the capsule with real margin.
                 Color.clear.frame(height: 92)
             }
             .tabVisibility(selection == tab)

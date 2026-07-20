@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
@@ -5,7 +6,24 @@ struct SettingsView: View {
     @EnvironmentObject private var store: StoreService
     @StateObject private var health = HealthKitService.shared
     @Environment(\.dismiss) private var dismiss
+    @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
+
     @State private var showPaywall = false
+    @State private var paywallFocus: PlusFeature?
+    @State private var reportPreview: ReportPreview?
+    @State private var isGeneratingReport = false
+    @State private var reportError: String?
+
+    private struct ReportPreview: Identifiable {
+        let id = UUID()
+        let title: String
+        let url: URL
+        let shareText: String
+    }
+
+    private var points: [CardioFitnessPoint] {
+        samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
+    }
 
     var body: some View {
         Form {
@@ -14,6 +32,7 @@ struct SettingsView: View {
             profileSection
             plusSection
             appearanceSection
+            feedbackSection
             aboutSection
         }
         .navigationTitle("Settings")
@@ -23,7 +42,17 @@ struct SettingsView: View {
                 Button("Done") { dismiss() }
             }
         }
-        .sheet(isPresented: $showPaywall) { PaywallView() }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(focus: paywallFocus)
+        }
+        .sheet(item: $reportPreview) { preview in
+            PDFPreviewSheet(title: preview.title, url: preview.url, shareText: preview.shareText)
+        }
+    }
+
+    private func presentPaywall(focus: PlusFeature? = nil) {
+        paywallFocus = focus
+        showPaywall = true
     }
 
     /// Opens the Apple Health app, where read-only access toggles live (profile ›
@@ -153,18 +182,58 @@ struct SettingsView: View {
                     .foregroundStyle(Theme.positive)
             } else {
                 Button {
-                    showPaywall = true
+                    presentPaywall()
                 } label: {
                     Label(store.shortConversionCTALabel, systemImage: "sparkles")
                 }
             }
 
-            VStack(alignment: .leading, spacing: 8) {
-                plusBenefit("chart.bar.xaxis", "Compare periods", "See matching 30, 90, and 180-day windows.")
-                plusBenefit("scope", "Understand direction", "Add target outlook when recent data supports it.")
-                plusBenefit("person.2.crop.square.stack", "Add context", "See broad age-reference context and personal bests.")
+            // Reading alerts
+            proToggle(
+                feature: .readingAlerts,
+                isOn: Binding(
+                    get: { settings.readingAlertsEnabled },
+                    set: { newValue in
+                        settings.readingAlertsEnabled = newValue
+                        if newValue { Task { await NotificationService.requestAuthorization() } }
+                    }
+                )
+            )
+
+            // Monthly recap
+            proToggle(
+                feature: .monthlyRecap,
+                isOn: Binding(
+                    get: { settings.monthlyRecapEnabled },
+                    set: { settings.monthlyRecapEnabled = $0 }
+                )
+            )
+
+            // Shareable report
+            if store.isPro {
+                Button {
+                    generateReport()
+                } label: {
+                    HStack {
+                        Label("Export fitness report", systemImage: "doc.richtext")
+                        Spacer()
+                        if isGeneratingReport { ProgressView() }
+                    }
+                }
+                .disabled(isGeneratingReport || points.isEmpty)
+            } else {
+                Button {
+                    presentPaywall(focus: .reports)
+                } label: {
+                    lockedRow(feature: .reports)
+                }
             }
-            .padding(.vertical, 4)
+
+            if let reportError {
+                Text(reportError)
+                    .font(.caption)
+                    .foregroundStyle(Theme.negative)
+            }
 
             Button("Restore Purchases") {
                 Task { await store.restore() }
@@ -180,9 +249,116 @@ struct SettingsView: View {
             Text("VO2+")
         } footer: {
             Text(store.isPro
-                ? "Premium context appears inside Today, Trends, reading details, and the VO2+ hub."
-                : "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free.")
+                ? "Reading alerts and the monthly recap keep your cardio fitness in view between Apple Health estimates. Premium context also appears inside Today, Trends, and the VO2+ hub."
+                : "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free. VO2+ adds alerts, a monthly recap, deeper trends, and a shareable report.")
         }
+    }
+
+    private var feedbackSection: some View {
+        Section {
+            Button {
+                ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
+                dismiss()
+            } label: {
+                Label("Rate VO2 Max", systemImage: "star")
+            }
+            Button {
+                ReviewPromptCoordinator.shared.requestFeedback()
+                dismiss()
+            } label: {
+                Label("Send feedback", systemImage: "envelope")
+            }
+        } header: {
+            Text("Support")
+        } footer: {
+            Text("Feedback opens your mail app with a private draft. No analytics, no account.")
+        }
+    }
+
+    @ViewBuilder
+    private func proToggle(feature: PlusFeature, isOn: Binding<Bool>) -> some View {
+        if store.isPro {
+            Toggle(isOn: isOn) {
+                Label {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(feature.title)
+                            .font(.subheadline.weight(.semibold))
+                        Text(feature.detail)
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                } icon: {
+                    Image(systemName: feature.symbol).foregroundStyle(Theme.cardio)
+                }
+            }
+            .tint(Theme.cardio)
+        } else {
+            Button {
+                presentPaywall(focus: feature)
+            } label: {
+                lockedRow(feature: feature)
+            }
+        }
+    }
+
+    private func lockedRow(feature: PlusFeature) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: feature.symbol)
+                .foregroundStyle(Theme.cardio)
+                .frame(width: 22)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(feature.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.textPrimary)
+                Text(feature.detail)
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            Spacer(minLength: 8)
+            Image(systemName: "lock.fill")
+                .font(.caption)
+                .foregroundStyle(Theme.textTertiary)
+        }
+    }
+
+    private func generateReport() {
+        guard !points.isEmpty else { return }
+        isGeneratingReport = true
+        reportError = nil
+
+        let now = Date.now
+        let calendar = Calendar.current
+        let windowDays = 180
+        let windowStart = calendar.date(byAdding: .day, value: -windowDays, to: now) ?? now
+        let previousStart = calendar.date(byAdding: .day, value: -windowDays * 2, to: now) ?? now
+        let current = points.filter { $0.date >= windowStart && $0.date <= now }
+        let previous = points.filter { $0.date >= previousStart && $0.date < windowStart }
+        let periodStart = current.map(\.date).min() ?? windowStart
+
+        let report = CardioReportGenerator.make(
+            title: "Cardio Fitness Report",
+            periodStart: periodStart,
+            periodEnd: now,
+            points: current,
+            previousPoints: previous,
+            targetLower: settings.targetLower,
+            targetUpper: settings.targetUpper,
+            chronologicalAge: settings.chronologicalAge,
+            referenceSex: settings.referenceSex,
+            allPointsForTrend: points
+        )
+
+        do {
+            let url = try CardioReportPDF.render(report)
+            reportPreview = ReportPreview(
+                title: report.title,
+                url: url,
+                shareText: CardioReportShareText.make(report: report)
+            )
+        } catch {
+            reportError = "Could not generate the report. Please try again."
+        }
+        isGeneratingReport = false
     }
 
     private var appearanceSection: some View {
