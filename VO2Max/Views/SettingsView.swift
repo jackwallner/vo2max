@@ -356,30 +356,43 @@ struct SettingsView: View {
         }
     }
 
+    /// Locked features read as real settings toggles. For non-subscribers the
+    /// toggle always shows OFF (`get` returns false) and flipping it on never
+    /// sticks — it snaps back and opens the personalized trial offer instead.
+    /// Mirrors the Vitals+ gated-toggle pattern.
     @ViewBuilder
     private func proToggle(feature: PlusFeature, isOn: Binding<Bool>) -> some View {
-        if store.isPro {
-            Toggle(isOn: isOn) {
-                Label {
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(feature.title)
-                            .font(.subheadline.weight(.semibold))
-                        Text(feature.detail)
-                            .font(.caption)
-                            .foregroundStyle(Theme.textSecondary)
-                    }
-                } icon: {
-                    Image(systemName: feature.symbol).foregroundStyle(Theme.cardio)
+        let gated = Binding(
+            get: { store.isPro && isOn.wrappedValue },
+            set: { newValue in
+                if store.isPro {
+                    isOn.wrappedValue = newValue
+                } else if newValue {
+                    presentTrialOffer(focus: feature)
                 }
             }
-            .tint(Theme.cardio)
-        } else {
-            Button {
-                presentTrialOffer(focus: feature)
-            } label: {
-                lockedRow(feature: feature)
+        )
+        Toggle(isOn: gated) {
+            Label {
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 6) {
+                        Text(feature.title)
+                            .font(.subheadline.weight(.semibold))
+                        if !store.isPro {
+                            Image(systemName: "lock.fill")
+                                .font(.caption2)
+                                .foregroundStyle(Theme.textTertiary)
+                        }
+                    }
+                    Text(feature.detail)
+                        .font(.caption)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            } icon: {
+                Image(systemName: feature.symbol).foregroundStyle(Theme.cardio)
             }
         }
+        .tint(Theme.cardio)
     }
 
     private func lockedRow(feature: PlusFeature) -> some View {
