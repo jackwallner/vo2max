@@ -197,15 +197,10 @@ struct DashboardView: View {
                             .font(.system(.subheadline, design: .rounded, weight: .bold))
                             .foregroundStyle(statusColor(status))
                             .padding(.top, 2)
+                        Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
+                            .font(.system(.caption2, design: .rounded))
+                            .foregroundStyle(Theme.textTertiary)
                     }
-                }
-                HStack(spacing: 3) {
-                    Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
-                        .font(.system(.caption, design: .rounded))
-                        .foregroundStyle(Theme.textSecondary)
-                    Image(systemName: "chevron.right")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(Theme.textTertiary)
                 }
             }
             .contentShape(Rectangle())
