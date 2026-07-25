@@ -19,6 +19,22 @@ enum VO2ConversionCopy {
         eligibleForTrial ? "Start Free Trial" : "Continue with VO2+"
     }
 
+    /// Apple 3.1.2(c): the amount the user will actually be billed, phrased as a
+    /// commitment rather than a rate ("$29.99 / year" -> "$29.99 per year"). Every
+    /// purchase surface renders this as its largest pricing element.
+    static func billedAmount(priceLabel: String) -> String {
+        priceLabel.replacingOccurrences(of: " / ", with: " per ")
+    }
+
+    /// Subordinate line under the billed amount: how long the free trial lasts
+    /// when the Apple ID is eligible, otherwise the renewal commitment.
+    static func billedNote(trialLabel: String?, eligibleForTrial: Bool) -> String {
+        if eligibleForTrial, let trialLabel, !trialLabel.isEmpty {
+            return "after your \(trialLabel.lowercased())"
+        }
+        return "Billed automatically until cancelled"
+    }
+
     /// Apple 3.1.2 disclosure adjacent to the purchase button.
     static func disclosure(
         trialLabel: String?,
