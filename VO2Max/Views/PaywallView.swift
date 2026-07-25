@@ -125,12 +125,15 @@ struct BilledAmountBlock: View {
     var compact = false
 
     var body: some View {
+        // Caption-size secondary text: the standard subscription-disclosure
+        // treatment, quiet enough to read as supporting copy. The amount keeps
+        // the heavier weight so it still leads the trial length beside it.
         Group {
             Text(amount)
-                .font(.system(compact ? .footnote : .subheadline, design: .rounded, weight: .semibold))
-                .foregroundStyle(Theme.textPrimary)
+                .font(.system(.caption, design: .rounded, weight: .semibold))
+                .foregroundStyle(Theme.textSecondary)
             + Text(note.map { " \($0)" } ?? "")
-                .font(.system(compact ? .footnote : .subheadline, design: .rounded))
+                .font(.system(.caption, design: .rounded))
                 .foregroundStyle(Theme.textSecondary)
         }
         .multilineTextAlignment(.center)
