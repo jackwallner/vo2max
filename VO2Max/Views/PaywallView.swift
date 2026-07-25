@@ -104,6 +104,40 @@ enum PlusFeature: CaseIterable {
     }
 }
 
+/// Apple 3.1.2(c): on every purchase surface the amount the user will actually
+/// be billed must be the most clear and conspicuous pricing element, with the
+/// free-trial framing subordinate in both size and position. This block is the
+/// single place that renders that hierarchy, so the onboarding trial step, the
+/// trial offer sheet, and the full plan picker all state it identically —
+/// directly above the purchase button, larger than the button's own label.
+struct BilledAmountBlock: View {
+    let amount: String
+    let note: String?
+    /// Smaller variant for the compact trial sheet footer. Still larger than the
+    /// CTA label so the billed amount stays the dominant pricing element.
+    var compact = false
+
+    var body: some View {
+        VStack(spacing: 1) {
+            Text(amount)
+                .font(.system(compact ? .title3 : .title2, design: .rounded, weight: .heavy))
+                .foregroundStyle(Theme.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            if let note {
+                Text(note)
+                    .font(.system(.caption2, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .combine)
+    }
+}
+
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: StoreService
@@ -262,6 +296,13 @@ struct PaywallView: View {
     /// slot so the button never jumps when the selected plan changes.
     private var checkoutFooter: some View {
         VStack(spacing: 6) {
+            if let package = selectedPackage {
+                BilledAmountBlock(
+                    amount: billedAmount(for: package),
+                    note: billedNote(for: package)
+                )
+            }
+
             Button {
                 guard let package = selectedPackage else { return }
                 Task { await store.purchase(package) }
@@ -384,6 +425,22 @@ struct PaywallView: View {
         return "Subscribe"
     }
 
+    /// Dominant pricing element for the selected plan (Apple 3.1.2(c)).
+    private func billedAmount(for package: Package) -> String {
+        package.vo2PackageKind == .lifetime
+            ? package.storeProduct.localizedPriceString
+            : VO2ConversionCopy.billedAmount(priceLabel: package.vo2PriceLabel)
+    }
+
+    private func billedNote(for package: Package) -> String {
+        package.vo2PackageKind == .lifetime
+            ? "One-time purchase"
+            : VO2ConversionCopy.billedNote(
+                trialLabel: package.vo2IntroOfferLabel,
+                eligibleForTrial: store.isEligibleForIntroOffer(package)
+            )
+    }
+
     private var disclosureText: String {
         guard let package = selectedPackage else { return "" }
         if package.vo2PackageKind == .lifetime {
@@ -443,28 +500,33 @@ private struct PlanCard: View {
                             badge("BEST VALUE")
                         }
                     }
+                    // Apple 3.1.2(c): trial and per-week framing are secondary
+                    // pricing elements, so they stay smaller and quieter than the
+                    // billed amount on the trailing edge of the card.
                     Group {
                         if let trialLabel {
-                            Text(trialLabel.capitalized)
+                            Text("\(trialLabel.capitalized), then the price shown")
                         } else if package.vo2PackageKind == .yearly,
                                   let perWeek = package.vo2PricePerWeekLabel {
-                            Text("Just \(perWeek)/week")
+                            Text("Works out to \(perWeek)/week")
                         } else {
                             Text(" ")
                         }
                     }
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Theme.positive)
+                    .font(.system(size: 11, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                 }
 
                 Spacer(minLength: 8)
 
                 Text(package.vo2PriceLabel)
-                    .font(.system(.subheadline, design: .rounded, weight: .semibold).monospacedDigit())
-                    .foregroundStyle(Theme.textSecondary)
+                    .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
+                    .foregroundStyle(Theme.textPrimary)
                     .multilineTextAlignment(.trailing)
                     .lineLimit(2)
+                    .minimumScaleFactor(0.8)
             }
             .frame(minHeight: 54)
             .padding(.horizontal, 14)

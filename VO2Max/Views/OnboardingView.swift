@@ -313,9 +313,26 @@ struct OnboardingView: View {
                         detail: "Keep your strongest estimate visible"
                     )
                 }
+
+                // Apple 3.1.2(c): the billed amount is the largest pricing
+                // element on this step — bigger than the CTA label and the
+                // disclosure. It lives in the page body, not the bottom bar, so
+                // the primary button keeps the exact frame Continue occupied.
+                if let yearly = store.yearlyPackage {
+                    BilledAmountBlock(
+                        amount: VO2ConversionCopy.billedAmount(priceLabel: yearly.vo2PriceLabel),
+                        note: VO2ConversionCopy.billedNote(
+                            trialLabel: yearly.vo2IntroOfferLabel,
+                            eligibleForTrial: store.isEligibleForIntroOffer(yearly)
+                        )
+                    )
+                }
             }
 
-            Spacer(minLength: 8)
+            // Capped so the pitch settles just above the CTA bar and the billed
+            // amount reads as part of the purchase decision. Leading Spacer takes
+            // the remaining slack, so the button itself never moves.
+            Spacer(minLength: 8).frame(maxHeight: 28)
         }
     }
 

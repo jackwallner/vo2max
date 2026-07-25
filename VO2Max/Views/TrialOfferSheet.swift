@@ -29,13 +29,11 @@ struct TrialOfferSheet: View {
     @State private var animateGlow = false
     @State private var shimmerPhase: CGFloat = -1
 
-    /// Headline copy. Trial language only when `offerLabel` is set (eligible).
+    /// Headline copy. Always leads with the capability, never with the free
+    /// trial — Apple 3.1.2(c) requires the billed amount to be the most
+    /// conspicuous pricing element, so no pricing lives in the hero.
     private var headline: String {
-        if let focus { return focus.intentHeadline }
-        if let offerLabel {
-            return "\(offerLabel.capitalized), on us."
-        }
-        return "Go further with VO2+"
+        focus?.intentHeadline ?? "Go further with VO2+"
     }
 
     private var subheadline: String {
@@ -54,18 +52,6 @@ struct TrialOfferSheet: View {
     private var bulletFeatures: [PlusFeature] {
         if let focus { return [focus] + focus.companionFeatures }
         return [.deepTrends, .targetProjection, .personalBest]
-    }
-
-    /// Deal badge text derived from the real offer, e.g. "7-day free trial" →
-    /// "7 DAYS FREE". Falls back to a generic label if the day count can't be
-    /// parsed. Never invents a number — only reflects the loaded offer.
-    private var trialBadgeText: String {
-        guard let offerLabel,
-              let days = offerLabel.split(whereSeparator: { !$0.isNumber }).first,
-              !days.isEmpty else {
-            return "VO2+"
-        }
-        return "\(days) DAYS FREE"
     }
 
     /// Repeat-forever animation timing for the ambient glow. Scoped to the
@@ -123,22 +109,6 @@ struct TrialOfferSheet: View {
                 .padding(.top, 4)
                 .animation(glowAnimation, value: animateGlow)
 
-                // Deal badge only when pitching an eligible free trial.
-                if offerLabel != nil {
-                    Text(trialBadgeText)
-                        .font(.system(.caption, design: .rounded, weight: .heavy))
-                        .tracking(1.5)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 6)
-                        .background(Theme.cardioGradient, in: Capsule())
-                        .overlay(Capsule().stroke(.white.opacity(0.35), lineWidth: 1))
-                        .shadow(color: Theme.cardio.opacity(0.5), radius: animateGlow ? 12 : 6, x: 0, y: 2)
-                        .scaleEffect(animateGlow ? 1.03 : 1.0)
-                        .animation(glowAnimation, value: animateGlow)
-                        .accessibilityLabel(trialBadgeText.capitalized)
-                }
-
                 VStack(spacing: 4) {
                     Text(headline)
                         .font(.system(.title2, design: .rounded, weight: .bold))
@@ -187,6 +157,21 @@ struct TrialOfferSheet: View {
             .padding(.top, 6)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 VStack(spacing: 8) {
+                    // Apple 3.1.2(c): billed amount directly above the button and
+                    // larger than its label, with the trial length subordinate
+                    // underneath. Hidden until the price actually loads so we
+                    // never render a phantom amount.
+                    if directPurchase, let priceLabel {
+                        BilledAmountBlock(
+                            amount: VO2ConversionCopy.billedAmount(priceLabel: priceLabel),
+                            note: VO2ConversionCopy.billedNote(
+                                trialLabel: offerLabel,
+                                eligibleForTrial: offerLabel != nil
+                            ),
+                            compact: true
+                        )
+                    }
+
                     // Error replaces disclosure in the same slot — never stack both.
                     if let errorMessage {
                         Text(errorMessage)
