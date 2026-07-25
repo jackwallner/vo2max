@@ -485,12 +485,10 @@ struct OnboardingView: View {
 
     // MARK: - Trial copy
 
-    private var trialCTATitle: String {
-        if let yearly = store.yearlyPackage, let label = store.eligibleIntroLabel(for: yearly) {
-            return "Start \(label)"
-        }
-        return "Continue with VO2+"
-    }
+    /// Neutral by design: the trial length and the billed amount are stated
+    /// together in the price line directly above, so the button carries no
+    /// pricing words that could outweigh it (Apple 3.1.2(c)).
+    private var trialCTATitle: String { "Continue with VO2+" }
 
     private var trialDisclosure: String? {
         guard let yearly = store.yearlyPackage else { return nil }

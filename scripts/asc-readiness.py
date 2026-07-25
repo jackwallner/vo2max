@@ -12,7 +12,7 @@ import asc_lib  # noqa: E402
 
 BUNDLE = "com.jackwallner.vo2max"
 VERSION = "1.0.0"
-BUILD = "19"
+BUILD = "30"
 LOCALES = set(json.loads((Path(__file__).parent / "asc-supported-locales.json").read_text())["locales"])
 PRODUCTS = {
     "com.jackwallner.vo2max.monthly",
@@ -49,7 +49,13 @@ def main() -> None:
     if not version:
         raise SystemExit(1)
     version_id = version["id"]
-    check(version["attributes"].get("appStoreState") == "PREPARE_FOR_SUBMISSION", "version remains PREPARE_FOR_SUBMISSION", failures)
+    # PREPARE_FOR_SUBMISSION before submitting; READY_FOR_REVIEW once the
+    # version has been added to a review submission. Both are healthy.
+    check(
+        version["attributes"].get("appStoreState") in ("PREPARE_FOR_SUBMISSION", "READY_FOR_REVIEW"),
+        "version is editable or queued for review",
+        failures,
+    )
 
     build = client.get(f"/appStoreVersions/{version_id}/build").get("data")
     check(bool(build), "build attached", failures)
@@ -81,7 +87,8 @@ def main() -> None:
         sets = asc_lib.list_all(client, f"/appStoreVersionLocalizations/{localization['id']}/appScreenshotSets")
         for screenshot_set in sets:
             screenshots += len(asc_lib.list_all(client, f"/appScreenshotSets/{screenshot_set['id']}/appScreenshots"))
-    check(screenshots == 6, f"canonical screenshot set present ({screenshots})", failures)
+    # 6 iPhone 6.7" shots + 1 Apple Watch shot is the full submitted set.
+    check(screenshots == 7, f"canonical screenshot set present ({screenshots})", failures)
 
     all_products: set[str] = set()
     for group in asc_lib.list_all(client, f"/apps/{app_id}/subscriptionGroups"):

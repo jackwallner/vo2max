@@ -3,18 +3,36 @@ import Testing
 @testable import VO2Max
 
 struct VO2ConversionCopyTests {
-    @Test func ctaUsesTrialOnlyWhenEligible() {
+    /// Apple 3.1.2(c) weighs pricing elements against each other, so no purchase
+    /// button may carry trial or price wording that could outrank the billed
+    /// amount rendered next to it. This is the regression guard for that.
+    @Test func ctaCarriesNoPricingWordsInAnyEligibilityState() {
+        let labels = [
+            VO2ConversionCopy.ctaLabel(trialLabel: "7-day free trial", priceLabel: "$14.99 / year", eligibleForTrial: true),
+            VO2ConversionCopy.ctaLabel(trialLabel: "7-day free trial", priceLabel: "$14.99 / year", eligibleForTrial: false),
+            VO2ConversionCopy.ctaLabel(trialLabel: nil, priceLabel: "", eligibleForTrial: false),
+            VO2ConversionCopy.shortCTALabel(eligibleForTrial: true),
+            VO2ConversionCopy.shortCTALabel(eligibleForTrial: false),
+        ]
+        for label in labels {
+            #expect(label == "Continue with VO2+")
+            #expect(!label.lowercased().contains("trial"))
+            #expect(!label.lowercased().contains("free"))
+            #expect(!label.contains("$"))
+        }
+    }
+
+    /// The billed amount leads the price line and the trial length trails it.
+    @Test func billedAmountLeadsAndTrialTrails() {
+        #expect(VO2ConversionCopy.billedAmount(priceLabel: "$14.99 / year") == "$14.99 per year")
         #expect(
-            VO2ConversionCopy.ctaLabel(trialLabel: "7-day free trial", priceLabel: "$14.99 / year", eligibleForTrial: true)
-                == "Start 7-day free trial"
+            VO2ConversionCopy.billedNote(trialLabel: "7-day free trial", eligibleForTrial: true)
+                == "after your 7-day free trial"
         )
+        // Never promise a trial the Apple ID can't get.
         #expect(
-            VO2ConversionCopy.ctaLabel(trialLabel: "7-day free trial", priceLabel: "$14.99 / year", eligibleForTrial: false)
-                == "Continue with VO2+ for $14.99 / year"
-        )
-        #expect(
-            VO2ConversionCopy.ctaLabel(trialLabel: nil, priceLabel: "", eligibleForTrial: false)
-                == "Continue with VO2+"
+            VO2ConversionCopy.billedNote(trialLabel: "7-day free trial", eligibleForTrial: false)
+                == "Billed automatically until cancelled"
         )
     }
 

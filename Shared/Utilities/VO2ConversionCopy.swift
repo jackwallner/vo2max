@@ -5,18 +5,23 @@ import Foundation
 /// These helpers keep every pitch surface (trial sheet, paywall, locked rows)
 /// honest when the user already used their free trial.
 enum VO2ConversionCopy {
-    /// Primary button: trial language only when eligible.
+    /// Primary button. Deliberately carries no pricing words at all: not the
+    /// trial, not the price. Apple 3.1.2(c) weighs pricing elements against each
+    /// other, and a bold button reading "Start 7-day free trial" would outshout
+    /// the calm price line above it. With a neutral button, the billed amount in
+    /// `BilledAmountBlock` is the leading pricing text on the surface.
+    ///
+    /// The parameters are retained so callers keep passing the real offer, and
+    /// so re-introducing price wording here stays a one-line change that is
+    /// obviously coupled to the block's sizing.
     static func ctaLabel(trialLabel: String?, priceLabel: String, eligibleForTrial: Bool) -> String {
-        if eligibleForTrial, let trialLabel, !trialLabel.isEmpty {
-            return "Start \(trialLabel)"
-        }
-        if priceLabel.isEmpty { return "Continue with VO2+" }
-        return "Continue with VO2+ for \(priceLabel)"
+        "Continue with VO2+"
     }
 
-    /// Short capsule CTA used on locked cards (less price noise).
+    /// Short capsule CTA on locked cards. These sit far from any price and only
+    /// route to a purchase surface, so they stay neutral for the same reason.
     static func shortCTALabel(eligibleForTrial: Bool) -> String {
-        eligibleForTrial ? "Start Free Trial" : "Continue with VO2+"
+        "Continue with VO2+"
     }
 
     /// Apple 3.1.2(c): the amount the user will actually be billed, phrased as a

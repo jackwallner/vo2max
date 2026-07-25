@@ -106,34 +106,38 @@ enum PlusFeature: CaseIterable {
 
 /// Apple 3.1.2(c): on every purchase surface the amount the user will actually
 /// be billed must be the most clear and conspicuous pricing element, with the
-/// free-trial framing subordinate in both size and position. This block is the
-/// single place that renders that hierarchy, so the onboarding trial step, the
-/// trial offer sheet, and the full plan picker all state it identically —
-/// directly above the purchase button, larger than the button's own label.
+/// free-trial framing subordinate in both size and position.
+///
+/// The rule is comparative, so this reads as one calm sentence rather than a
+/// price banner. That only holds because no button in any purchase flow says
+/// "free trial" any more (see `VO2ConversionCopy.ctaLabel`) — Apple counts a
+/// free trial as a pricing element, and a bold trial CTA would outrank a quiet
+/// price line. Two invariants follow, and both are load-bearing:
+///
+///   1. If a CTA ever regains trial or price wording, this has to get louder.
+///   2. This sits directly above the purchase button at readable size. It is
+///      the screen's only statement of what the tap costs, so it must not be
+///      shrunk to decorative type or moved away from the button.
 struct BilledAmountBlock: View {
     let amount: String
     let note: String?
-    /// Smaller variant for the compact trial sheet footer. Still larger than the
-    /// CTA label so the billed amount stays the dominant pricing element.
+    /// Slightly smaller variant for the compact trial sheet footer.
     var compact = false
 
     var body: some View {
-        VStack(spacing: 1) {
+        Group {
             Text(amount)
-                .font(.system(compact ? .title3 : .title2, design: .rounded, weight: .heavy))
+                .font(.system(compact ? .footnote : .subheadline, design: .rounded, weight: .semibold))
                 .foregroundStyle(Theme.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            if let note {
-                Text(note)
-                    .font(.system(.caption2, design: .rounded))
-                    .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-            }
+            + Text(note.map { " \($0)" } ?? "")
+                .font(.system(compact ? .footnote : .subheadline, design: .rounded))
+                .foregroundStyle(Theme.textSecondary)
         }
-        .frame(maxWidth: .infinity)
         .multilineTextAlignment(.center)
+        .lineLimit(2)
+        .minimumScaleFactor(0.85)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
     }
 }
@@ -420,9 +424,14 @@ struct PaywallView: View {
 
     private var ctaTitle: String {
         guard let package = selectedPackage else { return "Continue" }
+        // "Unlock Lifetime" names the plan, not a price or a trial, so it does
+        // not compete with the billed amount above it.
         if package.vo2PackageKind == .lifetime { return "Unlock Lifetime" }
-        if store.isEligibleForIntroOffer(package) { return "Start Free Trial" }
-        return "Subscribe"
+        return VO2ConversionCopy.ctaLabel(
+            trialLabel: package.vo2IntroOfferLabel,
+            priceLabel: package.vo2PriceLabel,
+            eligibleForTrial: store.isEligibleForIntroOffer(package)
+        )
     }
 
     /// Dominant pricing element for the selected plan (Apple 3.1.2(c)).
