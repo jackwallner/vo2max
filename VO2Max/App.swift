@@ -254,7 +254,10 @@ private struct MainTabView: View {
         }) {
             WhatsNewSheet(
                 isPro: store.isPro,
-                tryFreeCTATitle: store.canPitchFreeTrial ? "Try VO2+ free" : "Explore VO2+",
+                // Neutral for the same 3.1.2(c) reason as the purchase CTAs: this
+                // routes into the paywall, so it should not pitch the trial ahead
+                // of the price the paywall is about to state.
+                tryFreeCTATitle: "Explore VO2+",
                 onTryFree: { pendingPaywallAfterWhatsNew = true; showWhatsNew = false },
                 onOpenSettings: { pendingSettingsAfterWhatsNew = true; showWhatsNew = false },
                 onDismiss: { showWhatsNew = false }
