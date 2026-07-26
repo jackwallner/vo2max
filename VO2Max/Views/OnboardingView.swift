@@ -454,10 +454,10 @@ struct OnboardingView: View {
                     finishOnboarding()
                 } label: {
                     Text("Get Started")
-                        .font(.system(.caption, design: .rounded, weight: .medium))
-                        .foregroundStyle(Theme.textTertiary)
+                        .font(.system(.footnote, design: .rounded, weight: .semibold))
+                        .foregroundStyle(Theme.textSecondary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 7)
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 24)
