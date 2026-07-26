@@ -158,10 +158,6 @@ struct PaywallView: View {
         return [.deepTrends, .targetProjection, .fitnessBand, .personalBest]
     }
 
-    /// Generic (no-focus) presentations list every benefit and scroll; a focused
-    /// pitch is short and pins to a single non-scrolling page.
-    private var showsFullBenefitList: Bool { focus == nil }
-
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
@@ -188,37 +184,30 @@ struct PaywallView: View {
         }
     }
 
-    /// Hero + benefits + plans; checkout pinned slim below via `safeAreaInset`.
-    /// No GeometryReader: the full list scrolls, a focused pitch fills the height
-    /// with a trailing Spacer. This is the Vitals paywall structure verbatim,
-    /// which is what keeps everything on one page.
+    /// Hero, benefits, plans, and the price hierarchy all scroll as one purchase
+    /// surface. Only the CTA and legal disclosure stay pinned, so the price never
+    /// gets compressed into a crowded bottom inset on shorter devices.
     private var content: some View {
-        Group {
-            if showsFullBenefitList {
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 12) {
-                        header
-                        featureList
-                        planCards
-                    }
-                    .padding(.horizontal, 22)
-                    .padding(.top, embedded ? 20 : 44)
-                    .padding(.bottom, 8)
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 12) {
+                header
+                featureList
+                planCards
+
+                if let package = selectedPackage {
+                    BilledAmountBlock(
+                        amount: billedAmount(for: package),
+                        note: billedNote(for: package)
+                    )
+                    .padding(.top, 6)
+                    .padding(.bottom, 2)
                 }
-                .scrollBounceBehavior(.basedOnSize)
-            } else {
-                VStack(spacing: 12) {
-                    header
-                    featureList
-                    planCards
-                    Spacer(minLength: 0)
-                }
-                .padding(.horizontal, 22)
-                .padding(.top, embedded ? 20 : 44)
-                .padding(.bottom, 4)
-                .frame(maxHeight: .infinity)
             }
+            .padding(.horizontal, 22)
+            .padding(.top, embedded ? 20 : 44)
+            .padding(.bottom, 12)
         }
+        .scrollBounceBehavior(.basedOnSize)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             checkoutFooter
         }
@@ -299,13 +288,6 @@ struct PaywallView: View {
     /// slot so the button never jumps when the selected plan changes.
     private var checkoutFooter: some View {
         VStack(spacing: 6) {
-            if let package = selectedPackage {
-                BilledAmountBlock(
-                    amount: billedAmount(for: package),
-                    note: billedNote(for: package)
-                )
-            }
-
             Button {
                 guard let package = selectedPackage else { return }
                 Task { await store.purchase(package) }
@@ -402,10 +384,11 @@ struct PaywallView: View {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 42))
                 .foregroundStyle(Theme.textSecondary)
-            Text("Couldn't Load Plans").font(.title3.bold())
-            Text("Check your connection and try again.")
+            Text("VO2+ Plans Unavailable").font(.title3.bold())
+            Text("Purchases are temporarily unavailable. Your free features are still ready to use.")
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
             Button("Try Again") { store.start() }
                 .buttonStyle(.borderedProminent)
                 .tint(Theme.cardio)

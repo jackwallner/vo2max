@@ -396,19 +396,28 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 24)
         case .trial:
-            Button {
-                startTrial()
-            } label: {
-                ZStack {
-                    primaryLabel(trialCTATitle)
-                        .opacity(isStartingTrial ? 0 : 1)
-                    if isStartingTrial {
-                        ProgressView().tint(.white)
+            if store.yearlyPackage != nil {
+                Button {
+                    startTrial()
+                } label: {
+                    ZStack {
+                        primaryLabel(trialCTATitle)
+                            .opacity(isStartingTrial ? 0 : 1)
+                        if isStartingTrial {
+                            ProgressView().tint(.white)
+                        }
                     }
                 }
+                .disabled(isStartingTrial)
+                .padding(.horizontal, 24)
+            } else {
+                Button {
+                    finishOnboarding()
+                } label: {
+                    primaryLabel("Get Started")
+                }
+                .padding(.horizontal, 24)
             }
-            .disabled(isStartingTrial)
-            .padding(.horizontal, 24)
         }
     }
 
@@ -440,17 +449,19 @@ struct OnboardingView: View {
     /// exit, then disclosure or error — none of it can shift the CTA.
     private var trialSoftExitAndDisclosure: some View {
         VStack(spacing: 12) {
-            Button {
-                finishOnboarding()
-            } label: {
-                Text("Get Started")
-                    .font(.system(.caption, design: .rounded, weight: .medium))
-                    .foregroundStyle(Theme.textTertiary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
+            if store.yearlyPackage != nil {
+                Button {
+                    finishOnboarding()
+                } label: {
+                    Text("Get Started")
+                        .font(.system(.caption, design: .rounded, weight: .medium))
+                        .foregroundStyle(Theme.textTertiary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 24)
             }
-            .buttonStyle(.plain)
-            .padding(.horizontal, 24)
 
             // Render no disclosure until the package loads — never a phantom
             // price. Error replaces disclosure in the same slot.
@@ -462,6 +473,13 @@ struct OnboardingView: View {
                     .padding(.horizontal, 24)
             } else if let disclosure = trialDisclosure {
                 Text(disclosure)
+                    .font(.system(.caption2, design: .rounded))
+                    .foregroundStyle(Theme.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 24)
+            } else {
+                Text("VO2+ plans are temporarily unavailable. Continue with the free app and try again later from the VO2+ tab.")
                     .font(.system(.caption2, design: .rounded))
                     .foregroundStyle(Theme.textTertiary)
                     .multilineTextAlignment(.center)
