@@ -31,13 +31,13 @@ enum VO2ConversionCopy {
         priceLabel.replacingOccurrences(of: " / ", with: " per ")
     }
 
-    /// Subordinate line under the billed amount: how long the free trial lasts
-    /// when the Apple ID is eligible, otherwise the renewal commitment.
+    /// Subordinate line under the billed amount. The trial remains a visible
+    /// conversion hook, but the price always leads and receives stronger type.
     static func billedNote(trialLabel: String?, eligibleForTrial: Bool) -> String {
         if eligibleForTrial, let trialLabel, !trialLabel.isEmpty {
-            return "after your \(trialLabel.lowercased())"
+            return "\(trialLabel.lowercased()) included · Cancel anytime"
         }
-        return "Billed automatically until cancelled"
+        return "Billed automatically · Cancel anytime"
     }
 
     /// Apple 3.1.2 disclosure adjacent to the purchase button.
@@ -48,7 +48,7 @@ enum VO2ConversionCopy {
         renewClause: String = "Auto-renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel in Settings › Apple ID › Subscriptions."
     ) -> String {
         if eligibleForTrial, let trialLabel, !trialLabel.isEmpty {
-            return "\(trialLabel.capitalized), then \(priceLabel). \(renewClause)"
+            return "\(priceLabel) after the \(trialLabel.lowercased()). \(renewClause)"
         }
         return "\(priceLabel). \(renewClause)"
     }
@@ -56,7 +56,7 @@ enum VO2ConversionCopy {
     /// Compact disclosure for the trial offer sheet footer.
     static func sheetDisclosure(trialLabel: String?, priceLabel: String, eligibleForTrial: Bool) -> String {
         if eligibleForTrial, let trialLabel, !trialLabel.isEmpty {
-            return "Free during trial, then \(priceLabel). Auto-renews unless cancelled 24h before trial ends."
+            return "\(priceLabel) after the \(trialLabel.lowercased()). Auto-renews unless cancelled at least 24 hours before the trial ends."
         }
         return "\(priceLabel). Auto-renews unless cancelled 24h before the period ends."
     }

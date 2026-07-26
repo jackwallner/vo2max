@@ -13,7 +13,7 @@ struct TrialOfferSheet: View {
     let offerLabel: String?
     /// Recurring price, e.g. "$29.99 / year". Required in directPurchase mode.
     let priceLabel: String?
-    /// Primary button title (trial or paid yearly).
+    /// Neutral primary button title.
     let ctaTitle: String
     /// Apple 3.1.2 disclosure under the CTA. Hidden while an error is shown so
     /// the two never overlap in the fixed footer.
@@ -37,15 +37,8 @@ struct TrialOfferSheet: View {
     }
 
     private var subheadline: String {
-        if let focus {
-            if offerLabel != nil {
-                return "\(focus.intentSubheadline) Free during your trial. Cancel anytime."
-            }
-            return focus.intentSubheadline
-        }
-        return offerLabel != nil
-            ? "Deeper trends, alerts, and reports on top of your Apple Health estimates. No charge until your trial ends."
-            : "Deeper trends, alerts, and reports on top of your Apple Health estimates."
+        focus?.intentSubheadline
+            ?? "Deeper trends, alerts, and reports on top of your Apple Health estimates."
     }
 
     /// Focused feature first with two related companions; generic trio otherwise.
