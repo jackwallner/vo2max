@@ -80,7 +80,7 @@ def main() -> None:
         (
             entitlement
             for entitlement in entitlements
-            if entitlement["lookup_key"] in {"pro", "V02 Max Pro", "VO2 Max Pro"}
+            if entitlement["lookup_key"] in {"pro", "V02 Max Pro", "VO2 Max Pro", "VO2+"}
         ),
         None,
     )
@@ -88,7 +88,7 @@ def main() -> None:
         entitlement = request(
             "POST",
             f"/projects/{project_id}/entitlements",
-            {"lookup_key": "pro", "display_name": "VO2 Max Pro"},
+            {"lookup_key": "pro", "display_name": "VO2+"},
         )
         print("created entitlement: pro")
 

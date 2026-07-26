@@ -81,7 +81,7 @@ Your fitness data stays on your devices. The app reads Cardio Fitness estimates 
 
 VO2 max and fitness age are broad estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition. It is not a substitute for professional medical advice.
 
-VO2 Max Pro is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
+VO2+ is optional. Choose $1.99 monthly, $14.99 yearly, or a $29.99 lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices shown are U.S. prices and may vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
 
 Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html"""
@@ -154,7 +154,7 @@ def main() -> None:
     write(review / "phone_number.txt", "14257533411")
     write(review / "demo_user.txt", "")
     write(review / "demo_password.txt", "")
-    write(review / "notes.txt", "The app is read-only and requests Apple Health Cardio Fitness (VO2 max) access. No account is required. If the review device has no cardio fitness samples, the app shows guidance for obtaining an Apple Watch estimate. VO2 Max Pro offers monthly and yearly auto-renewable subscriptions with a 7-day introductory trial, plus a one-time lifetime unlock. Terms and privacy links appear at the purchase point.")
+    write(review / "notes.txt", "The app is read-only and requests Apple Health Cardio Fitness (VO2 max) access. No account is required. If the review device has no cardio fitness samples, the app shows guidance for obtaining an Apple Watch estimate. VO2+ offers monthly and yearly auto-renewable subscriptions with a 7-day introductory trial, plus a one-time lifetime unlock. Terms and privacy links appear at the purchase point.")
     print(f"wrote complete metadata for {len(LOCALES)} locales")
 
 

@@ -11,8 +11,10 @@ import asc_lib
 
 BUNDLE = "com.jackwallner.vo2max"
 PRODUCT_ID = "com.jackwallner.vo2max.pro.lifetime"
-PRODUCT_NAME = "VO2 Max Pro Lifetime"
-PRODUCT_DESCRIPTION = "Unlock VO2 Max Pro forever. One payment."
+# App Store Connect's internal reference name is immutable after creation.
+# The localized customer-facing name is VO2+ Lifetime.
+PRODUCT_REFERENCE_NAME = "VO2 Max Pro Lifetime"
+PRODUCT_DESCRIPTION = "Unlock VO2+ forever. One payment."
 PRICE = "29.99"
 
 REVIEW_NOTES = """VO2 Max Daily Tracker is a read-only Apple Health cardio fitness viewer.
@@ -21,7 +23,7 @@ No account or login is required. On first launch, connect Apple Health. The app 
 
 The app displays the latest Apple Health estimate, a personal target range, trend history, widgets, Watch complications, and a clearly labeled broad fitness-age estimate. It makes no diagnostic or treatment claims.
 
-VO2 Max Pro offers monthly and yearly auto-renewable subscriptions with a 7-day free trial for eligible new subscribers, plus an optional one-time lifetime non-consumable. Terms, renewal disclosure, privacy, and restore controls appear at the purchase point. The app does not use non-exempt encryption."""
+VO2+ offers monthly and yearly auto-renewable subscriptions with a 7-day free trial for eligible new subscribers, plus an optional one-time lifetime non-consumable. Terms, renewal disclosure, privacy, and restore controls appear at the purchase point. The app does not use non-exempt encryption."""
 
 
 def main() -> None:
@@ -92,10 +94,10 @@ def main() -> None:
                 "data": {
                     "type": "inAppPurchases",
                     "attributes": {
-                        "name": PRODUCT_NAME,
+                        "name": PRODUCT_REFERENCE_NAME,
                         "productId": PRODUCT_ID,
                         "inAppPurchaseType": "NON_CONSUMABLE",
-                        "reviewNote": "One-time purchase that unlocks VO2 Max Pro forever.",
+                        "reviewNote": "One-time purchase that unlocks VO2+ forever.",
                     },
                     "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
                 }
@@ -114,7 +116,7 @@ def main() -> None:
     for locale in locales:
         product_path = asc_lib.META / locale / "products.json"
         product = json.loads(product_path.read_text()) if product_path.exists() else {}
-        name = product.get("lifetime_name") or PRODUCT_NAME
+        name = product.get("lifetime_name") or PRODUCT_REFERENCE_NAME
         description = product.get("lifetime_desc") or PRODUCT_DESCRIPTION
         existing = localization_by_locale.get(locale)
         if existing:

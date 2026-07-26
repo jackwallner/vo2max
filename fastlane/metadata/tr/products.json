@@ -1,9 +1,9 @@
 {
-  "group": "VO2 Max Pro",
-  "monthly_name": "VO2 Max Pro Aylık",
-  "monthly_desc": "VO2 Max Pro'ya aylık erişim.",
-  "yearly_name": "VO2 Max Pro Yıllık",
-  "yearly_desc": "VO2 Max Pro'ya yıllık erişim.",
-  "lifetime_name": "VO2 Maksimum Pro Ömrü",
-  "lifetime_desc": "Tek ödemeyle VO2 Max Pro'nun kilidini sonsuza kadar"
+  "group": "VO2+",
+  "monthly_name": "VO2+ Monthly",
+  "monthly_desc": "Monthly access to VO2+.",
+  "yearly_name": "VO2+ Yearly",
+  "yearly_desc": "Yearly access to VO2+.",
+  "lifetime_name": "VO2+ Lifetime",
+  "lifetime_desc": "Unlock VO2+ forever with one payment."
 }

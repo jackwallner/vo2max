@@ -15,7 +15,7 @@ Dữ liệu thể dục của bạn vẫn còn trên thiết bị của bạn. �
 
 VO2 tối đa và tuổi tập thể dục là những ước tính tổng quát về nhận thức về thể chất. Ứng dụng này không chẩn đoán, điều trị, chữa bệnh hoặc ngăn ngừa bất kỳ tình trạng sức khỏe nào. Nó không thể thay thế cho lời khuyên y tế chuyên nghiệp.
 
-VO2 Max Pro là tùy chọn. Chọn $1,99 hàng tháng, $14,99 hàng năm hoặc $29,99 mua trọn đời. Các gói hàng tháng và hàng năm bao gồm bản dùng thử miễn phí 7 ngày cho những người đăng ký mới đủ điều kiện. Giá hiển thị là giá ở Mỹ và có thể thay đổi tùy theo khu vực. Khoản thanh toán sẽ được tính vào Tài khoản Apple của bạn khi xác nhận. Đăng ký tự động gia hạn trừ khi bị hủy ít nhất 24 giờ trước khi giai đoạn hiện tại kết thúc. Tài khoản của bạn sẽ bị tính phí gia hạn trong vòng 24 giờ trước khi giai đoạn hiện tại kết thúc. Quản lý hoặc hủy đăng ký trong cài đặt Tài khoản Apple.
+VO2+ là tùy chọn. Chọn $1,99 hàng tháng, $14,99 hàng năm hoặc $29,99 mua trọn đời. Các gói hàng tháng và hàng năm bao gồm bản dùng thử miễn phí 7 ngày cho những người đăng ký mới đủ điều kiện. Giá hiển thị là giá ở Mỹ và có thể thay đổi tùy theo khu vực. Khoản thanh toán sẽ được tính vào Tài khoản Apple của bạn khi xác nhận. Đăng ký tự động gia hạn trừ khi bị hủy ít nhất 24 giờ trước khi giai đoạn hiện tại kết thúc. Tài khoản của bạn sẽ bị tính phí gia hạn trong vòng 24 giờ trước khi giai đoạn hiện tại kết thúc. Quản lý hoặc hủy đăng ký trong cài đặt Tài khoản Apple.
 
 Điều khoản sử dụng (EULA tiêu chuẩn của Apple): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Chính sách quyền riêng tư: https://jackwallner.github.io/vo2max/privacy-policy.html

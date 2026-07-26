@@ -150,7 +150,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         isPro = defaults.bool(forKey: Self.cachedProKey)
     }
 
-    func start() {
+    func start(forceRefresh: Bool = false) {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-DemoPro") {
             isPro = true
@@ -161,7 +161,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         guard isConfigured else { return }
         Task {
             await refreshStatus()
-            await loadOffering()
+            await loadOffering(forceRefresh: forceRefresh)
         }
     }
 
@@ -283,11 +283,17 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         }
     }
 
-    private func loadOffering() async {
+    private func loadOffering(forceRefresh: Bool = false) async {
         isLoadingProducts = true
         defer { isLoadingProducts = false }
         do {
-            let offerings = try await Purchases.shared.offerings()
+            let offerings: Offerings
+            if forceRefresh,
+               let refreshedOfferings = try await Purchases.shared.syncAttributesAndOfferingsIfNeeded() {
+                offerings = refreshedOfferings
+            } else {
+                offerings = try await Purchases.shared.offerings()
+            }
             let offering = offerings.offering(identifier: "default") ?? offerings.current
             packages = offering?.vo2SortedPackages ?? []
             errorMessage = nil
