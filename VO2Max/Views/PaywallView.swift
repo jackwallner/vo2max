@@ -389,7 +389,7 @@ struct PaywallView: View {
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
-            Button("Try Again") { store.start() }
+            Button("Try Again") { store.start(forceRefresh: true) }
                 .buttonStyle(.borderedProminent)
                 .tint(Theme.cardio)
             #if targetEnvironment(simulator)

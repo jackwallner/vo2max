@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create VO2 Max Pro subscriptions, trials, localizations, and Vitals PPP prices."""
+"""Create VO2+ subscriptions, trials, localizations, and Vitals PPP prices."""
 from __future__ import annotations
 
 import json
@@ -10,10 +10,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 import asc_lib
 
 BUNDLE = "com.jackwallner.vo2max"
-GROUP_NAME = "VO2 Max Pro"
+# App Store Connect reference names are internal and immutable after creation.
+# User-facing group and product names come from localized products.json files.
+GROUP_REFERENCE_NAME = "VO2 Max Pro"
 SUBS = [
-    ("com.jackwallner.vo2max.monthly", "VO2 Max Pro Monthly", "ONE_MONTH", "1.99", "Monthly access to VO2 Max Pro."),
-    ("com.jackwallner.vo2max.yearly", "VO2 Max Pro Yearly", "ONE_YEAR", "14.99", "Yearly access to VO2 Max Pro."),
+    ("com.jackwallner.vo2max.monthly", "VO2 Max Pro Monthly", "ONE_MONTH", "1.99", "Monthly access to VO2+."),
+    ("com.jackwallner.vo2max.yearly", "VO2 Max Pro Yearly", "ONE_YEAR", "14.99", "Yearly access to VO2+."),
 ]
 TIERS = {
     "IND": ("4.99", "0.69"), "PAK": ("4.99", "0.69"), "BGD": ("4.99", "0.69"), "IDN": ("4.99", "0.69"),
@@ -60,15 +62,15 @@ def main() -> None:
     locales = json.loads((Path(__file__).parent / "asc-supported-locales.json").read_text())["locales"]
     territories = [t["id"] for t in asc_lib.list_all(c, "/territories?limit=200")]
     groups = asc_lib.list_all(c, f"/apps/{app_id}/subscriptionGroups")
-    group = next((g for g in groups if g["attributes"]["referenceName"] == GROUP_NAME), None)
+    group = next((g for g in groups if g["attributes"]["referenceName"] == GROUP_REFERENCE_NAME), None)
     if not group:
-        group = c.post("/subscriptionGroups", {"data": {"type": "subscriptionGroups", "attributes": {"referenceName": GROUP_NAME}, "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})["data"]
+        group = c.post("/subscriptionGroups", {"data": {"type": "subscriptionGroups", "attributes": {"referenceName": GROUP_REFERENCE_NAME}, "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})["data"]
     group_id = group["id"]
     group_locs = {x["attributes"]["locale"]: x for x in asc_lib.list_all(c, f"/subscriptionGroups/{group_id}/subscriptionGroupLocalizations")}
     for locale in locales:
         product_path = asc_lib.META / locale / "products.json"
         product = json.loads(product_path.read_text()) if product_path.exists() else {}
-        group_name = product.get("group") or GROUP_NAME
+        group_name = product.get("group") or GROUP_REFERENCE_NAME
         if locale in group_locs:
             existing = group_locs[locale]
             if existing["attributes"].get("name") != group_name:
@@ -79,7 +81,7 @@ def main() -> None:
     for index, (pid, name, period, price, description) in enumerate(SUBS):
         sub = existing.get(pid)
         if not sub:
-            sub = c.post("/subscriptions", {"data": {"type": "subscriptions", "attributes": {"name": name, "productId": pid, "subscriptionPeriod": period, "familySharable": False, "groupLevel": 1, "reviewNote": "Unlocks VO2 Max Pro features."}, "relationships": {"group": {"data": {"type": "subscriptionGroups", "id": group_id}}}}})["data"]
+            sub = c.post("/subscriptions", {"data": {"type": "subscriptions", "attributes": {"name": name, "productId": pid, "subscriptionPeriod": period, "familySharable": False, "groupLevel": 1, "reviewNote": "Unlocks VO2+ features."}, "relationships": {"group": {"data": {"type": "subscriptionGroups", "id": group_id}}}}})["data"]
         sid = sub["id"]
         locs = {x["attributes"]["locale"]: x for x in asc_lib.list_all(c, f"/subscriptions/{sid}/subscriptionLocalizations")}
         product_prefix = "monthly" if period == "ONE_MONTH" else "yearly"

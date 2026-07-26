@@ -1,9 +1,9 @@
 {
-  "group": "VO2Max Pro",
-  "monthly_name": "VO2 Max Pro co miesiąc",
-  "monthly_desc": "Miesięczny dostęp do VO2 Max Pro.",
-  "yearly_name": "VO2 Max Pro rocznie",
-  "yearly_desc": "Roczny dostęp do VO2 Max Pro.",
-  "lifetime_name": "Żywotność VO2 Max Pro",
-  "lifetime_desc": "Odblokuj VO2 Max Pro na zawsze za pomocą jednej"
+  "group": "VO2+",
+  "monthly_name": "VO2+ Monthly",
+  "monthly_desc": "Monthly access to VO2+.",
+  "yearly_name": "VO2+ Yearly",
+  "yearly_desc": "Yearly access to VO2+.",
+  "lifetime_name": "VO2+ Lifetime",
+  "lifetime_desc": "Unlock VO2+ forever with one payment."
 }

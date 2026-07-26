@@ -1,9 +1,9 @@
 {
-  "group": "VO2 Max Pro",
-  "monthly_name": "VO2 Max Pro mjesečno",
-  "monthly_desc": "Mjesečni pristup VO2 Max Pro.",
-  "yearly_name": "VO2 Max Pro godišnje",
-  "yearly_desc": "Godišnji pristup VO2 Max Pro.",
-  "lifetime_name": "VO2 Max Pro Lifetime",
-  "lifetime_desc": "Otključajte VO2 Max Pro zauvijek jednim plaćanjem."
+  "group": "VO2+",
+  "monthly_name": "VO2+ Monthly",
+  "monthly_desc": "Monthly access to VO2+.",
+  "yearly_name": "VO2+ Yearly",
+  "yearly_desc": "Yearly access to VO2+.",
+  "lifetime_name": "VO2+ Lifetime",
+  "lifetime_desc": "Unlock VO2+ forever with one payment."
 }

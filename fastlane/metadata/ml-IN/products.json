@@ -1,9 +1,9 @@
 {
-  "group": "VO2 മാക്സ് പ്രോ",
-  "monthly_name": "VO2 മാക്സ് പ്രോ പ്രതിമാസ",
-  "monthly_desc": "VO2 മാക്സ് പ്രോയിലേക്കുള്ള പ്രതിമാസ ആക്സസ്.",
-  "yearly_name": "VO2 മാക്സ് പ്രോ വർഷം തോറും",
-  "yearly_desc": "VO2 മാക്സ് പ്രോയിലേക്കുള്ള വാർഷിക ആക്സസ്.",
-  "lifetime_name": "VO2 മാക്സ് പ്രോ ആജീവനാന്തം",
-  "lifetime_desc": "ഒരു പേയ്‌മെൻ്റിലൂടെ VO2 Max Pro എന്നെന്നേക്കുമായി"
+  "group": "VO2+",
+  "monthly_name": "VO2+ Monthly",
+  "monthly_desc": "Monthly access to VO2+.",
+  "yearly_name": "VO2+ Yearly",
+  "yearly_desc": "Yearly access to VO2+.",
+  "lifetime_name": "VO2+ Lifetime",
+  "lifetime_desc": "Unlock VO2+ forever with one payment."
 }

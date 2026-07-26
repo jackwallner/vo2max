@@ -1,9 +1,9 @@
 {
-  "group": "VO2 Max Pro",
-  "monthly_name": "VO2 Max Pro havi",
-  "monthly_desc": "Havi hozzáférés a VO2 Max Pro-hoz.",
-  "yearly_name": "VO2 Max Pro évente",
-  "yearly_desc": "Éves hozzáférés a VO2 Max Pro-hoz.",
-  "lifetime_name": "VO2 Max Pro élettartam",
-  "lifetime_desc": "Nyissa ki a VO2 Max Pro-t örökre egyetlen fizetéssel."
+  "group": "VO2+",
+  "monthly_name": "VO2+ Monthly",
+  "monthly_desc": "Monthly access to VO2+.",
+  "yearly_name": "VO2+ Yearly",
+  "yearly_desc": "Yearly access to VO2+.",
+  "lifetime_name": "VO2+ Lifetime",
+  "lifetime_desc": "Unlock VO2+ forever with one payment."
 }
