@@ -184,24 +184,15 @@ struct PaywallView: View {
         }
     }
 
-    /// Hero, benefits, plans, and the price hierarchy all scroll as one purchase
-    /// surface. Only the CTA and legal disclosure stay pinned, so the price never
-    /// gets compressed into a crowded bottom inset on shorter devices.
+    /// Hero, benefits, and plans scroll as one purchase surface. The selected
+    /// plan card carries the conspicuous billed amount; the pinned footer keeps
+    /// only the CTA and required renewal disclosure, matching the Vitals+ layout.
     private var content: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
                 header
                 featureList
                 planCards
-
-                if let package = selectedPackage {
-                    BilledAmountBlock(
-                        amount: billedAmount(for: package),
-                        note: billedNote(for: package)
-                    )
-                    .padding(.top, 6)
-                    .padding(.bottom, 2)
-                }
             }
             .padding(.horizontal, 22)
             .padding(.top, embedded ? 20 : 44)
@@ -406,30 +397,13 @@ struct PaywallView: View {
 
     private var ctaTitle: String {
         guard let package = selectedPackage else { return "Continue" }
-        // "Unlock Lifetime" names the plan, not a price or a trial, so it does
-        // not compete with the billed amount above it.
+        // "Unlock Lifetime" names the plan, not a competing price or trial.
         if package.vo2PackageKind == .lifetime { return "Unlock Lifetime" }
         return VO2ConversionCopy.ctaLabel(
             trialLabel: package.vo2IntroOfferLabel,
             priceLabel: package.vo2PriceLabel,
             eligibleForTrial: store.isEligibleForIntroOffer(package)
         )
-    }
-
-    /// Dominant pricing element for the selected plan (Apple 3.1.2(c)).
-    private func billedAmount(for package: Package) -> String {
-        package.vo2PackageKind == .lifetime
-            ? package.storeProduct.localizedPriceString
-            : VO2ConversionCopy.billedAmount(priceLabel: package.vo2PriceLabel)
-    }
-
-    private func billedNote(for package: Package) -> String {
-        package.vo2PackageKind == .lifetime
-            ? "One-time purchase"
-            : VO2ConversionCopy.billedNote(
-                trialLabel: package.vo2IntroOfferLabel,
-                eligibleForTrial: store.isEligibleForIntroOffer(package)
-            )
     }
 
     private var disclosureText: String {
