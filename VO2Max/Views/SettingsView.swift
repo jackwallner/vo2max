@@ -89,6 +89,11 @@ struct SettingsView: View {
     /// Present the personalized trial offer sheet, leading with the capability
     /// the user just reached for. Mirrors the Vitals+ settings behavior.
     private func presentTrialOffer(focus: PlusFeature? = nil) {
+        if directConversionPackage == nil {
+            paywallFocus = focus
+            showPaywall = true
+            return
+        }
         trialOfferFocus = focus
         trialPurchaseError = nil
         trialOfferDetent = .fraction(0.68)
