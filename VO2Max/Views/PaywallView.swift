@@ -108,38 +108,34 @@ enum PlusFeature: CaseIterable {
 /// be billed must be the most clear and conspicuous pricing element, with the
 /// free-trial framing subordinate in both size and position.
 ///
-/// The rule is comparative, so this reads as one calm sentence rather than a
-/// price banner. That only holds because no button in any purchase flow says
-/// "free trial" any more (see `VO2ConversionCopy.ctaLabel`) — Apple counts a
-/// free trial as a pricing element, and a bold trial CTA would outrank a quiet
-/// price line. Two invariants follow, and both are load-bearing:
-///
-///   1. If a CTA ever regains trial or price wording, this has to get louder.
-///   2. This sits directly above the purchase button at readable size. It is
-///      the screen's only statement of what the tap costs, so it must not be
-///      shrunk to decorative type or moved away from the button.
+/// The billed amount is a confident visual anchor directly above the purchase
+/// button. The eligible trial remains visible underneath as conversion copy,
+/// but is smaller, lighter, and positioned second. The neutral CTA carries no
+/// competing pricing language.
 struct BilledAmountBlock: View {
     let amount: String
     let note: String?
-    /// Slightly smaller variant for the compact trial sheet footer.
+    /// Tighter spacing for the compact trial sheet footer.
     var compact = false
 
     var body: some View {
-        // Caption-size secondary text: the standard subscription-disclosure
-        // treatment, quiet enough to read as supporting copy. The amount keeps
-        // the heavier weight so it still leads the trial length beside it.
-        Group {
+        VStack(spacing: compact ? 2 : 3) {
             Text(amount)
-                .font(.system(.caption, design: .rounded, weight: .semibold))
-                .foregroundStyle(Theme.textSecondary)
-            + Text(note.map { " \($0)" } ?? "")
-                .font(.system(.caption, design: .rounded))
-                .foregroundStyle(Theme.textSecondary)
+                .font(.system(.title2, design: .rounded, weight: .heavy).monospacedDigit())
+                .foregroundStyle(Theme.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.68)
+
+            if let note {
+                Text(note)
+                    .font(.system(.footnote, design: .rounded, weight: .medium))
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.82)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .multilineTextAlignment(.center)
-        .lineLimit(2)
-        .minimumScaleFactor(0.85)
-        .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
     }

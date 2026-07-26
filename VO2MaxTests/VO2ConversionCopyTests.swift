@@ -27,12 +27,12 @@ struct VO2ConversionCopyTests {
         #expect(VO2ConversionCopy.billedAmount(priceLabel: "$14.99 / year") == "$14.99 per year")
         #expect(
             VO2ConversionCopy.billedNote(trialLabel: "7-day free trial", eligibleForTrial: true)
-                == "after your 7-day free trial"
+                == "7-day free trial included · Cancel anytime"
         )
         // Never promise a trial the Apple ID can't get.
         #expect(
             VO2ConversionCopy.billedNote(trialLabel: "7-day free trial", eligibleForTrial: false)
-                == "Billed automatically until cancelled"
+                == "Billed automatically · Cancel anytime"
         )
     }
 
@@ -42,7 +42,7 @@ struct VO2ConversionCopyTests {
             priceLabel: "$14.99 / year",
             eligibleForTrial: true
         )
-        #expect(eligible.hasPrefix("7-Day Free Trial, then $14.99 / year."))
+        #expect(eligible.hasPrefix("$14.99 / year after the 7-day free trial."))
 
         let ineligible = VO2ConversionCopy.disclosure(
             trialLabel: "7-day free trial",
@@ -51,6 +51,16 @@ struct VO2ConversionCopyTests {
         )
         #expect(ineligible.hasPrefix("$14.99 / year."))
         #expect(!ineligible.lowercased().contains("trial"))
+    }
+
+    @Test func sheetDisclosureLeadsWithPrice() {
+        let eligible = VO2ConversionCopy.sheetDisclosure(
+            trialLabel: "7-day free trial",
+            priceLabel: "$14.99 / year",
+            eligibleForTrial: true
+        )
+        #expect(eligible.hasPrefix("$14.99 / year after the 7-day free trial."))
+        #expect(!eligible.hasPrefix("Free"))
     }
 
     @Test func failureCopyNeverBlamesIneligibleTrial() {
