@@ -1,65 +1,661 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VO2 Max Daily Tracker | Apple Health cardio fitness trends</title>
-  <meta name="description" content="A private, focused view of Apple Health VO2 max estimates, cardio fitness trends, targets, and history on iPhone and Apple Watch.">
-  <link rel="canonical" href="https://jackwallner.github.io/vo2max/">
-  <link rel="icon" type="image/png" sizes="256x256" href="icon_256.png">
-  <link rel="apple-touch-icon" href="icon_256.png">
-  <style>
-    :root { --ink:#082b37; --cyan:#08bfe0; --blue:#0878a5; --paper:#f7fdff; --muted:#5e7680; }
-    * { box-sizing:border-box; }
-    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
-    .hero { padding:76px 24px 88px; color:#fff; text-align:center; background:linear-gradient(160deg,#073e59 0%,#087ca7 52%,#08c6df 100%); }
-    .hero img { width:116px; height:116px; border-radius:28px; box-shadow:0 20px 46px #032b3a55; }
-    .eyebrow { margin:24px 0 10px; color:#b9f7ff; font-size:.76rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
-    h1 { margin:0; font-size:clamp(2.25rem,7vw,4.5rem); line-height:1.04; letter-spacing:-.055em; }
-    .hero p { max-width:610px; margin:18px auto 0; color:#e5fbff; font-size:1.15rem; }
-    .wrap { width:min(980px,calc(100% - 40px)); margin:auto; }
-    .intro { display:grid; grid-template-columns:1fr 1fr; gap:30px; padding:58px 0 28px; }
-    .intro h2 { margin:0; font-size:clamp(1.8rem,4vw,2.8rem); line-height:1.1; letter-spacing:-.04em; }
-    .intro p { margin:2px 0 0; color:var(--muted); font-size:1.05rem; }
-    .features { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding:20px 0 62px; }
-    .feature { padding:25px; border:1px solid #cce8ef; border-radius:20px; background:#fff; box-shadow:0 10px 28px #087ca70d; }
-    .feature .mark { display:grid; place-items:center; width:36px; height:36px; margin-bottom:17px; border-radius:12px; color:#fff; background:linear-gradient(145deg,var(--cyan),var(--blue)); font-weight:800; }
-    .feature b { display:block; margin-bottom:7px; font-size:1.04rem; }
-    .feature p { margin:0; color:var(--muted); font-size:.94rem; }
-    .note { margin:0 0 58px; padding:18px 20px; border-left:4px solid var(--cyan); border-radius:0 12px 12px 0; background:#e9faff; color:#35616d; font-size:.92rem; }
-    .links { display:flex; flex-wrap:wrap; gap:10px 20px; padding:24px 0 62px; border-top:1px solid #cce8ef; }
-    .links a { color:var(--blue); font-weight:650; }
-    footer { padding:28px 20px 44px; color:#6d858c; text-align:center; font-size:.86rem; }
-    footer a { color:var(--blue); }
-    @media (max-width:700px) { .intro,.features { grid-template-columns:1fr; } .intro { gap:14px; } }
-    @media (max-width:500px) { .hero { padding-top:54px; } .wrap { width:min(100% - 32px,980px); } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="256x256" href="icon_256.png">
+    <link rel="apple-touch-icon" href="icon_256.png">
+    <title>VO2 Max &amp; Cardio Fitness - Fitness Age &amp; Trends for iPhone &amp; Apple Watch</title>
+    <meta name="description" content="See your Apple Health VO2 max estimate, cardio fitness trend, target range, and fitness age. Widgets and Apple Watch complications. Private, local-first.">
+    <link rel="canonical" href="https://jackwallner.github.io/vo2max/">
+    <meta name="apple-itunes-app" content="app-id=6791235742">
+    <meta name="keywords" content="vo2 max, cardio fitness, fitness age, Apple Health, HealthKit, aerobic fitness, endurance, cardio trend, Apple Watch complication, widget, private">
+    <meta property="og:title" content="VO2 Max &amp; Cardio Fitness">
+    <meta property="og:description" content="Your Apple Health VO2 max estimate, cardio fitness trend, target range, and fitness age in one calm dashboard.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jackwallner.github.io/vo2max/">
+    <meta property="og:image" content="https://jackwallner.github.io/vo2max/appstore-screenshot-01.png">
+    <meta property="og:site_name" content="VO2 Max">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VO2 Max &amp; Cardio Fitness">
+    <meta name="twitter:description" content="VO2 max, cardio fitness trend, fitness age, widgets, and Apple Watch complications. Private and local-first.">
+    <meta name="twitter:image" content="https://jackwallner.github.io/vo2max/appstore-screenshot-01.png">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "VO2 Max & Cardio Fitness",
+        "operatingSystem": "iOS",
+        "applicationCategory": "HealthApplication",
+        "offers": [
+            {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "Free tier with latest estimate, trend, widgets, and Apple Watch complications"
+            },
+            {
+                "@type": "Offer",
+                "price": "1.99",
+                "priceCurrency": "USD",
+                "description": "VO2+ Monthly, fitness age, target range, and full history"
+            },
+            {
+                "@type": "Offer",
+                "price": "14.99",
+                "priceCurrency": "USD",
+                "description": "VO2+ Yearly, same features billed annually"
+            },
+            {
+                "@type": "Offer",
+                "price": "29.99",
+                "priceCurrency": "USD",
+                "description": "VO2+ Lifetime, one-time purchase"
+            }
+        ],
+        "description": "VO2 Max & Cardio Fitness reads your Apple Health cardio fitness estimates and shows the current value, trend, target range, one-year history, and a broad fitness-age estimate, with widgets and Apple Watch complications. Free with an optional VO2+ upgrade.",
+        "url": "https://jackwallner.github.io/vo2max/",
+        "downloadUrl": "https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742",
+        "screenshot": "https://jackwallner.github.io/vo2max/appstore-screenshot-01.png",
+        "softwareVersion": "1.0.0",
+        "author": {
+            "@type": "Person",
+            "name": "Jack Wallner"
+        }
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            color: #1d1d1f;
+            background: #fafafa;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Nav */
+        nav {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            background: rgba(250,250,250,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1d1d1f;
+        }
+
+        .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+        }
+
+        .nav-brand span {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            text-decoration: none;
+            background: #1d1d1f;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 980px;
+            font-weight: 500;
+            transition: opacity 0.15s;
+        }
+
+        .nav-link:hover { opacity: 0.85; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 64px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #0aa8e0, #22cdf5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 19px;
+            color: #6e6e73;
+            line-height: 1.5;
+            max-width: 440px;
+            margin: 0 auto 12px;
+        }
+
+        .hero .platforms {
+            font-size: 13px;
+            color: #86868b;
+            letter-spacing: 0.3px;
+            margin-bottom: 36px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #1d1d1f;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 14px 36px;
+            border-radius: 980px;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .download-btn:hover { opacity: 0.85; }
+
+        /* Screenshot showcase */
+        .showcase {
+            padding: 0 0 80px;
+        }
+
+        .showcase-scroll {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            scrollbar-width: none;
+        }
+
+        .showcase-scroll::-webkit-scrollbar { display: none; }
+
+        .showcase-card {
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.08);
+        }
+
+        .showcase-card img {
+            height: 540px;
+            display: block;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+            background: #fff;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .features-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .features-header p {
+            font-size: 17px;
+            color: #6e6e73;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(0,0,0,0.06);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .feature-card {
+            background: #fff;
+            padding: 36px 32px;
+        }
+
+        .feature-card .label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #86868b;
+            margin-bottom: 10px;
+        }
+
+        .feature-card .label.vo2-plus {
+            color: #0aa8e0;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #6e6e73;
+            line-height: 1.55;
+        }
+
+        /* Privacy */
+        .privacy {
+            padding: 80px 0;
+        }
+
+        .privacy .container {
+            max-width: 640px;
+            text-align: center;
+        }
+
+        .privacy .lockup {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #f5f5f7;
+            margin-bottom: 20px;
+        }
+
+        .privacy .lockup svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: #1d1d1f;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .privacy h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .privacy p {
+            font-size: 17px;
+            color: #6e6e73;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .privacy a {
+            font-size: 15px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .privacy a:hover { text-decoration: underline; }
+
+        /* More Info */
+        .more-info {
+            padding: 64px 24px;
+            background: #fff;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .more-info-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .more-info-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .more-info-header p {
+            font-size: 17px;
+            color: #6e6e73;
+        }
+
+        .more-info-content {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .more-info-section {
+            margin-bottom: 40px;
+        }
+
+        .more-info-section h3 {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #86868b;
+            margin-bottom: 12px;
+        }
+
+        .more-info-section p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+        }
+
+        .more-info-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .more-info-section strong {
+            font-weight: 600;
+        }
+
+        .specs-table {
+            width: 100%;
+            font-size: 14px;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .specs-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .specs-table td:first-child {
+            color: #86868b;
+            width: 140px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            padding: 40px 24px 0;
+        }
+
+        .disclaimer .container {
+            max-width: 720px;
+        }
+
+        .disclaimer p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #86868b;
+            text-align: center;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 64px 24px 80px;
+            background: #fff;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .cta h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .cta p {
+            font-size: 15px;
+            color: #86868b;
+            margin-bottom: 28px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 24px;
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        footer a {
+            color: #86868b;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover { color: #1d1d1f; }
+
+        footer .divider { margin: 4px 0; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 72px 20px 48px; }
+            .hero h1 { font-size: 36px; letter-spacing: -1px; }
+            .hero .tagline { font-size: 17px; }
+
+            .showcase-card img { height: 400px; }
+
+            .features-grid { grid-template-columns: 1fr; }
+
+            .features-header h2 { font-size: 28px; }
+            .privacy h2, .cta h2 { font-size: 26px; }
+        }
+
+        @media (max-width: 480px) {
+            .showcase-card img { height: 360px; }
+        }
+    </style>
 </head>
 <body>
-  <header class="hero">
-    <img src="icon_256.png" alt="VO2 Max Daily Tracker app icon" width="116" height="116">
-    <p class="eyebrow">Apple Health cardio fitness estimates</p>
-    <h1>VO2 Max Daily Tracker</h1>
-    <p>A private, focused way to understand your cardio fitness trend, right from the Apple Health data you already have.</p>
-  </header>
-  <main class="wrap">
-    <section class="intro">
-      <h2>Make the trend easier to see.</h2>
-      <p>VO2 Max Daily Tracker reads Apple Health's cardio fitness estimates and turns scattered measurements into a calm, readable view. See your history, set a personal target range, and notice whether your recent trend is improving, stable, or declining.</p>
-    </section>
-    <section class="features" aria-label="VO2 Max Daily Tracker features">
-      <article class="feature"><div class="mark">↗</div><b>Trend at a glance</b><p>See recent cardio fitness movement without digging through a long health timeline.</p></article>
-      <article class="feature"><div class="mark">◎</div><b>Personal target range</b><p>Choose a range that gives your measurements useful context instead of chasing a universal score.</p></article>
-      <article class="feature"><div class="mark">⌚</div><b>iPhone, Watch, widgets</b><p>Keep your latest estimate and trend close by with the iPhone app, Apple Watch, and widgets.</p></article>
-    </section>
-    <p class="note"><strong>A note about the data:</strong> VO2 Max Daily Tracker displays Apple Health estimates. It is a wellness tracking tool, not a medical device, and does not diagnose, treat, or predict health outcomes. If you have questions about your health, talk with a qualified clinician.</p>
-    <nav class="links" aria-label="VO2 Max Daily Tracker links">
-      <a href="support.html">Support</a>
-      <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Use</a>
-      <a href="https://github.com/jackwallner/vo2max">Source on GitHub</a>
+
+    <nav>
+        <div class="container">
+            <a class="nav-brand" href="./">
+                <img src="icon_256.png" alt="VO2 Max">
+                <span>VO2 Max</span>
+            </a>
+            <a class="nav-link" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742">Download</a>
+        </div>
     </nav>
-  </main>
-  <footer>VO2 Max Daily Tracker for iPhone and Apple Watch.<br><a href="mailto:jackwallner@gmail.com">Questions? Email Jack Wallner.</a></footer>
+
+    <section class="hero">
+        <h1>Your cardio fitness, <span>in one number</span></h1>
+        <p class="tagline">Apple Health already estimates your VO2 max. This app makes it readable: the trend, a target range, a year of history, and a fitness-age estimate.</p>
+        <p class="platforms">iPhone &middot; Apple Watch &middot; Widgets</p>
+        <a class="download-btn" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742">Download for free</a>
+    </section>
+
+    <section class="showcase">
+        <div class="showcase-scroll">
+            <div class="showcase-card">
+                <img src="appstore-screenshot-01.png" alt="Today's estimate. &mdash; Latest Apple Health VO2 max with its trend">
+            </div>
+            <div class="showcase-card">
+                <img src="appstore-screenshot-02.png" alt="Improving or declining. &mdash; Cardio fitness trend over time">
+            </div>
+            <div class="showcase-card">
+                <img src="appstore-screenshot-03.png" alt="Fitness age. &mdash; A broad estimate with the methodology spelled out">
+            </div>
+            <div class="showcase-card">
+                <img src="appstore-screenshot-04.png" alt="A target to aim at. &mdash; Personal target range for your age and sex">
+            </div>
+            <div class="showcase-card">
+                <img src="appstore-screenshot-05.png" alt="A year of history. &mdash; Every estimate Apple Health has recorded">
+            </div>
+            <div class="showcase-card">
+                <img src="appstore-screenshot-06.png" alt="Go further. &mdash; VO2+ unlocks fitness age, targets, and full history">
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="features-header">
+                <h2>Built to read at a glance</h2>
+                <p>Free to start. VO2+ adds the deeper context.</p>
+            </div>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="label">Dashboard</span>
+                <h3>Your latest estimate</h3>
+                <p>The most recent Apple Health cardio fitness reading, with its date, in large clear type.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Trend</span>
+                <h3>Improving, stable, declining</h3>
+                <p>One plain-language verdict on where your aerobic fitness is heading, not just a number.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">History</span>
+                <h3>A full year</h3>
+                <p>Every estimate Apple Health has stored, charted so seasonal dips and training blocks are obvious.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Widgets</span>
+                <h3>Home &amp; lock screen</h3>
+                <p>Your current VO2 max and trend without opening the app.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Apple Watch</span>
+                <h3>App and complications</h3>
+                <p>Check the number on your wrist, with complications for your watch face.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label vo2-plus">Target range &middot; VO2+</span>
+                <h3>Where you could be</h3>
+                <p>A personal target range for your age and sex, so the number has a reference point.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label vo2-plus">Fitness age &middot; VO2+</span>
+                <h3>A broader read</h3>
+                <p>A fitness-age estimate derived from your cardio fitness, with the methodology explained in the app.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Guidance</span>
+                <h3>When there's no data</h3>
+                <p>Clear instructions on the outdoor walks and runs Apple Watch needs to produce an estimate.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">No writes</span>
+                <h3>Read-only Health access</h3>
+                <p>The app reads cardio fitness and never writes anything back to Apple Health.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="privacy">
+        <div class="container">
+            <div class="lockup">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>Private by design</h2>
+            <p>The app reads cardio fitness estimates from Apple Health only after you grant permission, and never writes Health data. Health and profile values are processed and stored on your devices. Nothing is sold, used for advertising, or uploaded to a server. Apple and RevenueCat process purchases only; no Health data is sent to them.</p>
+            <a href="privacy-policy.html">Privacy Policy &rarr;</a>
+        </div>
+    </section>
+
+    <section class="more-info">
+        <div class="container">
+            <div class="more-info-header">
+                <h2>More info</h2>
+                <p>How it's built and why it matters.</p>
+            </div>
+            <div class="more-info-content">
+                <div class="more-info-section">
+                    <h3>The Pitch</h3>
+                    <p>Apple Watch quietly estimates your VO2 max on outdoor walks, runs, and hikes, and then buries it in the Health app behind a chart most people never open.</p>
+                    <p>This app pulls that estimate to the front: the current value, whether it's improving, a target range for your age, a year of history, and a fitness-age read. No logging, no workouts to start, no account. Open it and the number is there.</p>
+                </div>
+
+                <div class="more-info-section">
+                    <h3>VO2+</h3>
+                    <p>The dashboard, trend, widgets, and Apple Watch app are free. VO2+ is $1.99/month, $14.99/year (both with a 7-day free trial for eligible new subscribers), or $29.99 once.</p>
+                    <p><strong>Target range.</strong> A personal range for your age and sex, so you can see how much headroom you have.</p>
+                    <p><strong>Fitness age.</strong> A broad estimate from your cardio fitness, with the methodology written out rather than hidden.</p>
+                    <p><strong>Full history.</strong> The complete set of estimates Apple Health holds, not just the recent window.</p>
+                </div>
+
+                <div class="more-info-section">
+                    <h3>Specs</h3>
+                    <table class="specs-table">
+                        <tr><td>Platform</td><td>iOS 17+, watchOS 10+</td></tr>
+                        <tr><td>Language</td><td>Swift 6 with strict concurrency</td></tr>
+                        <tr><td>Framework</td><td>SwiftUI &middot; HealthKit &middot; WidgetKit &middot; SwiftData</td></tr>
+                        <tr><td>Data</td><td>Read-only HealthKit access, local only</td></tr>
+                        <tr><td>Storage</td><td>Local cache shared with widgets via App Group</td></tr>
+                        <tr><td>Widgets</td><td>Home Screen, Lock Screen, watchOS complications</td></tr>
+                    </table>
+                </div>
+
+                <div class="more-info-section">
+                    <h3>What Mattered</h3>
+                    <p><strong>Nothing to log.</strong> The app has no input fields for fitness data. Everything it shows comes from HealthKit, which means it's correct or it's empty, never guessed.</p>
+                    <p><strong>Honest about estimates.</strong> VO2 max from a wrist is an approximation, and fitness age is an approximation of an approximation. The app says so and shows its method.</p>
+                    <p><strong>Empty state as a feature.</strong> Plenty of users have no estimate yet. Instead of a blank chart, the app explains exactly which workouts generate one.</p>
+                    <p><strong>Read-only by design.</strong> Requesting write access to Health would have been easier for caching. It wasn't worth the trust cost.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="disclaimer">
+        <div class="container">
+            <p>VO2 max and fitness age are broad estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition, and it is not a substitute for professional medical advice.</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>See where your fitness is heading</h2>
+        <p>Free on the App Store. No account required. VO2+ optional.</p>
+        <a class="download-btn" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742">Download for free</a>
+    </section>
+
+    <footer>
+        <div class="divider">&copy; 2026 Jack Wallner</div>
+        <div>
+            <a href="support.html">Support</a>
+            <a href="privacy-policy.html">Privacy</a>
+        </div>
+    </footer>
+
 </body>
 </html>
