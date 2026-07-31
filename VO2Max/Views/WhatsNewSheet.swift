@@ -21,7 +21,7 @@ struct WhatsNewSheet: View {
 
     /// The extras to advertise, newest-feeling first. Pulled straight from
     /// `PlusFeature` so the copy stays in sync with the paywall and settings.
-    private let features: [PlusFeature] = [.readingAlerts, .monthlyRecap, .reports]
+    private let features: [PlusFeature] = [.whatMovedIt, .heartSignals, .freshnessNudges]
 
     var body: some View {
         ZStack {

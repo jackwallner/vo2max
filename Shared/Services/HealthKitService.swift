@@ -66,7 +66,14 @@ final class HealthKitService: ObservableObject {
             lastError = "Apple Health is not available on this device."
             return
         }
-        try await store.requestAuthorization(toShare: [], read: [vo2Type])
+        // Ask for the estimate and its supporting cardio signals in one sheet.
+        // Only VO2 max gates the connected state and the dashboard; resting heart
+        // rate, recovery, and workouts feed VO2+ context and degrade to empty
+        // states if the user declines them individually.
+        var readTypes: Set<HKObjectType> = [vo2Type]
+        readTypes.formUnion(CardioContextService.extendedReadTypes)
+        try await store.requestAuthorization(toShare: [], read: readTypes)
+        CardioContextService.markExtendedTypesRequested()
         // Prompt complete: show the connected state right away (matches Vitals),
         // then load data. A denial can't be distinguished here, but the dashboard
         // reads cached samples independently so that stays graceful.
@@ -111,6 +118,7 @@ final class HealthKitService: ObservableObject {
 
             let inserted = try cache(readings: readings)
             handleNewReadings(inserted: inserted, priorLatest: priorLatest, priorBest: priorBest)
+            evaluateFreshnessNudge(readings: readings)
 
             lastError = nil
             // Rows came back, which is only possible with read access granted.
@@ -270,6 +278,36 @@ final class HealthKitService: ObservableObject {
             await NotificationService.scheduleNewReadingAlert(value: newest.value, context: context)
         }
     }
+
+    /// The VO2+ freshness nudge. VO2 max only refreshes after a qualifying
+    /// outdoor workout, so an estimate going quiet is the app's most actionable
+    /// moment — and the one users misread as the app being broken.
+    ///
+    /// Rate-limited to one nudge per `freshnessNudgeCooldownDays` so a genuinely
+    /// inactive stretch produces a reminder, not a nag.
+    private func evaluateFreshnessNudge(readings: [CardioFitnessReading]) {
+        guard !readings.isEmpty else { return }
+        let defaults = UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard
+        guard defaults.bool(forKey: vo2CachedProKey),
+              defaults.bool(forKey: GoalSettings.freshnessNudgesKey) else { return }
+
+        let points = readings.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
+        let freshness = CardioFreshnessAnalysis.assess(points: points)
+        guard freshness.isStale, let days = freshness.daysSinceLatest else { return }
+
+        if let last = defaults.object(forKey: Self.lastFreshnessNudgeKey) as? Date,
+           Date.now.timeIntervalSince(last) < Double(Self.freshnessNudgeCooldownDays) * 86_400 {
+            return
+        }
+        defaults.set(Date.now, forKey: Self.lastFreshnessNudgeKey)
+
+        Task {
+            await NotificationService.scheduleFreshnessNudge(daysSinceLatest: days)
+        }
+    }
+
+    private static let lastFreshnessNudgeKey = "lastFreshnessNudge"
+    private static let freshnessNudgeCooldownDays = 5
 
     private func readingAlertContext(
         newest: Double,

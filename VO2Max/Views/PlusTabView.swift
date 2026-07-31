@@ -125,6 +125,33 @@ struct PlusTabView: View {
 
     private var destinationLinks: some View {
         VStack(spacing: 10) {
+            NavigationLink {
+                WhatMovedItDetailView()
+            } label: {
+                destinationRow(
+                    icon: "figure.run.circle",
+                    title: "Open What Moved It",
+                    detail: "Training in your rising stretches vs. the flat ones"
+                )
+            }
+            NavigationLink {
+                HeartSignalsDetailView()
+            } label: {
+                destinationRow(
+                    icon: "heart.text.square",
+                    title: "Open Heart Signals",
+                    detail: "Resting heart rate and 1-minute recovery trends"
+                )
+            }
+            NavigationLink {
+                EstimateFreshnessDetailView()
+            } label: {
+                destinationRow(
+                    icon: "clock.badge.exclamationmark",
+                    title: "Open Estimate Freshness",
+                    detail: "Whether your estimate is due, and what refreshes it"
+                )
+            }
             Button {
                 showRecap = true
             } label: {

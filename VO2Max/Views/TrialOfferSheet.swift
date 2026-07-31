@@ -38,13 +38,13 @@ struct TrialOfferSheet: View {
 
     private var subheadline: String {
         focus?.intentSubheadline
-            ?? "Deeper trends, alerts, and reports on top of your Apple Health estimates."
+            ?? "See what moved your estimate, the heart signals behind it, and when it needs refreshing."
     }
 
     /// Focused feature first with two related companions; generic trio otherwise.
     private var bulletFeatures: [PlusFeature] {
         if let focus { return [focus] + focus.companionFeatures }
-        return [.deepTrends, .targetProjection, .personalBest]
+        return [.whatMovedIt, .heartSignals, .freshnessNudges]
     }
 
     /// Repeat-forever animation timing for the ambient glow. Scoped to the

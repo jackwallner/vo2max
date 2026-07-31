@@ -4,38 +4,51 @@ import SwiftUI
 /// Single source of truth for what VO2+ sells. Focused paywalls lead with the
 /// capability the user just reached for, while the VO2+ tab shows the strongest
 /// overall outcomes in one compact screen.
+/// Ordered by what VO2+ actually sells. The first four are the pillars —
+/// answering what moved the number, the daily-moving heart signals behind it,
+/// knowing when the estimate has gone stale, and keeping the month in view. The
+/// chart-and-context features that follow are supporting depth, not the pitch.
 enum PlusFeature: CaseIterable {
+    case whatMovedIt
+    case heartSignals
+    case freshnessNudges
+    case monthlyRecap
+    case reports
+    case readingAlerts
     case deepTrends
     case targetProjection
     case fitnessBand
     case personalBest
-    case readingAlerts
-    case monthlyRecap
-    case reports
     case extendedInsights
 
     var title: String {
         switch self {
+        case .whatMovedIt: "See what moved your estimate"
+        case .heartSignals: "Follow resting heart rate and recovery"
+        case .freshnessNudges: "Know when your estimate goes stale"
+        case .monthlyRecap: "See your cardio fitness month in review"
+        case .reports: "Export a shareable fitness report"
+        case .readingAlerts: "Get notified on every new estimate"
         case .deepTrends: "Compare every period with the one before"
         case .targetProjection: "Understand direction toward your target"
         case .fitnessBand: "Add broad age-reference context"
         case .personalBest: "Keep personal bests visible"
-        case .readingAlerts: "Get notified on every new estimate"
-        case .monthlyRecap: "See your cardio fitness month in review"
-        case .reports: "Export a shareable fitness report"
         case .extendedInsights: "Get new VO2+ insights as they arrive"
         }
     }
 
     var symbol: String {
         switch self {
+        case .whatMovedIt: "figure.run.circle"
+        case .heartSignals: "heart.text.square"
+        case .freshnessNudges: "clock.badge.exclamationmark"
+        case .monthlyRecap: "calendar.badge.checkmark"
+        case .reports: "doc.richtext"
+        case .readingAlerts: "bell.badge"
         case .deepTrends: "chart.bar.xaxis"
         case .targetProjection: "scope"
         case .fitnessBand: "person.2.crop.square.stack"
         case .personalBest: "trophy"
-        case .readingAlerts: "bell.badge"
-        case .monthlyRecap: "calendar.badge.checkmark"
-        case .reports: "doc.richtext"
         case .extendedInsights: "sparkles"
         }
     }
@@ -43,13 +56,16 @@ enum PlusFeature: CaseIterable {
     /// Short one-liner for the What's New sheet and Settings rows.
     var detail: String {
         switch self {
+        case .whatMovedIt: "How your training weeks line up with the stretches where the estimate rose."
+        case .heartSignals: "Resting heart rate and 1-minute recovery, trended alongside your estimate."
+        case .freshnessNudges: "A nudge when Apple Health hasn't logged an estimate in a while, and what refreshes it."
+        case .monthlyRecap: "A monthly summary of your trend, target progress, and best reading."
+        case .reports: "A private PDF of any period you can save or share."
+        case .readingAlerts: "A notification each time Apple Health logs a new VO2 max estimate, with context."
         case .deepTrends: "Matching 30, 90, and 180-day windows, compared."
         case .targetProjection: "A broad outlook toward your target when data supports it."
         case .fitnessBand: "Where your estimate sits against age references."
         case .personalBest: "Your strongest Apple Health estimate, always in reach."
-        case .readingAlerts: "A notification each time Apple Health logs a new VO2 max estimate, with context."
-        case .monthlyRecap: "A monthly summary of your trend, target progress, and best reading."
-        case .reports: "A private PDF of any period you can save or share."
         case .extendedInsights: "New VO2+ context added inside the screens you already use."
         }
     }
@@ -58,6 +74,7 @@ enum PlusFeature: CaseIterable {
     var tint: Color {
         switch self {
         case .personalBest: Theme.coral
+        case .heartSignals: Theme.coral
         case .monthlyRecap, .reports: Theme.positive
         default: Theme.cardio
         }
@@ -65,26 +82,32 @@ enum PlusFeature: CaseIterable {
 
     var intentHeadline: String {
         switch self {
+        case .whatMovedIt: "Find what moved your number"
+        case .heartSignals: "See the signals behind the estimate"
+        case .freshnessNudges: "Never wonder why it hasn't updated"
+        case .monthlyRecap: "Your month in review"
+        case .reports: "Export your cardio fitness"
+        case .readingAlerts: "Never miss a new estimate"
         case .deepTrends: "Compare every period"
         case .targetProjection: "Understand your target direction"
         case .fitnessBand: "Add context to your estimate"
         case .personalBest: "Recognize your progress"
-        case .readingAlerts: "Never miss a new estimate"
-        case .monthlyRecap: "Your month in review"
-        case .reports: "Export your cardio fitness"
         case .extendedInsights: "Go further with VO2+"
         }
     }
 
     var intentSubheadline: String {
         switch self {
+        case .whatMovedIt: "Compare the training in the stretches where your estimate rose with the stretches where it didn't."
+        case .heartSignals: "Resting heart rate and 1-minute heart rate recovery move between estimates, so you can see progress in the weeks Apple Health is quiet."
+        case .freshnessNudges: "VO2 max only refreshes after a qualifying outdoor workout. Get told when yours has gone quiet, and exactly what brings it back."
+        case .monthlyRecap: "A monthly recap of your cardio fitness trend, target progress, and best reading."
+        case .reports: "Generate a private PDF report of any period to keep or share with a coach or clinician."
+        case .readingAlerts: "Get a notification the moment Apple Health logs a new VO2 max estimate, with how it compares."
         case .deepTrends: "See matching-window averages and changes across 30, 90, and 180 days."
         case .targetProjection: "Put the recent cardio fitness trend in target context when the data supports it."
         case .fitnessBand: "Compare the latest estimate with broad reference values for your age and selected reference."
         case .personalBest: "Keep the strongest Apple Health estimate and its date easy to find."
-        case .readingAlerts: "Get a notification the moment Apple Health logs a new VO2 max estimate, with how it compares."
-        case .monthlyRecap: "A monthly recap of your cardio fitness trend, target progress, and best reading."
-        case .reports: "Generate a private PDF report of any period to keep or share with a coach or clinician."
         case .extendedInsights: "Deeper context that appears inside the screens you already use."
         }
     }
@@ -92,14 +115,17 @@ enum PlusFeature: CaseIterable {
     /// Two related features shown under an intent-driven pitch (not random extras).
     var companionFeatures: [PlusFeature] {
         switch self {
-        case .deepTrends: [.targetProjection, .personalBest]
-        case .targetProjection: [.deepTrends, .fitnessBand]
-        case .fitnessBand: [.personalBest, .deepTrends]
-        case .personalBest: [.fitnessBand, .deepTrends]
-        case .readingAlerts: [.monthlyRecap, .reports]
-        case .monthlyRecap: [.readingAlerts, .reports]
-        case .reports: [.deepTrends, .monthlyRecap]
-        case .extendedInsights: [.deepTrends, .targetProjection]
+        case .whatMovedIt: [.heartSignals, .freshnessNudges]
+        case .heartSignals: [.whatMovedIt, .monthlyRecap]
+        case .freshnessNudges: [.whatMovedIt, .readingAlerts]
+        case .monthlyRecap: [.whatMovedIt, .reports]
+        case .reports: [.whatMovedIt, .monthlyRecap]
+        case .readingAlerts: [.freshnessNudges, .monthlyRecap]
+        case .deepTrends: [.whatMovedIt, .heartSignals]
+        case .targetProjection: [.whatMovedIt, .deepTrends]
+        case .fitnessBand: [.heartSignals, .whatMovedIt]
+        case .personalBest: [.whatMovedIt, .heartSignals]
+        case .extendedInsights: [.whatMovedIt, .heartSignals]
         }
     }
 }
@@ -155,7 +181,7 @@ struct PaywallView: View {
         if let focus {
             return [focus] + PlusFeature.allCases.filter { $0 != focus }.prefix(3)
         }
-        return [.deepTrends, .targetProjection, .fitnessBand, .personalBest]
+        return [.whatMovedIt, .heartSignals, .freshnessNudges, .monthlyRecap]
     }
 
     var body: some View {

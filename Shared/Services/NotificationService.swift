@@ -22,6 +22,8 @@ enum NotificationService {
     static let monthlyRecapID = "vo2max.monthlyRecap"
     /// Prefix for one-shot new-reading alerts (unique per fire so they don't coalesce).
     static let newReadingIDPrefix = "vo2max.newReading."
+    /// Prefix for one-shot freshness nudges.
+    static let freshnessIDPrefix = "vo2max.freshness."
 
     /// userInfo key set on notifications so the app can route a tap to the right surface.
     static let routeKey = "route"
@@ -135,6 +137,34 @@ enum NotificationService {
             logger.info("New-reading alert scheduled value=\(rounded, privacy: .public)")
         } catch {
             logger.error("New-reading alert failed: \(String(describing: error), privacy: .public)")
+        }
+    }
+
+    // MARK: - Freshness nudge
+
+    /// Tells the user their estimate has gone quiet, and what refreshes it.
+    /// Rate-limiting and entitlement live with the caller (`HealthKitService`);
+    /// this only refuses to queue against a denied authorization.
+    static func scheduleFreshnessNudge(daysSinceLatest: Int) async {
+        guard await isAuthorized() else {
+            logger.info("Freshness nudge skipped — notifications not authorized")
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Your estimate has gone quiet"
+        content.body = "Apple Health hasn't logged a VO2 max estimate in \(daysSinceLatest) days. \(CardioFreshnessAnalysis.refreshInstruction)"
+        content.sound = .default
+        content.userInfo = [routeKey: readingRouteValue]
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let id = freshnessIDPrefix + UUID().uuidString
+        let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+            logger.info("Freshness nudge scheduled days=\(daysSinceLatest, privacy: .public)")
+        } catch {
+            logger.error("Freshness nudge failed: \(String(describing: error), privacy: .public)")
         }
     }
 }
