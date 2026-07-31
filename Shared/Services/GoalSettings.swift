@@ -47,14 +47,18 @@ final class GoalSettings: ObservableObject {
     // HealthKitService (from the app group) to decide whether to post.
     @Published var readingAlertsEnabled: Bool { didSet { defaults.set(readingAlertsEnabled, forKey: Self.readingAlertsKey); save() } }
     @Published var monthlyRecapEnabled: Bool { didSet { defaults.set(monthlyRecapEnabled, forKey: "monthlyRecapEnabled"); save() } }
+    /// Freshness nudges. Also read from the app group by HealthKitService, which
+    /// decides at sync time whether the estimate has gone stale.
+    @Published var freshnessNudgesEnabled: Bool { didSet { defaults.set(freshnessNudgesEnabled, forKey: Self.freshnessNudgesKey); save() } }
 
     /// Content version of the last What's New announcement the user has seen.
     @Published var lastWhatsNewVersionShown: String? {
         didSet { defaults.set(lastWhatsNewVersionShown, forKey: "lastWhatsNewVersionShown") }
     }
 
-    /// App-group key for the reading-alert opt-in, shared with HealthKitService.
+    /// App-group keys for the opt-ins HealthKitService reads at sync time.
     static let readingAlertsKey = "readingAlertsEnabled"
+    static let freshnessNudgesKey = "freshnessNudgesEnabled"
 
     private let defaults: UserDefaults
     private var isNormalizing = false
@@ -74,6 +78,7 @@ final class GoalSettings: ObservableObject {
         showPersonalBest = defaults.object(forKey: "showPersonalBest") as? Bool ?? true
         readingAlertsEnabled = defaults.object(forKey: Self.readingAlertsKey) as? Bool ?? false
         monthlyRecapEnabled = defaults.object(forKey: "monthlyRecapEnabled") as? Bool ?? false
+        freshnessNudgesEnabled = defaults.object(forKey: Self.freshnessNudgesKey) as? Bool ?? false
         // Fresh installs are seeded past the What's New announcement so they get
         // onboarding, not a "what changed" pitch for an app they've never used.
         if let stored = defaults.string(forKey: "lastWhatsNewVersionShown") {

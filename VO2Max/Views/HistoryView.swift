@@ -33,6 +33,8 @@ struct HistoryView: View {
                     statsCard
                     chartCard
                     allReadingsLink
+                    WhatMovedItCard()
+                    HeartSignalsCard()
                     plusTeaserCard
                 }
             }

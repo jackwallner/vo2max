@@ -102,6 +102,15 @@ struct DashboardView: View {
                     .padding(.horizontal, 24)
                     .opacity(animateContent ? 1 : 0)
                     .offset(y: animateContent ? 0 : 20)
+
+                Color.clear.frame(height: 12)
+
+                // "Why hasn't my number changed?" is the most common question a
+                // non-daily metric produces, so the answer lives on Today.
+                EstimateFreshnessCard()
+                    .padding(.horizontal, 24)
+                    .opacity(animateContent ? 1 : 0)
+                    .offset(y: animateContent ? 0 : 20)
             } else {
                 Spacer(minLength: 16)
                 noReadingCard

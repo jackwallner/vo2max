@@ -286,6 +286,18 @@ struct SettingsView: View {
                 )
             )
 
+            // Freshness nudges
+            proToggle(
+                feature: .freshnessNudges,
+                isOn: Binding(
+                    get: { settings.freshnessNudgesEnabled },
+                    set: { newValue in
+                        settings.freshnessNudgesEnabled = newValue
+                        if newValue { Task { await NotificationService.requestAuthorization() } }
+                    }
+                )
+            )
+
             // Monthly recap
             proToggle(
                 feature: .monthlyRecap,
@@ -335,8 +347,8 @@ struct SettingsView: View {
             Text("VO2+")
         } footer: {
             Text(store.isPro
-                ? "Reading alerts and the monthly recap keep your cardio fitness in view between Apple Health estimates. Premium context also appears inside Today, Trends, and the VO2+ hub."
-                : "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free. VO2+ adds alerts, a monthly recap, deeper trends, and a shareable report.")
+                ? "Freshness nudges, reading alerts, and the monthly recap keep your cardio fitness in view between Apple Health estimates. What Moved It and Heart Signals live in Trends and the VO2+ hub."
+                : "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free. VO2+ adds what moved your estimate, resting heart rate and recovery, freshness nudges, a monthly recap, and a shareable report.")
         }
     }
 

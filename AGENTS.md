@@ -22,6 +22,8 @@ Local-first Apple Health cardio fitness tracker. XcodeGen project/scheme: `VO2Ma
 
 HealthKitService reads Apple Health VO2 max estimates and caches them as `CardioFitnessSample` records. App views query SwiftData directly. Widgets and Watch complications read the same schema from their local App Group cache. `CardioFitnessAnalysis` contains pure trend, target, and fitness-age estimate logic.
 
+`CardioContextService` reads the VO2+ supporting signals (resting heart rate, 1-minute heart rate recovery, cardio workouts) into memory only — they have no widget or complication consumer, so they deliberately stay out of the shared SwiftData schema. `CardioDriverAnalysis` (what moved the estimate) and `CardioFreshnessAnalysis` (is the estimate overdue against this user's own cadence) are pure and unit-tested.
+
 ## App-specific notes
 
 - VO2 max is not a daily metric. The positive loop is entering a target range or moving from stable/declining to improving.
