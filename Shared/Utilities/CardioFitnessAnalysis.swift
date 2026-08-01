@@ -184,7 +184,12 @@ enum CardioFitnessAnalysis {
 
     static func change(points: [CardioFitnessPoint], days: Int, now: Date = .now) -> Double? {
         let sorted = points.sorted { $0.date < $1.date }
-        guard let latest = sorted.last else { return nil }
+        // Bounded to `now` so a custom range that ends before today reads its
+        // own window's latest point, not whatever Apple Health has recorded
+        // since. Every other range-scoped read (summarize, loadSummary,
+        // periodComparison) already respects this; `change` had drifted from
+        // that pattern.
+        guard let latest = sorted.last(where: { $0.date <= now }) else { return nil }
         let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: now) ?? now
         guard let baseline = sorted.first(where: { $0.date >= cutoff }), baseline.date < latest.date else {
             return nil

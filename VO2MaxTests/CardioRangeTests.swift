@@ -63,9 +63,41 @@ struct CardioRangeTests {
         #expect(CardioRange.fixed(.quarter, now: now, calendar: calendar).priorPhrase == "prior 90 days")
     }
 
+    /// A one-day custom pick should read "previous 1 day", not "1 days".
+    @Test func customPriorPhraseSingularizesOneDay() {
+        let range = CardioRange.custom(start: now, end: now, calendar: calendar)
+        #expect(range.days == 1)
+        #expect(range.priorPhrase == "previous 1 day")
+    }
+
     @Test func weeklyBarsNeverDropBelowFour() {
         #expect(CardioRange.trailing(days: 7, now: now, calendar: calendar).weeks == 4)
         #expect(CardioRange.fixed(.year, now: now, calendar: calendar).weeks == 52)
+    }
+
+    /// `weeklyLoad` always trails back from `end`, so padding a short custom
+    /// range up to `weeks`' 4-bar floor would pull in weeks before `start`
+    /// that the span caption above the chart never claimed to cover. The
+    /// fixed presets keep the floor since their day counts already round to
+    /// close to a multiple of 7.
+    @Test func chartWeeksDoesNotPadACustomRangePastItsOwnSpan() {
+        let short = CardioRange.custom(
+            start: calendar.date(byAdding: .day, value: -3, to: now)!,
+            end: now,
+            calendar: calendar
+        )
+        #expect(short.days == 3)
+        #expect(short.chartWeeks == 1)
+
+        let month = CardioRange.custom(
+            start: calendar.date(byAdding: .day, value: -30, to: now)!,
+            end: now,
+            calendar: calendar
+        )
+        #expect(month.chartWeeks == 5)
+
+        #expect(CardioRange.fixed(.month, now: now, calendar: calendar).chartWeeks == 4)
+        #expect(CardioRange.fixed(.year, now: now, calendar: calendar).chartWeeks == 52)
     }
 
     @Test func spanLabelStatesBothEnds() {

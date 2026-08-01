@@ -122,6 +122,29 @@ struct CardioFitnessAnalysisTests {
         #expect(CardioFitnessAnalysis.personalBest(points: points)?.value == 43)
     }
 
+    /// A custom range that ends before today must read its own window's
+    /// latest point, not whatever's been recorded since — otherwise "change"
+    /// mixes a future reading into a window the caption says already closed.
+    @Test func changeIgnoresReadingsAfterNow() {
+        let calendar = Calendar.current
+        let windowEnd = calendar.date(byAdding: .day, value: -30, to: referenceDate)!
+        let points = [
+            CardioFitnessPoint(date: calendar.date(byAdding: .day, value: -40, to: referenceDate)!, value: 38),
+            CardioFitnessPoint(date: windowEnd, value: 42),
+            // Recorded after the selected window's end; must not count as "latest".
+            CardioFitnessPoint(date: referenceDate, value: 60)
+        ]
+        let change = CardioFitnessAnalysis.change(points: points, days: 30, now: windowEnd)
+        #expect(change == 4)
+    }
+
+    @Test func changeIsNilWhenNoReadingFallsAtOrBeforeNow() {
+        let calendar = Calendar.current
+        let past = calendar.date(byAdding: .day, value: -60, to: referenceDate)!
+        let points = [CardioFitnessPoint(date: referenceDate, value: 50)]
+        #expect(CardioFitnessAnalysis.change(points: points, days: 30, now: past) == nil)
+    }
+
     private var referenceDate: Date {
         Date(timeIntervalSince1970: 1_800_000_000)
     }

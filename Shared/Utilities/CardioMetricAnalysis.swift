@@ -119,12 +119,24 @@ struct CardioRange: Sendable, Equatable {
     /// Number of weekly bars that covers the range without crowding the axis.
     var weeks: Int { max(days / 7, 4) }
 
+    /// Weekly bar count for `CardioDriverAnalysis.weeklyLoad`, which always
+    /// trails back from `end`. `weeks`' 4-bar floor is fine for the fixed
+    /// presets (their day counts are already close to a multiple of 7), but
+    /// applying it to a short custom range would pull in weeks before
+    /// `start` that the picker's own span caption never claimed to cover.
+    var chartWeeks: Int {
+        guard selection == .custom else { return weeks }
+        return max(Int((Double(days) / 7).rounded(.up)), 1)
+    }
+
     /// Mid-sentence: "…in the last 90 days" / "…in the selected range".
     var phrase: String { selection.phrase }
 
-    /// Mid-sentence: "vs. prior 90 days" / "vs. previous 74 days".
+    /// Mid-sentence: "vs. prior 90 days" / "vs. previous 74 days" / "vs.
+    /// previous 1 day" for a one-day custom pick.
     var priorPhrase: String {
-        selection == .custom ? "previous \(days) days" : selection.priorPhrase
+        guard selection == .custom else { return selection.priorPhrase }
+        return "previous \(days) \(days == 1 ? "day" : "days")"
     }
 
     /// The actual dates this window covers, e.g. "May 3 – Aug 1, 2026". Shown

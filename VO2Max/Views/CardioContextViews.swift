@@ -32,6 +32,11 @@ struct MetricRangePicker: View {
             }
             .padding(3)
             .background(Theme.cardSurface, in: Capsule())
+            // Five equal segments in one capsule cannot grow indefinitely:
+            // past this size "Custom" truncates to "Cust…". UISegmentedControl
+            // capped its own text the same way, so this is no worse than the
+            // control it replaced, and every label stays legible.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
 
             Text(ranges.resolved.spanLabel)
                 .font(.system(.caption, design: .rounded))
@@ -83,7 +88,7 @@ private struct RangeSegmentButton: View {
                 Text(title)
                     .font(.caption.bold())
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(0.65)
             }
             .foregroundStyle(locked ? Theme.textTertiary : (isSelected ? Theme.textPrimary : Theme.textSecondary))
             .padding(.vertical, 8)
@@ -318,7 +323,7 @@ struct SignalReading {
                 detail: "\(sessions) sessions/week · \(qualifying) min/week can refresh the estimate",
                 series: CardioDriverAnalysis.weeklyLoad(
                     workouts: context.workouts,
-                    weeks: range.weeks,
+                    weeks: range.chartWeeks,
                     now: range.end
                 )
                 .map { CardioFitnessPoint(date: $0.weekStart, value: $0.minutes) }
@@ -972,7 +977,7 @@ struct CardioLoadDetailView: View {
     private var weeklyLoadCard: some View {
         let load = CardioDriverAnalysis.weeklyLoad(
             workouts: context.workouts,
-            weeks: range.weeks,
+            weeks: range.chartWeeks,
             now: range.end
         )
         if !load.allSatisfy({ $0.minutes == 0 }) {
