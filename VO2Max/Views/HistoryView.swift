@@ -8,19 +8,14 @@ struct HistoryView: View {
     @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
     /// One shared range across Trends and every metric detail screen, so the
     /// window a user picks here is the window they land in.
-    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
+    @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPlusPaywall = false
 
-    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
+    private var range: CardioRange { ranges.resolved }
     private var period: Int { range.days }
 
-    private var rangeBinding: Binding<MetricRange> {
-        Binding(get: { range }, set: { rangeDays = $0.rawValue })
-    }
-
     private var visibleSamples: [CardioFitnessSample] {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -period, to: .now) ?? .distantPast
-        return samples.filter { $0.date >= cutoff }
+        samples.filter { range.contains($0.date) }
     }
 
     private var chartDomain: ClosedRange<Double> {
@@ -34,7 +29,7 @@ struct HistoryView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
-                MetricRangePicker(range: rangeBinding)
+                MetricRangePicker()
 
                 if visibleSamples.isEmpty {
                     emptyState
@@ -75,9 +70,12 @@ struct HistoryView: View {
         let average = values.reduce(0, +) / Double(values.count)
         let change = CardioFitnessAnalysis.change(
             points: samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) },
-            days: period
+            days: period,
+            now: range.end
         )
 
+        // No span caption here: the picker states it two rows above, and
+        // repeating it that close together reads as a second, different window.
         return HStack(spacing: 0) {
             statBlock("Readings", "\(values.count)")
             Divider().frame(height: 36)
@@ -113,7 +111,7 @@ struct HistoryView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Cardio fitness trend")
                         .font(.headline)
-                    Text("Apple Health estimates in the selected period")
+                    Text("Apple Health estimates · \(range.spanLabel)")
                         .font(.caption)
                         .foregroundStyle(Theme.textSecondary)
                 }
@@ -186,12 +184,12 @@ struct HistoryView: View {
                 .foregroundStyle(Theme.cardio)
             Text("No estimates in this period")
                 .font(.title3.bold())
-            Text("Choose a longer window, or return after Apple Health records another cardio fitness estimate.")
+            Text("Nothing recorded between \(range.spanLabel). Choose a longer window, or return after Apple Health records another cardio fitness estimate.")
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
-            if !samples.isEmpty, range != .year {
-                Button("Show 1 Year") { rangeDays = MetricRange.year.rawValue }
+            if !samples.isEmpty, ranges.selection != .year {
+                Button("Show 1 Year") { ranges.select(.year) }
                     .buttonStyle(.borderedProminent)
                     .tint(Theme.cardio)
             }
@@ -252,9 +250,12 @@ struct HistoryView: View {
                     VStack(alignment: .leading, spacing: 1) {
                         Text("Last \(comparison.days) days")
                             .font(.subheadline.weight(.medium))
-                        Text("vs. previous \(comparison.days) days")
+                        Text(CardioRange.trailing(days: comparison.days).spanLabel)
                             .font(.caption2)
                             .foregroundStyle(Theme.textSecondary)
+                        Text("vs. previous \(comparison.days) days")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textTertiary)
                     }
                     Spacer()
                     Text(comparison.currentAverage, format: .number.precision(.fractionLength(1)))

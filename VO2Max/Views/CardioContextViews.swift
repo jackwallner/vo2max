@@ -4,21 +4,150 @@ import SwiftUI
 
 // MARK: - Shared range
 
-/// The range picker is one shared preference rather than per-screen state, so a
-/// user who switches Trends to 1Y is still in 1Y when they open a metric.
-let cardioMetricRangeKey = "cardioMetricRangeDays"
-
+/// Range control for every window-scoped screen, plus the date span it resolves
+/// to. Ported from the Vitals period selector: plain buttons in a capsule rather
+/// than `.pickerStyle(.segmented)`, because a segmented control claims the
+/// horizontal drag — a finger that lands on it slides the selection sideways
+/// instead of scrolling the page under it.
 struct MetricRangePicker: View {
-    @Binding var range: MetricRange
+    @ObservedObject private var ranges = CardioRangeStore.shared
+    @EnvironmentObject private var store: StoreService
+    @State private var showCustomSheet = false
+    @State private var showPaywall = false
+    @State private var draftStart = Date.now
+    @State private var draftEnd = Date.now
 
     var body: some View {
-        Picker("Range", selection: $range) {
-            ForEach(MetricRange.allCases) { option in
-                Text(option.label).tag(option)
+        VStack(spacing: 6) {
+            HStack(spacing: 0) {
+                ForEach(MetricRange.allCases) { option in
+                    RangeSegmentButton(
+                        title: option.label,
+                        isSelected: ranges.selection == option,
+                        locked: option == .custom && !store.isPro
+                    ) {
+                        tap(option)
+                    }
+                }
+            }
+            .padding(3)
+            .background(Theme.cardSurface, in: Capsule())
+
+            Text(ranges.resolved.spanLabel)
+                .font(.system(.caption, design: .rounded))
+                .foregroundStyle(Theme.textTertiary)
+                .accessibilityLabel("Showing \(ranges.resolved.spanLabel)")
+        }
+        .onAppear { ranges.revertCustomIfLocked(isPro: store.isPro) }
+        .onChange(of: store.isPro) { _, isPro in ranges.revertCustomIfLocked(isPro: isPro) }
+        .sheet(isPresented: $showCustomSheet) {
+            CustomRangeSheet(start: $draftStart, end: $draftEnd) {
+                ranges.applyCustom(start: draftStart, end: draftEnd)
+                showCustomSheet = false
+            }
+            .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(focus: .customRange)
+        }
+    }
+
+    private func tap(_ option: MetricRange) {
+        guard option == .custom else {
+            ranges.select(option)
+            return
+        }
+        guard store.isPro else {
+            showPaywall = true
+            return
+        }
+        draftStart = ranges.customStart
+        draftEnd = ranges.customEnd
+        showCustomSheet = true
+    }
+}
+
+private struct RangeSegmentButton: View {
+    let title: String
+    let isSelected: Bool
+    var locked = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 3) {
+                if locked {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 9, weight: .bold))
+                }
+                Text(title)
+                    .font(.caption.bold())
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .foregroundStyle(locked ? Theme.textTertiary : (isSelected ? Theme.textPrimary : Theme.textSecondary))
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
+            .background(isSelected ? Theme.cardSurfaceLight : .clear, in: Capsule())
+            .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.2), value: isSelected)
+        .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
+        .accessibilityHint(locked ? "VO2+: pick any date range" : "")
+    }
+}
+
+/// Start/end picker behind the Custom segment. Ported from Vitals, with the
+/// same two-year ceiling: beyond that the weekly charts stop being readable.
+private struct CustomRangeSheet: View {
+    @Binding var start: Date
+    @Binding var end: Date
+    let onApply: () -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    private var spanDays: Int {
+        Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
+    }
+
+    private var isValid: Bool {
+        start < end && spanDays <= CardioRange.maximumCustomDays
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                DatePicker("Start", selection: $start, in: ...Date.now, displayedComponents: .date)
+                DatePicker("End", selection: $end, in: ...Date.now, displayedComponents: .date)
+                if isValid {
+                    Section {
+                        Text("\(spanDays) days selected")
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                } else {
+                    Section {
+                        Text(start >= end
+                             ? "Start date must be before end date."
+                             : "Maximum range is 2 years.")
+                            .font(.caption)
+                            .foregroundStyle(Theme.negative)
+                    }
+                }
+            }
+            .navigationTitle("Custom Range")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Apply") { onApply() }
+                        .bold()
+                        .disabled(!isValid)
+                }
             }
         }
-        .pickerStyle(.segmented)
-        .accessibilityLabel("Date range")
     }
 }
 
@@ -155,14 +284,17 @@ struct SignalReading {
     @MainActor
     static func make(
         signal: CardioSignal,
-        range: MetricRange,
+        range: CardioRange,
         context: CardioContextService
     ) -> SignalReading? {
         switch signal {
         case .heart(let metric):
             let points = context.points(for: metric)
-            guard let summary = CardioMetricAnalysis.summarize(points: points, days: range.days) else { return nil }
-            let start = Calendar.current.date(byAdding: .day, value: -range.days, to: .now) ?? .distantPast
+            guard let summary = CardioMetricAnalysis.summarize(
+                points: points,
+                days: range.days,
+                now: range.end
+            ) else { return nil }
             let low = Int(summary.minimum.rounded())
             let high = Int(summary.maximum.rounded())
             let average = summary.average.formatted(.number.precision(.fractionLength(1)))
@@ -170,12 +302,13 @@ struct SignalReading {
                 value: summary.latest,
                 change: summary.change,
                 detail: "avg \(average) · range \(low)–\(high) · \(summary.count) readings",
-                series: CardioMetricAnalysis.downsample(points.filter { $0.date >= start })
+                series: CardioMetricAnalysis.downsample(points.filter { range.contains($0.date) })
             )
         case .load:
             guard let summary = CardioDriverAnalysis.loadSummary(
                 workouts: context.workouts,
-                days: range.days
+                days: range.days,
+                now: range.end
             ) else { return nil }
             let sessions = summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1)))
             let qualifying = Int(summary.qualifyingMinutesPerWeek.rounded())
@@ -183,8 +316,12 @@ struct SignalReading {
                 value: summary.minutesPerWeek,
                 change: summary.change,
                 detail: "\(sessions) sessions/week · \(qualifying) min/week can refresh the estimate",
-                series: CardioDriverAnalysis.weeklyLoad(workouts: context.workouts, weeks: range.weeks)
-                    .map { CardioFitnessPoint(date: $0.weekStart, value: $0.minutes) }
+                series: CardioDriverAnalysis.weeklyLoad(
+                    workouts: context.workouts,
+                    weeks: range.weeks,
+                    now: range.end
+                )
+                .map { CardioFitnessPoint(date: $0.weekStart, value: $0.minutes) }
             )
         }
     }
@@ -196,7 +333,7 @@ struct SignalReading {
 /// value blurred out behind a lock, so the shape of what they'd get is honest.
 struct CardioSignalCard: View {
     let signal: CardioSignal
-    let range: MetricRange
+    let range: CardioRange
 
     @EnvironmentObject private var store: StoreService
     @ObservedObject private var context = CardioContextService.shared
@@ -407,7 +544,7 @@ struct ChangeBadge: View {
 /// scaled down.
 struct CardioSignalTile: View {
     let signal: CardioSignal
-    let range: MetricRange
+    let range: CardioRange
 
     @EnvironmentObject private var store: StoreService
     @ObservedObject private var context = CardioContextService.shared
@@ -486,14 +623,12 @@ struct CardioSignalTile: View {
 /// The Today row: resting heart rate, heart rate recovery, cardio load. These
 /// move while the estimate itself is quiet, which is most of the time.
 struct CardioSignalRow: View {
-    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
-
-    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
+    @ObservedObject private var ranges = CardioRangeStore.shared
 
     var body: some View {
         HStack(spacing: 10) {
             ForEach(CardioSignal.all) { signal in
-                CardioSignalTile(signal: signal, range: range)
+                CardioSignalTile(signal: signal, range: ranges.resolved)
             }
         }
     }
@@ -507,26 +642,25 @@ struct HeartMetricDetailView: View {
     let metric: HeartMetric
 
     @ObservedObject private var context = CardioContextService.shared
-    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
+    @ObservedObject private var ranges = CardioRangeStore.shared
 
-    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
-
-    private var rangeBinding: Binding<MetricRange> {
-        Binding(get: { range }, set: { rangeDays = $0.rawValue })
-    }
+    private var range: CardioRange { ranges.resolved }
 
     private var points: [CardioFitnessPoint] { context.points(for: metric) }
 
     private var windowPoints: [CardioFitnessPoint] {
-        let start = Calendar.current.date(byAdding: .day, value: -range.days, to: .now) ?? .distantPast
-        return points.filter { $0.date >= start }
+        points.filter { range.contains($0.date) }
     }
 
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
-                MetricRangePicker(range: rangeBinding)
-                if let summary = CardioMetricAnalysis.summarize(points: points, days: range.days) {
+                MetricRangePicker()
+                if let summary = CardioMetricAnalysis.summarize(
+                    points: points,
+                    days: range.days,
+                    now: range.end
+                ) {
                     summaryCard(summary)
                     chartCard(summary)
                     monthlyCard
@@ -573,11 +707,18 @@ struct HeartMetricDetailView: View {
             }
 
             if let change = summary.change {
-                HStack(spacing: 6) {
-                    Text("Average vs. \(range.priorPhrase)")
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
-                    ChangeBadge(change: change, lowerIsBetter: metric.lowerIsBetter)
+                VStack(spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text("Average vs. \(range.priorPhrase)")
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                        ChangeBadge(change: change, lowerIsBetter: metric.lowerIsBetter)
+                    }
+                    if let prior = range.priorSpanLabel() {
+                        Text(prior)
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textTertiary)
+                    }
                 }
             } else {
                 Text("No readings in the \(range.priorPhrase) to compare against.")
@@ -605,8 +746,13 @@ struct HeartMetricDetailView: View {
 
     private func chartCard(_ summary: MetricSummary) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label("\(metric.abbreviation) over the \(range.phrase)", systemImage: metric.symbol)
-                .font(.headline)
+            VStack(alignment: .leading, spacing: 2) {
+                Label("\(metric.abbreviation) over the \(range.phrase)", systemImage: metric.symbol)
+                    .font(.headline)
+                Text(range.spanLabel)
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+            }
             Chart {
                 RuleMark(y: .value("Average", summary.average))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
@@ -634,7 +780,7 @@ struct HeartMetricDetailView: View {
 
     @ViewBuilder
     private var monthlyCard: some View {
-        let months = CardioMetricAnalysis.monthlyAverages(points: points, days: range.days)
+        let months = CardioMetricAnalysis.monthlyAverages(points: points, days: range.days, now: range.end)
         if months.count > 1 {
             VStack(alignment: .leading, spacing: 10) {
                 Label("Monthly averages", systemImage: "calendar")
@@ -708,13 +854,9 @@ struct HeartMetricDetailView: View {
 struct CardioLoadDetailView: View {
     @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
     @ObservedObject private var context = CardioContextService.shared
-    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
+    @ObservedObject private var ranges = CardioRangeStore.shared
 
-    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
-
-    private var rangeBinding: Binding<MetricRange> {
-        Binding(get: { range }, set: { rangeDays = $0.rawValue })
-    }
+    private var range: CardioRange { ranges.resolved }
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -727,7 +869,7 @@ struct CardioLoadDetailView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
-                MetricRangePicker(range: rangeBinding)
+                MetricRangePicker()
                 loadCard
                 weeklyLoadCard
                 comparisonCard
@@ -744,7 +886,11 @@ struct CardioLoadDetailView: View {
 
     @ViewBuilder
     private var loadCard: some View {
-        if let summary = CardioDriverAnalysis.loadSummary(workouts: context.workouts, days: range.days) {
+        if let summary = CardioDriverAnalysis.loadSummary(
+            workouts: context.workouts,
+            days: range.days,
+            now: range.end
+        ) {
             VStack(spacing: 12) {
                 Text(summary.minutesPerWeek, format: .number.precision(.fractionLength(0)))
                     .font(Theme.bigNumber(48))
@@ -766,11 +912,18 @@ struct CardioLoadDetailView: View {
                 }
 
                 if let change = summary.change {
-                    HStack(spacing: 6) {
-                        Text("Minutes per week vs. \(range.priorPhrase)")
-                            .font(.caption)
-                            .foregroundStyle(Theme.textSecondary)
-                        ChangeBadge(change: change, lowerIsBetter: false)
+                    VStack(spacing: 2) {
+                        HStack(spacing: 6) {
+                            Text("Minutes per week vs. \(range.priorPhrase)")
+                                .font(.caption)
+                                .foregroundStyle(Theme.textSecondary)
+                            ChangeBadge(change: change, lowerIsBetter: false)
+                        }
+                        if let prior = range.priorSpanLabel() {
+                            Text(prior)
+                                .font(.caption2)
+                                .foregroundStyle(Theme.textTertiary)
+                        }
                     }
                 }
 
@@ -817,11 +970,20 @@ struct CardioLoadDetailView: View {
 
     @ViewBuilder
     private var weeklyLoadCard: some View {
-        let load = CardioDriverAnalysis.weeklyLoad(workouts: context.workouts, weeks: range.weeks)
+        let load = CardioDriverAnalysis.weeklyLoad(
+            workouts: context.workouts,
+            weeks: range.weeks,
+            now: range.end
+        )
         if !load.allSatisfy({ $0.minutes == 0 }) {
             VStack(alignment: .leading, spacing: 10) {
-                Label("Weekly cardio minutes", systemImage: "chart.bar.fill")
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 2) {
+                    Label("Weekly cardio minutes", systemImage: "chart.bar.fill")
+                        .font(.headline)
+                    Text(range.spanLabel)
+                        .font(.caption)
+                        .foregroundStyle(Theme.textSecondary)
+                }
                 Chart(load) { week in
                     BarMark(
                         x: .value("Week", week.weekStart, unit: .weekOfYear),
@@ -913,12 +1075,16 @@ struct CardioLoadDetailView: View {
 
     @ViewBuilder
     private var activityCard: some View {
-        let totals = CardioDriverAnalysis.activityTotals(workouts: context.workouts, days: range.days)
+        let totals = CardioDriverAnalysis.activityTotals(
+            workouts: context.workouts,
+            days: range.days,
+            now: range.end
+        )
         if !totals.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
                 Label("Where the minutes went", systemImage: "list.bullet")
                     .font(.headline)
-                Text(range.phrase.capitalized)
+                Text(range.spanLabel)
                     .font(.caption)
                     .foregroundStyle(Theme.textSecondary)
                 ForEach(totals) { total in

@@ -8,17 +8,24 @@ enum MetricRange: Int, CaseIterable, Identifiable, Sendable {
     case quarter = 90
     case halfYear = 180
     case year = 365
+    /// A start and end the user picked. Its length is whatever those two dates
+    /// span, so it lives on `CardioRange`, not here.
+    case custom = 0
 
     var id: Int { rawValue }
     var days: Int { rawValue }
 
-    /// Segmented-picker label.
+    /// nil for `.custom`, which has no fixed length.
+    var fixedDays: Int? { self == .custom ? nil : rawValue }
+
+    /// Segment label.
     var label: String {
         switch self {
         case .month: "30D"
         case .quarter: "90D"
         case .halfYear: "6M"
         case .year: "1Y"
+        case .custom: "Custom"
         }
     }
 
@@ -29,6 +36,7 @@ enum MetricRange: Int, CaseIterable, Identifiable, Sendable {
         case .quarter: "last 90 days"
         case .halfYear: "last 6 months"
         case .year: "last 12 months"
+        case .custom: "selected range"
         }
     }
 
@@ -39,11 +47,104 @@ enum MetricRange: Int, CaseIterable, Identifiable, Sendable {
         case .quarter: "prior 90 days"
         case .halfYear: "prior 6 months"
         case .year: "prior 12 months"
+        case .custom: "matching range before it"
         }
     }
 
     /// Number of weekly bars that covers the range without crowding the axis.
     var weeks: Int { max(rawValue / 7, 4) }
+}
+
+/// A selection resolved into real dates. Every range-scoped screen works from
+/// one of these, so a fixed window and a hand-picked one behave identically
+/// downstream: a day count plus the date the window ends on. The analysis
+/// functions all take `days:` and `now:`, and a custom range is simply a window
+/// of `days` that ends on `end` rather than today.
+struct CardioRange: Sendable, Equatable {
+    let selection: MetricRange
+    /// First moment included in the window.
+    let start: Date
+    /// Last moment included. `.now` for the fixed windows.
+    let end: Date
+    let days: Int
+
+    /// Longest custom span the picker accepts. Two years of weekly bars is
+    /// already a dense chart; beyond that the axis stops being readable.
+    static let maximumCustomDays = 730
+
+    static func fixed(
+        _ selection: MetricRange,
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> CardioRange {
+        let days = selection.fixedDays ?? MetricRange.quarter.days
+        let start = calendar.date(byAdding: .day, value: -days, to: now) ?? now
+        return CardioRange(selection: selection, start: start, end: now, days: days)
+    }
+
+    /// A trailing window of `days` that isn't one of the picker's options, for
+    /// the fixed comparison tables (30 / 90 / 180 / 365) that state their own
+    /// period regardless of what the picker is set to.
+    static func trailing(
+        days: Int,
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> CardioRange {
+        let clamped = max(days, 1)
+        let start = calendar.date(byAdding: .day, value: -clamped, to: now) ?? now
+        return CardioRange(
+            selection: MetricRange(rawValue: clamped) ?? .custom,
+            start: start,
+            end: now,
+            days: clamped
+        )
+    }
+
+    static func custom(
+        start: Date,
+        end: Date,
+        calendar: Calendar = .current
+    ) -> CardioRange {
+        let orderedStart = min(start, end)
+        let orderedEnd = max(start, end)
+        let span = calendar.dateComponents([.day], from: orderedStart, to: orderedEnd).day ?? 0
+        return CardioRange(
+            selection: .custom,
+            start: orderedStart,
+            end: orderedEnd,
+            days: max(span, 1)
+        )
+    }
+
+    /// Number of weekly bars that covers the range without crowding the axis.
+    var weeks: Int { max(days / 7, 4) }
+
+    /// Mid-sentence: "…in the last 90 days" / "…in the selected range".
+    var phrase: String { selection.phrase }
+
+    /// Mid-sentence: "vs. prior 90 days" / "vs. previous 74 days".
+    var priorPhrase: String {
+        selection == .custom ? "previous \(days) days" : selection.priorPhrase
+    }
+
+    /// The actual dates this window covers, e.g. "May 3 – Aug 1, 2026". Shown
+    /// under the picker and anywhere a screen states which period it is reading.
+    var spanLabel: String {
+        let from = start.formatted(.dateTime.month(.abbreviated).day())
+        let to = end.formatted(.dateTime.month(.abbreviated).day().year())
+        return "\(from) – \(to)"
+    }
+
+    /// The equivalent window immediately before this one, for "vs." captions.
+    func priorSpanLabel(calendar: Calendar = .current) -> String? {
+        guard let priorEnd = calendar.date(byAdding: .day, value: -days, to: end),
+              let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: end) else { return nil }
+        let from = priorStart.formatted(.dateTime.month(.abbreviated).day())
+        let to = priorEnd.formatted(.dateTime.month(.abbreviated).day().year())
+        return "\(from) – \(to)"
+    }
+
+    func contains(_ date: Date) -> Bool { date >= start && date <= end }
 }
 
 /// The two Apple Health heart series this app trends alongside the estimate.

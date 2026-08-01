@@ -7,6 +7,7 @@ import SwiftUI
 struct PlusTabView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
+    @ObservedObject private var ranges = CardioRangeStore.shared
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @State private var showRecap = false
 
@@ -28,10 +29,12 @@ struct PlusTabView: View {
 
     private var subscriberHub: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 14) {
+            VStack(spacing: 22) {
                 activeHeader
                 currentHighlights
-                destinationLinks
+                signalsSection
+                estimateSection
+                contextSection
                 accountNote
             }
             .padding(.horizontal, 20)
@@ -42,7 +45,12 @@ struct PlusTabView: View {
         .background(Theme.background)
         .navigationTitle("VO2+")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showRecap) {
+            MonthlyRecapView().environmentObject(settings)
+        }
     }
+
+    // MARK: - Header
 
     private var activeHeader: some View {
         HStack(spacing: 12) {
@@ -54,16 +62,23 @@ struct PlusTabView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("VO2+ active")
                     .font(.title3.bold())
-                Text("Premium context is now integrated across the app.")
+                Text("Every screen below is unlocked, and reads the range you pick.")
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding(16)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 
+    // MARK: - Highlights
+
+    /// Deliberately styled as a read-only figures table rather than icon rows:
+    /// the old version used the same circular-icon layout as the links below it,
+    /// which is why nothing on this tab looked tappable. Data reads as data here,
+    /// and only the sectioned rows underneath read as buttons.
     @ViewBuilder
     private var currentHighlights: some View {
         if points.isEmpty {
@@ -77,21 +92,21 @@ struct PlusTabView: View {
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(22)
             .frame(maxWidth: .infinity)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         } else {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Current highlights")
-                    .font(.headline)
+            VStack(spacing: 0) {
                 if let best = CardioFitnessAnalysis.personalBest(points: points) {
                     highlightRow(
-                        icon: "trophy.fill",
-                        color: Theme.coral,
-                        title: "Personal best \(best.value.formatted(.number.precision(.fractionLength(1))))",
-                        detail: best.date.formatted(.dateTime.month(.abbreviated).day().year())
+                        label: "Personal best",
+                        value: best.value.formatted(.number.precision(.fractionLength(1))),
+                        detail: best.date.formatted(.dateTime.month(.abbreviated).day().year()),
+                        tint: Theme.coral
                     )
+                    highlightDivider
                 }
                 if let latest = points.max(by: { $0.date < $1.date }),
                    let band = CardioFitnessAnalysis.fitnessBand(
@@ -100,108 +115,129 @@ struct PlusTabView: View {
                        referenceSex: settings.referenceSex
                    ) {
                     highlightRow(
-                        icon: "person.2.crop.square.stack",
-                        color: Theme.cardio,
-                        title: band,
-                        detail: "Broad context for age \(settings.chronologicalAge)"
+                        label: "Age reference",
+                        value: band,
+                        detail: "Broad context for age \(settings.chronologicalAge)",
+                        tint: Theme.cardio
                     )
+                    highlightDivider
                 }
                 if let projection = CardioFitnessAnalysis.projection(
                     points: points,
                     targetLower: settings.targetLower
                 ) {
                     highlightRow(
-                        icon: "scope",
-                        color: Theme.positive,
-                        title: projectionHeadline(projection),
-                        detail: "Based on the recent cardio fitness trend"
+                        label: "Target outlook",
+                        value: projectionHeadline(projection),
+                        detail: "From the recent cardio fitness trend",
+                        tint: Theme.positive
                     )
                 }
             }
-            .padding(16)
+            .padding(.vertical, 4)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
-    private var destinationLinks: some View {
-        VStack(spacing: 10) {
-            NavigationLink {
-                HeartMetricDetailView(metric: .restingHeartRate)
-            } label: {
-                destinationRow(
-                    icon: "bed.double",
-                    title: "Open Resting Heart Rate",
-                    detail: "Latest, average, low, high, and change vs. the window before"
-                )
+    private var highlightDivider: some View {
+        Divider().padding(.leading, 16)
+    }
+
+    private func highlightRow(
+        label: String,
+        value: String,
+        detail: String,
+        tint: Color
+    ) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Capsule()
+                .fill(tint)
+                .frame(width: 3)
+                .frame(maxHeight: .infinity)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(label)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.textSecondary)
+                    .textCase(.uppercase)
+                Text(value)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Theme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(Theme.textTertiary)
             }
-            NavigationLink {
-                HeartMetricDetailView(metric: .heartRateRecovery)
-            } label: {
-                destinationRow(
-                    icon: "arrow.down.heart",
-                    title: "Open Heart Rate Recovery",
-                    detail: "The one-minute drop after each recorded workout"
-                )
-            }
-            NavigationLink {
-                CardioLoadDetailView()
-            } label: {
-                destinationRow(
-                    icon: "figure.run.circle",
-                    title: "Open Cardio Load",
-                    detail: "Minutes and sessions per week, and where they went"
-                )
-            }
-            NavigationLink {
-                EstimateFreshnessDetailView()
-            } label: {
-                destinationRow(
-                    icon: "clock.badge.exclamationmark",
-                    title: "Open Estimate Freshness",
-                    detail: "Whether your estimate is due, and what refreshes it"
-                )
-            }
-            Button {
-                showRecap = true
-            } label: {
-                destinationRow(
-                    icon: "calendar.badge.checkmark",
-                    title: "Open Monthly Recap",
-                    detail: "Your 30-day trend, target progress, and best reading"
-                )
-            }
-            .sheet(isPresented: $showRecap) {
-                MonthlyRecapView().environmentObject(settings)
-            }
-            NavigationLink {
-                HistoryView()
-            } label: {
-                destinationRow(
-                    icon: "chart.bar.xaxis",
-                    title: "Open Deep Trends",
-                    detail: "Compare 30, 90, and 180-day windows in context"
-                )
-            }
-            NavigationLink {
-                TrendDetailView()
-            } label: {
-                destinationRow(
-                    icon: "scope",
-                    title: "Open Target Outlook",
-                    detail: "See direction and a broad timeframe when supported"
-                )
-            }
-            NavigationLink {
-                FitnessAgeDetailView()
-            } label: {
-                destinationRow(
-                    icon: "person.crop.circle",
-                    title: "Open Fitness Context",
-                    detail: "Review fitness age methodology and broad references"
-                )
-            }
+            Spacer(minLength: 0)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .fixedSize(horizontal: false, vertical: true)
+        .accessibilityElement(children: .combine)
+    }
+
+    // MARK: - Destinations
+
+    /// The three series that keep moving between Apple Health estimates. Their
+    /// screens follow the shared range, so the header states which one.
+    private var signalsSection: some View {
+        PlusSection(
+            title: "Your signals",
+            caption: ranges.resolved.spanLabel
+        ) {
+            PlusLinkRow(
+                icon: "bed.double",
+                title: "Resting Heart Rate",
+                detail: "Latest, average, low, high, and the change vs. the window before"
+            ) { HeartMetricDetailView(metric: .restingHeartRate) }
+            PlusLinkRow(
+                icon: "arrow.down.heart",
+                title: "Heart Rate Recovery",
+                detail: "The one-minute drop after each recorded workout"
+            ) { HeartMetricDetailView(metric: .heartRateRecovery) }
+            PlusLinkRow(
+                icon: "figure.run.circle",
+                title: "Cardio Load",
+                detail: "Minutes and sessions per week, and where they went",
+                isLast: true
+            ) { CardioLoadDetailView() }
+        }
+    }
+
+    private var estimateSection: some View {
+        PlusSection(title: "Your estimate") {
+            PlusLinkRow(
+                icon: "clock.badge.exclamationmark",
+                title: "Estimate Freshness",
+                detail: "Whether your estimate is due, and what refreshes it"
+            ) { EstimateFreshnessDetailView() }
+            PlusLinkRow(
+                icon: "chart.bar.xaxis",
+                title: "Deep Trends",
+                detail: "Compare 30, 90, and 180-day windows in context"
+            ) { HistoryView() }
+            PlusLinkRow(
+                icon: "scope",
+                title: "Target Outlook",
+                detail: "Direction toward target, and a broad timeframe when supported",
+                isLast: true
+            ) { TrendDetailView() }
+        }
+    }
+
+    private var contextSection: some View {
+        PlusSection(title: "Context and recaps") {
+            PlusLinkRow(
+                icon: "person.crop.circle",
+                title: "Fitness Context",
+                detail: "Fitness age methodology and broad age references"
+            ) { FitnessAgeDetailView() }
+            PlusActionRow(
+                icon: "calendar.badge.checkmark",
+                title: "Monthly Recap",
+                detail: "Your 30-day trend, target progress, and best reading",
+                isLast: true
+            ) { showRecap = true }
+        }
     }
 
     private var accountNote: some View {
@@ -210,56 +246,6 @@ struct PlusTabView: View {
             .foregroundStyle(Theme.textSecondary)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 12)
-    }
-
-    private func highlightRow(
-        icon: String,
-        color: Color,
-        title: String,
-        detail: String
-    ) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(color)
-                .frame(width: 34, height: 34)
-                .background(color.opacity(0.12), in: Circle())
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.textPrimary)
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(Theme.textSecondary)
-            }
-            Spacer()
-        }
-    }
-
-    private func destinationRow(icon: String, title: String, detail: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(Theme.cardio)
-                .frame(width: 40, height: 40)
-                .background(Theme.cardio.opacity(0.12), in: Circle())
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(Theme.textPrimary)
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(2)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.tertiary)
-        }
-        .padding(14)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-        .contentShape(Rectangle())
     }
 
     private func projectionHeadline(_ projection: TrendProjection) -> String {
@@ -273,5 +259,125 @@ struct PlusTabView: View {
         return projection.slopePerMonth > 0.05
             ? "Recent direction is positive"
             : "Recent direction is flat or declining"
+    }
+}
+
+// MARK: - Sectioned rows
+
+/// A titled group of rows drawn as one inset card with hairline separators. The
+/// grouped-list idiom is what iOS uses everywhere for "these lines open a
+/// screen", which is exactly what these do.
+private struct PlusSection<Content: View>: View {
+    let title: String
+    var caption: String?
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                    .foregroundStyle(Theme.textSecondary)
+                    .textCase(.uppercase)
+                Spacer(minLength: 8)
+                if let caption {
+                    Text(caption)
+                        .font(.caption)
+                        .foregroundStyle(Theme.textTertiary)
+                }
+            }
+            .padding(.horizontal, 4)
+
+            VStack(spacing: 0) { content }
+                .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        }
+    }
+}
+
+/// One tappable line. Chevron is full-strength rather than tertiary, the whole
+/// row highlights on touch, and the title names the screen instead of leading
+/// with "Open" on all eight rows.
+private struct PlusRowLabel: View {
+    let icon: String
+    let title: String
+    let detail: String
+    let isLast: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Theme.cardio)
+                    .frame(width: 32, height: 32)
+                    .background(Theme.cardio.opacity(0.12), in: RoundedRectangle(cornerRadius: 9))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                        .foregroundStyle(Theme.textPrimary)
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(Theme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.bold))
+                    .foregroundStyle(Theme.cardio)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+
+            if !isLast {
+                Divider().padding(.leading, 58)
+            }
+        }
+        .contentShape(Rectangle())
+    }
+}
+
+private struct PlusLinkRow<Destination: View>: View {
+    let icon: String
+    let title: String
+    let detail: String
+    var isLast = false
+    @ViewBuilder let destination: () -> Destination
+
+    var body: some View {
+        NavigationLink { destination() } label: {
+            PlusRowLabel(icon: icon, title: title, detail: detail, isLast: isLast)
+        }
+        .buttonStyle(PlusRowButtonStyle())
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Opens \(title)")
+    }
+}
+
+private struct PlusActionRow: View {
+    let icon: String
+    let title: String
+    let detail: String
+    var isLast = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            PlusRowLabel(icon: icon, title: title, detail: detail, isLast: isLast)
+        }
+        .buttonStyle(PlusRowButtonStyle())
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Opens \(title)")
+    }
+}
+
+/// Touch feedback the old plain-styled rows had none of: without it a tap on a
+/// card that only navigates a moment later reads as a dead press.
+private struct PlusRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(configuration.isPressed ? Theme.cardio.opacity(0.10) : .clear)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }

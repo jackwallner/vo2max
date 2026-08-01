@@ -18,6 +18,7 @@ enum PlusFeature: CaseIterable {
     case reports
     case readingAlerts
     case deepTrends
+    case customRange
     case targetProjection
     case fitnessBand
     case personalBest
@@ -33,6 +34,7 @@ enum PlusFeature: CaseIterable {
         case .reports: "Export a shareable fitness report"
         case .readingAlerts: "Get notified on every new estimate"
         case .deepTrends: "Compare every period with the one before"
+        case .customRange: "Trend any date range you pick"
         case .targetProjection: "Understand direction toward your target"
         case .fitnessBand: "Add broad age-reference context"
         case .personalBest: "Keep personal bests visible"
@@ -50,6 +52,7 @@ enum PlusFeature: CaseIterable {
         case .reports: "doc.richtext"
         case .readingAlerts: "bell.badge"
         case .deepTrends: "chart.bar.xaxis"
+        case .customRange: "calendar.badge.clock"
         case .targetProjection: "scope"
         case .fitnessBand: "person.2.crop.square.stack"
         case .personalBest: "trophy"
@@ -68,6 +71,7 @@ enum PlusFeature: CaseIterable {
         case .reports: "A private PDF of any period you can save or share."
         case .readingAlerts: "A notification each time Apple Health logs a new VO2 max estimate, with context."
         case .deepTrends: "Matching 30, 90, and 180-day windows, compared."
+        case .customRange: "Set your own start and end date and every screen follows it, not just the four fixed windows."
         case .targetProjection: "A broad outlook toward your target when data supports it."
         case .fitnessBand: "Where your estimate sits against age references."
         case .personalBest: "Your strongest Apple Health estimate, always in reach."
@@ -95,6 +99,7 @@ enum PlusFeature: CaseIterable {
         case .reports: "Export your cardio fitness"
         case .readingAlerts: "Never miss a new estimate"
         case .deepTrends: "Compare every period"
+        case .customRange: "Pick your own date range"
         case .targetProjection: "Understand your target direction"
         case .fitnessBand: "Add context to your estimate"
         case .personalBest: "Recognize your progress"
@@ -112,6 +117,7 @@ enum PlusFeature: CaseIterable {
         case .reports: "Generate a private PDF report of any period to keep or share with a coach or clinician."
         case .readingAlerts: "Get a notification the moment Apple Health logs a new VO2 max estimate, with how it compares."
         case .deepTrends: "See matching-window averages and changes across 30, 90, and 180 days."
+        case .customRange: "A training block, a season, the months since an injury. Choose the start and end, and Trends, resting heart rate, recovery, and cardio load all read that window."
         case .targetProjection: "Put the recent cardio fitness trend in target context when the data supports it."
         case .fitnessBand: "Compare the latest estimate with broad reference values for your age and selected reference."
         case .personalBest: "Keep the strongest Apple Health estimate and its date easy to find."
@@ -130,6 +136,7 @@ enum PlusFeature: CaseIterable {
         case .reports: [.cardioLoad, .monthlyRecap]
         case .readingAlerts: [.freshnessNudges, .monthlyRecap]
         case .deepTrends: [.restingHeartRate, .cardioLoad]
+        case .customRange: [.deepTrends, .cardioLoad]
         case .targetProjection: [.cardioLoad, .deepTrends]
         case .fitnessBand: [.restingHeartRate, .cardioLoad]
         case .personalBest: [.cardioLoad, .heartRateRecovery]
