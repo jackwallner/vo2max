@@ -38,6 +38,23 @@ struct ActivityTotal: Sendable, Equatable, Identifiable {
     var id: String { kind.rawValue }
 }
 
+/// Cardio load over a chosen window, normalized per week so 30 days and a year
+/// are directly comparable, with the same window before it for contrast.
+struct CardioLoadSummary: Sendable, Equatable {
+    let minutesPerWeek: Double
+    let sessionsPerWeek: Double
+    /// The share of the load from sessions Apple Health can draw an estimate
+    /// from (outdoor walks, runs, hikes).
+    let qualifyingMinutesPerWeek: Double
+    let totalMinutes: Double
+    let sessions: Int
+    /// nil when nothing was recorded before the window, which is different from
+    /// a genuine zero-minute stretch.
+    let previousMinutesPerWeek: Double?
+
+    var change: Double? { previousMinutesPerWeek.map { minutesPerWeek - $0 } }
+}
+
 struct WeeklyLoad: Sendable, Equatable, Identifiable {
     let weekStart: Date
     let minutes: Double
@@ -133,6 +150,39 @@ enum CardioDriverAnalysis {
                 )
             }
             .sorted { $0.minutes > $1.minutes }
+    }
+
+    /// Cardio load for a selectable window. nil when the window contains no
+    /// cardio workouts at all — the UI then says so rather than showing a
+    /// confident 0 min/week that is indistinguishable from a denied read.
+    static func loadSummary(
+        workouts: [WorkoutSummary],
+        days: Int,
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> CardioLoadSummary? {
+        guard days > 0, let start = calendar.date(byAdding: .day, value: -days, to: now) else { return nil }
+        let window = workouts.filter { $0.date >= start && $0.date <= now }
+        guard !window.isEmpty else { return nil }
+
+        let weeks = Double(days) / 7
+        var previousMinutesPerWeek: Double?
+        if let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: now) {
+            let prior = workouts.filter { $0.date >= priorStart && $0.date < start }
+            if !prior.isEmpty {
+                previousMinutesPerWeek = prior.reduce(0) { $0 + $1.minutes } / weeks
+            }
+        }
+
+        let totalMinutes = window.reduce(0) { $0 + $1.minutes }
+        return CardioLoadSummary(
+            minutesPerWeek: totalMinutes / weeks,
+            sessionsPerWeek: Double(window.count) / weeks,
+            qualifyingMinutesPerWeek: window.filter(\.refreshesEstimate).reduce(0) { $0 + $1.minutes } / weeks,
+            totalMinutes: totalMinutes,
+            sessions: window.count,
+            previousMinutesPerWeek: previousMinutesPerWeek
+        )
     }
 
     /// Trailing weekly cardio load, oldest week first, including empty weeks so

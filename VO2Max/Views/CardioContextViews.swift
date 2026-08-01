@@ -2,34 +2,697 @@ import Charts
 import SwiftData
 import SwiftUI
 
-// MARK: - Shared gate
+// MARK: - Shared range
 
-/// Card chrome shared by the VO2+ context surfaces: a titled header with the
-/// VO2+ badge, then either the real content or a short pitch plus CTA. Same
-/// idiom as the existing gated cards in Trends and the detail screens.
-struct PlusContextCard<Content: View, Locked: View>: View {
-    let title: String
-    let symbol: String
-    let isLocked: Bool
-    @ViewBuilder var content: () -> Content
-    @ViewBuilder var locked: () -> Locked
+/// The range picker is one shared preference rather than per-screen state, so a
+/// user who switches Trends to 1Y is still in 1Y when they open a metric.
+let cardioMetricRangeKey = "cardioMetricRangeDays"
+
+struct MetricRangePicker: View {
+    @Binding var range: MetricRange
 
     var body: some View {
+        Picker("Range", selection: $range) {
+            ForEach(MetricRange.allCases) { option in
+                Text(option.label).tag(option)
+            }
+        }
+        .pickerStyle(.segmented)
+        .accessibilityLabel("Date range")
+    }
+}
+
+// MARK: - VO2+ gate
+
+/// A locked number. The real value is never drawn for a locked user: an
+/// invented placeholder is rendered, blurred past legibility, and covered with a
+/// lock — so the card keeps its exact shape without leaking the data it sells.
+struct LockedNumber: View {
+    let placeholder: String
+    let size: CGFloat
+
+    var body: some View {
+        Text(placeholder)
+            .font(Theme.bigNumber(size))
+            .foregroundStyle(Theme.textSecondary.opacity(0.85))
+            // Enough blur that no digit survives, little enough that the reader
+            // can still see a number is being withheld.
+            .blur(radius: size * 0.22)
+            .overlay {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: size * 0.42, weight: .bold))
+                    .foregroundStyle(Theme.cardio)
+                    .shadow(color: Theme.background, radius: 3)
+            }
+            .accessibilityLabel("Locked. Included with VO2+")
+    }
+}
+
+extension View {
+    /// Blurs a whole locked region (sparklines, stat rows) to match the lock on
+    /// the headline number beside it.
+    func plusBlurred(_ radius: CGFloat = 8) -> some View {
+        blur(radius: radius)
+            .opacity(0.7)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Signals
+
+/// The three VO2+ series that move between Apple Health estimates. Named after
+/// the data itself, because that is what the people tracking VO2 max call them.
+enum CardioSignal: Identifiable, Hashable {
+    case heart(HeartMetric)
+    case load
+
+    static let all: [CardioSignal] = [.heart(.restingHeartRate), .heart(.heartRateRecovery), .load]
+
+    var id: String {
+        switch self {
+        case .heart(let metric): metric.rawValue
+        case .load: "cardioLoad"
+        }
+    }
+
+    var isLoad: Bool { self == .load }
+
+    var title: String {
+        switch self {
+        case .heart(let metric): metric.title
+        case .load: "Cardio Load"
+        }
+    }
+
+    var abbreviation: String {
+        switch self {
+        case .heart(let metric): metric.abbreviation
+        case .load: "LOAD"
+        }
+    }
+
+    var unit: String {
+        switch self {
+        case .heart(let metric): metric.unitDetail
+        case .load: "min/week"
+        }
+    }
+
+    var shortUnit: String {
+        switch self {
+        case .heart: "bpm"
+        case .load: "min/wk"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .heart(let metric): metric.symbol
+        case .load: "figure.run.circle"
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .heart(let metric): metric.subtitle
+        case .load: "Cardio minutes and sessions from your workout history"
+        }
+    }
+
+    var lowerIsBetter: Bool {
+        switch self {
+        case .heart(let metric): metric.lowerIsBetter
+        case .load: false
+        }
+    }
+
+    /// Invented digits drawn behind the lock. Never the user's own value.
+    var lockedPlaceholder: String {
+        switch self {
+        case .heart(let metric): metric.lockedPlaceholder
+        case .load: "146"
+        }
+    }
+
+    var feature: PlusFeature {
+        switch self {
+        case .heart(.restingHeartRate): .restingHeartRate
+        case .heart(.heartRateRecovery): .heartRateRecovery
+        case .load: .cardioLoad
+        }
+    }
+}
+
+/// Current value, change, and series for one signal over the selected range,
+/// pulled from whichever analysis owns it.
+struct SignalReading {
+    let value: Double
+    let change: Double?
+    let detail: String
+    let series: [CardioFitnessPoint]
+
+    @MainActor
+    static func make(
+        signal: CardioSignal,
+        range: MetricRange,
+        context: CardioContextService
+    ) -> SignalReading? {
+        switch signal {
+        case .heart(let metric):
+            let points = context.points(for: metric)
+            guard let summary = CardioMetricAnalysis.summarize(points: points, days: range.days) else { return nil }
+            let start = Calendar.current.date(byAdding: .day, value: -range.days, to: .now) ?? .distantPast
+            let low = Int(summary.minimum.rounded())
+            let high = Int(summary.maximum.rounded())
+            let average = summary.average.formatted(.number.precision(.fractionLength(1)))
+            return SignalReading(
+                value: summary.latest,
+                change: summary.change,
+                detail: "avg \(average) · range \(low)–\(high) · \(summary.count) readings",
+                series: CardioMetricAnalysis.downsample(points.filter { $0.date >= start })
+            )
+        case .load:
+            guard let summary = CardioDriverAnalysis.loadSummary(
+                workouts: context.workouts,
+                days: range.days
+            ) else { return nil }
+            let sessions = summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1)))
+            let qualifying = Int(summary.qualifyingMinutesPerWeek.rounded())
+            return SignalReading(
+                value: summary.minutesPerWeek,
+                change: summary.change,
+                detail: "\(sessions) sessions/week · \(qualifying) min/week can refresh the estimate",
+                series: CardioDriverAnalysis.weeklyLoad(workouts: context.workouts, weeks: range.weeks)
+                    .map { CardioFitnessPoint(date: $0.weekStart, value: $0.minutes) }
+            )
+        }
+    }
+}
+
+// MARK: - Full-width signal card (Trends)
+
+/// Shows the number without a tap. Locked users see the same card with the
+/// value blurred out behind a lock, so the shape of what they'd get is honest.
+struct CardioSignalCard: View {
+    let signal: CardioSignal
+    let range: MetricRange
+
+    @EnvironmentObject private var store: StoreService
+    @ObservedObject private var context = CardioContextService.shared
+    @State private var showPaywall = false
+
+    var body: some View {
+        Group {
+            if store.isPro {
+                NavigationLink { destination } label: { card }
+                    .buttonStyle(.plain)
+            } else {
+                Button { showPaywall = true } label: { card }
+                    .buttonStyle(.plain)
+            }
+        }
+        .task { await context.load() }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(focus: signal.feature)
+        }
+    }
+
+    @ViewBuilder
+    private var destination: some View {
+        switch signal {
+        case .heart(let metric): HeartMetricDetailView(metric: metric)
+        case .load: CardioLoadDetailView()
+        }
+    }
+
+    private var reading: SignalReading? {
+        SignalReading.make(signal: signal, range: range, context: context)
+    }
+
+    private var card: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Label(title, systemImage: isLocked ? "lock.fill" : symbol)
+            header
+            if store.isPro {
+                if let reading {
+                    unlockedBody(reading)
+                } else {
+                    Text(emptyMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } else {
+                lockedBody
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        .contentShape(Rectangle())
+    }
+
+    private var header: some View {
+        HStack(spacing: 10) {
+            Image(systemName: signal.symbol)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Theme.cardio)
+                .frame(width: 30, height: 30)
+                .background(Theme.cardio.opacity(0.12), in: Circle())
+            VStack(alignment: .leading, spacing: 1) {
+                Text(signal.title)
                     .font(.headline)
-                Spacer()
-                if isLocked {
-                    Text("VO2+")
-                        .font(.caption2.bold())
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(Theme.cardio.opacity(0.15), in: Capsule())
-                        .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.textPrimary)
+                Text(signal.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(2)
+            }
+            Spacer(minLength: 6)
+            if store.isPro {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.textTertiary)
+            } else {
+                Text("VO2+")
+                    .font(.caption2.bold())
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Theme.cardio.opacity(0.15), in: Capsule())
+                    .foregroundStyle(Theme.cardio)
+            }
+        }
+    }
+
+    private func unlockedBody(_ reading: SignalReading) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(reading.value, format: .number.precision(.fractionLength(0)))
+                    .font(Theme.bigNumber(34))
+                    .foregroundStyle(Theme.textPrimary)
+                    .contentTransition(.numericText())
+                Text(signal.unit)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                Spacer(minLength: 4)
+                if let change = reading.change {
+                    ChangeBadge(
+                        change: change,
+                        lowerIsBetter: signal.lowerIsBetter,
+                        caption: "vs. \(range.priorPhrase)"
+                    )
                 }
             }
-            if isLocked { locked() } else { content() }
+            sparkline(reading.series)
+            Text(reading.detail)
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+        }
+    }
+
+    private var lockedBody: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                LockedNumber(placeholder: signal.lockedPlaceholder, size: 34)
+                Text(signal.unit)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                Spacer(minLength: 4)
+            }
+            sparkline(Self.placeholderSeries).plusBlurred()
+            Text(signal.feature.intentSubheadline)
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(store.shortConversionCTALabel) { showPaywall = true }
+                .buttonStyle(.borderedProminent)
+                .tint(Theme.cardio)
+                .controlSize(.small)
+        }
+    }
+
+    @ViewBuilder
+    private func sparkline(_ points: [CardioFitnessPoint]) -> some View {
+        if points.count > 1 {
+            Chart(points, id: \.date) { point in
+                if signal.isLoad {
+                    BarMark(
+                        x: .value("Week", point.date, unit: .weekOfYear),
+                        y: .value("Minutes", point.value)
+                    )
+                    .foregroundStyle(Theme.cardioGradient)
+                    .cornerRadius(2)
+                } else {
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value(signal.abbreviation, point.value)
+                    )
+                    .foregroundStyle(Theme.cardioGradient)
+                    .interpolationMethod(.catmullRom)
+                }
+            }
+            .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
+            .chartYScale(domain: .automatic(includesZero: signal.isLoad))
+            .frame(height: 54)
+        }
+    }
+
+    private var emptyMessage: String {
+        switch signal {
+        case .heart(let metric):
+            "No \(metric.title.lowercased()) recorded in the \(range.phrase). Choose a longer range, or check that Apple Health holds this data."
+        case .load:
+            "No cardio workouts recorded in the \(range.phrase)."
+        }
+    }
+
+    /// Invented shape for the locked sparkline — never the user's own series.
+    private static let placeholderSeries: [CardioFitnessPoint] = (0..<14).compactMap { index in
+        guard let date = Calendar.current.date(byAdding: .day, value: -(13 - index) * 5, to: .now) else { return nil }
+        return CardioFitnessPoint(date: date, value: 50 + sin(Double(index) * 0.8) * 6 + Double(index) * 0.6)
+    }
+}
+
+/// Signed change, coloured by which direction is better for this metric: a
+/// falling resting heart rate is progress, a falling recovery is not.
+struct ChangeBadge: View {
+    let change: Double
+    let lowerIsBetter: Bool
+    var caption: String?
+
+    var body: some View {
+        VStack(alignment: .trailing, spacing: 1) {
+            Text(change, format: .number.precision(.fractionLength(1)).sign(strategy: .always()))
+                .font(.subheadline.bold().monospacedDigit())
+                .foregroundStyle(color)
+            if let caption {
+                Text(caption)
+                    .font(.caption2)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private var color: Color {
+        if abs(change) < 0.5 { return Theme.textSecondary }
+        return (lowerIsBetter ? change < 0 : change > 0) ? Theme.positive : Theme.coral
+    }
+}
+
+// MARK: - Compact tile (Today)
+
+/// Third-width tile for the Today dashboard row. Same lock-and-blur treatment,
+/// scaled down.
+struct CardioSignalTile: View {
+    let signal: CardioSignal
+    let range: MetricRange
+
+    @EnvironmentObject private var store: StoreService
+    @ObservedObject private var context = CardioContextService.shared
+    @State private var showPaywall = false
+
+    var body: some View {
+        Group {
+            if store.isPro {
+                NavigationLink { destination } label: { tile }
+                    .buttonStyle(.plain)
+            } else {
+                Button { showPaywall = true } label: { tile }
+                    .buttonStyle(.plain)
+            }
+        }
+        .task { await context.load() }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(focus: signal.feature)
+        }
+    }
+
+    @ViewBuilder
+    private var destination: some View {
+        switch signal {
+        case .heart(let metric): HeartMetricDetailView(metric: metric)
+        case .load: CardioLoadDetailView()
+        }
+    }
+
+    private var reading: SignalReading? {
+        SignalReading.make(signal: signal, range: range, context: context)
+    }
+
+    private var tile: some View {
+        VStack(spacing: 3) {
+            Text(signal.abbreviation)
+                .font(.system(.caption2, design: .rounded, weight: .bold))
+                .foregroundStyle(Theme.cardio)
+
+            if store.isPro {
+                if let reading {
+                    Text(reading.value, format: .number.precision(.fractionLength(0)))
+                        .font(Theme.bigNumber(26))
+                        .foregroundStyle(Theme.textPrimary)
+                        .contentTransition(.numericText())
+                } else {
+                    Text("—")
+                        .font(Theme.bigNumber(26))
+                        .foregroundStyle(Theme.textTertiary)
+                }
+            } else {
+                LockedNumber(placeholder: signal.lockedPlaceholder, size: 26)
+            }
+
+            Text(signal.shortUnit)
+                .font(.system(.caption2, design: .rounded))
+                .foregroundStyle(Theme.textSecondary)
+
+            if store.isPro, let change = reading?.change {
+                ChangeBadge(change: change, lowerIsBetter: signal.lowerIsBetter)
+            } else {
+                // Keeps all three tiles the same height whether or not a
+                // comparison window exists.
+                Text(" ").font(.subheadline.monospacedDigit())
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: 16))
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(signal.title)
+    }
+}
+
+/// The Today row: resting heart rate, heart rate recovery, cardio load. These
+/// move while the estimate itself is quiet, which is most of the time.
+struct CardioSignalRow: View {
+    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
+
+    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ForEach(CardioSignal.all) { signal in
+                CardioSignalTile(signal: signal, range: range)
+            }
+        }
+    }
+}
+
+// MARK: - Heart metric detail
+
+/// One HealthKit series in full. The range picker at the top drives every number
+/// on the screen.
+struct HeartMetricDetailView: View {
+    let metric: HeartMetric
+
+    @ObservedObject private var context = CardioContextService.shared
+    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
+
+    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
+
+    private var rangeBinding: Binding<MetricRange> {
+        Binding(get: { range }, set: { rangeDays = $0.rawValue })
+    }
+
+    private var points: [CardioFitnessPoint] { context.points(for: metric) }
+
+    private var windowPoints: [CardioFitnessPoint] {
+        let start = Calendar.current.date(byAdding: .day, value: -range.days, to: .now) ?? .distantPast
+        return points.filter { $0.date >= start }
+    }
+
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 16) {
+                MetricRangePicker(range: rangeBinding)
+                if let summary = CardioMetricAnalysis.summarize(points: points, days: range.days) {
+                    summaryCard(summary)
+                    chartCard(summary)
+                    monthlyCard
+                } else {
+                    emptyCard
+                }
+                sourceCard
+            }
+            .padding()
+        }
+        .background(Theme.background)
+        .navigationTitle(metric.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .task { await context.load() }
+        .overlay {
+            if context.isLoading, context.lastLoaded == nil {
+                ProgressView().tint(Theme.cardio)
+            }
+        }
+    }
+
+    private func summaryCard(_ summary: MetricSummary) -> some View {
+        VStack(spacing: 12) {
+            Text(summary.latest, format: .number.precision(.fractionLength(0)))
+                .font(Theme.bigNumber(48))
+                .foregroundStyle(Theme.cardio)
+            Text(metric.unitDetail)
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+            Text("Latest reading \(summary.latestDate, format: .dateTime.month(.abbreviated).day())")
+                .font(.caption)
+                .foregroundStyle(Theme.textTertiary)
+
+            Divider()
+
+            HStack(spacing: 0) {
+                statBlock("Average", summary.average.formatted(.number.precision(.fractionLength(1))))
+                Divider().frame(height: 34)
+                statBlock("Low", "\(Int(summary.minimum.rounded()))")
+                Divider().frame(height: 34)
+                statBlock("High", "\(Int(summary.maximum.rounded()))")
+                Divider().frame(height: 34)
+                statBlock("Readings", "\(summary.count)")
+            }
+
+            if let change = summary.change {
+                HStack(spacing: 6) {
+                    Text("Average vs. \(range.priorPhrase)")
+                        .font(.caption)
+                        .foregroundStyle(Theme.textSecondary)
+                    ChangeBadge(change: change, lowerIsBetter: metric.lowerIsBetter)
+                }
+            } else {
+                Text("No readings in the \(range.priorPhrase) to compare against.")
+                    .font(.caption)
+                    .foregroundStyle(Theme.textTertiary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(20)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private func statBlock(_ title: String, _ value: String) -> some View {
+        VStack(spacing: 3) {
+            Text(value)
+                .font(Theme.bigNumber(19))
+                .foregroundStyle(Theme.textPrimary)
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func chartCard(_ summary: MetricSummary) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("\(metric.abbreviation) over the \(range.phrase)", systemImage: metric.symbol)
+                .font(.headline)
+            Chart {
+                RuleMark(y: .value("Average", summary.average))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                    .foregroundStyle(Theme.textTertiary)
+                ForEach(CardioMetricAnalysis.downsample(windowPoints), id: \.date) { point in
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value(metric.abbreviation, point.value)
+                    )
+                    .foregroundStyle(Theme.cardioGradient)
+                    .interpolationMethod(.catmullRom)
+                }
+            }
+            .chartYAxisLabel(metric.unit)
+            .chartYScale(domain: .automatic(includesZero: false))
+            .frame(height: 180)
+            Text("Dashed line is the \(range.phrase) average.")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    @ViewBuilder
+    private var monthlyCard: some View {
+        let months = CardioMetricAnalysis.monthlyAverages(points: points, days: range.days)
+        if months.count > 1 {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Monthly averages", systemImage: "calendar")
+                    .font(.headline)
+                ForEach(months) { month in
+                    HStack {
+                        Text(month.monthStart, format: .dateTime.month(.wide).year())
+                            .font(.subheadline)
+                        Spacer()
+                        Text("\(month.count) \(month.count == 1 ? "reading" : "readings")")
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                        Text(month.average, format: .number.precision(.fractionLength(1)))
+                            .font(.subheadline.bold().monospacedDigit())
+                            .frame(width: 52, alignment: .trailing)
+                    }
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        }
+    }
+
+    private var emptyCard: some View {
+        VStack(spacing: 12) {
+            Image(systemName: metric.symbol)
+                .font(.system(size: 38))
+                .foregroundStyle(Theme.cardio)
+            Text("No readings in the \(range.phrase)")
+                .font(.headline)
+            Text(metric == .restingHeartRate
+                 ? "Apple Watch records resting heart rate in the background as you wear it. Choose a longer range, or check that Apple Health holds this data."
+                 : "Apple Watch records the one-minute drop after a recorded workout. Choose a longer range, or record a workout with your Watch on.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(24)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private var sourceCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Where this comes from", systemImage: "info.circle")
+                .font(.headline)
+            Text("\(metric.subtitle). Read directly from Apple Health, never written to.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(metric.healthKitIdentifier)
+                .font(.system(.caption2, design: .monospaced))
+                .foregroundStyle(Theme.textTertiary)
+            Text("A fitness-awareness signal, not a medical measurement. This app does not diagnose, treat, or monitor any condition. Discuss heart health concerns with a qualified clinician.")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -37,120 +700,279 @@ struct PlusContextCard<Content: View, Locked: View>: View {
     }
 }
 
-/// Pitch + CTA body for a locked card.
-struct PlusContextLockedBody: View {
-    let feature: PlusFeature
-    let ctaTitle: String
-    let action: () -> Void
+// MARK: - Cardio load detail
+
+/// Cardio minutes and sessions, plus how they line up with the stretches where
+/// the estimate rose. Strictly descriptive: it reports what the record shows,
+/// never prescribes training and never claims the training caused the change.
+struct CardioLoadDetailView: View {
+    @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
+    @ObservedObject private var context = CardioContextService.shared
+    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
+
+    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
+
+    private var rangeBinding: Binding<MetricRange> {
+        Binding(get: { range }, set: { rangeDays = $0.rawValue })
+    }
+
+    private var points: [CardioFitnessPoint] {
+        samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
+    }
+
+    private var windows: [TrainingWindow] {
+        CardioDriverAnalysis.windows(points: points, workouts: context.workouts)
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(feature.intentSubheadline)
-                .font(.subheadline)
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 16) {
+                MetricRangePicker(range: rangeBinding)
+                loadCard
+                weeklyLoadCard
+                comparisonCard
+                activityCard
+                methodologyCard
+            }
+            .padding()
+        }
+        .background(Theme.background)
+        .navigationTitle("Cardio Load")
+        .navigationBarTitleDisplayMode(.inline)
+        .task { await context.load() }
+    }
+
+    @ViewBuilder
+    private var loadCard: some View {
+        if let summary = CardioDriverAnalysis.loadSummary(workouts: context.workouts, days: range.days) {
+            VStack(spacing: 12) {
+                Text(summary.minutesPerWeek, format: .number.precision(.fractionLength(0)))
+                    .font(Theme.bigNumber(48))
+                    .foregroundStyle(Theme.cardio)
+                Text("min/week over the \(range.phrase)")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+
+                Divider()
+
+                HStack(spacing: 0) {
+                    statBlock("Sessions", "\(summary.sessions)")
+                    Divider().frame(height: 34)
+                    statBlock("Per week", summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1))))
+                    Divider().frame(height: 34)
+                    statBlock("Total min", "\(Int(summary.totalMinutes.rounded()))")
+                    Divider().frame(height: 34)
+                    statBlock("Qual. min/wk", "\(Int(summary.qualifyingMinutesPerWeek.rounded()))")
+                }
+
+                if let change = summary.change {
+                    HStack(spacing: 6) {
+                        Text("Minutes per week vs. \(range.priorPhrase)")
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                        ChangeBadge(change: change, lowerIsBetter: false)
+                    }
+                }
+
+                Text("Qualifying is the share of your weekly minutes from outdoor walks, runs, and hikes — the only sessions Apple Health can draw a new estimate from.")
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(20)
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        } else {
+            VStack(spacing: 10) {
+                Image(systemName: "figure.run.circle")
+                    .font(.system(size: 38))
+                    .foregroundStyle(Theme.cardio)
+                Text("No cardio workouts in the \(range.phrase)")
+                    .font(.headline)
+                Text("Walks, runs, hikes, rides, swims, rows, elliptical, and interval sessions recorded in Apple Health all count here.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(24)
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+        }
+    }
+
+    private func statBlock(_ title: String, _ value: String) -> some View {
+        VStack(spacing: 3) {
+            Text(value)
+                .font(Theme.bigNumber(19))
+                .foregroundStyle(Theme.textPrimary)
+            Text(title)
+                .font(.caption2)
                 .foregroundStyle(Theme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-            Button(ctaTitle, action: action)
-                .buttonStyle(.borderedProminent)
-                .tint(Theme.cardio)
         }
-    }
-}
-
-// MARK: - Estimate freshness (Today)
-
-/// Answers "why hasn't my number changed?" — the most common real question from
-/// people watching an Apple Health VO2 max estimate, and the app's only
-/// actionable daily moment.
-struct EstimateFreshnessCard: View {
-    @EnvironmentObject private var store: StoreService
-    @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
-    @State private var showPaywall = false
-
-    private var freshness: EstimateFreshness {
-        CardioFreshnessAnalysis.assess(
-            points: samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
-        )
-    }
-
-    var body: some View {
-        let state = freshness
-
-        return Group {
-            if store.isPro {
-                NavigationLink { EstimateFreshnessDetailView() } label: { card(state, chevron: true) }
-                    .buttonStyle(.plain)
-            } else {
-                Button { showPaywall = true } label: { card(state, chevron: false) }
-                    .buttonStyle(.plain)
-            }
-        }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView(focus: .freshnessNudges)
-        }
-    }
-
-    private func card(_ state: EstimateFreshness, chevron: Bool) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: store.isPro ? symbol(state) : "lock.fill")
-                .font(.title2.bold())
-                .foregroundStyle(tint(state))
-                .frame(width: 46, height: 46)
-                .background(tint(state).opacity(0.14), in: Circle())
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Estimate freshness")
-                    .font(.system(.caption, design: .rounded, weight: .semibold))
-                    .foregroundStyle(Theme.textSecondary)
-                Text(store.isPro ? state.headline : "Know when it's time to refresh")
-                    .font(.system(.headline, design: .rounded))
-                    .foregroundStyle(Theme.textPrimary)
-                Text(store.isPro ? shortDetail(state) : "VO2 max only refreshes after a qualifying outdoor workout.")
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(2)
-            }
-            Spacer(minLength: 8)
-            Image(systemName: chevron ? "chevron.right" : "sparkles")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(chevron ? Theme.textTertiary : Theme.cardio)
-        }
-        .padding(Theme.cardPadding)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-        .contentShape(Rectangle())
+        .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
     }
 
-    private func shortDetail(_ state: EstimateFreshness) -> String {
-        guard let days = state.daysSinceLatest else { return "No estimate recorded yet" }
-        if let typical = state.typicalGapDays {
-            return "Last estimate \(CardioFreshnessAnalysis.dayPhrase(days)) · usually every \(typical) days"
+    @ViewBuilder
+    private var weeklyLoadCard: some View {
+        let load = CardioDriverAnalysis.weeklyLoad(workouts: context.workouts, weeks: range.weeks)
+        if !load.allSatisfy({ $0.minutes == 0 }) {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Weekly cardio minutes", systemImage: "chart.bar.fill")
+                    .font(.headline)
+                Chart(load) { week in
+                    BarMark(
+                        x: .value("Week", week.weekStart, unit: .weekOfYear),
+                        y: .value("Minutes", week.minutes)
+                    )
+                    .foregroundStyle(Theme.cardioGradient)
+                    .cornerRadius(3)
+                }
+                .chartYAxisLabel("minutes")
+                .frame(height: 150)
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
-        return "Last estimate \(CardioFreshnessAnalysis.dayPhrase(days))"
     }
 
-    private func symbol(_ state: EstimateFreshness) -> String {
-        switch state.state {
-        case .fresh: "checkmark.circle.fill"
-        case .aging: "clock"
-        case .stale: "clock.badge.exclamationmark"
-        case .noReadings: "questionmark.circle"
+    @ViewBuilder
+    private var comparisonCard: some View {
+        let summary = CardioDriverAnalysis.summary(windows: windows)
+
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Load in rising vs. flat stretches", systemImage: "arrow.up.arrow.down")
+                .font(.headline)
+
+            if let summary {
+                Text(CardioDriverAnalysis.headline(summary: summary))
+                    .font(.subheadline)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(spacing: 0) {
+                    driverBlock(
+                        title: "Estimate rose",
+                        minutes: summary.risingMinutesPerWeek,
+                        sessions: summary.risingSessionsPerWeek,
+                        count: summary.risingCount,
+                        color: Theme.positive
+                    )
+                    Divider().frame(height: 62)
+                    driverBlock(
+                        title: "Flat or down",
+                        minutes: summary.otherMinutesPerWeek,
+                        sessions: summary.otherSessionsPerWeek,
+                        count: summary.otherCount,
+                        color: Theme.textSecondary
+                    )
+                }
+                .padding(.top, 2)
+            } else {
+                Text("This comparison needs at least \(CardioDriverAnalysis.minimumWindows) stretches between estimates, with a few in each group. Keep recording workouts and it will fill in as Apple Health logs more estimates.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("\(windows.count) of \(CardioDriverAnalysis.minimumWindows) usable stretches so far.")
+                    .font(.caption)
+                    .foregroundStyle(Theme.textTertiary)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private func driverBlock(
+        title: String,
+        minutes: Double,
+        sessions: Double,
+        count: Int,
+        color: Color
+    ) -> some View {
+        VStack(spacing: 3) {
+            Text("\(Int(minutes.rounded()))")
+                .font(Theme.bigNumber(26))
+                .foregroundStyle(color)
+            Text("min/week")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Theme.textPrimary)
+            Text("\(sessions.formatted(.number.precision(.fractionLength(1)))) sessions/week · \(count) stretches")
+                .font(.caption2)
+                .foregroundStyle(Theme.textTertiary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private var activityCard: some View {
+        let totals = CardioDriverAnalysis.activityTotals(workouts: context.workouts, days: range.days)
+        if !totals.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Where the minutes went", systemImage: "list.bullet")
+                    .font(.headline)
+                Text(range.phrase.capitalized)
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+                ForEach(totals) { total in
+                    HStack(spacing: 10) {
+                        Image(systemName: total.kind.symbol)
+                            .font(.subheadline)
+                            .foregroundStyle(total.kind.canRefreshEstimate ? Theme.cardio : Theme.textSecondary)
+                            .frame(width: 26)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(total.kind.label)
+                                .font(.subheadline.weight(.medium))
+                            Text("\(total.sessions) \(total.sessions == 1 ? "session" : "sessions")")
+                                .font(.caption)
+                                .foregroundStyle(Theme.textSecondary)
+                        }
+                        Spacer()
+                        Text("\(Int(total.minutes.rounded())) min")
+                            .font(.subheadline.monospacedDigit())
+                    }
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
     }
 
-    private func tint(_ state: EstimateFreshness) -> Color {
-        guard store.isPro else { return Theme.cardio }
-        switch state.state {
-        case .fresh: return Theme.positive
-        case .aging: return Theme.cardio
-        case .stale: return Theme.coral
-        case .noReadings: return Theme.cardio
+    private var methodologyCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("How this is calculated", systemImage: "info.circle")
+                .font(.headline)
+            Text("Cardio minutes come from your recorded workouts in Apple Health, totalled across the selected range and divided by its length in weeks. For the rising-vs-flat comparison, each pair of consecutive estimates forms a stretch, the workouts inside it are converted to minutes per week, and the stretches where your estimate rose are averaged separately from the ones where it stayed flat or fell.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("This describes patterns in your own history. It does not establish cause, and it is not a training plan or medical advice.")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
         }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
     }
 }
 
+// MARK: - Estimate freshness
+
+/// Reached from the VO2+ tab and the freshness-nudge setting. Today no longer
+/// carries a standing "estimate is current" block: when the estimate is current
+/// there is nothing to say, and the header line already carries the date.
 struct EstimateFreshnessDetailView: View {
     @EnvironmentObject private var settings: GoalSettings
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
-    @StateObject private var context = CardioContextService.shared
+    @ObservedObject private var context = CardioContextService.shared
 
     private var freshness: EstimateFreshness {
         CardioFreshnessAnalysis.assess(
@@ -235,7 +1057,7 @@ struct EstimateFreshnessDetailView: View {
             Label("Recent qualifying sessions", systemImage: "figure.walk.motion")
                 .font(.headline)
             if recent.isEmpty {
-                Text("No outdoor walks, runs, or hikes found in the last \(CardioContextService.historyDays) days. Those are the sessions Apple Health can draw a new estimate from.")
+                Text("No outdoor walks, runs, or hikes found in Apple Health. Those are the sessions Apple Health can draw a new estimate from.")
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -280,408 +1102,5 @@ struct EstimateFreshnessDetailView: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-}
-
-// MARK: - What moved it
-
-struct WhatMovedItCard: View {
-    @EnvironmentObject private var store: StoreService
-    @State private var showPaywall = false
-
-    var body: some View {
-        PlusContextCard(
-            title: "What moved it",
-            symbol: "figure.run.circle",
-            isLocked: !store.isPro
-        ) {
-            NavigationLink { WhatMovedItDetailView() } label: {
-                HStack {
-                    Text("Compare the training behind your rising and flat stretches.")
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer(minLength: 8)
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.textTertiary)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        } locked: {
-            PlusContextLockedBody(
-                feature: .whatMovedIt,
-                ctaTitle: store.shortConversionCTALabel
-            ) { showPaywall = true }
-        }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView(focus: .whatMovedIt)
-        }
-    }
-}
-
-/// Correlates the user's own workout history with the stretches between their
-/// estimates. Strictly descriptive: it reports what the record shows, never
-/// prescribes training and never claims the training caused the change.
-struct WhatMovedItDetailView: View {
-    @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
-    @StateObject private var context = CardioContextService.shared
-
-    private var points: [CardioFitnessPoint] {
-        samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
-    }
-
-    private var windows: [TrainingWindow] {
-        CardioDriverAnalysis.windows(points: points, workouts: context.workouts)
-    }
-
-    var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                comparisonCard
-                weeklyLoadCard
-                activityCard
-                methodologyCard
-            }
-            .padding()
-        }
-        .background(Theme.background)
-        .navigationTitle("What Moved It")
-        .navigationBarTitleDisplayMode(.inline)
-        .task { await context.load() }
-    }
-
-    @ViewBuilder
-    private var comparisonCard: some View {
-        let summary = CardioDriverAnalysis.summary(windows: windows)
-
-        VStack(alignment: .leading, spacing: 12) {
-            Label("Rising vs. flat stretches", systemImage: "arrow.up.arrow.down")
-                .font(.headline)
-
-            if let summary {
-                Text(CardioDriverAnalysis.headline(summary: summary))
-                    .font(.subheadline)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                HStack(spacing: 0) {
-                    driverBlock(
-                        title: "Estimate rose",
-                        minutes: summary.risingMinutesPerWeek,
-                        sessions: summary.risingSessionsPerWeek,
-                        count: summary.risingCount,
-                        color: Theme.positive
-                    )
-                    Divider().frame(height: 62)
-                    driverBlock(
-                        title: "Flat or down",
-                        minutes: summary.otherMinutesPerWeek,
-                        sessions: summary.otherSessionsPerWeek,
-                        count: summary.otherCount,
-                        color: Theme.textSecondary
-                    )
-                }
-                .padding(.top, 2)
-            } else {
-                Text("This comparison needs at least \(CardioDriverAnalysis.minimumWindows) stretches between estimates, with a few in each group. Keep recording workouts and it will fill in as Apple Health logs more estimates.")
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("\(windows.count) of \(CardioDriverAnalysis.minimumWindows) usable stretches so far.")
-                    .font(.caption)
-                    .foregroundStyle(Theme.textTertiary)
-            }
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private func driverBlock(
-        title: String,
-        minutes: Double,
-        sessions: Double,
-        count: Int,
-        color: Color
-    ) -> some View {
-        VStack(spacing: 3) {
-            Text("\(Int(minutes.rounded()))")
-                .font(Theme.bigNumber(26))
-                .foregroundStyle(color)
-            Text("min/week")
-                .font(.caption)
-                .foregroundStyle(Theme.textSecondary)
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Theme.textPrimary)
-            Text("\(sessions.formatted(.number.precision(.fractionLength(1)))) sessions/week · \(count) stretches")
-                .font(.caption2)
-                .foregroundStyle(Theme.textTertiary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
-    }
-
-    @ViewBuilder
-    private var weeklyLoadCard: some View {
-        let load = CardioDriverAnalysis.weeklyLoad(workouts: context.workouts, weeks: 12)
-        VStack(alignment: .leading, spacing: 10) {
-            Label("Weekly cardio minutes", systemImage: "chart.bar.fill")
-                .font(.headline)
-            if load.allSatisfy({ $0.minutes == 0 }) {
-                Text("No cardio workouts found in Apple Health for the last 12 weeks.")
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
-            } else {
-                Chart(load) { week in
-                    BarMark(
-                        x: .value("Week", week.weekStart, unit: .weekOfYear),
-                        y: .value("Minutes", week.minutes)
-                    )
-                    .foregroundStyle(Theme.cardioGradient)
-                    .cornerRadius(3)
-                }
-                .chartYAxisLabel("minutes")
-                .frame(height: 150)
-                Text("Sessions that can refresh your estimate (outdoor walks, runs, hikes) are a subset of this total.")
-                    .font(.caption)
-                    .foregroundStyle(Theme.textSecondary)
-            }
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    @ViewBuilder
-    private var activityCard: some View {
-        let totals = CardioDriverAnalysis.activityTotals(workouts: context.workouts, days: 90)
-        if !totals.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
-                Label("Where the minutes went", systemImage: "list.bullet")
-                    .font(.headline)
-                Text("Last 90 days")
-                    .font(.caption)
-                    .foregroundStyle(Theme.textSecondary)
-                ForEach(totals) { total in
-                    HStack(spacing: 10) {
-                        Image(systemName: total.kind.symbol)
-                            .font(.subheadline)
-                            .foregroundStyle(total.kind.canRefreshEstimate ? Theme.cardio : Theme.textSecondary)
-                            .frame(width: 26)
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(total.kind.label)
-                                .font(.subheadline.weight(.medium))
-                            Text("\(total.sessions) \(total.sessions == 1 ? "session" : "sessions")")
-                                .font(.caption)
-                                .foregroundStyle(Theme.textSecondary)
-                        }
-                        Spacer()
-                        Text("\(Int(total.minutes.rounded())) min")
-                            .font(.subheadline.monospacedDigit())
-                    }
-                }
-            }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-        }
-    }
-
-    private var methodologyCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("How this is calculated", systemImage: "info.circle")
-                .font(.headline)
-            Text("Each pair of consecutive Apple Health estimates forms a stretch. The app totals the cardio workouts recorded inside that stretch, converts them to minutes per week, and then averages the stretches where your estimate rose separately from the ones where it stayed flat or fell.")
-                .font(.subheadline)
-                .foregroundStyle(Theme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-            Text("This describes patterns in your own history. It does not establish cause, and it is not a training plan or medical advice.")
-                .font(.caption)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-}
-
-// MARK: - Heart signals
-
-struct HeartSignalsCard: View {
-    @EnvironmentObject private var store: StoreService
-    @State private var showPaywall = false
-
-    var body: some View {
-        PlusContextCard(
-            title: "Heart signals",
-            symbol: "heart.text.square",
-            isLocked: !store.isPro
-        ) {
-            NavigationLink { HeartSignalsDetailView() } label: {
-                HStack {
-                    Text("Resting heart rate and 1-minute recovery, between estimates.")
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer(minLength: 8)
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.textTertiary)
-                }
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        } locked: {
-            PlusContextLockedBody(
-                feature: .heartSignals,
-                ctaTitle: store.shortConversionCTALabel
-            ) { showPaywall = true }
-        }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView(focus: .heartSignals)
-        }
-    }
-}
-
-/// VO2 max lands every week or three. Resting heart rate moves nightly and
-/// heart rate recovery moves after every workout, so these are what make the
-/// quiet stretches legible.
-struct HeartSignalsDetailView: View {
-    @StateObject private var context = CardioContextService.shared
-
-    var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                signalCard(
-                    title: "Resting heart rate",
-                    symbol: "bed.double",
-                    unit: "bpm",
-                    points: context.restingHeartRate,
-                    lowerIsBetter: true,
-                    emptyMessage: "No resting heart rate found in Apple Health for the last \(CardioContextService.historyDays) days. Apple Watch records it in the background as you wear it."
-                )
-                signalCard(
-                    title: "Heart rate recovery",
-                    symbol: "arrow.down.heart",
-                    unit: "bpm drop",
-                    points: context.heartRateRecovery,
-                    lowerIsBetter: false,
-                    emptyMessage: "No recovery values found in Apple Health for the last \(CardioContextService.historyDays) days. Apple Watch records the one-minute drop after a recorded workout."
-                )
-                methodologyCard
-            }
-            .padding()
-        }
-        .background(Theme.background)
-        .navigationTitle("Heart Signals")
-        .navigationBarTitleDisplayMode(.inline)
-        .task { await context.load() }
-        .overlay {
-            if context.isLoading, context.lastLoaded == nil {
-                ProgressView().tint(Theme.cardio)
-            }
-        }
-    }
-
-    private func signalCard(
-        title: String,
-        symbol: String,
-        unit: String,
-        points: [CardioFitnessPoint],
-        lowerIsBetter: Bool,
-        emptyMessage: String
-    ) -> some View {
-        let recent = average(points, days: 30)
-        let previous = average(points, days: 30, offsetDays: 30)
-        var change: Double?
-        if let recent, let previous { change = recent - previous }
-
-        return VStack(alignment: .leading, spacing: 10) {
-            Label(title, systemImage: symbol)
-                .font(.headline)
-
-            if points.isEmpty {
-                Text(emptyMessage)
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            } else {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(points.last?.value.formatted(.number.precision(.fractionLength(0))) ?? "—")
-                        .font(Theme.bigNumber(34))
-                        .foregroundStyle(Theme.cardio)
-                    Text(unit)
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.textSecondary)
-                    Spacer()
-                    if let change {
-                        VStack(alignment: .trailing, spacing: 1) {
-                            Text(change, format: .number.precision(.fractionLength(1)).sign(strategy: .always()))
-                                .font(.subheadline.bold().monospacedDigit())
-                                .foregroundStyle(changeColor(change, lowerIsBetter: lowerIsBetter))
-                            Text("vs. prior 30 days")
-                                .font(.caption2)
-                                .foregroundStyle(Theme.textSecondary)
-                        }
-                    }
-                }
-
-                Chart(points, id: \.date) { point in
-                    LineMark(
-                        x: .value("Date", point.date),
-                        y: .value(title, point.value)
-                    )
-                    .foregroundStyle(Theme.cardioGradient)
-                    .interpolationMethod(.catmullRom)
-                }
-                .chartYScale(domain: .automatic(includesZero: false))
-                .frame(height: 130)
-
-                if let recent {
-                    Text("30-day average \(recent.formatted(.number.precision(.fractionLength(1)))) \(unit).")
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
-                }
-            }
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private var methodologyCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Reading these together", systemImage: "info.circle")
-                .font(.headline)
-            Text("Resting heart rate is what Apple Health records overnight and at rest. Heart rate recovery is how far your heart rate falls in the minute after a recorded workout ends. Both are read-only from Apple Health and shown here for context alongside your cardio fitness estimate.")
-                .font(.subheadline)
-                .foregroundStyle(Theme.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-            Text("These are fitness-awareness signals, not medical measurements. This app does not diagnose, treat, or monitor any condition. Discuss heart health concerns with a qualified clinician.")
-                .font(.caption)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private func average(_ points: [CardioFitnessPoint], days: Int, offsetDays: Int = 0) -> Double? {
-        let calendar = Calendar.current
-        let now = Date.now
-        guard let end = calendar.date(byAdding: .day, value: -offsetDays, to: now),
-              let start = calendar.date(byAdding: .day, value: -days, to: end) else { return nil }
-        let window = points.filter { $0.date >= start && $0.date <= end }
-        guard !window.isEmpty else { return nil }
-        return window.reduce(0.0) { $0 + $1.value } / Double(window.count)
-    }
-
-    private func changeColor(_ change: Double, lowerIsBetter: Bool) -> Color {
-        if abs(change) < 0.5 { return Theme.textSecondary }
-        let improving = lowerIsBetter ? change < 0 : change > 0
-        return improving ? Theme.positive : Theme.coral
     }
 }

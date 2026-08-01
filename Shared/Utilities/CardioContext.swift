@@ -1,7 +1,7 @@
 import Foundation
 import HealthKit
 
-/// Cardio activity buckets used by the VO2+ "what moved it" analysis. Only
+/// Cardio activity buckets used by the VO2+ cardio-load analysis. Only
 /// activity types that plausibly build cardio fitness are modelled; anything
 /// else is ignored rather than folded into a misleading "other" total.
 enum CardioActivityKind: String, Sendable, CaseIterable {

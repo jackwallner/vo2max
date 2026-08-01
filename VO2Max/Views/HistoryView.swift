@@ -6,8 +6,17 @@ struct HistoryView: View {
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date) private var samples: [CardioFitnessSample]
-    @State private var period = 90
+    /// One shared range across Trends and every metric detail screen, so the
+    /// window a user picks here is the window they land in.
+    @AppStorage(cardioMetricRangeKey) private var rangeDays = MetricRange.quarter.rawValue
     @State private var showPlusPaywall = false
+
+    private var range: MetricRange { MetricRange(rawValue: rangeDays) ?? .quarter }
+    private var period: Int { range.days }
+
+    private var rangeBinding: Binding<MetricRange> {
+        Binding(get: { range }, set: { rangeDays = $0.rawValue })
+    }
 
     private var visibleSamples: [CardioFitnessSample] {
         let cutoff = Calendar.current.date(byAdding: .day, value: -period, to: .now) ?? .distantPast
@@ -25,7 +34,7 @@ struct HistoryView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
-                periodPicker
+                MetricRangePicker(range: rangeBinding)
 
                 if visibleSamples.isEmpty {
                     emptyState
@@ -33,8 +42,16 @@ struct HistoryView: View {
                     statsCard
                     chartCard
                     allReadingsLink
-                    WhatMovedItCard()
-                    HeartSignalsCard()
+                }
+
+                // Shown regardless of whether the estimate itself has readings in
+                // this window: these are the numbers that keep moving when it
+                // doesn't, and each card carries its value without a tap.
+                ForEach(CardioSignal.all) { signal in
+                    CardioSignalCard(signal: signal, range: range)
+                }
+
+                if !visibleSamples.isEmpty {
                     plusTeaserCard
                 }
             }
@@ -51,17 +68,6 @@ struct HistoryView: View {
         .sheet(isPresented: $showPlusPaywall) {
             PaywallView(focus: .deepTrends)
         }
-    }
-
-    private var periodPicker: some View {
-        Picker("Period", selection: $period) {
-            Text("30D").tag(30)
-            Text("90D").tag(90)
-            Text("6M").tag(180)
-            Text("1Y").tag(365)
-        }
-        .pickerStyle(.segmented)
-        .accessibilityLabel("Trend period")
     }
 
     private var statsCard: some View {
@@ -184,8 +190,8 @@ struct HistoryView: View {
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
-            if !samples.isEmpty, period != 365 {
-                Button("Show 1 Year") { period = 365 }
+            if !samples.isEmpty, range != .year {
+                Button("Show 1 Year") { rangeDays = MetricRange.year.rawValue }
                     .buttonStyle(.borderedProminent)
                     .tint(Theme.cardio)
             }

@@ -112,6 +112,50 @@ struct CardioDriverAnalysisTests {
         #expect(qualifying == 40)
     }
 
+    // MARK: - Range-driven load
+
+    @Test func loadSummaryNormalizesTheSelectedRangeToWeeks() {
+        // 180 minutes inside a 30-day window is 42 min/week.
+        let workouts = [
+            workout(daysAgo: 3, kind: .run, minutes: 60),
+            workout(daysAgo: 10, kind: .walk, minutes: 60),
+            workout(daysAgo: 25, kind: .cycle, minutes: 60)
+        ]
+        let summary = CardioDriverAnalysis.loadSummary(workouts: workouts, days: 30, now: referenceDate)
+        #expect(summary?.sessions == 3)
+        #expect(summary?.totalMinutes == 180)
+        #expect(abs((summary?.minutesPerWeek ?? 0) - 42) < 0.01)
+        #expect(abs((summary?.sessionsPerWeek ?? 0) - 0.7) < 0.01)
+        // Only the outdoor run and walk can refresh the estimate: 120 of 180.
+        #expect(abs((summary?.qualifyingMinutesPerWeek ?? 0) - 28) < 0.01)
+    }
+
+    @Test func loadSummaryComparesAgainstTheEquivalentPriorRange() {
+        let workouts = [
+            workout(daysAgo: 5, kind: .run, minutes: 70),
+            workout(daysAgo: 40, kind: .run, minutes: 140)
+        ]
+        let summary = CardioDriverAnalysis.loadSummary(workouts: workouts, days: 30, now: referenceDate)
+        #expect(abs((summary?.previousMinutesPerWeek ?? 0) - (140 / (30.0 / 7))) < 0.01)
+        #expect((summary?.change ?? 0) < 0)
+    }
+
+    /// Nothing recorded before the window is not the same as a zero-minute
+    /// stretch, so the comparison is withheld rather than invented.
+    @Test func loadSummaryWithholdsChangeWithoutPriorHistory() {
+        let workouts = [workout(daysAgo: 5, kind: .run, minutes: 70)]
+        let summary = CardioDriverAnalysis.loadSummary(workouts: workouts, days: 30, now: referenceDate)
+        #expect(summary?.previousMinutesPerWeek == nil)
+        #expect(summary?.change == nil)
+    }
+
+    /// An empty window is reported as absent, not as a confident 0 min/week —
+    /// a denied HealthKit read looks exactly the same.
+    @Test func loadSummaryIsNilWhenTheRangeHasNoWorkouts() {
+        let workouts = [workout(daysAgo: 200, kind: .run, minutes: 70)]
+        #expect(CardioDriverAnalysis.loadSummary(workouts: workouts, days: 90, now: referenceDate) == nil)
+    }
+
     @Test func indoorSessionsNeverRefreshTheEstimate() {
         #expect(workout(daysAgo: 1, kind: .run, minutes: 30).refreshesEstimate)
         #expect(!workout(daysAgo: 1, kind: .run, minutes: 30, isIndoor: true).refreshesEstimate)
