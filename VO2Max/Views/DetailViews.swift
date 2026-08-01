@@ -69,7 +69,7 @@ struct ReadingHistoryDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Reading history")
                 .font(.headline)
-            Text("Every cached Apple Health estimate, shown read-only.")
+            Text("Every cached Apple Health estimate, shown read-only.\(recordedSpan.map { " Covers \($0)." } ?? "")")
                 .font(.caption)
                 .foregroundStyle(Theme.textSecondary)
             Chart(samples) { sample in
@@ -96,6 +96,15 @@ struct ReadingHistoryDetailView: View {
         }
         .padding()
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    /// The dates the cached readings actually span, so the list states its own
+    /// period rather than leaving the reader to scroll to the bottom for it.
+    private var recordedSpan: String? {
+        guard let newest = samples.first?.date, let oldest = samples.last?.date else { return nil }
+        let from = oldest.formatted(.dateTime.month(.abbreviated).day().year())
+        let to = newest.formatted(.dateTime.month(.abbreviated).day().year())
+        return from == to ? from : "\(from) – \(to)"
     }
 
     private var listCard: some View {
@@ -214,8 +223,13 @@ struct TrendDetailView: View {
                 .font(.headline)
             ForEach([30, 90, 180, 365], id: \.self) { days in
                 HStack {
-                    Text("Last \(days) days")
-                        .font(.subheadline)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Last \(days) days")
+                            .font(.subheadline)
+                        Text(CardioRange.trailing(days: days).spanLabel)
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textTertiary)
+                    }
                     Spacer()
                     if let change = CardioFitnessAnalysis.change(points: points, days: days) {
                         Text(change, format: .number.precision(.fractionLength(1)).sign(strategy: .always()))
