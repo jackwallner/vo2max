@@ -126,21 +126,30 @@ struct PlusTabView: View {
     private var destinationLinks: some View {
         VStack(spacing: 10) {
             NavigationLink {
-                WhatMovedItDetailView()
+                HeartMetricDetailView(metric: .restingHeartRate)
             } label: {
                 destinationRow(
-                    icon: "figure.run.circle",
-                    title: "Open What Moved It",
-                    detail: "Training in your rising stretches vs. the flat ones"
+                    icon: "bed.double",
+                    title: "Open Resting Heart Rate",
+                    detail: "Latest, average, low, high, and change vs. the window before"
                 )
             }
             NavigationLink {
-                HeartSignalsDetailView()
+                HeartMetricDetailView(metric: .heartRateRecovery)
             } label: {
                 destinationRow(
-                    icon: "heart.text.square",
-                    title: "Open Heart Signals",
-                    detail: "Resting heart rate and 1-minute recovery trends"
+                    icon: "arrow.down.heart",
+                    title: "Open Heart Rate Recovery",
+                    detail: "The one-minute drop after each recorded workout"
+                )
+            }
+            NavigationLink {
+                CardioLoadDetailView()
+            } label: {
+                destinationRow(
+                    icon: "figure.run.circle",
+                    title: "Open Cardio Load",
+                    detail: "Minutes and sessions per week, and where they went"
                 )
             }
             NavigationLink {

@@ -105,9 +105,9 @@ struct DashboardView: View {
 
                 Color.clear.frame(height: 12)
 
-                // "Why hasn't my number changed?" is the most common question a
-                // non-daily metric produces, so the answer lives on Today.
-                EstimateFreshnessCard()
+                // The estimate itself is quiet for weeks at a time, so Today also
+                // carries the three series that aren't: RHR, HRR, cardio load.
+                CardioSignalRow()
                     .padding(.horizontal, 24)
                     .opacity(animateContent ? 1 : 0)
                     .offset(y: animateContent ? 0 : 20)
@@ -152,7 +152,9 @@ struct DashboardView: View {
                         .font(.system(.caption2, design: .rounded))
                         .foregroundStyle(Theme.textTertiary)
                 } else if let latest = samples.first {
-                    Text("Latest estimate \(latest.date, format: .relative(presentation: .named))")
+                    // Replaces the old standing freshness card: the same fact,
+                    // one line, without a block that says "nothing happened".
+                    Text("Latest estimate \(latest.date, format: .relative(presentation: .named))\(cadenceSuffix)")
                         .font(.system(.caption2, design: .rounded))
                         .foregroundStyle(Theme.textTertiary)
                 } else {
@@ -163,6 +165,13 @@ struct DashboardView: View {
             }
             .animation(.easeInOut(duration: 0.2), value: health.isRefreshing)
         }
+    }
+
+    /// " · usually every N days", once there's enough history to know this
+    /// person's own cadence. Empty otherwise rather than guessing.
+    private var cadenceSuffix: String {
+        guard let typical = CardioFreshnessAnalysis.typicalGapDays(points: points) else { return "" }
+        return " · usually every \(typical) days"
     }
 
     // MARK: - Hero ring (Vitals calorie-ring pattern, VO2 data)

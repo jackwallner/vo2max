@@ -21,7 +21,7 @@ struct WhatsNewSheet: View {
 
     /// The extras to advertise, newest-feeling first. Pulled straight from
     /// `PlusFeature` so the copy stays in sync with the paywall and settings.
-    private let features: [PlusFeature] = [.whatMovedIt, .heartSignals, .freshnessNudges]
+    private let features: [PlusFeature] = [.restingHeartRate, .heartRateRecovery, .cardioLoad]
 
     var body: some View {
         ZStack {
@@ -38,7 +38,7 @@ struct WhatsNewSheet: View {
                                 .font(.system(.title2, design: .rounded, weight: .bold))
                                 .foregroundStyle(Theme.textPrimary)
                                 .multilineTextAlignment(.center)
-                            Text("A few optional VO2+ extras that keep your cardio fitness in view between readings. Everything you already use stays exactly the same. These are off until you switch them on.")
+                            Text("The numbers that keep moving while your estimate is quiet, each over a range you pick: 30 days, 90 days, 6 months, or a year. Everything you already use stays exactly the same.")
                                 .font(.system(.subheadline, design: .rounded))
                                 .foregroundStyle(Theme.textSecondary)
                                 .multilineTextAlignment(.center)
@@ -106,7 +106,7 @@ struct WhatsNewSheet: View {
             .buttonStyle(.plain)
 
             if !isPro {
-                Text("Extras stay off until you turn them on.")
+                Text("Notification extras stay off until you turn them on.")
                     .font(.system(.caption2, design: .rounded))
                     .foregroundStyle(Theme.textTertiary)
             }

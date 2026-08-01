@@ -21,8 +21,10 @@ final class CardioContextService: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var lastLoaded: Date?
 
-    /// Window every premium context screen works from.
-    static let historyDays = 180
+    /// Widest window any screen can ask for. Every VO2+ data screen has a user
+    /// range picker up to 1Y, so the read has to cover a full year plus the
+    /// preceding year that the vs-previous comparisons need.
+    static let historyDays = 730
 
     private let store = HKHealthStore()
     private let bpm = HKUnit.count().unitDivided(by: .minute())
@@ -34,6 +36,13 @@ final class CardioContextService: ObservableObject {
     private static let requestedExtendedKey = "hasRequestedExtendedHealthTypes"
 
     private init() {}
+
+    func points(for metric: HeartMetric) -> [CardioFitnessPoint] {
+        switch metric {
+        case .restingHeartRate: restingHeartRate
+        case .heartRateRecovery: heartRateRecovery
+        }
+    }
 
     /// Read types beyond VO2 max. Requested together so the user sees a single
     /// Health sheet rather than one prompt per screen.
@@ -170,19 +179,21 @@ final class CardioContextService: ObservableObject {
 
     #if DEBUG
     private static func demoRestingHeartRate() -> [CardioFitnessPoint] {
-        (0..<120).compactMap { index in
-            let daysAgo = 119 - index
+        // A full 500 days so every range in the picker, and the window before it,
+        // has something to draw.
+        (0..<500).compactMap { index in
+            let daysAgo = 499 - index
             guard let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
-            let drift = -Double(index) * 0.02
-            return CardioFitnessPoint(date: date, value: 58 + drift + sin(Double(index) * 0.4) * 1.6)
+            let drift = -Double(index) * 0.012
+            return CardioFitnessPoint(date: date, value: 62 + drift + sin(Double(index) * 0.4) * 1.6)
         }
     }
 
     private static func demoHeartRateRecovery() -> [CardioFitnessPoint] {
-        (0..<26).compactMap { index in
-            let daysAgo = (25 - index) * 5
+        (0..<125).compactMap { index in
+            let daysAgo = (124 - index) * 4
             guard let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
-            return CardioFitnessPoint(date: date, value: 24 + Double(index) * 0.22 + sin(Double(index) * 0.7))
+            return CardioFitnessPoint(date: date, value: 21 + Double(index) * 0.06 + sin(Double(index) * 0.7))
         }
     }
 
@@ -191,14 +202,14 @@ final class CardioContextService: ObservableObject {
             (.run, 38, false), (.walk, 46, false), (.cycle, 52, false),
             (.run, 30, false), (.hike, 74, false), (.intervals, 24, true)
         ]
-        return (0..<60).compactMap { index in
-            let daysAgo = 178 - index * 3
+        return (0..<166).compactMap { index in
+            let daysAgo = 495 - index * 3
             guard daysAgo >= 0,
                   let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
             let (kind, minutes, indoor) = pattern[index % pattern.count]
-            // Volume ramps over the window so the "what moved it" comparison has
+            // Volume ramps over the window so the rising-vs-flat comparison has
             // a real signal to find in demo mode.
-            let ramp = 0.7 + Double(index) / 60 * 0.7
+            let ramp = 0.7 + Double(index) / 166 * 0.7
             return WorkoutSummary(
                 id: "demo-workout-\(index)",
                 date: date,

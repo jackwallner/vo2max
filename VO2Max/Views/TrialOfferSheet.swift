@@ -38,13 +38,13 @@ struct TrialOfferSheet: View {
 
     private var subheadline: String {
         focus?.intentSubheadline
-            ?? "See what moved your estimate, the heart signals behind it, and when it needs refreshing."
+            ?? "Resting heart rate, heart rate recovery, and cardio load — trended over the range you pick."
     }
 
     /// Focused feature first with two related companions; generic trio otherwise.
     private var bulletFeatures: [PlusFeature] {
         if let focus { return [focus] + focus.companionFeatures }
-        return [.whatMovedIt, .heartSignals, .freshnessNudges]
+        return [.restingHeartRate, .heartRateRecovery, .cardioLoad]
     }
 
     /// Repeat-forever animation timing for the ambient glow. Scoped to the
