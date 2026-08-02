@@ -199,9 +199,9 @@ private struct MainTabView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            tabContent(NavigationStack { DashboardView() }, tab: 0)
-            tabContent(NavigationStack { HistoryView() }, tab: 1)
-            tabContent(NavigationStack { PlusTabView() }, tab: 2)
+            tabContent(tab: 0) { DashboardView() }
+            tabContent(tab: 1) { HistoryView() }
+            tabContent(tab: 2) { PlusTabView() }
 
             HStack(spacing: 0) {
                 TabButton(icon: "heart.fill", label: "Today", isSelected: selection == 0) { selection = 0 }
@@ -328,12 +328,41 @@ private struct MainTabView: View {
         showReviewPrompt = false
     }
 
-    private func tabContent(_ content: some View, tab: Int) -> some View {
-        content
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: 92)
-            }
-            .tabVisibility(selection == tab)
+    /// All three tabs stay alive in the `ZStack` so each keeps its own scroll
+    /// position. The hidden two are also kept out of the accessibility tree —
+    /// note the `accessibilityHidden` applied to the tab's root *inside* the
+    /// `NavigationStack` as well as to the stack itself: the outer one alone does
+    /// not reach the stack's hosted content, so VoiceOver used to walk all three
+    /// tabs' worth of elements before reaching the one on screen.
+    private func tabContent<Content: View>(
+        tab: Int,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        NavigationStack {
+            content()
+                .environment(\.isActiveTab, selection == tab)
+                .accessibilityHidden(selection != tab)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            Color.clear.frame(height: 92)
+        }
+        .tabVisibility(selection == tab)
+    }
+}
+
+/// Whether the tab this view sits in is the one on screen. All three tabs are
+/// built and kept alive at launch, so anything with a side effect on appearance —
+/// the VO2+ tab's embedded paywall logs an impression — has to ask, or it fires
+/// for tabs the user never opened.
+private struct IsActiveTabKey: EnvironmentKey {
+    /// Views outside the tab stack (sheets, previews) are always "on screen".
+    static let defaultValue = true
+}
+
+extension EnvironmentValues {
+    var isActiveTab: Bool {
+        get { self[IsActiveTabKey.self] }
+        set { self[IsActiveTabKey.self] = newValue }
     }
 }
 
@@ -366,8 +395,14 @@ private struct TabButton: View {
                 isSelected ? Theme.cardio.opacity(0.12) : .clear,
                 in: Capsule()
             )
+            // Without a content shape the tap area shrinks to the icon and label:
+            // an unselected tab reported a 30x34 target where it draws 72x44.
+            .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .animation(.easeInOut(duration: 0.2), value: isSelected)
+        // Without this VoiceOver reads all three tabs identically and never says
+        // which one you are on.
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 }

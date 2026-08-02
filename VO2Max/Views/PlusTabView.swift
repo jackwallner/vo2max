@@ -5,6 +5,7 @@ import SwiftUI
 /// hub. Premium results also appear in Today, Trends, and their detail screens,
 /// so this tab explains the toolkit and links back to those useful contexts.
 struct PlusTabView: View {
+    @Environment(\.isActiveTab) private var isActiveTab
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
     @ObservedObject private var ranges = CardioRangeStore.shared
@@ -19,10 +20,19 @@ struct PlusTabView: View {
         Group {
             if store.isPro {
                 subscriberHub
-            } else {
+            } else if isActiveTab {
                 PaywallView(embedded: true, impressionID: "vo2plus_tab")
                     .navigationTitle("VO2+")
                     .navigationBarTitleDisplayMode(.inline)
+            } else {
+                // All three tabs stay alive so each keeps its scroll position,
+                // but a free user's VO2+ tab is a paywall with no state worth
+                // preserving — and leaving it built put a whole second screen of
+                // elements in front of VoiceOver on Today and Trends, which
+                // `accessibilityHidden` did not remove at any level tried
+                // against a booted simulator. Building it on arrival also means
+                // its impression is logged when it is genuinely seen.
+                Color.clear
             }
         }
     }
@@ -99,44 +109,67 @@ struct PlusTabView: View {
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         } else {
             VStack(spacing: 0) {
-                if let best = CardioFitnessAnalysis.personalBest(points: points) {
+                // Separators are interleaved rather than trailed after each row:
+                // age reference needs a reference profile and target outlook needs
+                // five readings, so the early-history card (personal best alone)
+                // used to end on a divider with nothing under it.
+                ForEach(Array(highlights.enumerated()), id: \.element.label) { index, highlight in
+                    if index > 0 { highlightDivider }
                     highlightRow(
-                        label: "Personal best",
-                        value: best.value.formatted(.number.precision(.fractionLength(1))),
-                        detail: best.date.formatted(.dateTime.month(.abbreviated).day().year()),
-                        tint: Theme.coral
-                    )
-                    highlightDivider
-                }
-                if let latest = points.max(by: { $0.date < $1.date }),
-                   let band = CardioFitnessAnalysis.fitnessBand(
-                       value: latest.value,
-                       age: settings.chronologicalAge,
-                       referenceSex: settings.referenceSex
-                   ) {
-                    highlightRow(
-                        label: "Age reference",
-                        value: band,
-                        detail: "Broad context for age \(settings.chronologicalAge)",
-                        tint: Theme.cardio
-                    )
-                    highlightDivider
-                }
-                if let projection = CardioFitnessAnalysis.projection(
-                    points: points,
-                    targetLower: settings.targetLower
-                ) {
-                    highlightRow(
-                        label: "Target outlook",
-                        value: projectionHeadline(projection),
-                        detail: "From the recent cardio fitness trend",
-                        tint: Theme.positive
+                        label: highlight.label,
+                        value: highlight.value,
+                        detail: highlight.detail,
+                        tint: highlight.tint
                     )
                 }
             }
             .padding(.vertical, 4)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
+    }
+
+    private struct Highlight {
+        let label: String
+        let value: String
+        let detail: String
+        let tint: Color
+    }
+
+    private var highlights: [Highlight] {
+        var rows: [Highlight] = []
+        if let best = CardioFitnessAnalysis.personalBest(points: points) {
+            rows.append(Highlight(
+                label: "Personal best",
+                value: best.value.formatted(.number.precision(.fractionLength(1))),
+                detail: best.date.formatted(.dateTime.month(.abbreviated).day().year()),
+                tint: Theme.coral
+            ))
+        }
+        if let latest = points.max(by: { $0.date < $1.date }),
+           let band = CardioFitnessAnalysis.fitnessBand(
+               value: latest.value,
+               age: settings.chronologicalAge,
+               referenceSex: settings.referenceSex
+           ) {
+            rows.append(Highlight(
+                label: "Age reference",
+                value: band,
+                detail: "Broad context for age \(settings.chronologicalAge)",
+                tint: Theme.cardio
+            ))
+        }
+        if let projection = CardioFitnessAnalysis.projection(
+            points: points,
+            targetLower: settings.targetLower
+        ) {
+            rows.append(Highlight(
+                label: "Target outlook",
+                value: projectionHeadline(projection),
+                detail: "From the recent cardio fitness trend",
+                tint: Theme.positive
+            ))
+        }
+        return rows
     }
 
     private var highlightDivider: some View {
