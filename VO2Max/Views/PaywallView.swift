@@ -184,6 +184,7 @@ struct BilledAmountBlock: View {
 
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.isActiveTab) private var isActiveTab
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
     var embedded = false
@@ -216,7 +217,11 @@ struct PaywallView: View {
             }
         }
         .onAppear {
-            store.trackPaywallImpression(id: impressionID)
+            // Guarded because an off-screen paywall must never count as seen: the
+            // VO2+ tab used to build this at launch whether or not the tab was
+            // ever opened, charging every free user's launch against that tab's
+            // conversion rate. `PlusTabView` now defers the build too.
+            if isActiveTab { store.trackPaywallImpression(id: impressionID) }
             selectDefaultPackageIfNeeded()
         }
         .onChange(of: store.packages) { _, _ in selectDefaultPackageIfNeeded() }

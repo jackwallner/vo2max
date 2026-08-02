@@ -121,24 +121,35 @@ struct HistoryView: View {
                     .foregroundStyle(Theme.positive)
             }
 
-            Chart(visibleSamples) { sample in
+            // The target band is drawn once, not once per sample: inside
+            // `Chart(visibleSamples)` these two rules were redrawn for every
+            // reading in the window.
+            Chart {
                 RuleMark(y: .value("Target lower", settings.targetLower))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Theme.positive.opacity(0.65))
                 RuleMark(y: .value("Target upper", settings.targetUpper))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Theme.positive.opacity(0.65))
-                LineMark(
-                    x: .value("Date", sample.date),
-                    y: .value("VO2 max", sample.value)
-                )
-                .foregroundStyle(Theme.cardioGradient)
-                .interpolationMethod(.catmullRom)
-                PointMark(
-                    x: .value("Date", sample.date),
-                    y: .value("VO2 max", sample.value)
-                )
-                .foregroundStyle(Theme.cardio)
+                ForEach(visibleSamples) { sample in
+                    LineMark(
+                        x: .value("Date", sample.date),
+                        y: .value("VO2 max", sample.value)
+                    )
+                    .foregroundStyle(Theme.cardioGradient)
+                    .interpolationMethod(.catmullRom)
+                    // Left unlabelled, Swift Charts announced each reading as a
+                    // bare date interval with no number attached. One labelled
+                    // element per reading, carrying the estimate it plots.
+                    .accessibilityHidden(true)
+                    PointMark(
+                        x: .value("Date", sample.date),
+                        y: .value("VO2 max", sample.value)
+                    )
+                    .foregroundStyle(Theme.cardio)
+                    .accessibilityLabel(sample.date.formatted(.dateTime.month(.abbreviated).day().year()))
+                    .accessibilityValue("\(sample.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min")
+                }
             }
             .chartYAxisLabel("mL/kg/min")
             .chartYScale(domain: chartDomain)

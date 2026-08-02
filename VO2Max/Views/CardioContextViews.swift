@@ -185,10 +185,15 @@ struct LockedNumber: View {
 extension View {
     /// Blurs a whole locked region (sparklines, stat rows) to match the lock on
     /// the headline number beside it.
+    ///
+    /// `accessibilityHidden` alone does not reach inside a Swift Charts `Chart`,
+    /// so a blurred-out sparkline still handed VoiceOver eleven week-interval
+    /// elements. Collapsing the subtree first, then hiding it, does remove it.
     func plusBlurred(_ radius: CGFloat = 8) -> some View {
         blur(radius: radius)
             .opacity(0.7)
             .allowsHitTesting(false)
+            .accessibilityElement(children: .ignore)
             .accessibilityHidden(true)
     }
 }
@@ -477,6 +482,10 @@ struct CardioSignalCard: View {
     private func sparkline(_ points: [CardioFitnessPoint]) -> some View {
         if points.count > 1 {
             Chart(points, id: \.date) { point in
+                // Hidden at the mark, which is the only level Swift Charts honours:
+                // the shape of the series is decoration here, and the numbers it
+                // sketches are already spoken by the value and detail lines beside
+                // it. Left audible it added eleven bare week intervals per card.
                 if signal.isLoad {
                     BarMark(
                         x: .value("Week", point.date, unit: .weekOfYear),
@@ -484,6 +493,7 @@ struct CardioSignalCard: View {
                     )
                     .foregroundStyle(Theme.cardioGradient)
                     .cornerRadius(2)
+                    .accessibilityHidden(true)
                 } else {
                     LineMark(
                         x: .value("Date", point.date),
@@ -491,6 +501,7 @@ struct CardioSignalCard: View {
                     )
                     .foregroundStyle(Theme.cardioGradient)
                     .interpolationMethod(.catmullRom)
+                    .accessibilityHidden(true)
                 }
             }
             .chartXAxis(.hidden)
@@ -620,8 +631,21 @@ struct CardioSignalTile: View {
         .padding(.vertical, 12)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: 16))
         .contentShape(Rectangle())
-        .accessibilityElement(children: .combine)
+        // `.combine` plus an explicit label discards the combined text, so the
+        // tile used to announce "Resting Heart Rate" and nothing else — the
+        // number it exists to show never reached VoiceOver.
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(signal.title)
+        .accessibilityValue(accessibilityValue)
+    }
+
+    private var accessibilityValue: String {
+        guard store.isPro else { return "Locked. Included with VO2+" }
+        guard let reading else { return "No readings in the \(range.phrase)" }
+        let value = reading.value.formatted(.number.precision(.fractionLength(0)))
+        guard let change = reading.change else { return "\(value) \(signal.shortUnit)" }
+        let signed = change.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always()))
+        return "\(value) \(signal.shortUnit), \(signed) vs. \(range.priorPhrase)"
     }
 }
 
@@ -1170,12 +1194,21 @@ struct EstimateFreshnessDetailView: View {
     private var statusCard: some View {
         let state = freshness
         return VStack(spacing: 10) {
-            Text(state.daysSinceLatest.map(String.init) ?? "—")
-                .font(Theme.bigNumber(46))
-                .foregroundStyle(Theme.cardio)
-            Text(state.daysSinceLatest == 1 ? "day since your last estimate" : "days since your last estimate")
-                .font(.subheadline)
-                .foregroundStyle(Theme.textSecondary)
+            // With no estimate on record there is no day count to lead with, and
+            // "— days since your last estimate" contradicts the "No estimate yet"
+            // headline directly below it.
+            if let days = state.daysSinceLatest {
+                Text("\(days)")
+                    .font(Theme.bigNumber(46))
+                    .foregroundStyle(Theme.cardio)
+                Text(days == 1 ? "day since your last estimate" : "days since your last estimate")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+            } else {
+                Image(systemName: "clock.badge.questionmark")
+                    .font(.system(size: 42))
+                    .foregroundStyle(Theme.cardio)
+            }
             Text(state.headline)
                 .font(.title3.bold())
             Text(state.detail)
