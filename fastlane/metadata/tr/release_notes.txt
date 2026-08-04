@@ -1,1 +1,9 @@
-VO2 Max Günlük Takipçiye hoş geldiniz. Apple Health tahmininizi, kardiyo fitness trendinizi, hedef aralığınızı, fitness yaşınızı, widget'larınızı ve Watch komplikasyonlarınızı görün.
+VO2+ artık kendi sayılarınızın etrafında yeniden kuruldu: Apple Health tahmininizi neyin değiştirdiği, istirahat kalp atış hızınız ve kalp atış hızı toparlanmanız, kardiyo antrenman yükünüz ve tahminin kendi ritminize göre gecikip gecikmediği. İstediğiniz aralığı, dilerseniz kendi belirlediğinizi seçin; tüm kartlar onu izler.
+
+Bu güncellemede ayrıca:
+
+• Sinyalleriniz ve tahminiz güncel sayıları artık doğrudan VO2+ sekmesinde gösteriyor
+• Her aralıkta gerçek tarihler ve daha anlaşılır bir aralık seçici
+• Today, Trends ve VO2+ genelinde çok daha iyi VoiceOver deneyimi
+• Daha anlaşılır başlangıç adımları ve plan ayrıntıları
+• Genel düzeltmeler

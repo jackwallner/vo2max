@@ -1,1 +1,9 @@
-Üdvözöljük a VO2 Max Daily Trackerben. Tekintse meg az Apple Health becslését, a kardiofitnesz-trendet, a céltartományt, az edzettségi kort, a modulokat és az óra komplikációit.
+A VO2+ a saját számai köré épült újra: mi mozdította el az Apple Health becslését, a nyugalmi pulzusa és a pulzusregeneráció, a kardióedzései terhelése, és hogy a becslés késik-e a saját ritmusához képest. Válasszon bármilyen időszakot, akár egyedit is, és minden kártya azt követi.
+
+Ebben a frissítésben még:
+
+• A jelei és a becslése mostantól a VO2+ lapon mutatja az aktuális számokat
+• Valódi dátumok minden időszaknál és áttekinthetőbb időszakválasztó
+• Sokkal jobb VoiceOver-élmény a Today, a Trends és a VO2+ nézetben
+• Érthetőbb bevezetés és előfizetési részletek
+• Hibajavítások mindenütt

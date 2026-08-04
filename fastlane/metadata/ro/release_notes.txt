@@ -1,1 +1,9 @@
-Bun venit la VO2 Max Daily Tracker. Vedeți estimarea Apple Health, tendința de fitness cardio, intervalul țintă, vârsta de fitness, widget-urile și complicațiile ceasului.
+VO2+ a fost reconstruit în jurul cifrelor tale: ce a mișcat estimarea din Apple Health, pulsul în repaus și recuperarea pulsului, încărcarea antrenamentelor cardio și dacă o estimare întârzie față de propriul tău ritm. Alege orice interval, inclusiv unul personalizat, iar toate cardurile îl urmează.
+
+Tot în această actualizare:
+
+• Semnalele și estimarea ta afișează acum cifrele curente chiar în fila VO2+
+• Date reale pentru fiecare interval și un selector de interval mai clar
+• O experiență VoiceOver mult mai bună în Today, Trends și VO2+
+• Introducere și detalii despre planuri mai clare
+• Remedieri peste tot

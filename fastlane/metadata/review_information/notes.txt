@@ -1,7 +1,19 @@
-VO2 Max Daily Tracker is a read-only Apple Health cardio fitness viewer.
+VO2 Max is a read-only Apple Health cardio fitness viewer. No account or login is required. On first launch, connect Apple Health. The app requests read access to Cardio Fitness (VO2 max), resting heart rate, heart rate recovery, and workouts, and never writes Health data. If the review device has no sample, the app intentionally shows instructions for recording a qualifying outdoor Apple Watch workout.
 
-No account or login is required. On first launch, connect Apple Health. The app requests read access to Cardio Fitness (VO2 max) and never writes Health data. If the review device has no sample, the app intentionally shows instructions for recording a qualifying outdoor Apple Watch workout.
+The app displays the latest Apple Health estimate, personal target range, trend history, widgets, Watch complications, and a clearly labeled broad fitness-age estimate. It makes no diagnostic or treatment claims.
 
-The app displays the latest Apple Health estimate, a personal target range, trend history, widgets, Watch complications, and a clearly labeled broad fitness-age estimate. It makes no diagnostic or treatment claims.
+What changed in this version:
 
-VO2+ offers monthly and yearly auto-renewable subscriptions with a 7-day free trial for eligible new subscribers, plus an optional one-time lifetime non-consumable. Terms, renewal disclosure, privacy, and restore controls appear at the purchase point. The app does not use non-exempt encryption.
+The VO2+ section now reads the supporting Apple Health signals that move between estimates — resting heart rate, one-minute heart rate recovery, and cardio workout load — over a date range the user picks, and reports whether an estimate is overdue against that user's own historical cadence. All of it is descriptive, derived from the user's own Health data, and stays on device. This version also improves VoiceOver support throughout.
+
+Pricing presentation (unchanged from the approved build 35):
+
+The onboarding purchase screen shows the full annual billed amount as the clearest and most prominent pricing element. The eligible 7-day free trial appears underneath in smaller, secondary text. The purchase button uses the neutral label “Continue with VO2+.”
+
+The free app remains clearly available through the “Get Started” option without requiring a purchase or subscription.
+
+On the standard VO2+ plan screen, each plan’s localized billed amount appears within its plan card, followed at the purchase point by the required price, renewal, cancellation, restore, Terms, and Privacy disclosures.
+
+Monthly and yearly subscriptions include a 7-day free trial only for eligible Apple IDs. Pricing and trial eligibility are supplied by StoreKit. VO2+ also offers an optional one-time lifetime non-consumable.
+
+Please review version 1.1.0, build 43. The app does not use non-exempt encryption.

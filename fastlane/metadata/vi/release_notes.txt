@@ -1,1 +1,9 @@
-Chào mừng bạn đến với Công cụ theo dõi VO2 Max hàng ngày. Xem ước tính Apple Health, xu hướng tập luyện tim mạch, phạm vi mục tiêu, độ tuổi tập thể dục, tiện ích và các biến chứng của Đồng hồ.
+VO2+ được dựng lại quanh chính những con số của bạn: điều gì đã làm thay đổi ước tính Apple Health, nhịp tim khi nghỉ và khả năng hồi phục nhịp tim, khối lượng bài tập cardio, và liệu một ước tính có đến muộn so với nhịp độ của riêng bạn hay không. Chọn bất kỳ khoảng thời gian nào, kể cả khoảng tự đặt, mọi thẻ đều đi theo.
+
+Cũng trong bản cập nhật này:
+
+• Các tín hiệu và ước tính của bạn hiển thị số liệu hiện tại ngay trên tab VO2+
+• Ngày thật cho mọi khoảng thời gian và bộ chọn khoảng rõ ràng hơn
+• Trải nghiệm VoiceOver tốt hơn nhiều ở Today, Trends và VO2+
+• Phần giới thiệu ban đầu và chi tiết gói rõ ràng hơn
+• Sửa lỗi khắp ứng dụng

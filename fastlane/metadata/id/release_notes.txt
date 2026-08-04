@@ -1,1 +1,9 @@
-Selamat datang di Pelacak Harian VO2 Max. Lihat perkiraan Apple Health, tren kebugaran kardio, rentang target, usia kebugaran, widget, dan komplikasi Jam Tangan Anda.
+VO2+ dibangun ulang di sekitar angka Anda sendiri: apa yang menggerakkan estimasi Apple Health Anda, detak jantung istirahat dan pemulihan detak jantung Anda, beban latihan kardio Anda, serta apakah sebuah estimasi sudah terlambat dibanding ritme Anda sendiri. Pilih rentang mana pun, termasuk rentang khusus, dan semua kartu mengikutinya.
+
+Juga di pembaruan ini:
+
+• Sinyal dan estimasi Anda kini menampilkan angka terkini langsung di tab VO2+
+• Tanggal sebenarnya pada setiap rentang dan pemilih rentang yang lebih jelas
+• Pengalaman VoiceOver yang jauh lebih baik di Today, Trends, dan VO2+
+• Pengenalan awal dan detail paket yang lebih jelas
+• Perbaikan di berbagai bagian
