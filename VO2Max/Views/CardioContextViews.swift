@@ -289,6 +289,9 @@ struct SignalReading {
     let value: Double
     let change: Double?
     let detail: String
+    /// Same read, trimmed to what fits beside a value in a list row. The VO2+
+    /// tab prints this so its rows state the figure instead of describing it.
+    let compactDetail: String
     let series: [CardioFitnessPoint]
 
     @MainActor
@@ -312,6 +315,7 @@ struct SignalReading {
                 value: summary.latest,
                 change: summary.change,
                 detail: "avg \(average) · range \(low)–\(high) · \(summary.count) readings",
+                compactDetail: "Avg \(average) · \(summary.count) \(summary.count == 1 ? "reading" : "readings")",
                 series: CardioMetricAnalysis.downsample(points.filter { range.contains($0.date) })
             )
         case .load:
@@ -326,6 +330,9 @@ struct SignalReading {
                 value: summary.minutesPerWeek,
                 change: summary.change,
                 detail: "\(sessions) sessions/week · \(qualifying) min/week can refresh the estimate",
+                // No second "min/wk": the row prints that unit beside the value,
+                // and repeating it here wrapped the line mid-token.
+                compactDetail: "\(sessions) sessions/wk · \(qualifying) qualifying",
                 series: CardioDriverAnalysis.weeklyLoad(
                     workouts: context.workouts,
                     weeks: range.chartWeeks,
