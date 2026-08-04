@@ -125,6 +125,7 @@ final class HealthKitService: ObservableObject {
             // Lock in the connected state so a later flaky probe can't undo it.
             if !readings.isEmpty {
                 markAuthorized()
+                ReviewPromptTracker.recordReadingsAvailable()
             }
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
