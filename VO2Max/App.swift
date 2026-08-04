@@ -312,10 +312,19 @@ private struct MainTabView: View {
 
     private func evaluatePendingReviewPrompt() {
         guard !reviewPromptShownThisSession,
-              !showReviewPrompt, !showWhatsNew, !showRecap,
-              ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup) else { return }
-        ReviewPromptTracker.consumePendingPositiveMoment()
-        presentReviewPrompt(step: .enjoyment)
+              !showReviewPrompt, !showWhatsNew, !showRecap else { return }
+        if ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup) {
+            ReviewPromptTracker.consumePendingPositiveMoment()
+            presentReviewPrompt(step: .enjoyment)
+            return
+        }
+        // The engaged path has no pending token to consume, so record the ask up
+        // front: a swipe-away must start the cooldown rather than re-prompt on
+        // the next launch. "Not now" and the outcome markers are idempotent over it.
+        if ReviewPromptTracker.shouldShowForEngagedUse(hasCompletedSetup: settings.hasCompletedSetup) {
+            ReviewPromptTracker.markShown()
+            presentReviewPrompt(step: .enjoyment)
+        }
     }
 
     private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
