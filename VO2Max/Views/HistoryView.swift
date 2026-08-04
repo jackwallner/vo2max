@@ -55,6 +55,13 @@ struct HistoryView: View {
             // The tab bar's height is already reserved via the safe-area inset;
             // this keeps the Deep Trends CTA from sitting flush against it.
             .padding(.bottom, 28)
+            // Pin the content to exactly the scroll view's width. A vertical
+            // ScrollView still pans sideways whenever its content measures wider
+            // than the viewport, and at large Dynamic Type the stat row, the
+            // change badges, and the comparison rows can each ask for more width
+            // than the screen has. Fixing the width means an over-wide row is
+            // clipped rather than turning the whole tab into a two-axis scroller.
+            .containerRelativeFrame(.horizontal)
         }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
