@@ -1,1 +1,9 @@
-Dobro došli u VO2 Max Daily Tracker. Pogledajte svoju Apple Health procjenu, kardio fitness trend, ciljni raspon, kondicionu dob, widgete i komplikacije sata.
+VO2+ je iznova izgrađen oko vaših vlastitih brojeva: što je pomaknulo procjenu iz Apple Healtha, vaš puls u mirovanju i oporavak pulsa, opterećenje vaših kardio treninga te kasni li procjena u odnosu na vaš vlastiti ritam. Odaberite bilo koje razdoblje, pa i vlastito, i sve kartice ga slijede.
+
+Također u ovoj nadogradnji:
+
+• Vaši signali i vaša procjena sada prikazuju trenutne brojke izravno na kartici VO2+
+• Stvarni datumi na svakom razdoblju i jasniji odabir razdoblja
+• Znatno bolje iskustvo s VoiceOverom u Today, Trends i VO2+
+• Jasniji početak i detalji pretplate
+• Ispravci posvuda

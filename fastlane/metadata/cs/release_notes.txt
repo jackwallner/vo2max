@@ -1,1 +1,9 @@
-Vítejte v VO2 Max Daily Tracker. Podívejte se na svůj odhad Apple Health, trend kardio fitness, cílový rozsah, věk fitness, widgety a komplikace s Watch.
+VO2+ jsme přestavěli kolem vašich vlastních čísel: co pohnulo odhadem z Apple Health, vaše klidová tepová frekvence a zotavení tepu, zátěž vašich kardio tréninků a jestli odhad nechybí déle, než je u vás obvyklé. Vyberte si libovolné období, i vlastní, a všechny karty se mu přizpůsobí.
+
+Dále v této aktualizaci:
+
+• Vaše signály i odhad teď ukazují aktuální čísla přímo na kartě VO2+
+• Skutečná data u každého období a přehlednější výběr období
+• Výrazně lepší práce s VoiceOverem v Today, Trends i VO2+
+• Srozumitelnější úvod a detaily předplatného
+• Opravy napříč aplikací

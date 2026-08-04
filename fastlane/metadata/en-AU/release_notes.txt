@@ -1,1 +1,9 @@
-Welcome to VO2 Max Daily Tracker. See your Apple Health estimate, cardio fitness trend, target range, fitness age, widgets, and Watch complications.
+VO2+ is rebuilt around your own numbers: what moved your Apple Health estimate, your resting heart rate and heart rate recovery, your cardio workout load, and whether an estimate is overdue against your own cadence. Pick any range, including a custom one, and every card follows it.
+
+Also in this update:
+
+• Your signals and your estimate now show their current figures right on the VO2+ tab
+• Real dates on every range, and a clearer range picker
+• A much better VoiceOver experience across Today, Trends, and VO2+
+• Clearer onboarding and plan details
+• Fixes throughout

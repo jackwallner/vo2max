@@ -1,1 +1,9 @@
-Velkommen til VO2 Max Daily Tracker. Se Apple Health-estimat, kondisjonstrend, målområde, treningsalder, widgets og Watch-komplikasjoner.
+VO2+ er bygd opp på nytt rundt dine egne tall: hva som flyttet Apple Health-estimatet ditt, hvilepulsen og pulsrestitusjonen din, belastningen fra kondisjonsøktene dine, og om et estimat er forsinket målt mot din egen rytme. Velg hvilken periode du vil, også en egendefinert, og alle kortene følger den.
+
+Også i denne oppdateringen:
+
+• Signalene og estimatet ditt viser nå de gjeldende tallene rett i VO2+-fanen
+• Ekte datoer på hver periode og en tydeligere periodevelger
+• En langt bedre VoiceOver-opplevelse i Today, Trends og VO2+
+• Tydeligere introduksjon og abonnementsdetaljer
+• Rettelser overalt

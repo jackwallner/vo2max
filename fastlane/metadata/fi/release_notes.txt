@@ -1,1 +1,9 @@
-Tervetuloa VO2 Max Daily Trackeriin. Katso Apple Health -arviosi, kardiokuntotrendi, tavoitealue, kunto-ikä, widgetit ja kellon komplikaatiot.
+VO2+ on rakennettu uudelleen omien lukujesi ympärille: mikä liikutti Apple Healthin arviota, leposykkeesi ja sykkeen palautuminen, kardioharjoittelusi kuormitus ja onko arvio myöhässä omaan tahtiisi nähden. Valitse mikä tahansa jakso, myös oma, ja kaikki kortit seuraavat sitä.
+
+Myös tässä päivityksessä:
+
+• Signaalisi ja arviosi näyttävät nykyiset luvut nyt suoraan VO2+-välilehdellä
+• Todelliset päivämäärät jokaiselle jaksolle ja selkeämpi jakson valitsin
+• Selvästi parempi VoiceOver-kokemus Today-, Trends- ja VO2+-näkymissä
+• Selkeämpi käyttöönotto ja tilauksen tiedot
+• Korjauksia kautta linjan

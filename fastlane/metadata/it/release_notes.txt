@@ -1,1 +1,9 @@
-Benvenuto nel tracker giornaliero VO2 Max. Visualizza la stima della tua salute Apple, la tendenza dell'attività cardio, l'intervallo target, l'età di attività fisica, i widget e le complicazioni dell'orologio.
+VO2+ è stato ricostruito attorno ai tuoi numeri: che cosa ha mosso la stima di Apple Health, la frequenza cardiaca a riposo e il recupero della frequenza cardiaca, il carico dei tuoi allenamenti cardio e se una stima è in ritardo rispetto al tuo ritmo abituale. Scegli qualsiasi intervallo, anche personalizzato, e ogni scheda lo segue.
+
+Anche in questo aggiornamento:
+
+• I tuoi segnali e la tua stima mostrano ora i valori attuali direttamente nella scheda VO2+
+• Date reali su ogni intervallo e un selettore di intervalli più chiaro
+• Un'esperienza VoiceOver molto migliore in Today, Trends e VO2+
+• Introduzione e dettagli dei piani più chiari
+• Correzioni varie

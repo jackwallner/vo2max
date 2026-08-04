@@ -1,1 +1,9 @@
-Welkom bij VO2 Max Daily Tracker. Bekijk uw Apple Health-schatting, cardiofitnesstrend, streefbereik, fitnessleeftijd, widgets en Watch-complicaties.
+VO2+ is opnieuw opgebouwd rond je eigen cijfers: wat je Apple Health-schatting in beweging bracht, je rusthartslag en hartslagherstel, de belasting van je cardiotrainingen, en of een schatting te lang uitblijft ten opzichte van je eigen ritme. Kies elke gewenste periode, ook een eigen periode, en elke kaart volgt die.
+
+Ook in deze update:
+
+• Je signalen en je schatting tonen hun actuele cijfers nu direct op het VO2+-tabblad
+• Echte datums bij elke periode en een duidelijkere periodekiezer
+• Een veel betere VoiceOver-ervaring in Today, Trends en VO2+
+• Duidelijkere introductie en abonnementsgegevens
+• Verbeteringen door de hele app

@@ -1,1 +1,9 @@
-Bienvenue sur le tracker quotidien VO2 Max. Consultez votre estimation Apple Health, la tendance de votre forme cardio, votre plage cible, votre âge physique, vos widgets et les complications de votre montre.
+VO2+ a été reconstruit autour de vos propres chiffres : ce qui a fait bouger votre estimation Apple Health, votre fréquence cardiaque au repos et votre récupération cardiaque, la charge de vos entraînements cardio, et si une estimation se fait attendre par rapport à votre propre rythme. Choisissez la période de votre choix, même personnalisée : toutes les cartes la suivent.
+
+Également dans cette mise à jour :
+
+• Vos signaux et votre estimation affichent désormais leurs chiffres actuels directement dans l'onglet VO2+
+• De vraies dates sur chaque période et un sélecteur de période plus clair
+• Une expérience VoiceOver nettement meilleure dans Today, Trends et VO2+
+• Une prise en main et des détails d'abonnement plus clairs
+• Corrections diverses

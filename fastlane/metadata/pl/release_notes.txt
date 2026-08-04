@@ -1,1 +1,9 @@
-Witamy w codziennym monitorze VO2 Max. Zobacz szacunki Apple Health, trend ćwiczeń cardio, zakres docelowy, wiek sprawnościowy, widżety i komplikacje zegarka.
+VO2+ zbudowaliśmy na nowo wokół Twoich własnych liczb: co poruszyło szacunek z Apple Health, Twoje tętno spoczynkowe i regenerację tętna, obciążenie treningów cardio oraz to, czy szacunek nie spóźnia się względem Twojego własnego rytmu. Wybierz dowolny zakres, także własny, a wszystkie karty za nim podążą.
+
+Ponadto w tej aktualizacji:
+
+• Twoje sygnały i Twój szacunek pokazują teraz bieżące liczby wprost na karcie VO2+
+• Prawdziwe daty przy każdym zakresie i czytelniejszy wybór zakresu
+• Znacznie lepsza obsługa VoiceOver w Today, Trends i VO2+
+• Czytelniejszy start i szczegóły planów
+• Poprawki w całej aplikacji
