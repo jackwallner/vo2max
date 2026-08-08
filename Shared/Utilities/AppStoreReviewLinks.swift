@@ -3,12 +3,7 @@ import StoreKit
 
 /// App Store review deep links for VO2 Max Daily Tracker.
 enum AppStoreReviewLinks {
-    /// TODO: fill in once the App Store listing is live. Until then the
-    /// region-agnostic fallback below is used; the write-review action only
-    /// resolves after the app has a public product page.
-    static let appStoreID = "0000000000"
-
-    private static var hasRealID: Bool { appStoreID != "0000000000" }
+    static let appStoreID = "6791235742"
 
     /// Opens the App Store write-review page in the user's storefront.
     /// Region-agnostic when the storefront is unknown; Apple routes to the correct local store.
