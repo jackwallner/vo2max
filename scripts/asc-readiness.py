@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -11,9 +12,28 @@ sys.path.insert(0, str(Path(__file__).parent))
 import asc_lib  # noqa: E402
 
 BUNDLE = "com.jackwallner.vo2max"
-VERSION = "1.0.0"
-BUILD = "30"
+
+
+def _draft_version() -> str:
+    """The version this run should audit: whatever asc-ensure-draft-version.py
+    last staged. Hardcoding it meant the audit kept grading the shipped 1.0.0
+    long after the draft moved on."""
+    return asc_lib.load_state().get("draftVersion", "1.0.0")
+
+
+def _project_build() -> str:
+    """CURRENT_PROJECT_VERSION from project.yml, i.e. the build the last
+    testflight.sh run uploaded."""
+    text = (Path(__file__).resolve().parent.parent / "project.yml").read_text()
+    match = re.search(r'CURRENT_PROJECT_VERSION:\s*"?(\d+)"?', text)
+    return match.group(1) if match else "0"
+
+
 LOCALES = set(json.loads((Path(__file__).parent / "asc-supported-locales.json").read_text())["locales"])
+# A product that is already on sale sits in APPROVED, not READY_TO_SUBMIT.
+# Both are healthy; what blocks a submission is a state that wants developer
+# action, so accept either rather than failing every release after the first.
+SELLABLE_PRODUCT_STATES = {"READY_TO_SUBMIT", "APPROVED"}
 PRODUCTS = {
     "com.jackwallner.vo2max.monthly",
     "com.jackwallner.vo2max.yearly",
@@ -44,8 +64,9 @@ def main() -> None:
     attrs = app["attributes"]
     check(attrs.get("contentRightsDeclaration") == "DOES_NOT_USE_THIRD_PARTY_CONTENT", "content rights declared", failures)
 
-    version = asc_lib.find_version_by_string(client, app_id, VERSION)
-    check(bool(version), f"version {VERSION} exists", failures)
+    target_version = _draft_version()
+    version = asc_lib.find_version_by_string(client, app_id, target_version)
+    check(bool(version), f"version {target_version} exists", failures)
     if not version:
         raise SystemExit(1)
     version_id = version["id"]
@@ -60,7 +81,8 @@ def main() -> None:
     build = client.get(f"/appStoreVersions/{version_id}/build").get("data")
     check(bool(build), "build attached", failures)
     if build:
-        check(build["attributes"].get("version") == BUILD, f"build {BUILD} attached", failures)
+        target_build = _project_build()
+        check(build["attributes"].get("version") == target_build, f"build {target_build} attached", failures)
         check(build["attributes"].get("processingState") == "VALID", "attached build is VALID", failures)
         check(not build["attributes"].get("expired"), "attached build is not expired", failures)
 
@@ -97,7 +119,7 @@ def main() -> None:
         for subscription in asc_lib.list_all(client, f"/subscriptionGroups/{group['id']}/subscriptions"):
             product_id = subscription["attributes"]["productId"]
             all_products.add(product_id)
-            check(subscription["attributes"].get("state") == "READY_TO_SUBMIT", f"{product_id} READY_TO_SUBMIT", failures)
+            check(subscription["attributes"].get("state") in SELLABLE_PRODUCT_STATES, f"{product_id} sellable ({subscription['attributes'].get('state')})", failures)
             locs = asc_lib.list_all(client, f"/subscriptions/{subscription['id']}/subscriptionLocalizations")
             check({item["attributes"]["locale"] for item in locs} == LOCALES, f"{product_id} localized in all locales", failures)
             prices = asc_lib.list_all(client, f"/subscriptions/{subscription['id']}/prices?limit=200")
@@ -110,7 +132,7 @@ def main() -> None:
     for iap in asc_lib.list_all(client, f"/apps/{app_id}/inAppPurchasesV2"):
         product_id = iap["attributes"]["productId"]
         all_products.add(product_id)
-        check(iap["attributes"].get("state") == "READY_TO_SUBMIT", f"{product_id} READY_TO_SUBMIT", failures)
+        check(iap["attributes"].get("state") in SELLABLE_PRODUCT_STATES, f"{product_id} sellable ({iap['attributes'].get('state')})", failures)
         old_api = asc_lib.API
         try:
             asc_lib.API = "https://api.appstoreconnect.apple.com/v2"
