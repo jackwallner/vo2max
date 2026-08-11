@@ -1,9 +1,3 @@
-VO2+ er bygd opp på nytt rundt dine egne tall: hva som flyttet Apple Health-estimatet ditt, hvilepulsen og pulsrestitusjonen din, belastningen fra kondisjonsøktene dine, og om et estimat er forsinket målt mot din egen rytme. Velg hvilken periode du vil, også en egendefinert, og alle kortene følger den.
+Tydeligere abonnementsdetaljer: det årlige abonnementet viser nå hva det tilsvarer per måned ved siden av månedsprisen, så de er enkle å sammenligne.
 
-Også i denne oppdateringen:
-
-• Signalene og estimatet ditt viser nå de gjeldende tallene rett i VO2+-fanen
-• Ekte datoer på hver periode og en tydeligere periodevelger
-• En langt bedre VoiceOver-opplevelse i Today, Trends og VO2+
-• Tydeligere introduksjon og abonnementsdetaljer
-• Rettelser overalt
+Den gratis prøveperioden som tilbys under oppsettet, starter nå på det månedlige abonnementet.

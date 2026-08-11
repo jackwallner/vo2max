@@ -1,9 +1,3 @@
-A VO2+ a saját számai köré épült újra: mi mozdította el az Apple Health becslését, a nyugalmi pulzusa és a pulzusregeneráció, a kardióedzései terhelése, és hogy a becslés késik-e a saját ritmusához képest. Válasszon bármilyen időszakot, akár egyedit is, és minden kártya azt követi.
+Áttekinthetőbb csomagadatok: az éves csomag mostantól a havi ár mellett azt is mutatja, mennyibe kerül havonta, így könnyen összehasonlíthatók.
 
-Ebben a frissítésben még:
-
-• A jelei és a becslése mostantól a VO2+ lapon mutatja az aktuális számokat
-• Valódi dátumok minden időszaknál és áttekinthetőbb időszakválasztó
-• Sokkal jobb VoiceOver-élmény a Today, a Trends és a VO2+ nézetben
-• Érthetőbb bevezetés és előfizetési részletek
-• Hibajavítások mindenütt
+A beállítás során felkínált ingyenes próbaidőszak mostantól a havi csomaggal indul.

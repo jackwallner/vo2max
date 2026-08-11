@@ -1,9 +1,3 @@
-VO2+ được dựng lại quanh chính những con số của bạn: điều gì đã làm thay đổi ước tính Apple Health, nhịp tim khi nghỉ và khả năng hồi phục nhịp tim, khối lượng bài tập cardio, và liệu một ước tính có đến muộn so với nhịp độ của riêng bạn hay không. Chọn bất kỳ khoảng thời gian nào, kể cả khoảng tự đặt, mọi thẻ đều đi theo.
+Chi tiết gói rõ ràng hơn: gói hàng năm giờ hiển thị mức tương đương mỗi tháng ngay cạnh giá hàng tháng, nên dễ so sánh.
 
-Cũng trong bản cập nhật này:
-
-• Các tín hiệu và ước tính của bạn hiển thị số liệu hiện tại ngay trên tab VO2+
-• Ngày thật cho mọi khoảng thời gian và bộ chọn khoảng rõ ràng hơn
-• Trải nghiệm VoiceOver tốt hơn nhiều ở Today, Trends và VO2+
-• Phần giới thiệu ban đầu và chi tiết gói rõ ràng hơn
-• Sửa lỗi khắp ứng dụng
+Bản dùng thử miễn phí được cung cấp trong quá trình thiết lập giờ bắt đầu với gói hàng tháng.

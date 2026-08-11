@@ -1,9 +1,3 @@
-VO2+ ist um Ihre eigenen Zahlen herum neu aufgebaut: was Ihre Apple-Health-Schätzung bewegt hat, Ihr Ruhepuls und Ihre Herzfrequenz-Erholung, die Belastung Ihrer Ausdauer-Workouts und ob eine Schätzung gemessen an Ihrem eigenen Rhythmus überfällig ist. Wählen Sie einen beliebigen Zeitraum, auch einen eigenen, und jede Karte folgt ihm.
+Übersichtlichere Tarifdetails: Das Jahresabo zeigt jetzt neben dem Monatspreis, was es pro Monat kostet, sodass sich beide leicht vergleichen lassen.
 
-Ebenfalls in diesem Update:
-
-• Ihre Signale und Ihre Schätzung zeigen die aktuellen Werte jetzt direkt im VO2+-Tab
-• Echte Datumsangaben für jeden Zeitraum und eine klarere Zeitraumauswahl
-• Deutlich bessere VoiceOver-Bedienung in Today, Trends und VO2+
-• Klarerer Einstieg und klarere Abo-Details
-• Fehlerbehebungen überall
+Die beim Einrichten angebotene kostenlose Testversion startet jetzt mit dem Monatsabo.

@@ -1,9 +1,3 @@
-VO2+ è stato ricostruito attorno ai tuoi numeri: che cosa ha mosso la stima di Apple Health, la frequenza cardiaca a riposo e il recupero della frequenza cardiaca, il carico dei tuoi allenamenti cardio e se una stima è in ritardo rispetto al tuo ritmo abituale. Scegli qualsiasi intervallo, anche personalizzato, e ogni scheda lo segue.
+Dettagli dei piani più chiari: il piano annuale mostra ora quanto viene al mese accanto al prezzo mensile, così è facile confrontarli.
 
-Anche in questo aggiornamento:
-
-• I tuoi segnali e la tua stima mostrano ora i valori attuali direttamente nella scheda VO2+
-• Date reali su ogni intervallo e un selettore di intervalli più chiaro
-• Un'esperienza VoiceOver molto migliore in Today, Trends e VO2+
-• Introduzione e dettagli dei piani più chiari
-• Correzioni varie
+La prova gratuita offerta durante la configurazione ora parte dal piano mensile.

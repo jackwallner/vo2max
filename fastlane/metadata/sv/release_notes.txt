@@ -1,9 +1,3 @@
-VO2+ är ombyggt kring dina egna siffror: vad som flyttade din Apple Health-skattning, din vilopuls och pulsåterhämtning, belastningen från dina konditionspass och om en skattning dröjer jämfört med din egen takt. Välj vilken period du vill, även en egen, och alla kort följer den.
+Tydligare abonnemangsinformation: årsplanen visar nu vad den motsvarar per månad bredvid månadspriset, så att de är lätta att jämföra.
 
-Även i den här uppdateringen:
-
-• Dina signaler och din skattning visar nu aktuella siffror direkt på VO2+-fliken
-• Riktiga datum för varje period och en tydligare periodväljare
-• En klart bättre VoiceOver-upplevelse i Today, Trends och VO2+
-• Tydligare introduktion och abonnemangsdetaljer
-• Rättningar överlag
+Den kostnadsfria provperioden som erbjuds vid installationen börjar nu på månadsplanen.

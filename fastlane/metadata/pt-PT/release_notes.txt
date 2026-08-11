@@ -1,9 +1,3 @@
-O VO2+ foi reconstruído em torno dos seus próprios números: o que moveu a estimativa do Apple Health, a sua frequência cardíaca em repouso e a recuperação da frequência cardíaca, a carga dos seus treinos de cardio e se uma estimativa está atrasada face ao seu próprio ritmo. Escolha qualquer período, incluindo um personalizado, e todos os cartões o acompanham.
+Os detalhes dos planos estão mais claros: o plano anual mostra agora quanto fica por mês ao lado do preço mensal, para facilitar a comparação.
 
-Também nesta atualização:
-
-• Os seus sinais e a sua estimativa mostram agora os números atuais no próprio separador VO2+
-• Datas reais em cada período e um seletor de período mais claro
-• Uma experiência muito melhor com o VoiceOver em Today, Trends e VO2+
-• Introdução e detalhes dos planos mais claros
-• Correções em toda a aplicação
+O período de teste gratuito oferecido durante a configuração começa agora no plano mensal.

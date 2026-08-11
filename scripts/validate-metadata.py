@@ -94,8 +94,13 @@ def main() -> None:
             errors.append(f"{locale}: missing Apple Standard EULA URL")
         if "https://jackwallner.github.io/vo2max/privacy-policy.html" not in description:
             errors.append(f"{locale}: missing privacy URL")
-        if not all(price in description for price in ("1.99", "14.99", "29.99")) and not all(price in description for price in ("1,99", "14,99", "29,99")):
-            errors.append(f"{locale}: missing plan prices")
+        # The opposite of what this used to assert. Guideline 3.1.2 is satisfied
+        # by the binary, and the product page renders the real per-territory
+        # price from the IAP records, so a hardcoded figure here is true in one
+        # storefront out of 175 and goes stale on every price move.
+        stale_prices = re.findall(r"\d+[.,]\d\d\b", description)
+        if stale_prices:
+            errors.append(f"{locale}: description quotes a price: {', '.join(sorted(set(stale_prices)))}")
         if locale == "en-US" and "7-day" not in description:
             errors.append(f"{locale}: missing 7-day trial disclosure")
 

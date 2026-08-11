@@ -78,11 +78,32 @@ extension Package {
         return "\(storeProduct.localizedPriceString) / \(period.value) \(unit)"
     }
 
-    /// Per-week equivalent of the recurring price, shown on the annual card so
-    /// the headline yearly figure feels small.
-    var vo2PricePerWeekLabel: String? {
-        guard storeProduct.subscriptionPeriod != nil else { return nil }
-        return storeProduct.localizedPricePerWeek
+    /// Per-month equivalent of the recurring price, e.g. "$2.50" for a
+    /// "$29.99 / year" plan. nil for lifetime and for a true monthly plan,
+    /// where restating the same figure per month is noise.
+    ///
+    /// Computed from the store's own price and formatter rather than read off a
+    /// constant, so it follows every price move and every storefront currency.
+    var vo2PricePerMonthLabel: String? {
+        guard let period = storeProduct.subscriptionPeriod else { return nil }
+        let months: Decimal
+        switch period.unit {
+        case .day: months = Decimal(period.value) / 30
+        case .week: months = Decimal(period.value) * 7 / 30
+        case .month: months = Decimal(period.value)
+        case .year: months = Decimal(period.value) * 12
+        @unknown default: return nil
+        }
+        guard months > 1 else { return nil }
+        let formatter = storeProduct.priceFormatter ?? Self.vo2CurrencyFormatter(code: storeProduct.currencyCode)
+        return formatter.string(from: (storeProduct.price / months) as NSDecimalNumber)
+    }
+
+    private static func vo2CurrencyFormatter(code: String?) -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        if let code { formatter.currencyCode = code }
+        return formatter
     }
 
     var vo2IntroOfferLabel: String? {
@@ -167,6 +188,20 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
 
     var yearlyPackage: Package? { packages.first { $0.vo2PackageKind == .yearly } }
     var lifetimePackage: Package? { packages.first { $0.vo2PackageKind == .lifetime } }
+
+    /// The lower-commitment plan. Onboarding buys this one: whoever taps through
+    /// onboarding has not used the app yet and is reacting to the recurring
+    /// figure on Apple's sheet. The paywall still leads with yearly, for people
+    /// who have already decided the app is worth paying for.
+    var monthlyPackage: Package? { packages.first { $0.vo2PackageKind == .monthly } }
+
+    /// The monthly sticker price as a compact "/mo" string, e.g. "$5.99/mo".
+    /// Struck through beside the yearly card's per-month equivalent so the
+    /// annual figure reads as a saving instead of a bigger number.
+    var monthlyAnchorPriceLabel: String? {
+        guard let monthly = monthlyPackage else { return nil }
+        return "\(monthly.storeProduct.localizedPriceString)/mo"
+    }
 
     func isEligibleForIntroOffer(_ package: Package) -> Bool {
         guard package.vo2IntroOfferLabel != nil else { return false }

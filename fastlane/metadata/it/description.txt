@@ -15,7 +15,7 @@ I tuoi dati di fitness rimangono sui tuoi dispositivi. L'app legge le stime Card
 
 Il VO2 max e l'età di fitness sono stime generali per la consapevolezza del fitness. Questa app non diagnostica, tratta, cura o previene alcuna condizione di salute. Non sostituisce la consulenza medica professionale.
 
-VO2+ è opzionale. Scegli $ 1,99 al mese, $ 14,99 all'anno o $ 29,99 per l'acquisto a vita. I piani mensili e annuali includono una prova gratuita di 7 giorni per i nuovi abbonati idonei. I prezzi indicati sono prezzi statunitensi e possono variare in base alla regione. Il pagamento viene addebitato sul tuo account Apple alla conferma. Gli abbonamenti si rinnovano automaticamente a meno che non vengano annullati almeno 24 ore prima della fine del periodo corrente. Il rinnovo viene addebitato sul tuo account entro 24 ore prima della fine del periodo corrente. Gestisci o annulla gli abbonamenti nelle impostazioni dell'account Apple.
+VO2+ è opzionale. Scegli un piano mensile, un piano annuale o un acquisto una tantum a vita. I piani mensili e annuali includono una prova gratuita di 7 giorni per i nuovi abbonati idonei. I prezzi sono mostrati nell'app prima dell'acquisto e variano in base alla regione. Il pagamento viene addebitato sul tuo account Apple alla conferma. Gli abbonamenti si rinnovano automaticamente a meno che non vengano annullati almeno 24 ore prima della fine del periodo corrente. Il rinnovo viene addebitato sul tuo account entro 24 ore prima della fine del periodo corrente. Gestisci o annulla gli abbonamenti nelle impostazioni dell'account Apple.
 
 Condizioni d'uso (EULA standard Apple): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Informativa sulla privacy: https://jackwallner.github.io/vo2max/privacy-policy.html

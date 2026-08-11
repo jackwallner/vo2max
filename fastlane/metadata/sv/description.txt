@@ -15,7 +15,7 @@ Din träningsdata finns kvar på dina enheter. Appen läser Cardio Fitness-uppsk
 
 VO2 max och träningsålder är breda uppskattningar för fitnessmedvetenhet. Denna app diagnostiserar, behandlar, botar eller förhindrar något hälsotillstånd. Det är inte en ersättning för professionell medicinsk rådgivning.
 
-VO2+ är valfritt. Välj 1,99 USD per månad, 14,99 USD per år eller ett livstidsköp på 29,99 USD. Månads- och årsplaner inkluderar en 7-dagars gratis provperiod för berättigade nya prenumeranter. Priserna som visas är priser i USA och kan variera beroende på region. Betalningen debiteras ditt Apple-konto vid bekräftelse. Prenumerationer förnyas automatiskt om de inte avbryts minst 24 timmar innan den aktuella perioden slutar. Ditt konto debiteras för förnyelse inom 24 timmar innan den aktuella perioden slutar. Hantera eller avbryt prenumerationer i Apple-kontoinställningar.
+VO2+ är valfritt. Välj en månadsplan, en årsplan eller ett engångsköp för livstid. Månads- och årsplaner inkluderar en 7-dagars gratis provperiod för berättigade nya prenumeranter. Priserna visas i appen innan du köper och varierar beroende på region. Betalningen debiteras ditt Apple-konto vid bekräftelse. Prenumerationer förnyas automatiskt om de inte avbryts minst 24 timmar innan den aktuella perioden slutar. Ditt konto debiteras för förnyelse inom 24 timmar innan den aktuella perioden slutar. Hantera eller avbryt prenumerationer i Apple-kontoinställningar.
 
 Användarvillkor (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Sekretesspolicy: https://jackwallner.github.io/vo2max/privacy-policy.html

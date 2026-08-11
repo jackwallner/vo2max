@@ -1,9 +1,3 @@
-VO2+ a été reconstruit autour de vos propres chiffres : ce qui a fait bouger votre estimation Apple Health, votre fréquence cardiaque au repos et votre récupération cardiaque, la charge de vos entraînements cardio, et si une estimation se fait attendre par rapport à votre propre rythme. Choisissez la période de votre choix, même personnalisée : toutes les cartes la suivent.
+Détails des forfaits plus clairs : le forfait annuel indique maintenant son équivalent par mois à côté du prix mensuel, pour comparer facilement les deux.
 
-Également dans cette mise à jour :
-
-• Vos signaux et votre estimation affichent désormais leurs chiffres actuels directement dans l'onglet VO2+
-• De vraies dates sur chaque période et un sélecteur de période plus clair
-• Une expérience VoiceOver nettement meilleure dans Today, Trends et VO2+
-• Une prise en main et des détails d'abonnement plus clairs
-• Corrections diverses
+L'essai gratuit proposé lors de la configuration commence maintenant par le forfait mensuel.
