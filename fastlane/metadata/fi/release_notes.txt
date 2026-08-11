@@ -1,9 +1,3 @@
-VO2+ on rakennettu uudelleen omien lukujesi ympärille: mikä liikutti Apple Healthin arviota, leposykkeesi ja sykkeen palautuminen, kardioharjoittelusi kuormitus ja onko arvio myöhässä omaan tahtiisi nähden. Valitse mikä tahansa jakso, myös oma, ja kaikki kortit seuraavat sitä.
+Selkeämmät tilaustiedot: vuositilaus näyttää nyt kuukausihinnan vieressä, paljonko se on kuukaudessa, joten niitä on helppo verrata.
 
-Myös tässä päivityksessä:
-
-• Signaalisi ja arviosi näyttävät nykyiset luvut nyt suoraan VO2+-välilehdellä
-• Todelliset päivämäärät jokaiselle jaksolle ja selkeämpi jakson valitsin
-• Selvästi parempi VoiceOver-kokemus Today-, Trends- ja VO2+-näkymissä
-• Selkeämpi käyttöönotto ja tilauksen tiedot
-• Korjauksia kautta linjan
+Käyttöönoton yhteydessä tarjottava ilmainen kokeilu alkaa nyt kuukausitilauksella.

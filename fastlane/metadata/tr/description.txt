@@ -15,7 +15,7 @@ Fitness verileriniz cihazlarınızda kalır. Uygulama, Apple Health'ten Cardio F
 
 VO2 max ve kondisyon yaşı, kondisyon farkındalığına ilişkin genel tahminlerdir. Bu uygulama herhangi bir sağlık durumunu teşhis etmez, tedavi etmez, tedavi etmez veya engellemez. Profesyonel tıbbi tavsiyenin yerini tutmaz.
 
-VO2+ isteğe bağlıdır. Aylık 1,99 ABD Doları, yıllık 14,99 ABD Doları veya ömür boyu 29,99 ABD Doları satın alma seçeneğini seçin. Aylık ve yıllık planlar, uygun yeni aboneler için 7 günlük ücretsiz deneme sürümünü içerir. Gösterilen fiyatlar ABD fiyatlarıdır ve bölgeye göre değişiklik gösterebilir. Ödeme onaylandıktan sonra Apple Hesabınızdan tahsil edilir. Abonelikler, geçerli dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir. Cari dönem sona ermeden 24 saat önce hesabınızdan yenileme ücreti alınır. Abonelikleri Apple Hesabı ayarlarından yönetin veya iptal edin.
+VO2+ isteğe bağlıdır. Aylık plan, yıllık plan veya tek seferlik ömür boyu satın alma seçeneklerinden birini seçin. Aylık ve yıllık planlar, uygun yeni aboneler için 7 günlük ücretsiz deneme sürümünü içerir. Fiyatlar satın almadan önce uygulamada gösterilir ve bölgeye göre değişir. Ödeme onaylandıktan sonra Apple Hesabınızdan tahsil edilir. Abonelikler, geçerli dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir. Cari dönem sona ermeden 24 saat önce hesabınızdan yenileme ücreti alınır. Abonelikleri Apple Hesabı ayarlarından yönetin veya iptal edin.
 
 Kullanım Koşulları (Apple Standart EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Gizlilik Politikası: https://jackwallner.github.io/vo2max/privacy-policy.html

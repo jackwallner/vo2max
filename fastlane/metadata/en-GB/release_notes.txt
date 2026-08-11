@@ -1,9 +1,3 @@
-VO2+ is rebuilt around your own numbers: what moved your Apple Health estimate, your resting heart rate and heart rate recovery, your cardio workout load, and whether an estimate is overdue against your own cadence. Pick any range, including a custom one, and every card follows it.
+Clearer plan details: the yearly plan now shows what it comes to per month next to the monthly price, so the two are easy to compare.
 
-Also in this update:
-
-• Your signals and your estimate now show their current figures right on the VO2+ tab
-• Real dates on every range, and a clearer range picker
-• A much better VoiceOver experience across Today, Trends, and VO2+
-• Clearer onboarding and plan details
-• Fixes throughout
+The free trial offered during setup now starts on the monthly plan.

@@ -1,9 +1,3 @@
-VO2+ sme prestavali okolo vašich vlastných čísel: čo pohlo odhadom z Apple Health, váš pokojový pulz a zotavenie pulzu, záťaž vašich kardio tréningov a či odhad nemešká oproti vášmu vlastnému rytmu. Vyberte si ľubovoľné obdobie, aj vlastné, a všetky karty ho budú sledovať.
+Prehľadnejšie detaily plánov: ročný plán teraz popri mesačnej cene ukazuje, koľko vychádza na mesiac, takže sa dajú ľahko porovnať.
 
-Ďalej v tejto aktualizácii:
-
-• Vaše signály aj odhad teraz zobrazujú aktuálne čísla priamo na karte VO2+
-• Skutočné dátumy pri každom období a prehľadnejší výber obdobia
-• Výrazne lepšia práca s VoiceOverom v Today, Trends aj VO2+
-• Zrozumiteľnejší úvod a detaily predplatného
-• Opravy v celej aplikácii
+Bezplatná skúšobná verzia ponúkaná pri nastavovaní sa teraz začína na mesačnom pláne.

@@ -1,9 +1,3 @@
-VO2+ dibangun ulang di sekitar angka Anda sendiri: apa yang menggerakkan estimasi Apple Health Anda, detak jantung istirahat dan pemulihan detak jantung Anda, beban latihan kardio Anda, serta apakah sebuah estimasi sudah terlambat dibanding ritme Anda sendiri. Pilih rentang mana pun, termasuk rentang khusus, dan semua kartu mengikutinya.
+Detail paket lebih jelas: paket tahunan kini menampilkan berapa jadinya per bulan di samping harga bulanan, sehingga keduanya mudah dibandingkan.
 
-Juga di pembaruan ini:
-
-• Sinyal dan estimasi Anda kini menampilkan angka terkini langsung di tab VO2+
-• Tanggal sebenarnya pada setiap rentang dan pemilih rentang yang lebih jelas
-• Pengalaman VoiceOver yang jauh lebih baik di Today, Trends, dan VO2+
-• Pengenalan awal dan detail paket yang lebih jelas
-• Perbaikan di berbagai bagian
+Uji coba gratis yang ditawarkan saat penyiapan kini dimulai pada paket bulanan.

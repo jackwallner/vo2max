@@ -313,7 +313,15 @@ struct PaywallView: View {
                     package: package,
                     isSelected: selectedPackage?.identifier == package.identifier,
                     savingsPercent: savingsPercent(for: package),
-                    trialLabel: store.eligibleIntroLabel(for: package)
+                    trialLabel: store.eligibleIntroLabel(for: package),
+                    // Yearly is the only card that needs restating: a year's
+                    // price next to a month's price is not comparable on its own.
+                    perMonthLabel: package.vo2PackageKind == .yearly
+                        ? package.vo2PricePerMonthLabel
+                        : nil,
+                    monthlyAnchorLabel: package.vo2PackageKind == .yearly
+                        ? store.monthlyAnchorPriceLabel
+                        : nil
                 ) {
                     selectedPackage = package
                 }
@@ -486,6 +494,11 @@ private struct PlanCard: View {
     let isSelected: Bool
     let savingsPercent: Int?
     let trialLabel: String?
+    /// Yearly price restated per month, e.g. "$2.50". nil on every other card.
+    let perMonthLabel: String?
+    /// Struck-through monthly sticker price, e.g. "$5.99/mo", shown beside
+    /// `perMonthLabel` so the comparison is explicit rather than implied.
+    let monthlyAnchorLabel: String?
     let onTap: () -> Void
 
     var body: some View {
@@ -511,15 +524,12 @@ private struct PlanCard: View {
                             badge("BEST VALUE")
                         }
                     }
-                    // Apple 3.1.2(c): trial and per-week framing are secondary
-                    // pricing elements, so they stay smaller and quieter than the
-                    // billed amount on the trailing edge of the card.
+                    // Apple 3.1.2(c): trial framing is a secondary pricing
+                    // element, so it stays smaller and quieter than the billed
+                    // amount on the trailing edge of the card.
                     Group {
                         if let trialLabel {
                             Text("\(trialLabel.capitalized), then the price shown")
-                        } else if package.vo2PackageKind == .yearly,
-                                  let perWeek = package.vo2PricePerWeekLabel {
-                            Text("Works out to \(perWeek)/week")
                         } else {
                             Text(" ")
                         }
@@ -532,12 +542,34 @@ private struct PlanCard: View {
 
                 Spacer(minLength: 8)
 
-                Text(package.vo2PriceLabel)
-                    .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
-                    .foregroundStyle(Theme.textPrimary)
-                    .multilineTextAlignment(.trailing)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(package.vo2PriceLabel)
+                        .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
+                        .foregroundStyle(Theme.textPrimary)
+                        .multilineTextAlignment(.trailing)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
+                    if let perMonthLabel {
+                        HStack(spacing: 5) {
+                            // Only strike the monthly price when yearly really is
+                            // cheaper per month; otherwise it is not an anchor.
+                            if let monthlyAnchorLabel, savingsPercent != nil {
+                                Text(monthlyAnchorLabel)
+                                    .foregroundStyle(Theme.textTertiary)
+                                    .strikethrough(true, color: Theme.textTertiary)
+                                    // The strikethrough carries meaning VoiceOver
+                                    // cannot see, so say it.
+                                    .accessibilityLabel("instead of \(monthlyAnchorLabel)")
+                            }
+                            Text("\(perMonthLabel)/mo")
+                                .foregroundStyle(Theme.textSecondary)
+                                .accessibilityLabel("\(perMonthLabel) per month")
+                        }
+                        .font(.system(size: 11, design: .rounded).monospacedDigit())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    }
+                }
             }
             .frame(minHeight: 54)
             .padding(.horizontal, 14)

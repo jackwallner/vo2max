@@ -15,7 +15,7 @@ Vaši podatki o telesni pripravljenosti ostanejo v vaših napravah. Aplikacija b
 
 Najvišji VO2 in starost za telesno pripravljenost sta široki oceni za zavedanje o telesni pripravljenosti. Ta aplikacija ne diagnosticira, zdravi ali preprečuje nobenih zdravstvenih težav. Ni nadomestilo za strokovni zdravniški nasvet.
 
-VO2+ ni obvezen. Izberite 1,99 USD mesečno, 14,99 USD letno ali nakup za 29,99 USD za vse življenje. Mesečni in letni načrti vključujejo 7-dnevno brezplačno preskusno obdobje za upravičene nove naročnike. Prikazane cene so cene v ZDA in se lahko razlikujejo glede na regijo. Plačilo se ob potrditvi zaračuna na vaš račun Apple. Naročnine se samodejno obnovijo, razen če jih prekličete vsaj 24 ur pred koncem trenutnega obdobja. Vaš račun se zaračuna za podaljšanje v 24 urah pred koncem trenutnega obdobja. Upravljajte ali prekličite naročnine v nastavitvah računa Apple.
+VO2+ ni obvezen. Izberite mesečni načrt, letni načrt ali enkratni doživljenjski nakup. Mesečni in letni načrti vključujejo 7-dnevno brezplačno preskusno obdobje za upravičene nove naročnike. Cene so prikazane v aplikaciji pred nakupom in se razlikujejo glede na regijo. Plačilo se ob potrditvi zaračuna na vaš račun Apple. Naročnine se samodejno obnovijo, razen če jih prekličete vsaj 24 ur pred koncem trenutnega obdobja. Vaš račun se zaračuna za podaljšanje v 24 urah pred koncem trenutnega obdobja. Upravljajte ali prekličite naročnine v nastavitvah računa Apple.
 
 Pogoji uporabe (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Politika zasebnosti: https://jackwallner.github.io/vo2max/privacy-policy.html

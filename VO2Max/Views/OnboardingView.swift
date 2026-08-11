@@ -29,7 +29,7 @@ struct OnboardingView: View {
     @State private var isStartingTrial = false
     @State private var isRestoring = false
     @State private var trialError: String?
-    /// Fallback: presented only when the yearly package failed to load, so the
+    /// Fallback: presented only when the monthly package failed to load, so the
     /// primary CTA is never a dead button.
     @State private var showPaywallFallback = false
 
@@ -318,12 +318,12 @@ struct OnboardingView: View {
                 // element on this step — bigger than the CTA label and the
                 // disclosure. It lives in the page body, not the bottom bar, so
                 // the primary button keeps the exact frame Continue occupied.
-                if let yearly = store.yearlyPackage {
+                if let monthly = store.monthlyPackage {
                     BilledAmountBlock(
-                        amount: VO2ConversionCopy.billedAmount(priceLabel: yearly.vo2PriceLabel),
+                        amount: VO2ConversionCopy.billedAmount(priceLabel: monthly.vo2PriceLabel),
                         note: VO2ConversionCopy.billedNote(
-                            trialLabel: yearly.vo2IntroOfferLabel,
-                            eligibleForTrial: store.isEligibleForIntroOffer(yearly)
+                            trialLabel: monthly.vo2IntroOfferLabel,
+                            eligibleForTrial: store.isEligibleForIntroOffer(monthly)
                         )
                     )
                 }
@@ -396,7 +396,7 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 24)
         case .trial:
-            if store.yearlyPackage != nil {
+            if store.monthlyPackage != nil {
                 Button {
                     startTrial()
                 } label: {
@@ -449,7 +449,7 @@ struct OnboardingView: View {
     /// exit, then disclosure or error — none of it can shift the CTA.
     private var trialSoftExitAndDisclosure: some View {
         VStack(spacing: 12) {
-            if store.yearlyPackage != nil {
+            if store.monthlyPackage != nil {
                 Button {
                     finishOnboarding()
                 } label: {
@@ -508,26 +508,34 @@ struct OnboardingView: View {
     /// pricing words that could outweigh it (Apple 3.1.2(c)).
     private var trialCTATitle: String { "Continue with VO2+" }
 
+    /// Must name the same plan the CTA buys, or it misstates what the user is
+    /// charged (Apple 3.1.2). That plan is monthly here, not yearly.
     private var trialDisclosure: String? {
-        guard let yearly = store.yearlyPackage else { return nil }
+        guard let monthly = store.monthlyPackage else { return nil }
         return VO2ConversionCopy.disclosure(
-            trialLabel: yearly.vo2IntroOfferLabel,
-            priceLabel: yearly.vo2PriceLabel,
-            eligibleForTrial: store.isEligibleForIntroOffer(yearly)
+            trialLabel: monthly.vo2IntroOfferLabel,
+            priceLabel: monthly.vo2PriceLabel,
+            eligibleForTrial: store.isEligibleForIntroOffer(monthly)
         )
     }
 
     // MARK: - Actions
 
+    /// One-tap conversion on the monthly plan, deliberately not yearly. Whoever
+    /// taps through onboarding has not used the app yet and is reacting to the
+    /// recurring figure on Apple's sheet; the full paywall still leads with
+    /// yearly for people who have already decided the app is worth paying for.
+    /// StoreKit grants the free trial on this same SKU when the Apple ID is
+    /// eligible, so there is no separate trial product.
     private func startTrial() {
-        guard let yearly = store.yearlyPackage else {
+        guard let monthly = store.monthlyPackage else {
             showPaywallFallback = true
             return
         }
         trialError = nil
         isStartingTrial = true
         Task {
-            _ = await store.purchase(yearly)
+            _ = await store.purchase(monthly)
             isStartingTrial = false
             if let message = store.errorMessage { trialError = message }
             // Success routes through onChange(store.isPro) -> finishOnboarding().

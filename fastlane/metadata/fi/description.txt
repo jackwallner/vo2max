@@ -15,7 +15,7 @@ Kuntotietosi pysyvät laitteillasi. Sovellus lukee Apple Healthin Cardio Fitness
 
 VO2 max ja kunto-ikä ovat laajoja arvioita kuntotietoisuudesta. Tämä sovellus ei diagnosoi, hoita, paranna tai estä mitään terveydentilaa. Se ei korvaa ammattimaista lääketieteellistä neuvontaa.
 
-VO2+ on valinnainen. Valitse 1,99 dollaria kuukaudessa, 14,99 dollaria vuodessa tai 29,99 dollarin elinikäinen ostos. Kuukausi- ja vuosisopimuksiin sisältyy 7 päivän ilmainen kokeilu ehdot täyttäville uusille tilaajille. Näytetyt hinnat ovat Yhdysvaltojen hintoja ja voivat vaihdella alueittain. Maksu veloitetaan Apple-tililtäsi vahvistuksen yhteydessä. Tilaukset uusiutuvat automaattisesti, ellei niitä peruuteta vähintään 24 tuntia ennen nykyisen jakson päättymistä. Tiliäsi veloitetaan uusimisesta 24 tunnin sisällä ennen nykyisen jakson päättymistä. Hallinnoi tai peruuta tilauksia Apple-tilin asetuksissa.
+VO2+ on valinnainen. Valitse kuukausitilaus, vuositilaus tai kertaluonteinen elinikäinen ostos. Kuukausi- ja vuosisopimuksiin sisältyy 7 päivän ilmainen kokeilu ehdot täyttäville uusille tilaajille. Hinnat näkyvät sovelluksessa ennen ostoa ja vaihtelevat alueittain. Maksu veloitetaan Apple-tililtäsi vahvistuksen yhteydessä. Tilaukset uusiutuvat automaattisesti, ellei niitä peruuteta vähintään 24 tuntia ennen nykyisen jakson päättymistä. Tiliäsi veloitetaan uusimisesta 24 tunnin sisällä ennen nykyisen jakson päättymistä. Hallinnoi tai peruuta tilauksia Apple-tilin asetuksissa.
 
 Käyttöehdot (Applen standardi EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Tietosuojakäytäntö: https://jackwallner.github.io/vo2max/privacy-policy.html

@@ -1,9 +1,3 @@
-VO2+ a fost reconstruit în jurul cifrelor tale: ce a mișcat estimarea din Apple Health, pulsul în repaus și recuperarea pulsului, încărcarea antrenamentelor cardio și dacă o estimare întârzie față de propriul tău ritm. Alege orice interval, inclusiv unul personalizat, iar toate cardurile îl urmează.
+Detalii mai clare despre planuri: planul anual arată acum, lângă prețul lunar, cât revine pe lună, astfel încât să le compari ușor.
 
-Tot în această actualizare:
-
-• Semnalele și estimarea ta afișează acum cifrele curente chiar în fila VO2+
-• Date reale pentru fiecare interval și un selector de interval mai clar
-• O experiență VoiceOver mult mai bună în Today, Trends și VO2+
-• Introducere și detalii despre planuri mai clare
-• Remedieri peste tot
+Perioada de încercare gratuită oferită în timpul configurării începe acum cu planul lunar.
