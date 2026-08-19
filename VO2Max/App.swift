@@ -14,6 +14,10 @@ struct VO2MaxApp: App {
         // @MainActor trackers are safe to touch here.
         UNUserNotificationCenter.current().delegate = VO2NotificationDelegate.shared
         ReviewPromptTracker.recordAppLaunch()
+        // Here rather than in the scene's `.task` below, because a scene is not
+        // connected when HealthKit background delivery relaunches the app. See
+        // `HealthKitService.enableBackgroundDelivery`.
+        HealthKitService.shared.enableBackgroundDelivery()
     }
 
     var body: some Scene {
