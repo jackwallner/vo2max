@@ -30,6 +30,20 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
 - Always say "Apple Health estimate" and "cardio fitness trend". Never claim diagnosis, treatment, longevity prediction, or clinical accuracy.
 - Fitness age is explicitly labeled a broad estimate and shows its methodology.
 - RevenueCat must use a public `appl_` SDK key. Never embed an `sk_` secret key.
+- **The observer query has to be re-executed from `App.init`, not from the
+  scene's `.task`.** `installObserver` was reachable only through
+  `markAuthorized`, i.e. from `requestAuthorization` or
+  `synchronizeAuthorization` — and the latter is called from the `WindowGroup`'s
+  `.task`. A scene is not connected when HealthKit background delivery
+  relaunches the app, so the wake a new estimate generates arrived at a process
+  with no observer running and did nothing: the cache was never refreshed and
+  the iOS widgets stayed on the previous reading until somebody opened the app.
+  `HealthKitService.enableBackgroundDelivery()` is the entry point now, gated on
+  the persisted grant (not a live probe, which can transiently fail on a cold
+  launch) and idempotent. Found while fixing the same gap in Recharge, where it
+  is worse — there the phone owns the model, so the whole phone → watch chain
+  stopped. It is narrower here only because VO2MaxWatch reads Health itself.
+  Vitals has always done this and documents why.
 
 ---
 Shared iOS conventions come from the global AGENTS.md and the `ios-dev` skill.

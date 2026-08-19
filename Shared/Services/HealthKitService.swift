@@ -54,6 +54,33 @@ final class HealthKitService: ObservableObject {
         installObserver()  // idempotent: no-op if already running
     }
 
+    /// Re-executes the observer query. **Must be called on every launch,
+    /// including the background ones nobody sees.**
+    ///
+    /// `installObserver` was reachable only through `markAuthorized`, which is
+    /// only reachable from `requestAuthorization` and `synchronizeAuthorization`
+    /// — and the latter is called from the scene's `.task`. A scene is not
+    /// connected when HealthKit background delivery relaunches the app, so the
+    /// wake a new estimate generates arrived at a process with no observer
+    /// query running and did nothing: the cache was never refreshed and the
+    /// iOS widgets stayed on the previous reading until somebody opened the
+    /// app. Apple's guidance is to re-execute observer queries as early in
+    /// launch as possible. The same gap was found and fixed in Recharge, where
+    /// it broke the whole phone → watch chain; here it is narrower, because
+    /// VO2MaxWatch reads Health itself and does not depend on this.
+    ///
+    /// Gated on the persisted grant rather than on a live probe: the probe is
+    /// asynchronous and can transiently fail on a cold launch, which is the
+    /// whole reason `hasGrantedHealthAccess` exists. Idempotent, so the
+    /// authorization paths calling it again cost nothing.
+    func enableBackgroundDelivery() {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-DemoData") { return }
+        #endif
+        guard hasGrantedHealthAccess, HKHealthStore.isHealthDataAvailable() else { return }
+        installObserver()
+    }
+
     func requestAuthorization() async throws {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-DemoData") {
