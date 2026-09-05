@@ -20,6 +20,9 @@ struct VO2MaxApp: App {
             // Same entry point the real paywall screens call, so what this
             // proves is the actual path and not a parallel one.
             StoreService.shared.trackPaywallImpression(id: RevenueCatProbe.impressionID)
+            if RevenueCatProbe.wantsPurchase {
+                Task { await StoreService.shared.runProbePurchase() }
+            }
         }
         #endif
         // Here rather than in the scene's `.task` below, because a scene is not
