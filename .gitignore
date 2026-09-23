@@ -30,3 +30,6 @@ fastlane/metadata/primary_first_sub_category.txt
 fastlane/metadata/primary_second_sub_category.txt
 fastlane/metadata/secondary_first_sub_category.txt
 fastlane/metadata/secondary_second_sub_category.txt
+
+# App Review contact phone stays local (never in a public repo)
+fastlane/metadata*/review_information/phone_number.txt

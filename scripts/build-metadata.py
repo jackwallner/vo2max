@@ -2,6 +2,8 @@
 """Generate complete App Store metadata for every supported ASC locale."""
 from __future__ import annotations
 
+import os
+
 import json
 from pathlib import Path
 
@@ -151,7 +153,7 @@ def main() -> None:
     write(review / "first_name.txt", "Jack")
     write(review / "last_name.txt", "Wallner")
     write(review / "email_address.txt", "jackwallner@gmail.com")
-    write(review / "phone_number.txt", "[redacted]")
+    write(review / "phone_number.txt", os.environ.get("ASC_REVIEW_PHONE", ""))
     write(review / "demo_user.txt", "")
     write(review / "demo_password.txt", "")
     write(review / "notes.txt", "The app is read-only and requests Apple Health Cardio Fitness (VO2 max) access. No account is required. If the review device has no cardio fitness samples, the app shows guidance for obtaining an Apple Watch estimate. VO2+ offers monthly and yearly auto-renewable subscriptions with a 7-day introductory trial, plus a one-time lifetime unlock. Terms and privacy links appear at the purchase point.")
