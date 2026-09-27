@@ -22,7 +22,7 @@ Local-first Apple Health cardio fitness tracker. XcodeGen project/scheme: `VO2Ma
 
 HealthKitService reads Apple Health VO2 max estimates and caches them as `CardioFitnessSample` records. App views query SwiftData directly. Widgets and Watch complications read the same schema from their local App Group cache. `CardioFitnessAnalysis` contains pure trend, target, and fitness-age estimate logic.
 
-`CardioContextService` reads the VO2+ supporting signals (resting heart rate, 1-minute heart rate recovery, cardio workouts) into memory only — they have no widget or complication consumer, so they deliberately stay out of the shared SwiftData schema. `CardioDriverAnalysis` (what moved the estimate) and `CardioFreshnessAnalysis` (is the estimate overdue against this user's own cadence) are pure and unit-tested.
+`CardioContextService` reads the VO2+ supporting signals (resting heart rate, 1-minute heart rate recovery, cardio workouts) into memory only. They have no widget or complication consumer, so they stay out of the shared SwiftData schema. `CardioDriverAnalysis` (what moved the estimate) and `CardioFreshnessAnalysis` (is the estimate overdue against this user's own cadence) are pure and unit-tested.
 
 ## App-specific notes
 
@@ -33,7 +33,7 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
 - **The observer query has to be re-executed from `App.init`, not from the
   scene's `.task`.** `installObserver` was reachable only through
   `markAuthorized`, i.e. from `requestAuthorization` or
-  `synchronizeAuthorization` — and the latter is called from the `WindowGroup`'s
+  `synchronizeAuthorization`, and the latter is called from the `WindowGroup`'s
   `.task`. A scene is not connected when HealthKit background delivery
   relaunches the app, so the wake a new estimate generates arrived at a process
   with no observer running and did nothing: the cache was never refreshed and
@@ -41,7 +41,7 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
   `HealthKitService.enableBackgroundDelivery()` is the entry point now, gated on
   the persisted grant (not a live probe, which can transiently fail on a cold
   launch) and idempotent. Found while fixing the same gap in Recharge, where it
-  is worse — there the phone owns the model, so the whole phone → watch chain
+  is worse. There the phone owns the model, so the whole phone → watch chain
   stopped. It is narrower here only because VO2MaxWatch reads Health itself.
   Vitals has always done this and documents why.
 
