@@ -46,4 +46,4 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
   Vitals has always done this and documents why.
 
 ---
-Shared iOS conventions come from the global AGENTS.md and the `ios-dev` skill.
+Shared iOS conventions come from the global agent rules and the `ios-dev` skill.
