@@ -95,6 +95,17 @@ struct VO2MaxApp: App {
     #endif
 }
 
+/// Lets the dashboard report its Settings sheet, so the rating ask never
+/// lands on top of it.
+@MainActor
+final class ReviewPromptCoordinator: ObservableObject {
+    static let shared = ReviewPromptCoordinator()
+
+    @Published var dashboardSheetIsPresented = false
+
+    private init() {}
+}
+
 /// Routes a tapped notification to the right surface. The
 /// `UNUserNotificationCenterDelegate` posts here; `MainTabView` observes.
 @MainActor
@@ -207,9 +218,7 @@ private struct MainTabView: View {
     // Monthly recap
     @State private var showRecap = false
 
-    // Review funnel
-    @State private var showReviewPrompt = false
-    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
+    // Rating ask
     @State private var reviewPromptShownThisSession = false
 
     var body: some View {
@@ -234,7 +243,6 @@ private struct MainTabView: View {
         .onAppear {
             selection = initialTab
             evaluateWhatsNew()
-            evaluatePendingReviewPrompt()
         }
         .task(id: recapSchedulingKey) { await syncMonthlyRecapSchedule() }
         .onChange(of: routeCoordinator.pendingRecap) { _, pending in
@@ -247,16 +255,8 @@ private struct MainTabView: View {
             routeCoordinator.pendingToday = false
             selection = 0
         }
-        .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
-            guard let presentation else { return }
-            defer { reviewPromptCoordinator.clear() }
-            switch presentation {
-            case .enjoymentPrompt: presentReviewPrompt(step: .enjoyment)
-            case .feedbackOnly: presentReviewPrompt(step: .feedback)
-            }
-        }
         .onReceive(NotificationCenter.default.publisher(for: .vo2PositiveMomentForReview)) { _ in
-            evaluatePendingReviewPrompt()
+            scheduleReviewPromptAfterPositiveMoment()
         }
         .sheet(isPresented: $showWhatsNew, onDismiss: {
             if pendingSettingsAfterWhatsNew {
@@ -290,17 +290,6 @@ private struct MainTabView: View {
             MonthlyRecapView()
                 .environmentObject(settings)
         }
-        .sheet(isPresented: $showReviewPrompt, onDismiss: {
-            if reviewPromptCoordinator.pendingPresentation == nil,
-               ReviewPromptTracker.outcome == nil,
-               ReviewPromptTracker.isSoftDeferred {
-                // "Maybe later": Apple often no-ops requestReview(), so we keep a
-                // short cooldown rather than the long jail markShown() would set.
-                requestReview()
-            }
-        }) {
-            ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
-        }
     }
 
     /// Recomputes the recap schedule whenever entitlement or the toggle changes.
@@ -319,37 +308,45 @@ private struct MainTabView: View {
               settings.hasCompletedSetup,
               !ScreenshotConfig.isEnabled,
               WhatsNew.shouldShow(lastShown: settings.lastWhatsNewVersionShown),
-              !showReviewPrompt, !showRecap else { return }
+              !showRecap else { return }
         whatsNewEvaluated = true
         settings.lastWhatsNewVersionShown = WhatsNew.currentVersion
         showWhatsNew = true
     }
 
-    private func evaluatePendingReviewPrompt() {
-        guard !reviewPromptShownThisSession,
-              !showReviewPrompt, !showWhatsNew, !showRecap else { return }
-        if ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup) {
-            ReviewPromptTracker.consumePendingPositiveMoment()
-            presentReviewPrompt(step: .enjoyment)
-            return
-        }
-        // The engaged path has no pending token to consume, so record the ask up
-        // front: a swipe-away must start the cooldown rather than re-prompt on
-        // the next launch. "Not now" and the outcome markers are idempotent over it.
-        if ReviewPromptTracker.shouldShowForEngagedUse(hasCompletedSetup: settings.hasCompletedSetup) {
+    /// The rating ask after a positive cardio moment: Apple's own prompt, no
+    /// question in front of it. Waits for the dashboard to settle, then asks
+    /// only if Today is still clear. A blocked ask keeps the moment pending in
+    /// the tracker for the next one; it never retries off a sheet dismissal.
+    private func scheduleReviewPromptAfterPositiveMoment() {
+        guard ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup),
+              !reviewPromptShownThisSession,
+              isTodayClear
+        else { return }
+
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_500_000_000)
+            guard isTodayClear,
+                  !reviewPromptShownThisSession,
+                  ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup)
+            else { return }
+            reviewPromptShownThisSession = true
             ReviewPromptTracker.markShown()
-            presentReviewPrompt(step: .enjoyment)
+            requestReview()
         }
     }
 
-    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
-        reviewPromptInitialStep = step
-        reviewPromptShownThisSession = true
-        showReviewPrompt = true
-    }
-
-    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
-        showReviewPrompt = false
+    /// Today is on screen with nothing over it: no What's New, paywall, recap
+    /// or Settings sheet.
+    private var isTodayClear: Bool {
+        selection == 0
+            && !showWhatsNew
+            && !showSettingsFromWhatsNew
+            && !showPaywallFromWhatsNew
+            && !pendingSettingsAfterWhatsNew
+            && !pendingPaywallAfterWhatsNew
+            && !showRecap
+            && !reviewPromptCoordinator.dashboardSheetIsPresented
     }
 
     /// All three tabs stay alive in the `ZStack` so each keeps its own scroll

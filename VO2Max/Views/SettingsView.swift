@@ -7,6 +7,7 @@ struct SettingsView: View {
     @EnvironmentObject private var store: StoreService
     @StateObject private var health = HealthKitService.shared
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
 
     @State private var showPaywall = false
@@ -352,19 +353,24 @@ struct SettingsView: View {
         }
     }
 
+    private static let feedbackMailURL = URL(string: "mailto:jackwallner+vo2@gmail.com?subject=VO2%20Max%20feedback")
+
     private var feedbackSection: some View {
         Section {
+            // Two separate rows, no question in front of either (App Review
+            // 5.6.1). The rating row deep-links to the review page.
             Button {
-                ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
-                dismiss()
+                ReviewPromptTracker.markOpenedWriteReview()
+                openURL(AppStoreReviewLinks.writeReviewURL)
             } label: {
                 Label("Rate VO2 Max", systemImage: "star")
             }
             Button {
-                ReviewPromptCoordinator.shared.requestFeedback()
-                dismiss()
+                guard let url = Self.feedbackMailURL else { return }
+                ReviewPromptTracker.markFeedbackSubmitted()
+                openURL(url)
             } label: {
-                Label("Send feedback", systemImage: "envelope")
+                Label("Send Feedback", systemImage: "envelope")
             }
         } header: {
             Text("Support")

@@ -50,6 +50,9 @@ struct DashboardView: View {
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
         }
+        .onChange(of: showSettings, initial: true) { _, shown in
+            ReviewPromptCoordinator.shared.dashboardSheetIsPresented = shown
+        }
         .onAppear {
             withAnimation(.easeOut(duration: 0.5)) { animateContent = true }
             withAnimation(.spring(duration: 1.0, bounce: 0.15).delay(0.3)) { animateRing = true }

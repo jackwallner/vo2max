@@ -29,6 +29,12 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
 - VO2 max is not a daily metric. The positive loop is entering a target range or moving from stable/declining to improving.
 - Always say "Apple Health estimate" and "cardio fitness trend". Never claim diagnosis, treatment, longevity prediction, or clinical accuracy.
 - Fitness age is explicitly labeled a broad estimate and shows its methodology.
+- **Ratings:** App Store ID `6791235742`. No in-app rating question (App
+  Review 5.6.1). Positive moments: a new personal best, entering the target
+  range, and (once ever) the first return visit with an estimate on screen.
+  `MainTabView` calls the system `requestReview()` about 3s later if Today is
+  clear (from the 2nd launch, 30-day cooldown). Settings has separate "Rate VO2
+  Max" (write-review link) and "Send Feedback" rows.
 - RevenueCat must use a public `appl_` SDK key. Never embed an `sk_` secret key.
 - **The observer query has to be re-executed from `App.init`, not from the
   scene's `.task`.** `installObserver` was reachable only through

@@ -153,6 +153,9 @@ final class HealthKitService: ObservableObject {
             if !readings.isEmpty {
                 markAuthorized()
                 ReviewPromptTracker.recordReadingsAvailable()
+                if ReviewPromptTracker.recordReturnWithReading() {
+                    NotificationCenter.default.post(name: .vo2PositiveMomentForReview, object: nil)
+                }
             }
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
@@ -260,7 +263,7 @@ final class HealthKitService: ObservableObject {
         return inserted
     }
 
-    /// Reacts to genuinely new Apple Health estimates: records review-funnel
+    /// Reacts to genuinely new Apple Health estimates: records rating-ask
     /// positive moments (new personal best or entering target range) and, for
     /// entitled opted-in users, posts a new-reading notification with context.
     ///

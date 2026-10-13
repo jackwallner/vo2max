@@ -1,68 +1,20 @@
 import Foundation
 
 extension Notification.Name {
-    /// Posted when the user hits a positive cardio moment (new personal best or
-    /// entering their target range) — host may present the enjoyment funnel after a short delay.
+    /// Posted after a positive cardio moment (new personal best, entering the
+    /// target range, or the first return visit with an estimate on screen).
+    /// The host may call the system rating prompt after a short delay, with no
+    /// question in front of it.
     static let vo2PositiveMomentForReview = Notification.Name("com.jackwallner.vo2max.positiveMomentForReview")
 }
 
-/// How the user last resolved the in-app review / feedback prompt.
+/// What the user did about a review. Only opening the review page ends the
+/// passive asks: someone who sent feedback can still rate.
 enum ReviewPromptOutcome: String, Sendable {
-    /// Opened the App Store write-review page (explicit CTA).
+    /// Opened the App Store write-review page from Settings.
     case openedWriteReview
-    /// Opened the feedback mail composer with a message.
+    /// Sent feedback by mail. Never stops the asks.
     case submittedFeedback
-}
-
-/// Pure eligibility rules for the passive enjoyment funnel, kept free of
-/// `UserDefaults` so the thresholds can be unit-tested directly.
-struct ReviewPromptEligibility: Sendable {
-    /// Cumulative genuine cardio wins: new personal bests or entering target.
-    var positiveMomentCount: Int
-    /// Cold starts since install.
-    var appLaunchCount: Int
-    /// Whole days since the first app open.
-    var daysSinceFirstOpen: Int
-    /// True once Apple Health has returned at least one estimate.
-    var hasSeenReading: Bool
-
-    /// Why the funnel is allowed to open. `positiveMoment` is the stronger
-    /// signal and takes precedence when both hold.
-    enum Trigger: Equatable, Sendable {
-        case positiveMoment
-        case engagedUse
-    }
-
-    /// Minimum cold starts before the positive-moment path is considered.
-    static let minimumLaunchCount = 3
-    /// Minimum days since first open for the positive-moment path.
-    static let minimumDaysSinceFirstOpen = 3
-    /// A single genuine positive moment is meaningful signal on a metric this slow.
-    static let minimumPositiveMoments = 1
-
-    /// VO2 max moves too slowly for a personal best or a target crossing to be a
-    /// reliable trigger — most users would never hit one, so the funnel would
-    /// never open. Someone still opening the app in week two, with real data on
-    /// screen, is telling us the same thing more quietly.
-    static let engagedLaunchCount = 5
-    /// Minimum days since first open for the engaged path.
-    static let engagedDaysSinceFirstOpen = 7
-
-    var trigger: Trigger? {
-        if positiveMomentCount >= Self.minimumPositiveMoments,
-           appLaunchCount >= Self.minimumLaunchCount,
-           daysSinceFirstOpen >= Self.minimumDaysSinceFirstOpen {
-            return .positiveMoment
-        }
-        // No point asking someone who has never seen an estimate whether they
-        // are enjoying an app whose whole job is showing one.
-        if hasSeenReading,
-           appLaunchCount >= Self.engagedLaunchCount,
-           daysSinceFirstOpen >= Self.engagedDaysSinceFirstOpen {
-            return .engagedUse
-        }
-        return nil
-    }
 }
 
 /// Persists launch counts, positive moments, and review-prompt eligibility in the app group.
@@ -76,14 +28,15 @@ enum ReviewPromptTracker {
     private static let outcomeKey = "reviewPrompt.outcome"
     private static let positiveMomentCountKey = "reviewPrompt.positiveMomentCount"
     private static let pendingPositiveMomentKey = "reviewPrompt.pendingPositiveMoment"
-    private static let softDeferKey = "reviewPrompt.softDefer"
     private static let hasSeenReadingKey = "reviewPrompt.hasSeenReading"
+    private static let returnMomentFiredKey = "reviewPrompt.returnWithReadingFired"
 
-    /// Days before "Not now" can surface the enjoyment prompt again.
-    static let cooldownDays = 120
-    /// Shorter cooldown after "Maybe later" on the review pitch — Apple's
-    /// `requestReview()` often shows nothing, so a 120-day jail was burning asks.
-    static let softDeferCooldownDays = 30
+    /// Ask early. Most installs are gone within a week, so the only tenure
+    /// gate is "not the first session": a second cold start.
+    static let minimumLaunchCount = 2
+    /// Days between our calls. Apple shows the prompt at most three times a
+    /// year per device and decides each time, so this paces the asks.
+    static let cooldownDays = 30
 
     static var appLaunchCount: Int {
         get { max(defaults.integer(forKey: launchCountKey), 0) }
@@ -163,84 +116,49 @@ enum ReviewPromptTracker {
         hasSeenReading = true
     }
 
+    /// VO2 max moves too slowly for a personal best or a target crossing to
+    /// reach most users, so the first return visit with an estimate on screen
+    /// also counts, once ever. Returns whether it fired.
+    @discardableResult
+    static func recordReturnWithReading() -> Bool {
+        guard hasSeenReading,
+              appLaunchCount >= minimumLaunchCount,
+              !defaults.bool(forKey: returnMomentFiredKey) else { return false }
+        defaults.set(true, forKey: returnMomentFiredKey)
+        recordPositiveMoment()
+        return true
+    }
+
     static func consumePendingPositiveMoment() {
         hasPendingPositiveMoment = false
     }
 
     static func passivePromptAllowed(now: Date = .now) -> Bool {
-        guard outcome == nil else { return false }
+        guard outcome != .openedWriteReview else { return false }
         guard let last = lastShownDate else { return true }
-        let days = defaults.bool(forKey: softDeferKey) ? softDeferCooldownDays : cooldownDays
-        let cooldown = TimeInterval(days) * 86_400
+        let cooldown = TimeInterval(cooldownDays) * 86_400
         return now.timeIntervalSince(last) >= cooldown
     }
 
-    /// Which trigger, if any, currently allows the enjoyment funnel to open.
-    static func eligibilityTrigger(
-        hasCompletedSetup: Bool,
-        now: Date = .now
-    ) -> ReviewPromptEligibility.Trigger? {
-        guard !ScreenshotConfig.isEnabled else { return nil }
-        guard hasCompletedSetup else { return nil }
-        guard passivePromptAllowed(now: now) else { return nil }
-        guard let first = firstAppOpenDate else { return nil }
-        let eligibility = ReviewPromptEligibility(
-            positiveMomentCount: positiveMomentCount,
-            appLaunchCount: appLaunchCount,
-            daysSinceFirstOpen: Int(now.timeIntervalSince(first) / 86_400),
-            hasSeenReading: hasSeenReading
-        )
-        return eligibility.trigger
+    static func canRequestReview(hasCompletedSetup: Bool, now: Date = .now) -> Bool {
+        guard !ScreenshotConfig.isEnabled else { return false }
+        guard hasCompletedSetup else { return false }
+        guard passivePromptAllowed(now: now) else { return false }
+        return appLaunchCount >= minimumLaunchCount
     }
 
-    /// Base eligibility for the enjoyment funnel (passive or Settings).
-    static func canPresentEnjoymentPrompt(
-        hasCompletedSetup: Bool,
-        now: Date = .now
-    ) -> Bool {
-        eligibilityTrigger(hasCompletedSetup: hasCompletedSetup, now: now) != nil
-    }
-
-    /// Passive prompt: eligibility plus a recent positive moment.
-    static func shouldShowAfterPositiveMoment(
+    /// A positive moment is pending and the gates allow an ask. A blocked ask
+    /// leaves the moment pending so the next one can ask.
+    static func shouldRequestAfterPositiveMoment(
         hasCompletedSetup: Bool,
         now: Date = .now
     ) -> Bool {
         guard hasPendingPositiveMoment else { return false }
-        return eligibilityTrigger(hasCompletedSetup: hasCompletedSetup, now: now) == .positiveMoment
-    }
-
-    /// Passive prompt for users who keep coming back without ever tripping a
-    /// personal best. There is no pending token to consume here, so the host
-    /// must call `markShown()` when it presents — otherwise a swipe-away would
-    /// re-prompt on every single launch.
-    static func shouldShowForEngagedUse(
-        hasCompletedSetup: Bool,
-        now: Date = .now
-    ) -> Bool {
-        guard !hasPendingPositiveMoment else { return false }
-        return eligibilityTrigger(hasCompletedSetup: hasCompletedSetup, now: now) == .engagedUse
+        return canRequestReview(hasCompletedSetup: hasCompletedSetup, now: now)
     }
 
     static func markShown(now: Date = .now) {
         lastShownDate = now
-        defaults.set(false, forKey: softDeferKey)
-        consumePendingPositiveMoment()
-    }
-
-    /// True after "Maybe later" until the next hard `markShown` / outcome.
-    /// Hosts must not call `markShown()` on sheet dismiss when this is true —
-    /// that would clear the soft-defer flag and apply the 120-day jail instead.
-    static var isSoftDeferred: Bool {
-        defaults.bool(forKey: softDeferKey)
-    }
-
-    /// User said Yes then "Maybe later" — we fire `requestReview()` which Apple
-    /// often silently no-ops. Use a short cooldown so we can ask again instead
-    /// of jailing them for 120 days.
-    static func markSoftDeferred(now: Date = .now) {
-        lastShownDate = now
-        defaults.set(true, forKey: softDeferKey)
         consumePendingPositiveMoment()
     }
 
@@ -249,8 +167,11 @@ enum ReviewPromptTracker {
         markShown()
     }
 
+    /// Never overwrites `.openedWriteReview`: feedback sent after the review
+    /// page must not reopen the asks that page ended.
     static func markFeedbackSubmitted() {
-        outcome = .submittedFeedback
-        markShown()
+        if outcome != .openedWriteReview {
+            outcome = .submittedFeedback
+        }
     }
 }
