@@ -27,6 +27,7 @@
         "@graph": [
             {
                 "@type": "MobileApplication",
+                "dateModified": "2026-10-15",
                 "@id": "https://jackwallner.com/ios/vo2max/#app",
                 "name": "VO2 Max & Cardio Fitness",
                 "alternateName": "VO2 Max",
@@ -237,7 +238,7 @@
         }
 
         .hero h1 span {
-            color: #0aa8e0;
+            color: #077aa3;
         }
 
         .hero .tagline {
@@ -250,7 +251,7 @@
 
         .hero .platforms {
             font-size: 13px;
-            color: #86868b;
+            color: #6e6e73;
             letter-spacing: 0.3px;
             margin-bottom: 36px;
         }
@@ -338,20 +339,6 @@
         .feature-card {
             background: #fff;
             padding: 36px 32px;
-        }
-
-        .feature-card .label {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #86868b;
-            margin-bottom: 10px;
-        }
-
-        .feature-card .label.vo2-plus {
-            color: #0aa8e0;
         }
 
         .feature-card h3 {
@@ -459,7 +446,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: #86868b;
+            color: #6e6e73;
             margin-bottom: 12px;
         }
 
@@ -491,7 +478,7 @@
         }
 
         .specs-table td:first-child {
-            color: #86868b;
+            color: #6e6e73;
             width: 140px;
             font-size: 12px;
             text-transform: uppercase;
@@ -510,7 +497,7 @@
         .disclaimer p {
             font-size: 12px;
             line-height: 1.6;
-            color: #86868b;
+            color: #6e6e73;
             text-align: center;
         }
 
@@ -519,7 +506,7 @@
         .faq-list details { border-bottom: 1px solid rgba(0,0,0,0.06); padding: 14px 0; }
         .faq-list summary { font-size: 15px; font-weight: 600; color: #1d1d1f; cursor: pointer; list-style: none; line-height: 1.4; }
         .faq-list summary::-webkit-details-marker { display: none; }
-        .faq-list summary::after { content: "+"; float: right; color: #86868b; font-weight: 400; margin-left: 12px; }
+        .faq-list summary::after { content: "+"; float: right; color: #6e6e73; font-weight: 400; margin-left: 12px; }
         .faq-list details[open] summary::after { content: "\2212"; }
         .faq-list details p { font-size: 15px; line-height: 1.6; color: #6e6e73; margin: 10px 0 0; }
 
@@ -540,7 +527,7 @@
 
         .cta p {
             font-size: 15px;
-            color: #86868b;
+            color: #6e6e73;
             margin-bottom: 28px;
         }
 
@@ -549,11 +536,11 @@
             text-align: center;
             padding: 20px 24px;
             font-size: 12px;
-            color: #86868b;
+            color: #6e6e73;
         }
 
         footer a {
-            color: #86868b;
+            color: #6e6e73;
             text-decoration: none;
             margin: 0 10px;
         }
@@ -578,6 +565,12 @@
 
         @media (max-width: 480px) {
             .showcase-card img { height: 360px; }
+        }
+        .feature-card .tier {
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #077aa3;
         }
     </style>
 </head>
@@ -632,47 +625,40 @@
         </div>
         <div class="features-grid">
             <div class="feature-card">
-                <span class="label">Dashboard</span>
                 <h3>Your latest estimate</h3>
                 <p>The most recent Apple Health cardio fitness reading, with its date, in large clear type.</p>
             </div>
             <div class="feature-card">
-                <span class="label">Trend</span>
                 <h3>Improving, stable, declining</h3>
                 <p>A plain-language read on where your aerobic fitness is heading.</p>
             </div>
             <div class="feature-card">
-                <span class="label">History</span>
                 <h3>A full year</h3>
                 <p>Every estimate Apple Health has stored, charted so seasonal dips and training blocks are obvious.</p>
             </div>
             <div class="feature-card">
-                <span class="label">Widgets</span>
                 <h3>Home &amp; lock screen</h3>
                 <p>Your current VO2 max and trend without opening the app.</p>
             </div>
             <div class="feature-card">
-                <span class="label">Apple Watch</span>
                 <h3>App and complications</h3>
                 <p>Check the number on your wrist, with complications for your watch face.</p>
             </div>
             <div class="feature-card">
-                <span class="label vo2-plus">Target range &middot; VO2+</span>
                 <h3>Where you could be</h3>
                 <p>A personal target range for your age and sex, so the number has a reference point.</p>
+                <p class="tier">Included with VO2+</p>
             </div>
             <div class="feature-card">
-                <span class="label vo2-plus">Fitness age &middot; VO2+</span>
                 <h3>A broader read</h3>
                 <p>A fitness-age estimate derived from your cardio fitness, with the methodology explained in the app.</p>
+                <p class="tier">Included with VO2+</p>
             </div>
             <div class="feature-card">
-                <span class="label">Guidance</span>
                 <h3>When there's no data</h3>
                 <p>Clear instructions on the outdoor walks and runs Apple Watch needs to produce an estimate.</p>
             </div>
             <div class="feature-card">
-                <span class="label">No writes</span>
                 <h3>Read-only Health access</h3>
                 <p>The app reads cardio fitness and never writes anything back to Apple Health.</p>
             </div>
@@ -758,7 +744,7 @@
     </section>
 
     <footer>
-        <div class="divider">&copy; 2026 Jack Wallner</div>
+        <div class="divider">&copy; 2026 Jack Wallner · Last updated <time datetime="2026-10-15" data-updated>October 15, 2026</time></div>
         <div>
             <a href="vo2-max-chart-by-age-and-sex.html">VO2 max chart by age and sex</a>
             <a href="best-vo2-max-app-for-apple-watch.html">Best VO2 max app for Apple Watch</a>
