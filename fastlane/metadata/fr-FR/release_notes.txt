@@ -1,3 +1,1 @@
-Détails des forfaits plus clairs : le forfait annuel indique maintenant son équivalent par mois à côté du prix mensuel, pour comparer facilement les deux.
-
-L'essai gratuit proposé lors de la configuration commence maintenant par le forfait mensuel.
+Améliorations en coulisses et corrections de bugs pour que VO2 Max reste fluide. Merci d'être là.

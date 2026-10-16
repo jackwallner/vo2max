@@ -1,3 +1,1 @@
-Clearer plan details: the yearly plan now shows what it comes to per month next to the monthly price, so the two are easy to compare.
-
-The free trial offered during setup now starts on the monthly plan.
+Behind-the-scenes improvements and fixes to keep VO2 Max running smoothly. Thank you for being here.

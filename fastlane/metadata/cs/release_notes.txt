@@ -1,3 +1,1 @@
-Přehlednější detaily plánů: roční plán nyní vedle měsíční ceny ukazuje, kolik vychází na měsíc, takže se dají snadno porovnat.
-
-Bezplatná zkušební verze nabízená při nastavení nyní začíná na měsíčním plánu.
+Vylepšení na pozadí a opravy chyb, aby VO2 Max běžel hladce. Děkujeme, že jste tu.

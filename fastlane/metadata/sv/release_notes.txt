@@ -1,3 +1,1 @@
-Tydligare abonnemangsinformation: årsplanen visar nu vad den motsvarar per månad bredvid månadspriset, så att de är lätta att jämföra.
-
-Den kostnadsfria provperioden som erbjuds vid installationen börjar nu på månadsplanen.
+Förbättringar bakom kulisserna och buggfixar så att VO2 Max fungerar smidigt. Tack för att du är här.

@@ -1,3 +1,1 @@
-Áttekinthetőbb csomagadatok: az éves csomag mostantól a havi ár mellett azt is mutatja, mennyibe kerül havonta, így könnyen összehasonlíthatók.
-
-A beállítás során felkínált ingyenes próbaidőszak mostantól a havi csomaggal indul.
+Háttérbeli fejlesztések és hibajavítások, hogy a VO2 Max gördülékenyen működjön. Köszönjük, hogy itt vagy.

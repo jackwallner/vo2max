@@ -1,3 +1,1 @@
-Detail paket lebih jelas: paket tahunan kini menampilkan berapa jadinya per bulan di samping harga bulanan, sehingga keduanya mudah dibandingkan.
-
-Uji coba gratis yang ditawarkan saat penyiapan kini dimulai pada paket bulanan.
+Peningkatan di balik layar dan perbaikan bug agar VO2 Max berjalan lancar. Terima kasih telah hadir.

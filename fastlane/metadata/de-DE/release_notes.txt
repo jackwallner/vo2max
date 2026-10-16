@@ -1,3 +1,1 @@
-Übersichtlichere Tarifdetails: Das Jahresabo zeigt jetzt neben dem Monatspreis, was es pro Monat kostet, sodass sich beide leicht vergleichen lassen.
-
-Die beim Einrichten angebotene kostenlose Testversion startet jetzt mit dem Monatsabo.
+Verbesserungen und Fehlerbehebungen im Hintergrund, damit VO2 Max reibungslos läuft. Danke, dass du dabei bist.

@@ -1,3 +1,1 @@
-Detalls dels plans més clars: el pla anual ara mostra a quant surt cada mes al costat del preu mensual, així és fàcil comparar-los.
-
-La prova gratuïta que s'ofereix durant la configuració ara comença amb el pla mensual.
+Millores internes i correccions d'errors perquè VO2 Max funcioni bé. Gràcies per ser aquí.

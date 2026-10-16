@@ -1,3 +1,1 @@
-Selkeämmät tilaustiedot: vuositilaus näyttää nyt kuukausihinnan vieressä, paljonko se on kuukaudessa, joten niitä on helppo verrata.
-
-Käyttöönoton yhteydessä tarjottava ilmainen kokeilu alkaa nyt kuukausitilauksella.
+Taustaparannuksia ja virhekorjauksia, jotta VO2 Max toimii sujuvasti. Kiitos, että olet mukana.

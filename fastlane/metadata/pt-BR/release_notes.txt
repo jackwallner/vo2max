@@ -1,3 +1,1 @@
-Detalhes dos planos mais claros: o plano anual agora mostra quanto fica por mês ao lado do preço mensal, para facilitar a comparação.
-
-O teste gratuito oferecido durante a configuração agora começa no plano mensal.
+Melhorias nos bastidores e correções de erros para o VO2 Max funcionar melhor. Obrigado por estar aqui.

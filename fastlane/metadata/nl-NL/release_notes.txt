@@ -1,3 +1,1 @@
-Duidelijkere abonnementsgegevens: het jaarabonnement toont nu naast de maandprijs wat het per maand neerkomt, zodat je ze makkelijk vergelijkt.
-
-De gratis proefperiode die tijdens het instellen wordt aangeboden, start nu met het maandabonnement.
+Verbeteringen achter de schermen en bugfixes zodat VO2 Max soepel werkt. Bedankt dat je er bent.

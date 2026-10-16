@@ -1,3 +1,1 @@
-Czytelniejsze szczegóły planów: plan roczny pokazuje teraz obok ceny miesięcznej, ile wychodzi na miesiąc, więc łatwo je porównać.
-
-Bezpłatny okres próbny oferowany podczas konfiguracji rozpoczyna się teraz od planu miesięcznego.
+Ulepszenia w tle i poprawki błędów, aby VO2 Max działał płynnie. Dziękujemy, że jesteś.

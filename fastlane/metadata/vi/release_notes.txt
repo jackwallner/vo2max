@@ -1,3 +1,1 @@
-Chi tiết gói rõ ràng hơn: gói hàng năm giờ hiển thị mức tương đương mỗi tháng ngay cạnh giá hàng tháng, nên dễ so sánh.
-
-Bản dùng thử miễn phí được cung cấp trong quá trình thiết lập giờ bắt đầu với gói hàng tháng.
+Cải tiến phía sau và sửa lỗi để VO2 Max chạy mượt mà. Cảm ơn bạn đã đồng hành.
