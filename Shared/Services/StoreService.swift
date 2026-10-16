@@ -320,6 +320,10 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     }
 
     func trackPaywallImpression(id: String, oncePerSession: Bool = false) {
+        // Configure first: onboarding can reach its pitch before the scene's
+        // `start()` has run, and a guard alone silently dropped the impression
+        // (10 of 25 installs on 1.1.2 showed no pitch at all in RevenueCat).
+        configureIfNeeded()
         guard isConfigured else { return }
         if oncePerSession {
             guard !paywallImpressionsThisSession.contains(id) else { return }

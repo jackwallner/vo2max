@@ -50,6 +50,13 @@ struct OnboardingView: View {
                 trialPage
                     .padding(.horizontal, 24)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .onAppear {
+                        // Counted here, where the pitch is actually on screen. It
+                        // used to fire on the welcome page, so it measured app
+                        // opens rather than trial-page views.
+                        store.trackPaywallImpression(id: "vo2plus_onboarding_trial", oncePerSession: true)
+                        if store.monthlyPackage == nil { store.start(forceRefresh: true) }
+                    }
             } else {
                 ScrollView {
                     Group {
@@ -76,7 +83,6 @@ struct OnboardingView: View {
             // Seed the target from the age-anchored typical range so the target
             // step opens already tuned to the profile, no manual dialing needed.
             anchorTargetToAge()
-            store.trackPaywallImpression(id: "vo2plus_onboarding_trial")
             #if DEBUG
             let args = ProcessInfo.processInfo.arguments
             if let idx = args.firstIndex(of: "-OnboardingPage"), idx + 1 < args.count,
@@ -396,28 +402,22 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 24)
         case .trial:
-            if store.monthlyPackage != nil {
-                Button {
-                    startTrial()
-                } label: {
-                    ZStack {
-                        primaryLabel(trialCTATitle)
-                            .opacity(isStartingTrial ? 0 : 1)
-                        if isStartingTrial {
-                            ProgressView().tint(.white)
-                        }
+            // Always the trial CTA. When the monthly plan has not loaded yet the
+            // page used to show only "Get Started", so a slow store response meant
+            // no offer at all; now the tap opens the full paywall instead.
+            Button {
+                startTrial()
+            } label: {
+                ZStack {
+                    primaryLabel(trialCTATitle)
+                        .opacity(isStartingTrial ? 0 : 1)
+                    if isStartingTrial {
+                        ProgressView().tint(.white)
                     }
                 }
-                .disabled(isStartingTrial)
-                .padding(.horizontal, 24)
-            } else {
-                Button {
-                    finishOnboarding()
-                } label: {
-                    primaryLabel("Get Started")
-                }
-                .padding(.horizontal, 24)
             }
+            .disabled(isStartingTrial)
+            .padding(.horizontal, 24)
         }
     }
 
@@ -449,19 +449,17 @@ struct OnboardingView: View {
     /// exit, then disclosure or error — none of it can shift the CTA.
     private var trialSoftExitAndDisclosure: some View {
         VStack(spacing: 12) {
-            if store.monthlyPackage != nil {
-                Button {
-                    finishOnboarding()
-                } label: {
-                    Text("Get Started")
-                        .font(.system(.footnote, design: .rounded, weight: .semibold))
-                        .foregroundStyle(Theme.textSecondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 7)
-                }
-                .buttonStyle(.plain)
-                .padding(.horizontal, 24)
+            Button {
+                finishOnboarding()
+            } label: {
+                Text("Get Started")
+                    .font(.system(.footnote, design: .rounded, weight: .semibold))
+                    .foregroundStyle(Theme.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 7)
             }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 24)
 
             // Render no disclosure until the package loads — never a phantom
             // price. Error replaces disclosure in the same slot.
@@ -473,13 +471,6 @@ struct OnboardingView: View {
                     .padding(.horizontal, 24)
             } else if let disclosure = trialDisclosure {
                 Text(disclosure)
-                    .font(.system(.caption2, design: .rounded))
-                    .foregroundStyle(Theme.textTertiary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 24)
-            } else {
-                Text("VO2+ plans are temporarily unavailable. Continue with the free app and try again later from the VO2+ tab.")
                     .font(.system(.caption2, design: .rounded))
                     .foregroundStyle(Theme.textTertiary)
                     .multilineTextAlignment(.center)
