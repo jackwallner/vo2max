@@ -33,3 +33,6 @@ fastlane/metadata/secondary_second_sub_category.txt
 
 # App Review contact phone stays local (never in a public repo)
 fastlane/metadata*/review_information/phone_number.txt
+
+# Python tooling caches
+__pycache__/

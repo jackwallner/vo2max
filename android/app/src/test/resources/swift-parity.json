@@ -1,0 +1,3922 @@
+[
+  {
+    "age" : 12,
+    "band" : null,
+    "change" : null,
+    "comparison" : null,
+    "days" : 30,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : null,
+      "gap" : null,
+      "state" : "noReadings"
+    },
+    "name" : "swift-scenario-0",
+    "now" : 1760000000,
+    "points" : [
+
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : null,
+    "trend" : "insufficientData",
+    "typicalLower" : 34.850000000000001,
+    "typicalUpper" : 56.349999999999994
+  },
+  {
+    "age" : 14,
+    "band" : "Below typical range",
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 31,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : 48,
+    "freshness" : {
+      "days" : 5,
+      "gap" : null,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-1",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1759568000,
+        "value" : 31
+      }
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : {
+      "average" : 31,
+      "count" : 1,
+      "latest" : 31,
+      "maximum" : 31,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 34.850000000000001,
+    "typicalUpper" : 47.149999999999999
+  },
+  {
+    "age" : 16,
+    "band" : "Below typical range",
+    "change" : 0.25244129544237026,
+    "comparison" : {
+      "count" : 2,
+      "current" : 31.126220647721183,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 63,
+    "freshness" : {
+      "days" : 7,
+      "gap" : null,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-2",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1758617600,
+        "value" : 31
+      },
+      {
+        "date" : 1759395200,
+        "value" : 31.25244129544237
+      }
+    ],
+    "projection" : null,
+    "sex" : 2,
+    "summary" : {
+      "average" : 31.126220647721183,
+      "count" : 2,
+      "latest" : 31.25244129544237,
+      "maximum" : 31.25244129544237,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 41.649999999999999,
+    "typicalUpper" : 56.349999999999994
+  },
+  {
+    "age" : 18,
+    "band" : null,
+    "change" : 0.89278922804770389,
+    "comparison" : {
+      "count" : 3,
+      "current" : 31.485076841163359,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 9,
+      "gap" : null,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-3",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1757148800,
+        "value" : 31
+      },
+      {
+        "date" : 1758185600,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1759222400,
+        "value" : 31.892789228047704
+      }
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : {
+      "average" : 31.485076841163359,
+      "count" : 3,
+      "latest" : 31.892789228047704,
+      "maximum" : 31.892789228047704,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 34.850000000000001,
+    "typicalUpper" : 56.349999999999994
+  },
+  {
+    "age" : 20,
+    "band" : "Around typical range",
+    "change" : 0.38954677437025254,
+    "comparison" : {
+      "count" : 2,
+      "current" : 32.707562615232831,
+      "previous" : 31.436220647721186,
+      "priorCount" : 2
+    },
+    "days" : 30,
+    "fitnessAge" : 40,
+    "freshness" : {
+      "days" : 11,
+      "gap" : 15,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-4",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1755161600,
+        "value" : 31
+      },
+      {
+        "date" : 1756457600,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1757753600,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1759049600,
+        "value" : 32.902336002417961
+      }
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : {
+      "average" : 32.707562615232831,
+      "count" : 2,
+      "latest" : 32.902336002417961,
+      "maximum" : 32.902336002417961,
+      "minimum" : 32.512789228047708,
+      "previous" : 31.436220647721186
+    },
+    "trend" : "improving",
+    "typicalLower" : 34.850000000000001,
+    "typicalUpper" : 47.149999999999999
+  },
+  {
+    "age" : 22,
+    "band" : "Below typical range",
+    "change" : -2.7070407485923802,
+    "comparison" : {
+      "count" : 5,
+      "current" : 29.828105155463128,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : 55,
+    "freshness" : {
+      "days" : 18,
+      "gap" : 18,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-5",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1752224000,
+        "value" : 31
+      },
+      {
+        "date" : 1753779200,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1755334400,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1756889600,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1758444800,
+        "value" : 28.29295925140762
+      }
+    ],
+    "projection" : {
+      "count" : 5,
+      "months" : null,
+      "slope" : -1.1440311317015317
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 29.828105155463128,
+      "count" : 5,
+      "latest" : 28.29295925140762,
+      "maximum" : 31,
+      "minimum" : 28.29295925140762,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 41.140000000000001,
+    "typicalUpper" : 55.659999999999997
+  },
+  {
+    "age" : 24,
+    "band" : null,
+    "change" : -1.8376772823989427,
+    "comparison" : {
+      "count" : 6,
+      "current" : 30.233808082486121,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 20,
+      "gap" : 21,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-6",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1749200000,
+        "value" : 31
+      },
+      {
+        "date" : 1751014400,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1752828800,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1754643200,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1756457600,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1758272000,
+        "value" : 29.162322717601057
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : null,
+      "slope" : -0.56968513345831195
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 30.233808082486121,
+      "count" : 6,
+      "latest" : 29.162322717601057,
+      "maximum" : 31,
+      "minimum" : 29.162322717601057,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 33.829999999999998,
+    "typicalUpper" : 54.969999999999992
+  },
+  {
+    "age" : 26,
+    "band" : "Around typical range",
+    "change" : -0.083824649459678824,
+    "comparison" : {
+      "count" : 7,
+      "current" : 30.995574835065295,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 30,
+    "freshness" : {
+      "days" : 22,
+      "gap" : 24,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-7",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1745657600,
+        "value" : 31
+      },
+      {
+        "date" : 1747731200,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1749804800,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1751878400,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1753952000,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1756025600,
+        "value" : 30.712322717601058
+      },
+      {
+        "date" : 1758099200,
+        "value" : 30.916175350540321
+      }
+    ],
+    "projection" : {
+      "count" : 7,
+      "months" : null,
+      "slope" : -0.081765226817048398
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 30.995574835065295,
+      "count" : 7,
+      "latest" : 30.916175350540321,
+      "maximum" : 31.272789228047703,
+      "minimum" : 30.712322717601058,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 33.32,
+    "typicalUpper" : 45.079999999999998
+  },
+  {
+    "age" : 28,
+    "band" : "Below typical range",
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 33.367095979615641,
+      "previous" : 32.776175350540321,
+      "priorCount" : 1
+    },
+    "days" : 30,
+    "fitnessAge" : 48,
+    "freshness" : {
+      "days" : 24,
+      "gap" : 27,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-8",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1741596800,
+        "value" : 31
+      },
+      {
+        "date" : 1743929600,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1746262400,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1748595200,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1750928000,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1753260800,
+        "value" : 32.262322717601059
+      },
+      {
+        "date" : 1755593600,
+        "value" : 32.776175350540321
+      },
+      {
+        "date" : 1757926400,
+        "value" : 33.367095979615641
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : null,
+      "slope" : 0.31848937360001084
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 33.367095979615641,
+      "count" : 1,
+      "latest" : 33.367095979615641,
+      "maximum" : 33.367095979615641,
+      "minimum" : 33.367095979615641,
+      "previous" : 32.776175350540321
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 39.609999999999999,
+    "typicalUpper" : 53.589999999999996
+  },
+  {
+    "age" : 30,
+    "band" : null,
+    "change" : 4.5370959796156427,
+    "comparison" : {
+      "count" : 8,
+      "current" : 33.190764978134084,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 0,
+      "gap" : 5,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-9",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1758012800,
+        "value" : 31
+      },
+      {
+        "date" : 1758272000,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1758531200,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1758790400,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1759049600,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1759308800,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1759568000,
+        "value" : 34.63617535054032
+      },
+      {
+        "date" : 1759827200,
+        "value" : 35.537095979615643
+      },
+      {
+        "date" : 1760086400,
+        "value" : 36.256807473987017
+      }
+    ],
+    "projection" : {
+      "count" : 9,
+      "months" : 2,
+      "slope" : 6.1963254847727249
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 33.190764978134084,
+      "count" : 8,
+      "latest" : 35.537095979615643,
+      "maximum" : 35.537095979615643,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "improving",
+    "typicalLower" : 32.299999999999997,
+    "typicalUpper" : 52.899999999999999
+  },
+  {
+    "age" : 32,
+    "band" : "Above typical range",
+    "change" : -5.4563644544274723,
+    "comparison" : {
+      "count" : 10,
+      "current" : 28.268656284463212,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 6,
+      "gap" : 6,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-10",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1754816000,
+        "value" : 31
+      },
+      {
+        "date" : 1755334400,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1755852800,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1756371200,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1756889600,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1757408000,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1757926400,
+        "value" : 27.196175350540322
+      },
+      {
+        "date" : 1758444800,
+        "value" : 26.857095979615636
+      },
+      {
+        "date" : 1758963200,
+        "value" : 26.336807473987015
+      },
+      {
+        "date" : 1759481600,
+        "value" : 25.543635545572528
+      }
+    ],
+    "projection" : {
+      "count" : 10,
+      "months" : null,
+      "slope" : -3.0816455021707254
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 28.268656284463212,
+      "count" : 10,
+      "latest" : 25.543635545572528,
+      "maximum" : 31,
+      "minimum" : 25.543635545572528,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 31.789999999999999,
+    "typicalUpper" : 43.009999999999998
+  },
+  {
+    "age" : 34,
+    "band" : "Around typical range",
+    "change" : -3.2632063332668118,
+    "comparison" : {
+      "count" : 11,
+      "current" : 29.488486955578676,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 40,
+    "freshness" : {
+      "days" : 8,
+      "gap" : 9,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-11",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1751532800,
+        "value" : 31
+      },
+      {
+        "date" : 1752310400,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1753088000,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1753865600,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1754643200,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1755420800,
+        "value" : 29.162322717601057
+      },
+      {
+        "date" : 1756198400,
+        "value" : 29.056175350540322
+      },
+      {
+        "date" : 1756976000,
+        "value" : 29.027095979615634
+      },
+      {
+        "date" : 1757753600,
+        "value" : 28.816807473987016
+      },
+      {
+        "date" : 1758531200,
+        "value" : 28.333635545572527
+      },
+      {
+        "date" : 1759308800,
+        "value" : 27.736793666733188
+      }
+    ],
+    "projection" : {
+      "count" : 11,
+      "months" : null,
+      "slope" : -1.0577716325596218
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 29.488486955578676,
+      "count" : 11,
+      "latest" : 27.736793666733188,
+      "maximum" : 31,
+      "minimum" : 27.736793666733188,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 37.739999999999995,
+    "typicalUpper" : 51.059999999999995
+  },
+  {
+    "age" : 36,
+    "band" : null,
+    "change" : -0.1367907286984007,
+    "comparison" : {
+      "count" : 2,
+      "current" : 30.768398302383989,
+      "previous" : 31.205846333058393,
+      "priorCount" : 3
+    },
+    "days" : 30,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 10,
+      "gap" : 12,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-12",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1747731200,
+        "value" : 31
+      },
+      {
+        "date" : 1748768000,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1749804800,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1750841600,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1751878400,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1752915200,
+        "value" : 30.712322717601058
+      },
+      {
+        "date" : 1753952000,
+        "value" : 30.916175350540321
+      },
+      {
+        "date" : 1754988800,
+        "value" : 31.197095979615636
+      },
+      {
+        "date" : 1756025600,
+        "value" : 31.296807473987016
+      },
+      {
+        "date" : 1757062400,
+        "value" : 31.123635545572526
+      },
+      {
+        "date" : 1758099200,
+        "value" : 30.83679366673319
+      },
+      {
+        "date" : 1759136000,
+        "value" : 30.700002938034789
+      }
+    ],
+    "projection" : {
+      "count" : 12,
+      "months" : null,
+      "slope" : -0.046645558932847962
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 30.768398302383989,
+      "count" : 2,
+      "latest" : 30.700002938034789,
+      "maximum" : 30.83679366673319,
+      "minimum" : 30.700002938034789,
+      "previous" : 31.205846333058393
+    },
+    "trend" : "stable",
+    "typicalLower" : 30.770000000000003,
+    "typicalUpper" : 50.140000000000001
+  },
+  {
+    "age" : 38,
+    "band" : "Well above typical range",
+    "change" : 1.1919321449842286,
+    "comparison" : {
+      "count" : 6,
+      "current" : 33.943893954757179,
+      "previous" : 32.07983730757617,
+      "priorCount" : 6
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 12,
+      "gap" : 15,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-13",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1743411200,
+        "value" : 31
+      },
+      {
+        "date" : 1744707200,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1746003200,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1747299200,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1748595200,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1749891200,
+        "value" : 32.262322717601059
+      },
+      {
+        "date" : 1751187200,
+        "value" : 32.776175350540321
+      },
+      {
+        "date" : 1752483200,
+        "value" : 33.367095979615641
+      },
+      {
+        "date" : 1753779200,
+        "value" : 33.776807473987013
+      },
+      {
+        "date" : 1755075200,
+        "value" : 33.913635545572525
+      },
+      {
+        "date" : 1756371200,
+        "value" : 33.936793666733188
+      },
+      {
+        "date" : 1757667200,
+        "value" : 34.110002938034782
+      },
+      {
+        "date" : 1758963200,
+        "value" : 34.55902812459987
+      }
+    ],
+    "projection" : {
+      "count" : 12,
+      "months" : 19,
+      "slope" : 0.56857579391525315
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 33.943893954757179,
+      "count" : 6,
+      "latest" : 34.55902812459987,
+      "maximum" : 34.55902812459987,
+      "minimum" : 33.367095979615641,
+      "previous" : 32.07983730757617
+    },
+    "trend" : "stable",
+    "typicalLower" : 30.260000000000002,
+    "typicalUpper" : 40.939999999999998
+  },
+  {
+    "age" : 40,
+    "band" : "Above typical range",
+    "change" : 5.9330908596403802,
+    "comparison" : {
+      "count" : 10,
+      "current" : 36.222087115914007,
+      "previous" : 32.071891631477008,
+      "priorCount" : 4
+    },
+    "days" : 180,
+    "fitnessAge" : 33,
+    "freshness" : {
+      "days" : 14,
+      "gap" : 18,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-14",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1738572800,
+        "value" : 31
+      },
+      {
+        "date" : 1740128000,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1741683200,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1743238400,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1744793600,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1746348800,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1747904000,
+        "value" : 34.63617535054032
+      },
+      {
+        "date" : 1749459200,
+        "value" : 35.537095979615643
+      },
+      {
+        "date" : 1751014400,
+        "value" : 36.256807473987017
+      },
+      {
+        "date" : 1752569600,
+        "value" : 36.703635545572524
+      },
+      {
+        "date" : 1754124800,
+        "value" : 37.036793666733189
+      },
+      {
+        "date" : 1755680000,
+        "value" : 37.520002938034793
+      },
+      {
+        "date" : 1757235200,
+        "value" : 38.279028124599868
+      },
+      {
+        "date" : 1758790400,
+        "value" : 39.186050111047997
+      }
+    ],
+    "projection" : {
+      "count" : 10,
+      "months" : 6,
+      "slope" : 1.0508062086481427
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 36.222087115914007,
+      "count" : 10,
+      "latest" : 39.186050111047997,
+      "maximum" : 39.186050111047997,
+      "minimum" : 33.252959251407617,
+      "previous" : 32.071891631477008
+    },
+    "trend" : "improving",
+    "typicalLower" : 35.699999999999996,
+    "typicalUpper" : 48.299999999999997
+  },
+  {
+    "age" : 42,
+    "band" : null,
+    "change" : -8.3828177932915402,
+    "comparison" : {
+      "count" : 15,
+      "current" : 26.685707992783762,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 21,
+      "gap" : 21,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-15",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1732784000,
+        "value" : 31
+      },
+      {
+        "date" : 1734598400,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1736412800,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1738227200,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1740041600,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1741856000,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1743670400,
+        "value" : 27.196175350540322
+      },
+      {
+        "date" : 1745484800,
+        "value" : 26.857095979615636
+      },
+      {
+        "date" : 1747299200,
+        "value" : 26.336807473987015
+      },
+      {
+        "date" : 1749113600,
+        "value" : 25.543635545572528
+      },
+      {
+        "date" : 1750928000,
+        "value" : 24.63679366673319
+      },
+      {
+        "date" : 1752742400,
+        "value" : 23.880002938034789
+      },
+      {
+        "date" : 1754556800,
+        "value" : 23.399028124599873
+      },
+      {
+        "date" : 1756371200,
+        "value" : 23.066050111047989
+      },
+      {
+        "date" : 1758185600,
+        "value" : 22.61718220670846
+      }
+    ],
+    "projection" : {
+      "count" : 8,
+      "months" : null,
+      "slope" : -0.90516660232417556
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 26.685707992783762,
+      "count" : 15,
+      "latest" : 22.61718220670846,
+      "maximum" : 31,
+      "minimum" : 22.61718220670846,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 29.07,
+    "typicalUpper" : 47.380000000000003
+  },
+  {
+    "age" : 44,
+    "band" : "Well above typical range",
+    "change" : null,
+    "comparison" : null,
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : null,
+      "gap" : null,
+      "state" : "noReadings"
+    },
+    "name" : "swift-scenario-16",
+    "now" : 1760000000,
+    "points" : [
+
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : null,
+    "trend" : "insufficientData",
+    "typicalLower" : 28.389999999999997,
+    "typicalUpper" : 38.409999999999997
+  },
+  {
+    "age" : 46,
+    "band" : "Well above typical range",
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 31,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : 23,
+    "freshness" : {
+      "days" : 25,
+      "gap" : null,
+      "state" : "stale"
+    },
+    "name" : "swift-scenario-17",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1757840000,
+        "value" : 31
+      }
+    ],
+    "projection" : null,
+    "sex" : 2,
+    "summary" : {
+      "average" : 31,
+      "count" : 1,
+      "latest" : 31,
+      "maximum" : 31,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 33.660000000000004,
+    "typicalUpper" : 45.539999999999999
+  },
+  {
+    "age" : 48,
+    "band" : null,
+    "change" : 0.56244129544236898,
+    "comparison" : {
+      "count" : 2,
+      "current" : 31.281220647721184,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 0,
+      "gap" : null,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-18",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1759740800,
+        "value" : 31
+      },
+      {
+        "date" : 1760000000,
+        "value" : 31.562441295442369
+      }
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : {
+      "average" : 31.281220647721184,
+      "count" : 2,
+      "latest" : 31.562441295442369,
+      "maximum" : 31.562441295442369,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 27.030000000000001,
+    "typicalUpper" : 44.61999999999999
+  },
+  {
+    "age" : 50,
+    "band" : "Well above typical range",
+    "change" : 1.5127892280477084,
+    "comparison" : {
+      "count" : 3,
+      "current" : 31.795076841163361,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 2,
+      "gap" : null,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-19",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1758790400,
+        "value" : 31
+      },
+      {
+        "date" : 1759308800,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1759827200,
+        "value" : 32.512789228047708
+      }
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : {
+      "average" : 31.795076841163361,
+      "count" : 3,
+      "latest" : 32.512789228047708,
+      "maximum" : 32.512789228047708,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 26.349999999999998,
+    "typicalUpper" : 35.649999999999999
+  },
+  {
+    "age" : 52,
+    "band" : "Well above typical range",
+    "change" : -1.4501052930244072,
+    "comparison" : {
+      "count" : 3,
+      "current" : 29.949188841969345,
+      "previous" : 31,
+      "priorCount" : 1
+    },
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 9,
+      "gap" : 9,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-20",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1756889600,
+        "value" : 31
+      },
+      {
+        "date" : 1757667200,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1758444800,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1759222400,
+        "value" : 29.182336002417962
+      }
+    ],
+    "projection" : null,
+    "sex" : 2,
+    "summary" : {
+      "average" : 29.949188841969345,
+      "count" : 3,
+      "latest" : 29.182336002417962,
+      "maximum" : 30.632441295442369,
+      "minimum" : 29.182336002417962,
+      "previous" : 31
+    },
+    "trend" : "declining",
+    "typicalLower" : 31.620000000000001,
+    "typicalUpper" : 42.780000000000001
+  },
+  {
+    "age" : 54,
+    "band" : null,
+    "change" : -1.4670407485923782,
+    "comparison" : {
+      "count" : 5,
+      "current" : 30.448105155463132,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 11,
+      "gap" : 12,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-21",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1754902400,
+        "value" : 31
+      },
+      {
+        "date" : 1755939200,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1756976000,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1758012800,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1759049600,
+        "value" : 29.532959251407622
+      }
+    ],
+    "projection" : {
+      "count" : 5,
+      "months" : null,
+      "slope" : -0.9410466975522922
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 30.448105155463132,
+      "count" : 5,
+      "latest" : 29.532959251407622,
+      "maximum" : 31,
+      "minimum" : 29.532959251407622,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 24.989999999999998,
+    "typicalUpper" : 41.859999999999992
+  },
+  {
+    "age" : 56,
+    "band" : "Well above typical range",
+    "change" : -0.28767728239894197,
+    "comparison" : {
+      "count" : 6,
+      "current" : 31.008808082486123,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 13,
+      "gap" : 15,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-22",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1752396800,
+        "value" : 31
+      },
+      {
+        "date" : 1753692800,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1754988800,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1756284800,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1757580800,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1758876800,
+        "value" : 30.712322717601058
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : null,
+      "slope" : -0.17755918684164212
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 31.008808082486123,
+      "count" : 6,
+      "latest" : 30.712322717601058,
+      "maximum" : 31.272789228047703,
+      "minimum" : 30.712322717601058,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 24.310000000000002,
+    "typicalUpper" : 32.890000000000001
+  },
+  {
+    "age" : 58,
+    "band" : "Well above typical range",
+    "change" : 1.7761753505403206,
+    "comparison" : {
+      "count" : 7,
+      "current" : 31.925574835065287,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 15,
+      "gap" : 18,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-23",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1749372800,
+        "value" : 31
+      },
+      {
+        "date" : 1750928000,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1752483200,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1754038400,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1755593600,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1757148800,
+        "value" : 32.262322717601059
+      },
+      {
+        "date" : 1758704000,
+        "value" : 32.776175350540321
+      }
+    ],
+    "projection" : {
+      "count" : 7,
+      "months" : null,
+      "slope" : 0.4076463642439494
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 31.925574835065287,
+      "count" : 7,
+      "latest" : 32.776175350540321,
+      "maximum" : 32.776175350540321,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 29.579999999999998,
+    "typicalUpper" : 40.019999999999996
+  },
+  {
+    "age" : 60,
+    "band" : null,
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 35.537095979615643,
+      "previous" : 34.224249034070695,
+      "priorCount" : 2
+    },
+    "days" : 30,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 17,
+      "gap" : 21,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-24",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1745830400,
+        "value" : 31
+      },
+      {
+        "date" : 1747644800,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1749459200,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1751273600,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1753088000,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1754902400,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1756716800,
+        "value" : 34.63617535054032
+      },
+      {
+        "date" : 1758531200,
+        "value" : 35.537095979615643
+      }
+    ],
+    "projection" : {
+      "count" : 8,
+      "months" : 12,
+      "slope" : 0.84740758249063275
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 35.537095979615643,
+      "count" : 1,
+      "latest" : 35.537095979615643,
+      "maximum" : 35.537095979615643,
+      "minimum" : 35.537095979615643,
+      "previous" : 34.224249034070695
+    },
+    "trend" : "improving",
+    "typicalLower" : 22.949999999999999,
+    "typicalUpper" : 39.099999999999994
+  },
+  {
+    "age" : 62,
+    "band" : "Well above typical range",
+    "change" : -0.85936787655330704,
+    "comparison" : {
+      "count" : 3,
+      "current" : 26.796692934714326,
+      "previous" : 28.780101799868586,
+      "priorCount" : 4
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 24,
+      "gap" : 24,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-25",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1741337600,
+        "value" : 31
+      },
+      {
+        "date" : 1743411200,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1745484800,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1747558400,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1749632000,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1751705600,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1753779200,
+        "value" : 27.196175350540322
+      },
+      {
+        "date" : 1755852800,
+        "value" : 26.857095979615636
+      },
+      {
+        "date" : 1757926400,
+        "value" : 26.336807473987015
+      }
+    ],
+    "projection" : {
+      "count" : 7,
+      "months" : null,
+      "slope" : -0.75157183967205743
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 26.796692934714326,
+      "count" : 3,
+      "latest" : 26.336807473987015,
+      "maximum" : 27.196175350540322,
+      "minimum" : 26.336807473987015,
+      "previous" : 28.780101799868586
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 22.439999999999998,
+    "typicalUpper" : 30.359999999999996
+  },
+  {
+    "age" : 64,
+    "band" : "Well above typical range",
+    "change" : -1.199323705835095,
+    "comparison" : {
+      "count" : 6,
+      "current" : 28.988166053120693,
+      "previous" : 30.676891631477009,
+      "priorCount" : 4
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 26,
+      "gap" : 27,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-26",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1736758400,
+        "value" : 31
+      },
+      {
+        "date" : 1739091200,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1741424000,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1743756800,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1746089600,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1748422400,
+        "value" : 29.162322717601057
+      },
+      {
+        "date" : 1750755200,
+        "value" : 29.056175350540322
+      },
+      {
+        "date" : 1753088000,
+        "value" : 29.027095979615634
+      },
+      {
+        "date" : 1755420800,
+        "value" : 28.816807473987016
+      },
+      {
+        "date" : 1757753600,
+        "value" : 28.333635545572527
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : null,
+      "slope" : -0.22419821050610597
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 28.988166053120693,
+      "count" : 6,
+      "latest" : 28.333635545572527,
+      "maximum" : 29.532959251407622,
+      "minimum" : 28.333635545572527,
+      "previous" : 30.676891631477009
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 27.539999999999999,
+    "typicalUpper" : 37.259999999999998
+  },
+  {
+    "age" : 66,
+    "band" : null,
+    "change" : -0.16320633326681033,
+    "comparison" : {
+      "count" : 11,
+      "current" : 31.038486955578673,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 1,
+      "gap" : 5,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-27",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1757321600,
+        "value" : 31
+      },
+      {
+        "date" : 1757580800,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1757840000,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1758099200,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1758358400,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1758617600,
+        "value" : 30.712322717601058
+      },
+      {
+        "date" : 1758876800,
+        "value" : 30.916175350540321
+      },
+      {
+        "date" : 1759136000,
+        "value" : 31.197095979615636
+      },
+      {
+        "date" : 1759395200,
+        "value" : 31.296807473987016
+      },
+      {
+        "date" : 1759654400,
+        "value" : 31.123635545572526
+      },
+      {
+        "date" : 1759913600,
+        "value" : 30.83679366673319
+      }
+    ],
+    "projection" : {
+      "count" : 11,
+      "months" : null,
+      "slope" : -0.07331489767886383
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 31.038486955578673,
+      "count" : 11,
+      "latest" : 30.83679366673319,
+      "maximum" : 31.296807473987016,
+      "minimum" : 30.712322717601058,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 21.419999999999998,
+    "typicalUpper" : 36.339999999999996
+  },
+  {
+    "age" : 68,
+    "band" : "Well above typical range",
+    "change" : 0.74290695841914101,
+    "comparison" : {
+      "count" : 5,
+      "current" : 33.820867120788634,
+      "previous" : 32.183316510002932,
+      "priorCount" : 5
+    },
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 3,
+      "gap" : 6,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-28",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1754038400,
+        "value" : 31
+      },
+      {
+        "date" : 1754556800,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1755075200,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1755593600,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1756112000,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1756630400,
+        "value" : 32.262322717601059
+      },
+      {
+        "date" : 1757148800,
+        "value" : 32.776175350540321
+      },
+      {
+        "date" : 1757667200,
+        "value" : 33.367095979615641
+      },
+      {
+        "date" : 1758185600,
+        "value" : 33.776807473987013
+      },
+      {
+        "date" : 1758704000,
+        "value" : 33.913635545572525
+      },
+      {
+        "date" : 1759222400,
+        "value" : 33.936793666733188
+      },
+      {
+        "date" : 1759740800,
+        "value" : 34.110002938034782
+      }
+    ],
+    "projection" : {
+      "count" : 12,
+      "months" : 8,
+      "slope" : 1.4567088821343086
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 33.820867120788634,
+      "count" : 5,
+      "latest" : 34.110002938034782,
+      "maximum" : 34.110002938034782,
+      "minimum" : 33.367095979615641,
+      "previous" : 32.183316510002932
+    },
+    "trend" : "improving",
+    "typicalLower" : 20.91,
+    "typicalUpper" : 28.289999999999999
+  },
+  {
+    "age" : 70,
+    "band" : "Well above typical range",
+    "change" : 5.3766921221819075,
+    "comparison" : {
+      "count" : 10,
+      "current" : 35.593715705050997,
+      "previous" : 31.795076841163361,
+      "priorCount" : 3
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 5,
+      "gap" : 9,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-29",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1750236800,
+        "value" : 31
+      },
+      {
+        "date" : 1751014400,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1751792000,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1752569600,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1753347200,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1754124800,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1754902400,
+        "value" : 34.63617535054032
+      },
+      {
+        "date" : 1755680000,
+        "value" : 35.537095979615643
+      },
+      {
+        "date" : 1756457600,
+        "value" : 36.256807473987017
+      },
+      {
+        "date" : 1757235200,
+        "value" : 36.703635545572524
+      },
+      {
+        "date" : 1758012800,
+        "value" : 37.036793666733189
+      },
+      {
+        "date" : 1758790400,
+        "value" : 37.520002938034793
+      },
+      {
+        "date" : 1759568000,
+        "value" : 38.279028124599868
+      }
+    ],
+    "projection" : {
+      "count" : 13,
+      "months" : 4,
+      "slope" : 1.9989810082772999
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 35.593715705050997,
+      "count" : 10,
+      "latest" : 38.279028124599868,
+      "maximum" : 38.279028124599868,
+      "minimum" : 32.902336002417961,
+      "previous" : 31.795076841163361
+    },
+    "trend" : "improving",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 72,
+    "band" : null,
+    "change" : -7.9339498889520108,
+    "comparison" : {
+      "count" : 14,
+      "current" : 26.976316977503426,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 12,
+      "gap" : 12,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-30",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1745484800,
+        "value" : 31
+      },
+      {
+        "date" : 1746521600,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1747558400,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1748595200,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1749632000,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1750668800,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1751705600,
+        "value" : 27.196175350540322
+      },
+      {
+        "date" : 1752742400,
+        "value" : 26.857095979615636
+      },
+      {
+        "date" : 1753779200,
+        "value" : 26.336807473987015
+      },
+      {
+        "date" : 1754816000,
+        "value" : 25.543635545572528
+      },
+      {
+        "date" : 1755852800,
+        "value" : 24.63679366673319
+      },
+      {
+        "date" : 1756889600,
+        "value" : 23.880002938034789
+      },
+      {
+        "date" : 1757926400,
+        "value" : 23.399028124599873
+      },
+      {
+        "date" : 1758963200,
+        "value" : 23.066050111047989
+      }
+    ],
+    "projection" : {
+      "count" : 14,
+      "months" : null,
+      "slope" : -1.5814011539917272
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 26.976316977503426,
+      "count" : 14,
+      "latest" : 23.066050111047989,
+      "maximum" : 31,
+      "minimum" : 23.066050111047989,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 74,
+    "band" : "Well above typical range",
+    "change" : -4.0428177932915403,
+    "comparison" : {
+      "count" : 15,
+      "current" : 28.855707992783771,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 14,
+      "gap" : 15,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-31",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1740646400,
+        "value" : 31
+      },
+      {
+        "date" : 1741942400,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1743238400,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1744534400,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1745830400,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1747126400,
+        "value" : 29.162322717601057
+      },
+      {
+        "date" : 1748422400,
+        "value" : 29.056175350540322
+      },
+      {
+        "date" : 1749718400,
+        "value" : 29.027095979615634
+      },
+      {
+        "date" : 1751014400,
+        "value" : 28.816807473987016
+      },
+      {
+        "date" : 1752310400,
+        "value" : 28.333635545572527
+      },
+      {
+        "date" : 1753606400,
+        "value" : 27.736793666733188
+      },
+      {
+        "date" : 1754902400,
+        "value" : 27.290002938034789
+      },
+      {
+        "date" : 1756198400,
+        "value" : 27.119028124599872
+      },
+      {
+        "date" : 1757494400,
+        "value" : 27.09605011104799
+      },
+      {
+        "date" : 1758790400,
+        "value" : 26.95718220670846
+      }
+    ],
+    "projection" : {
+      "count" : 12,
+      "months" : null,
+      "slope" : -0.58829983983663936
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 28.855707992783771,
+      "count" : 15,
+      "latest" : 26.95718220670846,
+      "maximum" : 31,
+      "minimum" : 26.95718220670846,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 76,
+    "band" : "Well above typical range",
+    "change" : null,
+    "comparison" : null,
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : null,
+      "gap" : null,
+      "state" : "noReadings"
+    },
+    "name" : "swift-scenario-32",
+    "now" : 1760000000,
+    "points" : [
+
+    ],
+    "projection" : null,
+    "sex" : 2,
+    "summary" : null,
+    "trend" : "insufficientData",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 78,
+    "band" : null,
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 31,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 18,
+      "gap" : null,
+      "state" : "aging"
+    },
+    "name" : "swift-scenario-33",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1758444800,
+        "value" : 31
+      }
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : {
+      "average" : 31,
+      "count" : 1,
+      "latest" : 31,
+      "maximum" : 31,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 80,
+    "band" : "Well above typical range",
+    "change" : 0.87244129544237126,
+    "comparison" : {
+      "count" : 2,
+      "current" : 31.436220647721186,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 20,
+      "gap" : null,
+      "state" : "aging"
+    },
+    "name" : "swift-scenario-34",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1756198400,
+        "value" : 31
+      },
+      {
+        "date" : 1758272000,
+        "value" : 31.872441295442371
+      }
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : {
+      "average" : 31.436220647721186,
+      "count" : 2,
+      "latest" : 31.872441295442371,
+      "maximum" : 31.872441295442371,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 82,
+    "band" : "Well above typical range",
+    "change" : -0.96721077195229554,
+    "comparison" : {
+      "count" : 3,
+      "current" : 30.555076841163356,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 27,
+      "gap" : null,
+      "state" : "stale"
+    },
+    "name" : "swift-scenario-35",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1753001600,
+        "value" : 31
+      },
+      {
+        "date" : 1755334400,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1757667200,
+        "value" : 30.032789228047704
+      }
+    ],
+    "projection" : null,
+    "sex" : 2,
+    "summary" : {
+      "average" : 30.555076841163356,
+      "count" : 3,
+      "latest" : 30.032789228047704,
+      "maximum" : 31,
+      "minimum" : 30.032789228047704,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 84,
+    "band" : null,
+    "change" : -0.88766399758203818,
+    "comparison" : {
+      "count" : 4,
+      "current" : 30.676891631477009,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 30,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 2,
+      "gap" : 5,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-36",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1759049600,
+        "value" : 31
+      },
+      {
+        "date" : 1759308800,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1759568000,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1759827200,
+        "value" : 30.112336002417962
+      }
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : {
+      "average" : 30.676891631477009,
+      "count" : 4,
+      "latest" : 30.112336002417962,
+      "maximum" : 31,
+      "minimum" : 30.112336002417962,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 86,
+    "band" : "Well above typical range",
+    "change" : -0.22704074859237977,
+    "comparison" : {
+      "count" : 5,
+      "current" : 31.068105155463133,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 4,
+      "gap" : 6,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-37",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1757580800,
+        "value" : 31
+      },
+      {
+        "date" : 1758099200,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1758617600,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1759136000,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1759654400,
+        "value" : 30.77295925140762
+      }
+    ],
+    "projection" : {
+      "count" : 5,
+      "months" : null,
+      "slope" : -0.33209339510458452
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 31.068105155463133,
+      "count" : 5,
+      "latest" : 30.77295925140762,
+      "maximum" : 31.272789228047703,
+      "minimum" : 30.77295925140762,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 88,
+    "band" : "Well above typical range",
+    "change" : 1.2623227176010587,
+    "comparison" : {
+      "count" : 6,
+      "current" : 31.783808082486118,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 6,
+      "gap" : 9,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-38",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1755593600,
+        "value" : 31
+      },
+      {
+        "date" : 1756371200,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1757148800,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1757926400,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1758704000,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1759481600,
+        "value" : 32.262322717601059
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : 18,
+      "slope" : 0.73740135526395301
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 31.783808082486118,
+      "count" : 6,
+      "latest" : 32.262322717601059,
+      "maximum" : 32.262322717601059,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 90,
+    "band" : null,
+    "change" : 3.63617535054032,
+    "comparison" : {
+      "count" : 7,
+      "current" : 32.855574835065291,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 8,
+      "gap" : 12,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-39",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1753088000,
+        "value" : 31
+      },
+      {
+        "date" : 1754124800,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1755161600,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1756198400,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1757235200,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1758272000,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1759308800,
+        "value" : 34.63617535054032
+      }
+    ],
+    "projection" : {
+      "count" : 7,
+      "months" : 8,
+      "slope" : 1.3864695463659242
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 32.855574835065291,
+      "count" : 7,
+      "latest" : 34.63617535054032,
+      "maximum" : 34.63617535054032,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "improving",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 92,
+    "band" : "Well above typical range",
+    "change" : -0.33907937092468643,
+    "comparison" : {
+      "count" : 2,
+      "current" : 27.026635665077979,
+      "previous" : 27.952640984504338,
+      "priorCount" : 2
+    },
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 15,
+      "gap" : 15,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-40",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1749632000,
+        "value" : 31
+      },
+      {
+        "date" : 1750928000,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1752224000,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1753520000,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1754816000,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1756112000,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1757408000,
+        "value" : 27.196175350540322
+      },
+      {
+        "date" : 1758704000,
+        "value" : 26.857095979615636
+      }
+    ],
+    "projection" : {
+      "count" : 8,
+      "months" : null,
+      "slope" : -1.2936293845131173
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 27.026635665077979,
+      "count" : 2,
+      "latest" : 26.857095979615636,
+      "maximum" : 27.196175350540322,
+      "minimum" : 26.857095979615636,
+      "previous" : 27.952640984504338
+    },
+    "trend" : "declining",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 94,
+    "band" : "Well above typical range",
+    "change" : -0.71615177742060609,
+    "comparison" : {
+      "count" : 5,
+      "current" : 29.119072154630327,
+      "previous" : 30.676891631477009,
+      "priorCount" : 4
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 17,
+      "gap" : 18,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-41",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1746089600,
+        "value" : 31
+      },
+      {
+        "date" : 1747644800,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1749200000,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1750755200,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1752310400,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1753865600,
+        "value" : 29.162322717601057
+      },
+      {
+        "date" : 1755420800,
+        "value" : 29.056175350540322
+      },
+      {
+        "date" : 1756976000,
+        "value" : 29.027095979615634
+      },
+      {
+        "date" : 1758531200,
+        "value" : 28.816807473987016
+      }
+    ],
+    "projection" : {
+      "count" : 9,
+      "months" : null,
+      "slope" : -0.51727908587121985
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 29.119072154630327,
+      "count" : 5,
+      "latest" : 28.816807473987016,
+      "maximum" : 29.532959251407622,
+      "minimum" : 28.816807473987016,
+      "previous" : 30.676891631477009
+    },
+    "trend" : "stable",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 96,
+    "band" : null,
+    "change" : -0.14915368247517691,
+    "comparison" : {
+      "count" : 8,
+      "current" : 31.041765193648729,
+      "previous" : 31.126220647721183,
+      "priorCount" : 2
+    },
+    "days" : 180,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 19,
+      "gap" : 21,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-42",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1742028800,
+        "value" : 31
+      },
+      {
+        "date" : 1743843200,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1745657600,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1747472000,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1749286400,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1751100800,
+        "value" : 30.712322717601058
+      },
+      {
+        "date" : 1752915200,
+        "value" : 30.916175350540321
+      },
+      {
+        "date" : 1754729600,
+        "value" : 31.197095979615636
+      },
+      {
+        "date" : 1756544000,
+        "value" : 31.296807473987016
+      },
+      {
+        "date" : 1758358400,
+        "value" : 31.123635545572526
+      }
+    ],
+    "projection" : {
+      "count" : 8,
+      "months" : null,
+      "slope" : 0.028988850307523167
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 31.041765193648729,
+      "count" : 8,
+      "latest" : 31.123635545572526,
+      "maximum" : 31.296807473987016,
+      "minimum" : 30.712322717601058,
+      "previous" : 31.126220647721183
+    },
+    "trend" : "stable",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 98,
+    "band" : "Well above typical range",
+    "change" : 2.9367936667331875,
+    "comparison" : {
+      "count" : 11,
+      "current" : 32.588486955578666,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 21,
+      "gap" : 24,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-43",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1737449600,
+        "value" : 31
+      },
+      {
+        "date" : 1739523200,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1741596800,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1743670400,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1745744000,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1747817600,
+        "value" : 32.262322717601059
+      },
+      {
+        "date" : 1749891200,
+        "value" : 32.776175350540321
+      },
+      {
+        "date" : 1751964800,
+        "value" : 33.367095979615641
+      },
+      {
+        "date" : 1754038400,
+        "value" : 33.776807473987013
+      },
+      {
+        "date" : 1756112000,
+        "value" : 33.913635545572525
+      },
+      {
+        "date" : 1758185600,
+        "value" : 33.936793666733188
+      }
+    ],
+    "projection" : {
+      "count" : 7,
+      "months" : null,
+      "slope" : 0.44976611720385118
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 32.588486955578666,
+      "count" : 11,
+      "latest" : 33.936793666733188,
+      "maximum" : 33.936793666733188,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 100,
+    "band" : "Well above typical range",
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 37.520002938034793,
+      "previous" : 37.036793666733189,
+      "priorCount" : 1
+    },
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 23,
+      "gap" : 27,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-44",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1732352000,
+        "value" : 31
+      },
+      {
+        "date" : 1734684800,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1737017600,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1739350400,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1741683200,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1744016000,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1746348800,
+        "value" : 34.63617535054032
+      },
+      {
+        "date" : 1748681600,
+        "value" : 35.537095979615643
+      },
+      {
+        "date" : 1751014400,
+        "value" : 36.256807473987017
+      },
+      {
+        "date" : 1753347200,
+        "value" : 36.703635545572524
+      },
+      {
+        "date" : 1755680000,
+        "value" : 37.036793666733189
+      },
+      {
+        "date" : 1758012800,
+        "value" : 37.520002938034793
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : 13,
+      "slope" : 0.61476378001302867
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 37.520002938034793,
+      "count" : 1,
+      "latest" : 37.520002938034793,
+      "maximum" : 37.520002938034793,
+      "minimum" : 37.520002938034793,
+      "previous" : 37.036793666733189
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 102,
+    "band" : null,
+    "change" : -7.600971875400127,
+    "comparison" : {
+      "count" : 13,
+      "current" : 27.277106736461537,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 3,
+      "gap" : 5,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-45",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1756630400,
+        "value" : 31
+      },
+      {
+        "date" : 1756889600,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1757148800,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1757408000,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1757667200,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1757926400,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1758185600,
+        "value" : 27.196175350540322
+      },
+      {
+        "date" : 1758444800,
+        "value" : 26.857095979615636
+      },
+      {
+        "date" : 1758704000,
+        "value" : 26.336807473987015
+      },
+      {
+        "date" : 1758963200,
+        "value" : 25.543635545572528
+      },
+      {
+        "date" : 1759222400,
+        "value" : 24.63679366673319
+      },
+      {
+        "date" : 1759481600,
+        "value" : 23.880002938034789
+      },
+      {
+        "date" : 1759740800,
+        "value" : 23.399028124599873
+      }
+    ],
+    "projection" : {
+      "count" : 13,
+      "months" : null,
+      "slope" : -6.4030569751680728
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 27.277106736461537,
+      "count" : 13,
+      "latest" : 23.399028124599873,
+      "maximum" : 31,
+      "minimum" : 23.399028124599873,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 104,
+    "band" : "Well above typical range",
+    "change" : -3.9039498889520097,
+    "comparison" : {
+      "count" : 14,
+      "current" : 28.991316977503434,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 5,
+      "gap" : 6,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-46",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1752828800,
+        "value" : 31
+      },
+      {
+        "date" : 1753347200,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1753865600,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1754384000,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1754902400,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1755420800,
+        "value" : 29.162322717601057
+      },
+      {
+        "date" : 1755939200,
+        "value" : 29.056175350540322
+      },
+      {
+        "date" : 1756457600,
+        "value" : 29.027095979615634
+      },
+      {
+        "date" : 1756976000,
+        "value" : 28.816807473987016
+      },
+      {
+        "date" : 1757494400,
+        "value" : 28.333635545572527
+      },
+      {
+        "date" : 1758012800,
+        "value" : 27.736793666733188
+      },
+      {
+        "date" : 1758531200,
+        "value" : 27.290002938034789
+      },
+      {
+        "date" : 1759049600,
+        "value" : 27.119028124599872
+      },
+      {
+        "date" : 1759568000,
+        "value" : 27.09605011104799
+      }
+    ],
+    "projection" : {
+      "count" : 14,
+      "months" : null,
+      "slope" : -1.6128023079834681
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 28.991316977503434,
+      "count" : 14,
+      "latest" : 27.09605011104799,
+      "maximum" : 31,
+      "minimum" : 27.09605011104799,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 106,
+    "band" : "Well above typical range",
+    "change" : 0.29718220670845952,
+    "comparison" : {
+      "count" : 15,
+      "current" : 31.025707992783769,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 7,
+      "gap" : 9,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-47",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1748508800,
+        "value" : 31
+      },
+      {
+        "date" : 1749286400,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1750064000,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1750841600,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1751619200,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1752396800,
+        "value" : 30.712322717601058
+      },
+      {
+        "date" : 1753174400,
+        "value" : 30.916175350540321
+      },
+      {
+        "date" : 1753952000,
+        "value" : 31.197095979615636
+      },
+      {
+        "date" : 1754729600,
+        "value" : 31.296807473987016
+      },
+      {
+        "date" : 1755507200,
+        "value" : 31.123635545572526
+      },
+      {
+        "date" : 1756284800,
+        "value" : 30.83679366673319
+      },
+      {
+        "date" : 1757062400,
+        "value" : 30.700002938034789
+      },
+      {
+        "date" : 1757840000,
+        "value" : 30.839028124599871
+      },
+      {
+        "date" : 1758617600,
+        "value" : 31.126050111047991
+      },
+      {
+        "date" : 1759395200,
+        "value" : 31.29718220670846
+      }
+    ],
+    "projection" : {
+      "count" : 15,
+      "months" : null,
+      "slope" : -0.0097791477239609001
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 31.025707992783769,
+      "count" : 15,
+      "latest" : 31.29718220670846,
+      "maximum" : 31.29718220670846,
+      "minimum" : 30.700002938034789,
+      "previous" : null
+    },
+    "trend" : "stable",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 108,
+    "band" : null,
+    "change" : null,
+    "comparison" : null,
+    "days" : 30,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : null,
+      "gap" : null,
+      "state" : "noReadings"
+    },
+    "name" : "swift-scenario-48",
+    "now" : 1760000000,
+    "points" : [
+
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : null,
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 110,
+    "band" : "Well above typical range",
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 31,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 11,
+      "gap" : null,
+      "state" : "aging"
+    },
+    "name" : "swift-scenario-49",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1759049600,
+        "value" : 31
+      }
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : {
+      "average" : 31,
+      "count" : 1,
+      "latest" : 31,
+      "maximum" : 31,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 112,
+    "band" : "Well above typical range",
+    "change" : -0.36755870455763073,
+    "comparison" : {
+      "count" : 2,
+      "current" : 30.816220647721185,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 18,
+      "gap" : null,
+      "state" : "aging"
+    },
+    "name" : "swift-scenario-50",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1756889600,
+        "value" : 31
+      },
+      {
+        "date" : 1758444800,
+        "value" : 30.632441295442369
+      }
+    ],
+    "projection" : null,
+    "sex" : 2,
+    "summary" : {
+      "average" : 30.816220647721185,
+      "count" : 2,
+      "latest" : 30.632441295442369,
+      "maximum" : 31,
+      "minimum" : 30.632441295442369,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 114,
+    "band" : null,
+    "change" : -0.3472107719522981,
+    "comparison" : {
+      "count" : 3,
+      "current" : 30.865076841163358,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 20,
+      "gap" : null,
+      "state" : "aging"
+    },
+    "name" : "swift-scenario-51",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1754643200,
+        "value" : 31
+      },
+      {
+        "date" : 1756457600,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1758272000,
+        "value" : 30.652789228047702
+      }
+    ],
+    "projection" : null,
+    "sex" : 0,
+    "summary" : {
+      "average" : 30.865076841163358,
+      "count" : 3,
+      "latest" : 30.652789228047702,
+      "maximum" : 31,
+      "minimum" : 30.652789228047702,
+      "previous" : null
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 116,
+    "band" : "Well above typical range",
+    "change" : null,
+    "comparison" : {
+      "count" : 1,
+      "current" : 31.042336002417962,
+      "previous" : 31.272789228047703,
+      "priorCount" : 1
+    },
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 22,
+      "gap" : 24,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-52",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1751878400,
+        "value" : 31
+      },
+      {
+        "date" : 1753952000,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1756025600,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1758099200,
+        "value" : 31.042336002417962
+      }
+    ],
+    "projection" : null,
+    "sex" : 1,
+    "summary" : {
+      "average" : 31.042336002417962,
+      "count" : 1,
+      "latest" : 31.042336002417962,
+      "maximum" : 31.042336002417962,
+      "minimum" : 31.042336002417962,
+      "previous" : 31.272789228047703
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 118,
+    "band" : "Well above typical range",
+    "change" : 0.12017002335991833,
+    "comparison" : {
+      "count" : 3,
+      "current" : 31.959361493957761,
+      "previous" : 31.281220647721184,
+      "priorCount" : 2
+    },
+    "days" : 90,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 24,
+      "gap" : 27,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-53",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1748595200,
+        "value" : 31
+      },
+      {
+        "date" : 1750928000,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1753260800,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1755593600,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1757926400,
+        "value" : 32.012959251407622
+      }
+    ],
+    "projection" : {
+      "count" : 5,
+      "months" : null,
+      "slope" : 0.27064591219898199
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 31.959361493957761,
+      "count" : 3,
+      "latest" : 32.012959251407622,
+      "maximum" : 32.012959251407622,
+      "minimum" : 31.892789228047704,
+      "previous" : 31.281220647721184
+    },
+    "trend" : "insufficientData",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 120,
+    "band" : null,
+    "change" : 2.2529592514076171,
+    "comparison" : {
+      "count" : 5,
+      "current" : 32.308105155463132,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 0,
+      "gap" : 5,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-54",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1758790400,
+        "value" : 31
+      },
+      {
+        "date" : 1759049600,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1759308800,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1759568000,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1759827200,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1760086400,
+        "value" : 33.812322717601063
+      }
+    ],
+    "projection" : {
+      "count" : 6,
+      "months" : 3,
+      "slope" : 5.3122040657917902
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 32.308105155463132,
+      "count" : 5,
+      "latest" : 33.252959251407617,
+      "maximum" : 33.252959251407617,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "improving",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 122,
+    "band" : "Well above typical range",
+    "change" : -3.8038246494596777,
+    "comparison" : {
+      "count" : 7,
+      "current" : 29.135574835065288,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 6,
+      "gap" : 6,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-55",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1756371200,
+        "value" : 31
+      },
+      {
+        "date" : 1756889600,
+        "value" : 30.632441295442369
+      },
+      {
+        "date" : 1757408000,
+        "value" : 30.032789228047704
+      },
+      {
+        "date" : 1757926400,
+        "value" : 29.182336002417962
+      },
+      {
+        "date" : 1758444800,
+        "value" : 28.29295925140762
+      },
+      {
+        "date" : 1758963200,
+        "value" : 27.612322717601057
+      },
+      {
+        "date" : 1759481600,
+        "value" : 27.196175350540322
+      }
+    ],
+    "projection" : {
+      "count" : 7,
+      "months" : null,
+      "slope" : -3.4270609072681584
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 29.135574835065288,
+      "count" : 7,
+      "latest" : 27.196175350540322,
+      "maximum" : 31,
+      "minimum" : 27.196175350540322,
+      "previous" : null
+    },
+    "trend" : "declining",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 124,
+    "band" : "Well above typical range",
+    "change" : -0.13522673798542328,
+    "comparison" : {
+      "count" : 3,
+      "current" : 29.081864682585671,
+      "previous" : 30.099361493957762,
+      "priorCount" : 3
+    },
+    "days" : 30,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 8,
+      "gap" : 9,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-56",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1753865600,
+        "value" : 31
+      },
+      {
+        "date" : 1754643200,
+        "value" : 30.942441295442372
+      },
+      {
+        "date" : 1755420800,
+        "value" : 30.652789228047702
+      },
+      {
+        "date" : 1756198400,
+        "value" : 30.112336002417962
+      },
+      {
+        "date" : 1756976000,
+        "value" : 29.532959251407622
+      },
+      {
+        "date" : 1757753600,
+        "value" : 29.162322717601057
+      },
+      {
+        "date" : 1758531200,
+        "value" : 29.056175350540322
+      },
+      {
+        "date" : 1759308800,
+        "value" : 29.027095979615634
+      }
+    ],
+    "projection" : {
+      "count" : 8,
+      "months" : null,
+      "slope" : -1.1227156408551944
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 29.081864682585671,
+      "count" : 3,
+      "latest" : 29.027095979615634,
+      "maximum" : 29.162322717601057,
+      "minimum" : 29.027095979615634,
+      "previous" : 30.099361493957762
+    },
+    "trend" : "declining",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 126,
+    "band" : null,
+    "change" : 0.024018245939313232,
+    "comparison" : {
+      "count" : 7,
+      "current" : 31.030069429088183,
+      "previous" : 31.126220647721183,
+      "priorCount" : 2
+    },
+    "days" : 90,
+    "fitnessAge" : null,
+    "freshness" : {
+      "days" : 10,
+      "gap" : 12,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-57",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1750841600,
+        "value" : 31
+      },
+      {
+        "date" : 1751878400,
+        "value" : 31.25244129544237
+      },
+      {
+        "date" : 1752915200,
+        "value" : 31.272789228047703
+      },
+      {
+        "date" : 1753952000,
+        "value" : 31.042336002417962
+      },
+      {
+        "date" : 1754988800,
+        "value" : 30.77295925140762
+      },
+      {
+        "date" : 1756025600,
+        "value" : 30.712322717601058
+      },
+      {
+        "date" : 1757062400,
+        "value" : 30.916175350540321
+      },
+      {
+        "date" : 1758099200,
+        "value" : 31.197095979615636
+      },
+      {
+        "date" : 1759136000,
+        "value" : 31.296807473987016
+      }
+    ],
+    "projection" : {
+      "count" : 9,
+      "months" : null,
+      "slope" : -0.00091862880683240492
+    },
+    "sex" : 0,
+    "summary" : {
+      "average" : 31.030069429088183,
+      "count" : 7,
+      "latest" : 31.296807473987016,
+      "maximum" : 31.296807473987016,
+      "minimum" : 30.712322717601058,
+      "previous" : 31.126220647721183
+    },
+    "trend" : "stable",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 34.5
+  },
+  {
+    "age" : 128,
+    "band" : "Well above typical range",
+    "change" : 2.9136355455725251,
+    "comparison" : {
+      "count" : 10,
+      "current" : 32.453656284463214,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 180,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 12,
+      "gap" : 15,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-58",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1747299200,
+        "value" : 31
+      },
+      {
+        "date" : 1748595200,
+        "value" : 31.562441295442369
+      },
+      {
+        "date" : 1749891200,
+        "value" : 31.892789228047704
+      },
+      {
+        "date" : 1751187200,
+        "value" : 31.972336002417961
+      },
+      {
+        "date" : 1752483200,
+        "value" : 32.012959251407622
+      },
+      {
+        "date" : 1753779200,
+        "value" : 32.262322717601059
+      },
+      {
+        "date" : 1755075200,
+        "value" : 32.776175350540321
+      },
+      {
+        "date" : 1756371200,
+        "value" : 33.367095979615641
+      },
+      {
+        "date" : 1757667200,
+        "value" : 33.776807473987013
+      },
+      {
+        "date" : 1758963200,
+        "value" : 33.913635545572525
+      }
+    ],
+    "projection" : {
+      "count" : 10,
+      "months" : 18,
+      "slope" : 0.62734179913170751
+    },
+    "sex" : 1,
+    "summary" : {
+      "average" : 32.453656284463214,
+      "count" : 10,
+      "latest" : 33.913635545572525,
+      "maximum" : 33.913635545572525,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "improving",
+    "typicalLower" : 20.399999999999999,
+    "typicalUpper" : 27.599999999999998
+  },
+  {
+    "age" : 130,
+    "band" : "Well above typical range",
+    "change" : 6.036793666733189,
+    "comparison" : {
+      "count" : 11,
+      "current" : 34.138486955578671,
+      "previous" : null,
+      "priorCount" : 0
+    },
+    "days" : 365,
+    "fitnessAge" : 20,
+    "freshness" : {
+      "days" : 14,
+      "gap" : 18,
+      "state" : "fresh"
+    },
+    "name" : "swift-scenario-59",
+    "now" : 1760000000,
+    "points" : [
+      {
+        "date" : 1743238400,
+        "value" : 31
+      },
+      {
+        "date" : 1744793600,
+        "value" : 31.872441295442371
+      },
+      {
+        "date" : 1746348800,
+        "value" : 32.512789228047708
+      },
+      {
+        "date" : 1747904000,
+        "value" : 32.902336002417961
+      },
+      {
+        "date" : 1749459200,
+        "value" : 33.252959251407617
+      },
+      {
+        "date" : 1751014400,
+        "value" : 33.812322717601063
+      },
+      {
+        "date" : 1752569600,
+        "value" : 34.63617535054032
+      },
+      {
+        "date" : 1754124800,
+        "value" : 35.537095979615643
+      },
+      {
+        "date" : 1755680000,
+        "value" : 36.256807473987017
+      },
+      {
+        "date" : 1757235200,
+        "value" : 36.703635545572524
+      },
+      {
+        "date" : 1758790400,
+        "value" : 37.036793666733189
+      }
+    ],
+    "projection" : {
+      "count" : 10,
+      "months" : 8,
+      "slope" : 1.0127648054515106
+    },
+    "sex" : 2,
+    "summary" : {
+      "average" : 34.138486955578671,
+      "count" : 11,
+      "latest" : 37.036793666733189,
+      "maximum" : 37.036793666733189,
+      "minimum" : 31,
+      "previous" : null
+    },
+    "trend" : "improving",
+    "typicalLower" : 25.5,
+    "typicalUpper" : 34.5
+  }
+]

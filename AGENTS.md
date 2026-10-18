@@ -53,3 +53,7 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
 
 ---
 Shared iOS conventions come from the global agent rules and the `ios-dev` skill.
+
+## Rules index
+
+- `.claude/rules/android.md`: Android port, Health Connect gaps, billing and Pro verification.
