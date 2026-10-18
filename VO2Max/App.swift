@@ -95,15 +95,49 @@ struct VO2MaxApp: App {
     #endif
 }
 
-/// Lets the dashboard report its Settings sheet, so the rating ask never
-/// lands on top of it.
+/// Collects every sheet open below the tab root (the dashboard's Settings,
+/// and the paywall or range sheets on Today's cards and pushed detail
+/// screens), so the rating ask never lands on top of one.
 @MainActor
 final class ReviewPromptCoordinator: ObservableObject {
     static let shared = ReviewPromptCoordinator()
 
-    @Published var dashboardSheetIsPresented = false
+    @Published private(set) var openSheets: Set<UUID> = []
+
+    /// No reported sheet is up.
+    var noSheetIsPresented: Bool { openSheets.isEmpty }
+
+    func setSheet(_ id: UUID, isPresented: Bool) {
+        if isPresented {
+            openSheets.insert(id)
+        } else {
+            openSheets.remove(id)
+        }
+    }
 
     private init() {}
+}
+
+extension View {
+    /// Reports a sheet to `ReviewPromptCoordinator`, so the rating ask waits
+    /// until it closes. Pass the same flag that drives `.sheet(isPresented:)`.
+    func blocksReviewPrompt(_ isPresented: Bool) -> some View {
+        modifier(ReviewPromptBlockingSheet(isPresented: isPresented))
+    }
+}
+
+private struct ReviewPromptBlockingSheet: ViewModifier {
+    let isPresented: Bool
+    @State private var id = UUID()
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear { ReviewPromptCoordinator.shared.setSheet(id, isPresented: isPresented) }
+            .onChange(of: isPresented) { _, shown in
+                ReviewPromptCoordinator.shared.setSheet(id, isPresented: shown)
+            }
+            .onDisappear { ReviewPromptCoordinator.shared.setSheet(id, isPresented: false) }
+    }
 }
 
 /// Routes a tapped notification to the right surface. The
@@ -337,7 +371,8 @@ private struct MainTabView: View {
     }
 
     /// Today is on screen with nothing over it: no What's New, paywall, recap
-    /// or Settings sheet.
+    /// or Settings sheet, including sheets opened from Today's cards and the
+    /// detail screens pushed from them.
     private var isTodayClear: Bool {
         selection == 0
             && !showWhatsNew
@@ -346,7 +381,7 @@ private struct MainTabView: View {
             && !pendingSettingsAfterWhatsNew
             && !pendingPaywallAfterWhatsNew
             && !showRecap
-            && !reviewPromptCoordinator.dashboardSheetIsPresented
+            && reviewPromptCoordinator.noSheetIsPresented
     }
 
     /// All three tabs stay alive in the `ZStack` so each keeps its own scroll

@@ -196,6 +196,7 @@ struct TrendDetailView: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: .targetProjection)
         }
+        .blocksReviewPrompt(showPaywall)
     }
 
     private func trendSummary(_ trend: CardioTrend) -> some View {
@@ -375,9 +376,11 @@ struct FitnessAgeDetailView: View {
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
         }
+        .blocksReviewPrompt(showSettings)
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: .fitnessBand)
         }
+        .blocksReviewPrompt(showPaywall)
     }
 
     @ViewBuilder

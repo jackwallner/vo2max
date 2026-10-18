@@ -52,9 +52,11 @@ struct MetricRangePicker: View {
             }
             .presentationDetents([.medium])
         }
+        .blocksReviewPrompt(showCustomSheet)
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: .customRange)
         }
+        .blocksReviewPrompt(showPaywall)
     }
 
     private func tap(_ option: MetricRange) {
@@ -370,6 +372,7 @@ struct CardioSignalCard: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: signal.feature)
         }
+        .blocksReviewPrompt(showPaywall)
     }
 
     @ViewBuilder
@@ -587,6 +590,7 @@ struct CardioSignalTile: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: signal.feature)
         }
+        .blocksReviewPrompt(showPaywall)
     }
 
     @ViewBuilder

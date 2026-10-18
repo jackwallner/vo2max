@@ -109,3 +109,40 @@ struct ReviewPromptTrackerTests {
         }
     }
 }
+
+/// The clear-screen check behind the rating ask: any sheet opened below the
+/// tab root (a locked-feature paywall on a Today card or pushed detail screen)
+/// holds the ask until it closes.
+@Suite("Review prompt sheet guard", .serialized)
+@MainActor
+struct ReviewPromptSheetGuardTests {
+    private let coordinator = ReviewPromptCoordinator.shared
+
+    @Test func clearWhenNoSheetIsReported() {
+        #expect(coordinator.noSheetIsPresented)
+    }
+
+    @Test func detailPaywallBlocksTheAsk() {
+        let paywall = UUID()
+        coordinator.setSheet(paywall, isPresented: true)
+        #expect(!coordinator.noSheetIsPresented)
+        coordinator.setSheet(paywall, isPresented: false)
+        #expect(coordinator.noSheetIsPresented)
+    }
+
+    @Test func staysBlockedUntilEverySheetCloses() {
+        let settings = UUID()
+        let paywall = UUID()
+        coordinator.setSheet(settings, isPresented: true)
+        coordinator.setSheet(paywall, isPresented: true)
+        coordinator.setSheet(paywall, isPresented: false)
+        #expect(!coordinator.noSheetIsPresented)
+        coordinator.setSheet(settings, isPresented: false)
+        #expect(coordinator.noSheetIsPresented)
+    }
+
+    @Test func closingAnUnreportedSheetIsHarmless() {
+        coordinator.setSheet(UUID(), isPresented: false)
+        #expect(coordinator.noSheetIsPresented)
+    }
+}
