@@ -39,7 +39,7 @@
         "url": "https://jackwallner.com/"
       },
       "datePublished": "2026-10-12",
-      "dateModified": "2026-10-15",
+      "dateModified": "2026-10-18",
       "inLanguage": "en-US",
       "mainEntityOfPage": "https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html",
       "image": "https://jackwallner.github.io/vo2max/appstore-screenshot-01.png",
@@ -62,7 +62,7 @@
           "name": "What is a good VO2 max by gender and age?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Compare your number with the median for your age and sex in the chart above. For example, the FRIEND median for men aged 40 to 49 is 37.8 mL/kg/min and for women aged 40 to 49 it is 26.7. A reading above the median is better than half of the tested group, and a reading near the 75th percentile is above average."
+            "text": "A good VO2 max is one above the median for your age and sex in the chart above. For example, the FRIEND median for men aged 40 to 49 is 37.8 mL/kg/min and for women aged 40 to 49 it is 26.7. A reading above the median is better than half of the tested group, and a reading near the 75th percentile is above average."
           }
         },
         {
@@ -70,7 +70,7 @@
           "name": "What VO2 max does Apple Watch consider low?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "For ages 20 to 59, Apple's white paper sets the low threshold at the lowest quintile for your sex and age by decade in the FRIEND registry. For ages 60 and over it uses 18 mL/kg/min for men and 15 for women."
+            "text": "The lowest fifth for your sex and age before 60, then fixed values from 60. For ages 20 to 59, Apple's white paper sets the low threshold at the lowest quintile for your sex and age by decade in the FRIEND registry. For ages 60 and over it uses 18 mL/kg/min for men and 15 for women."
           }
         },
         {
@@ -78,7 +78,7 @@
           "name": "Is Apple Watch VO2 max accurate?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Apple reports a mean error of 1.4 mL/kg/min with a standard deviation of 4.7 against a reference in its validation group, so single readings can be off by several points. Wrong profile data, heart-rate medications you have not entered, and non-standard loads such as a heavy pack can make it worse."
+            "text": "On average it is close, but single readings can be off by several points. Apple reports a mean error of 1.4 mL/kg/min with a standard deviation of 4.7 against a reference in its validation group. Wrong profile data, heart-rate medications you have not entered, and non-standard loads such as a heavy pack can make it worse."
           }
         },
         {
@@ -86,7 +86,7 @@
           "name": "Why is my Apple Watch VO2 max lower than the chart says it should be?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Lab charts use maximal treadmill tests, while the watch estimates from outdoor walks, runs and hikes. Check that your age, sex and weight are correct in Health, and note that heat, caffeine, dehydration and altitude can push an estimate down."
+            "text": "Because lab charts use maximal treadmill tests, while the watch estimates from outdoor walks, runs and hikes. Check that your age, sex and weight are correct in Health, and note that heat, caffeine, dehydration and altitude can push an estimate down."
           }
         },
         {
@@ -184,15 +184,15 @@ footer a { color: var(--muted); text-decoration: none; margin: 0 10px; }
     <article>
         <div class="container">
             <h1>VO2 Max Chart by Age and Sex (Apple Watch Cardio Fitness Levels)</h1>
-            <p class="meta">By Jack Wallner. Last updated <time datetime="2026-10-15" data-updated>October 15, 2026</time>.</p>
+            <p class="meta">By Jack Wallner. Last updated <time datetime="2026-10-18" data-updated>October 18, 2026</time>.</p>
 
             <div class="answer">
-                <p>Lab-measured VO2 max falls with age and differs by sex: the median is about 48 mL/kg/min for men and 38 for women in their twenties, dropping to about 24 and 18 in their seventies. Apple Watch shows an estimate (14 to 65 mL/kg/min) and compares it with people of your age and sex. Apple flags a result as low when it is in the bottom fifth for your sex and decade of age, or below 18 (men) or 15 (women) from age 60.</p>
+                <p>VO2 max is a cardio fitness measure, in mL/kg/min, that labs test from oxygen use during a maximal treadmill test. Lab-measured VO2 max falls with age and differs by sex: the median is about 48 mL/kg/min for men and 38 for women in their twenties, dropping to about 24 and 18 in their seventies. Apple Watch shows an estimate (14 to 65 mL/kg/min) and compares it with people of your age and sex. Apple flags a result as low when it is in the bottom fifth for your sex and decade of age, or below 18 (men) or 15 (women) from age 60.</p>
             </div>
 
 
-            <h2>VO2 max by age and sex: the percentile chart</h2>
-            <p>These are percentiles of lab-measured VO2 max (mL/kg/min) from the Fitness Registry and the Importance of Exercise National Database (FRIEND). The 2015 reference standards are built from 7,783 maximal treadmill tests, with oxygen use measured directly, on adults aged 20 to 79 without known cardiovascular disease. Apple cites this same registry when it describes how Apple Watch judges a low result. Read your row by age, then find where your number lands between the columns. The 50th percentile means half of the tested group scored lower.</p>
+            <h2>What is the average VO2 max by age and sex?</h2>
+            <p>The median falls from about 48 mL/kg/min for men and 38 for women in their twenties to about 24 and 18 in their seventies. These are percentiles of lab-measured VO2 max (mL/kg/min) from the Fitness Registry and the Importance of Exercise National Database (FRIEND). The 2015 reference standards are built from 7,783 maximal treadmill tests, with oxygen use measured directly, on adults aged 20 to 79 without known cardiovascular disease. Apple cites this same registry when it describes how Apple Watch judges a low result. Read your row by age, then find where your number lands between the columns. The 50th percentile means half of the tested group scored lower.</p>
             <h3>Men</h3>
 <div class="table-wrap"><table>
 <thead><tr><th>Age</th><th class="num">10th</th><th class="num">25th</th><th class="num">50th (median)</th><th class="num">75th</th><th class="num">90th</th></tr></thead>
@@ -218,18 +218,19 @@ footer a { color: var(--muted); text-decoration: none; margin: 0 10px; }
             <p class="caption">Source: Kaminsky, Arena and Myers, Mayo Clinic Proceedings, 2015 (treadmill, directly measured). Ages in years.</p>
             <p>Two patterns stand out. First, VO2 max falls with age: the paper reports a decline of roughly 10 percent per decade, from a median of 48.0 (men) and 37.6 (women) in the twenties to 24.4 and 18.3 in the seventies. Second, the sex gap is large at every age, so a number that is high for a 45-year-old woman can be only average for a 45-year-old man. That is why any chart that ignores sex misleads.</p>
 
-            <h2>How Apple Watch uses age and sex</h2>
-            <p>Apple Watch estimates VO2 max, which Apple calls cardio fitness, from outdoor walk, run and hike workouts. Apple's support page says the supported range is 14 to 65 mL/kg/min, that the Health app can compare your level with others of your age and sex, and that classifications are available from age 20. The Health app shows its own level labels, but the support page does not list numeric cutoffs for them.</p>
+            <h2>How does Apple Watch use age and sex for VO2 max?</h2>
+            <p>It compares your estimate with people of your age and sex, and judges a low result against the same FRIEND registry. Apple Watch estimates VO2 max, which Apple calls cardio fitness, from outdoor walk, run and hike workouts. Apple's support page says the supported range is 14 to 65 mL/kg/min, that the Health app can compare your level with others of your age and sex, and that classifications are available from age 20. The Health app shows its own level labels, but the support page does not list numeric cutoffs for them.</p>
             <p>Apple does publish how it decides when a result is low. In its cardio fitness white paper, the low-fitness notification threshold for ages 20 to 59 is the lowest quintile (the bottom 20 percent) for your sex and decade of age in FRIEND. On the chart above, that sits between the 10th and 25th percentile columns. For ages 60 and over, Apple uses fixed values instead: 18 mL/kg/min for men and 15 for women.</p>
 
-            <h2>Two worked examples</h2>
+            <h2>How do you read the chart for your age?</h2>
+            <p>Find your age row in the table for your sex, then see which percentile columns your number falls between.</p>
             <ul>
                 <li><strong>A 42-year-old woman with a reading of 31.</strong> Her row is 40-49 in the women's table. 31 is above the median of 26.7 and just under the 75th percentile of 32.4, so she is above average for her group.</li>
                 <li><strong>A 55-year-old man with a reading of 30.</strong> His row is 50-59 in the men's table. 30 is between the 25th percentile (27.1) and the median (32.6), so he is a little below the middle of his group.</li>
             </ul>
 
-            <h2>Why your watch may not match the chart</h2>
-            <p>The chart comes from lab treadmill tests taken to exhaustion. Your watch makes an estimate from heart rate, pace and motion on easier outdoor workouts. Apple's validation reports a mean error of 1.4 mL/kg/min with a standard deviation of 4.7, so an individual reading can sit several points away from a lab result. Apple lists specific causes of a wrong estimate:</p>
+            <h2>Why might your watch not match the chart?</h2>
+            <p>Your watch makes an estimate from heart rate, pace and motion on easier outdoor workouts, while the chart comes from lab treadmill tests taken to exhaustion. Apple's validation reports a mean error of 1.4 mL/kg/min with a standard deviation of 4.7, so an individual reading can sit several points away from a lab result. Apple lists specific causes of a wrong estimate:</p>
             <ul>
                 <li>An incorrect age, sex or weight in the Health app, which skews every estimate.</li>
                 <li>Heart-rate-limiting medications, such as beta blockers, that are not entered in Health Details. Apple says these users get higher-than-actual estimates.</li>
@@ -250,13 +251,13 @@ footer a { color: var(--muted); text-decoration: none; margin: 0 10px; }
 
             <h2>Frequently asked questions</h2>
             <h3>What is a good VO2 max by gender and age?</h3>
-            <p>Compare your number with the median for your age and sex in the chart above. For example, the FRIEND median for men aged 40 to 49 is 37.8 mL/kg/min and for women aged 40 to 49 it is 26.7. A reading above the median is better than half of the tested group, and a reading near the 75th percentile is above average.</p>
+            <p>A good VO2 max is one above the median for your age and sex in the chart above. For example, the FRIEND median for men aged 40 to 49 is 37.8 mL/kg/min and for women aged 40 to 49 it is 26.7. A reading above the median is better than half of the tested group, and a reading near the 75th percentile is above average.</p>
             <h3>What VO2 max does Apple Watch consider low?</h3>
-            <p>For ages 20 to 59, Apple&#x27;s white paper sets the low threshold at the lowest quintile for your sex and age by decade in the FRIEND registry. For ages 60 and over it uses 18 mL/kg/min for men and 15 for women.</p>
+            <p>The lowest fifth for your sex and age before 60, then fixed values from 60. For ages 20 to 59, Apple's white paper sets the low threshold at the lowest quintile for your sex and age by decade in the FRIEND registry. For ages 60 and over it uses 18 mL/kg/min for men and 15 for women.</p>
             <h3>Is Apple Watch VO2 max accurate?</h3>
-            <p>Apple reports a mean error of 1.4 mL/kg/min with a standard deviation of 4.7 against a reference in its validation group, so single readings can be off by several points. Wrong profile data, heart-rate medications you have not entered, and non-standard loads such as a heavy pack can make it worse.</p>
+            <p>On average it is close, but single readings can be off by several points. Apple reports a mean error of 1.4 mL/kg/min with a standard deviation of 4.7 against a reference in its validation group. Wrong profile data, heart-rate medications you have not entered, and non-standard loads such as a heavy pack can make it worse.</p>
             <h3>Why is my Apple Watch VO2 max lower than the chart says it should be?</h3>
-            <p>Lab charts use maximal treadmill tests, while the watch estimates from outdoor walks, runs and hikes. Check that your age, sex and weight are correct in Health, and note that heat, caffeine, dehydration and altitude can push an estimate down.</p>
+            <p>Because lab charts use maximal treadmill tests, while the watch estimates from outdoor walks, runs and hikes. Check that your age, sex and weight are correct in Health, and note that heat, caffeine, dehydration and altitude can push an estimate down.</p>
             <h3>Does this chart apply to under-20s or over-79s?</h3>
             <p>No. The FRIEND treadmill standards cover ages 20 to 79, and Apple provides classifications from age 20, so the chart should not be applied outside that range.</p>
 
