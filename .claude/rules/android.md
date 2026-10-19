@@ -134,3 +134,12 @@ Reviewer access still needs an app update with a private code, Password keyboard
 ## Reviewer access checkpoint, 2026-10-18 20:50 resume
 
 Unaccepted vc2 update is on `wip/android-port` until verification completes. Reviewers long-press the Settings version label and enter the private `VO2MAX_PLAY_REVIEW_CODE` from existing `~/.vo2max_credentials`. Only `PLAY_REVIEW_CODE_SHA256` is supplied through ignored properties. Password keyboard type, autocorrect disabled, masked input, constant-time hash comparison and digest-only persistence match the verified Streak Finder flow. Rotation invalidates reviewer access. A new actual-dialog device case and four JVM cases cover rejection, valid entry, persistence and rotation. The connected case requires a private `reviewCode` instrumentation argument supplied by a local redacting harness. All 161 JVM cases pass (157 existing plus four reviewer cases). Device, signed artifact, optimized QA and release lint checks are pending. Never push this unaccepted update to main.
+
+21:30 verification checkpoint: signed vc2 target36 APK/AAB pass signatures,
+ZIP and all four ELF16KB checks. Both contain the configured reviewer digest
+and correct release SDK key, with no Test Store key or private reviewer code.
+All161 JVM cases pass. Optimized QA R8 and release lint are still running.
+The device process failed before a test result under system-service contention;
+only owned sol-vo2max5580 was stopped and will restart with more memory after
+build completion. No acceptance, main push or vc2 upload yet. Console reviewer
+instructions are prepared and hash-checked but remain unsaved.
