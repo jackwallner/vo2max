@@ -150,9 +150,8 @@ Device and inspected QA runtime remain pending before acceptance and upload.
 
 Final onboarding safe-area build/lint passes12m34s. Signed vc2 APK/AAB and all
 four ELF/ZIP16KB checks pass again. Release has the correct SDK key and review
-digest; QA has no SDK key; neither includes the private reviewer code. Final
-first-run bounds, reviewer and optimized QA device checks are running before
-acceptance. Play reviewer details remain an unsaved draft.
+digest; QA has no SDK key; neither includes the private reviewer code. Final first-run device case, including real system-bar bounds and free exit,
+passes in59.345s. Reviewer and optimized QA checks remain pending before acceptance. Play reviewer details remain an unsaved draft.
 
 Production pacing rechecked2026-10-18 22:01 PDT: Quit Zyn app4973378888882968817
 has Productionvc1(1.2.7), Start full rollout, Changes in review. Managed publishing
