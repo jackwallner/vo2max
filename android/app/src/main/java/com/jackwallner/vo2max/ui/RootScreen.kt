@@ -69,7 +69,9 @@ import com.jackwallner.vo2max.ui.theme.*
     VO2Theme(dark) {
         Surface(Modifier.fillMaxSize().semantics{testTagsAsResourceId=true},color=MaterialTheme.colorScheme.background) {
             if(!settings.hasCompletedSetup) {
-                OnboardingScreen(graph,{connect(false,false)},{navigator.push(Route.Paywall)})
+                Box(Modifier.safeDrawingPadding()) {
+                    OnboardingScreen(graph,{connect(false,false)},{navigator.push(Route.Paywall)})
+                }
             } else {
                 Scaffold(containerColor=MaterialTheme.colorScheme.background,topBar={
                     if(navigator.depth>1)TopAppBar(colors=TopAppBarDefaults.topAppBarColors(containerColor=MaterialTheme.colorScheme.background),title={Text(navigator.top.title)},navigationIcon={IconButton(onClick={navigator.pop()}){Icon(Icons.AutoMirrored.Filled.ArrowBack,"Back")}})

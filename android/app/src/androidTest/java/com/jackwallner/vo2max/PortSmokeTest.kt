@@ -67,6 +67,18 @@ class PortSmokeTest {
     }
     @Test fun firstRunCanCompleteWithoutHealthOrPurchase() {
         launch(seed=false,onboarding=true)
+        var statusTop=0
+        var safeBottom=Int.MAX_VALUE
+        scenario!!.onActivity { activity ->
+            val decor=activity.window.decorView
+            val insets=checkNotNull(androidx.core.view.ViewCompat.getRootWindowInsets(decor))
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            statusTop=insets.top
+            safeBottom=decor.height-insets.bottom
+        }
+        assertTrue("The device must expose a status bar for this layout check",statusTop>0)
+        assertTrue("Step label must stay below the status bar",compose.onNodeWithText("1 of 5").fetchSemanticsNode().boundsInRoot.top>=statusTop)
+        assertTrue("Continue control must stay above the navigation bar",compose.onNodeWithText("Get Started").fetchSemanticsNode().boundsInRoot.bottom<=safeBottom)
         compose.onNodeWithText("Welcome to VO2 Max").assertIsDisplayed();click("Get Started");click("Continue");click("Skip profile");click("Continue");click("Continue free")
         compose.onNodeWithTag("tab-0").assertIsDisplayed();assertFalse(ApplicationProvider.getApplicationContext<VO2Application>().graph.store.current.isPro);screenshot("01-empty")
     }
