@@ -97,7 +97,8 @@ AVD to avoid system-service contention; no install-from-Play claim is made.
 
 Accepted vc2 is on pushed main, rebuilt from the identical tested Android tree
 in34s and reverified. Play app `4974193923765162801` has internalvc2 completed
-and production draftvc2, confirmed through a fresh Publisher API read.
+and production draftvc2, confirmed through a fresh Publisher API read. Console
+confirms vc2 available to internal testers, not reviewed, at22:13PDT.
 Actual internal opt-in: https://play.google.com/apps/internaltest/4701324108296678429.
 Three Play products and eligible seven-day subscription trials are active at
 US4.79/23.99/47.99. Existing service-account credentials, entitlement links and
@@ -112,9 +113,15 @@ encrypted transit and support deletion. Health values stay local. Two private
 transaction webhooks disable paywall forwarding; no ad integration is listed.
 
 Sign in details is saved with full paid reviewer access; the saved code hash
-was rechecked against the build. Target audience18+ is saved. Final Data safety
-Save is next, using the existing complete draft. IARC terms require Jack's explicit approval.
+was rechecked against the build. Target audience18+ is saved. Final Data safety is saved and its
+preview matches actual app/SDK transfers. App content only lists Content ratings
+as needing attention. IARC terms require Jack's explicit approval.
 Licensed Play installation/purchase/restore needs a signed-in tester, and the
 pre-launch overview has no report yet. Do not claim public availability.
 Quit Zyn productionvc1(1.2.7) is still in review at22:01PDT, with managed
 publishing off, so the next fleet production submission must wait.
+
+Owned sol-vo2max5580 was stopped and its temporary AVD deleted after final
+verification. Proof logs/captures are retained. Managed publishing is confirmed
+off at22:13PDT. Pre-launch overview still has no report and suggests closed-track
+testing. No production review was sent and public availability is not claimed.
