@@ -49,12 +49,15 @@ platform filters separating the shared iOS/Android RevenueCat project.
 
 ## Build and parity
 
-Use the checked-in wrapper, JDK 17 on Air. The installed Pro JDK 21 is compatible.
+Non-release Gradle runs on jmbp through `fm-gradle` (copies outputs, reports
+and test results back). Only the signed release tasks run on the Air, with
+`./gradlew` and its local JDK 17, because the upload keystore stays there.
 
 ```sh
 python3 scripts/sync-android-parity.py
 cd android
-./gradlew testDebugUnitTest assembleDebug assembleQa assembleRelease bundleRelease --no-daemon
+fm-gradle testDebugUnitTest assembleDebug assembleQa
+./gradlew assembleRelease bundleRelease --no-daemon
 ```
 
 The 157-case JVM suite ports all 87 named iOS tests, adds ten Android cases,
