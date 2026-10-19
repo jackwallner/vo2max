@@ -58,6 +58,9 @@ All Android work runs on Pro. This queue builds directly on jmbp with JDK21:
 `~/.jdk/jdk-21.0.12.1+1/Contents/Home`; SDK is `~/Library/Android/sdk`.
 Use the checked-in wrapper, one worker and one full Gradle build at a time.
 Stop the owned emulator during release/QA R8, then test after build completion.
+From the Air, run non-release tasks with `fm-gradle <tasks>` from `android/`
+(runs them on jmbp, copies outputs back); never `./gradlew` there except
+signed `bundleRelease`/`assembleRelease`.
 
 ```sh
 python3 scripts/sync-android-parity.py
