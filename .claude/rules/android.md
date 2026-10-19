@@ -100,8 +100,7 @@ captures. `scripts/play-products.py` prints an offline plan by default, with the
 proposed $4.79 / $23.99 / $47.99 US ladder, seven-day new-subscriber trials and
 fleet PPP adjustments. The plan was checked without making any Play requests.
 
-Play Console app creation, products, credentials, uploads, listings, app-content
-forms and submissions are deferred.
+2026-10-18 Pro staging pass: signed main rebuild passes 157 JVM cases. APK/AAB vc1 target36 signatures, ZIP and all four ELF 16 KB alignments pass again. The four real free-screen captures are framed to 1080 x 1920, with staging metadata under `play-assets/metadata/android/en-US`. Existing Play service-account credentials are saved and confirmed in RevenueCat. Play Console app creation, products, uploads, App content, licensed billing and submissions remain pending.
 
 Health Connect integration reference:
 https://developer.android.com/health-and-fitness/health-connect/get-started
