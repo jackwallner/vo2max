@@ -143,3 +143,7 @@ The device process failed before a test result under system-service contention;
 only owned sol-vo2max5580 was stopped and will restart with more memory after
 build completion. No acceptance, main push or vc2 upload yet. Console reviewer
 instructions are prepared and hash-checked but remain unsaved.
+
+Full vc2 build and release lint now pass in19m12s (189 tasks). Optimized QA
+contains the reviewer digest and neither production nor Test Store SDK key.
+Device and inspected QA runtime remain pending before acceptance and upload.
