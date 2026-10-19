@@ -19,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import com.jackwallner.vo2max.data.ReportExporter
+import com.jackwallner.vo2max.data.StoreService
 import com.jackwallner.vo2max.model.*
 
 @RunWith(AndroidJUnit4::class)
@@ -46,6 +47,24 @@ class PortSmokeTest {
         context.contentResolver.openOutputStream(uri)!!.use{bitmap.compress(Bitmap.CompressFormat.PNG,100,it)}
     }
     @After fun close() { scenario?.close() }
+    @Test fun reviewerAccessRejectsWrongCodeAndPersistsValidGrant()=runBlocking {
+        val code=checkNotNull(InstrumentationRegistry.getArguments().getString("reviewCode")){"Supply the private reviewer code through the local test harness."}
+        launch(seed=false)
+        compose.onNodeWithContentDescription("Settings").performClick()
+        compose.onNodeWithText("Version 1.1.4").performScrollTo().performTouchInput{longClick()}
+        compose.onNodeWithText("Reviewer code").performTextInput("wrong")
+        click("Unlock")
+        compose.onNodeWithText("That code isn't valid.").assertIsDisplayed()
+        val app=ApplicationProvider.getApplicationContext<VO2Application>()
+        assertFalse(app.graph.store.current.isPro)
+        compose.onNodeWithText("Reviewer code").performTextClearance()
+        compose.onNodeWithText("Reviewer code").performTextInput(code)
+        click("Unlock")
+        assertTrue(app.graph.store.current.isPro)
+        app.graph.store.start()
+        assertTrue(app.graph.store.current.isPro)
+        assertTrue(StoreService(app,app.graph.diagnostics).current.isPro)
+    }
     @Test fun firstRunCanCompleteWithoutHealthOrPurchase() {
         launch(seed=false,onboarding=true)
         compose.onNodeWithText("Welcome to VO2 Max").assertIsDisplayed();click("Get Started");click("Continue");click("Skip profile");click("Continue");click("Continue free")

@@ -7,6 +7,7 @@ import android.net.Uri
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -104,6 +105,7 @@ const val DISCLAIMER="VO2 Max Daily Tracker is for fitness awareness. Health Con
         settings.setEnabled(key,value)
         if(value){if(android.os.Build.VERSION.SDK_INT>=33)notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);connect(false,true)}
     }
+    var reviewer by remember{mutableStateOf(false)}
     var appearance by remember{mutableStateOf(false)};var showPrivacy by remember{mutableStateOf(false)};var linkError by remember{mutableStateOf<String?>(null)}
     Page {
         CardBlock{Title("Health Connect");Text(health.status);Button(onClick={connect(false,false)}){Text("Connect Health Connect")};TextButton(onClick={scope.launch{graph.health.refresh()}}){Text("Refresh Health Connect")};TextButton(onClick={runCatching{context.startActivity(graph.health.settingsIntent())}}){Text("Open Health Connect")};Small("VO2 Max reads estimates on this device. Allow history access for older trends. You can revoke individual permissions in Health Connect.");if(isPro)TextButton(onClick={connect(true,false)}){Text("Allow supporting signals")}}
@@ -128,10 +130,20 @@ const val DISCLAIMER="VO2 Max Daily Tracker is for fitness awareness. Health Con
         }
         linkError?.let{Text(it)}
         graph.store.current.restoreError?.let{Text(it)}
-        CardBlock{Title("For fitness awareness");Text(DISCLAIMER);Small("Version ${com.jackwallner.vo2max.BuildConfig.VERSION_NAME}")}
+        CardBlock{Title("For fitness awareness");Text(DISCLAIMER);Text("Version ${com.jackwallner.vo2max.BuildConfig.VERSION_NAME}",style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.combinedClickable(onClick={},onLongClick={reviewer=true}))}
     }
+    if(reviewer)ReviewerCodeDialog(graph){reviewer=false}
     if(appearance)AlertDialog(onDismissRequest={appearance=false},title={Text("Appearance")},text={Column{listOf("System","Light","Dark").forEach{option->TextButton(onClick={settings.updateAppearance(option);appearance=false}){Text(option)}}}},confirmButton={})
     if(showPrivacy)AlertDialog(onDismissRequest={showPrivacy=false},title={Text("Privacy Policy")},text={Column(Modifier.heightIn(max=480.dp).verticalScroll(rememberScrollState())){Text(PRIVACY_TEXT)}},confirmButton={TextButton(onClick={showPrivacy=false}){Text("Done")}})
+}
+@Composable private fun ReviewerCodeDialog(graph: AppGraph,close: ()->Unit) {
+    var code by remember{mutableStateOf("")}
+    var failed by remember{mutableStateOf(false)}
+    AlertDialog(onDismissRequest=close,title={Text("Reviewer access")},text={Column {
+        Text("Enter the code provided in the Play review instructions.")
+        OutlinedTextField(code,{code=it;failed=false},label={Text("Reviewer code")},singleLine=true,keyboardOptions=androidx.compose.foundation.text.KeyboardOptions(keyboardType=androidx.compose.ui.text.input.KeyboardType.Password,autoCorrectEnabled=false),visualTransformation=androidx.compose.ui.text.input.PasswordVisualTransformation())
+        if(failed)Text("That code isn't valid.",color=MaterialTheme.colorScheme.error)
+    }},confirmButton={TextButton(onClick={if(graph.store.activateReviewAccess(code))close()else failed=true}){Text("Unlock")}},dismissButton={TextButton(onClick=close){Text("Cancel")}})
 }
 @Composable fun ToggleRow(label: String,checked: Boolean,onChange: (Boolean)->Unit) { Row(Modifier.fillMaxWidth().heightIn(min=52.dp),verticalAlignment=Alignment.CenterVertically){Text(label,Modifier.weight(1f));Switch(checked,onCheckedChange=onChange)} }
 const val PRIVACY_TEXT="VO2 Max reads VO2 max estimates, optional resting heart rate, and exercise sessions from Health Connect with your permission. Health data and display caches stay on your device. We do not send health data to RevenueCat or any server. You can revoke access in Health Connect. Removing app storage deletes the cache. Reports leave your device only when you choose to share them. RevenueCat and Google Play process purchase information, anonymous app identifiers, and app version information for billing. We send RevenueCat counts, dates, and short labels about purchase screens, never health data or free text. There are no ads or accounts. Contact jackwallner+vo2@gmail.com for privacy questions."
