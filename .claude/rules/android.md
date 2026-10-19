@@ -95,8 +95,9 @@ AVD to avoid system-service contention; no install-from-Play claim is made.
 
 ## Play state, 2026-10-18
 
-Accepted vc2 now awaits main rebuild/upload. Play app `4974193923765162801`
-still has internalvc1 available, not reviewed, and production draftvc1.
+Accepted vc2 is on pushed main, rebuilt from the identical tested Android tree
+in34s and reverified. Play app `4974193923765162801` has internalvc2 completed
+and production draftvc2, confirmed through a fresh Publisher API read.
 Actual internal opt-in: https://play.google.com/apps/internaltest/4701324108296678429.
 Three Play products and eligible seven-day subscription trials are active at
 US4.79/23.99/47.99. Existing service-account credentials, entitlement links and
@@ -110,8 +111,9 @@ drafted: purchase history, anonymous IDs and actual custom app interactions,
 encrypted transit and support deletion. Health values stay local. Two private
 transaction webhooks disable paywall forwarding; no ad integration is listed.
 
-After vc2 upload, save the prepared Sign in details reviewer code, adult target
-audience and final Data safety. IARC terms require Jack's explicit approval.
+Sign in details is saved with full paid reviewer access; the saved code hash
+was rechecked against the build. Target audience18+ is saved. Final Data safety
+Save is next, using the existing complete draft. IARC terms require Jack's explicit approval.
 Licensed Play installation/purchase/restore needs a signed-in tester, and the
 pre-launch overview has no report yet. Do not claim public availability.
 Quit Zyn productionvc1(1.2.7) is still in review at22:01PDT, with managed
