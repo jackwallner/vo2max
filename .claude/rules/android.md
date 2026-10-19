@@ -122,3 +122,11 @@ launch hooks, no health-write permissions and no advertising ID permission.
 The isolated `sol-vo2max` AVD and `~/tmp/sol-vo2max` source directory were removed
 after verification. The target serial and emulator process were confirmed gone.
 Recreate only an owned temporary AVD before rerunning the Pro harness.
+
+## Play staging on Pro, 2026-10-18
+
+E3 Apps Play app `4974193923765162801` is created for this package. Signed vc1 is available to internal testers, not reviewed, verified 2026-10-18 20:20 PDT. Actual Console link: https://play.google.com/apps/internaltest/4701324108296678429. Production remains draft vc1. Listing, icon, feature graphic, four real free-screen captures and contact details are uploaded. All three Play products, monthly/yearly base plans and eligible seven-day trials are active at the planned US ladder. Existing RevenueCat Play credentials, entitlement links and all three default offering packages are confirmed. No new service-account permissions were granted.
+
+Privacy, no ads, no government affiliation, no advertising ID, no financial features and activity/fitness health category, Health & Fitness store category and 178 production countries/regions are saved. Data safety answers are saved as a draft, disclosing collected purchase history, app interactions and anonymous app IDs, encrypted transit and support deletion. No health values leave the device. The two RevenueCat webhooks are private transaction notifications with paywall forwarding disabled; no advertising integration or support integration is enabled.
+
+Reviewer access still needs an app update with a private code, Password keyboard type and autocorrect disabled. Never declare paid functionality unrestricted. Console blocks target audience until Sign in details is complete, and final Data safety Save until target audience is complete. IARC terms await Jack's explicit approval for this queue. Complete artifact-specific Health Connect permission explanations, licensed Play purchase/restore and pre-launch checks before production review. Keep managed publishing off and respect fleet pacing.
