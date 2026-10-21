@@ -9,8 +9,8 @@ import SwiftUI
 /// raises a confirmation alert and the capture job cannot tap. `-DuoRoutes a,b`
 /// is the walk while folded and `-DuoRoutesRegular a,b` while split (the inner
 /// display). `-DuoTourFirst <s>` is the delay before the first route and
-/// `-DuoTourStep <s>` the dwell on each. The walk restarts when the panes split
-/// or join, so each display gets all of it. Every step is logged as a
+/// `-DuoTourStep <s>` the dwell on each. The walk repeats, and restarts when
+/// the panes split or join, so each display gets all of it. Every step is logged as a
 /// `DUOTOUR` line, which maps the captures to routes.
 ///
 /// Routes: today, trends, plus, settings, and pushes onto Today's stack

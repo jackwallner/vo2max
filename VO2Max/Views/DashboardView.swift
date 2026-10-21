@@ -64,8 +64,11 @@ struct DashboardView: View {
     }
 
     private func mainContent(availableHeight: CGFloat) -> some View {
-        let numberSize: CGFloat = min(availableHeight * 0.085, 72)
-        let ringSize: CGFloat = min(availableHeight * 0.32, 260)
+        // The cards below the ring and the floating tab bar need about 485 pt.
+        // On short screens (the iPhone Duo folded or unfolded, SE-size phones)
+        // the ring gives way, so the signal row never sits under the tab bar.
+        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - 485, 140))
+        let numberSize: CGFloat = min(availableHeight * 0.085, 72, ringSize * 0.3)
         let ringLineWidth: CGFloat = min(availableHeight * 0.022, 18)
 
         return VStack(spacing: 0) {

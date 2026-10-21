@@ -340,6 +340,13 @@ private struct MainTabView: View {
         .onGeometryChange(for: PaneGeometry.self) { proxy in
             PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
         } action: { paneGeometry = $0 }
+        #if DEBUG
+        .onChange(of: paneGeometry) { _, geometry in
+            guard DuoScreenshotTour.isEnabled else { return }
+            NSLog("DUOGEOM width=%.1f fold=%@ split=%@", geometry.width,
+                  String(describing: geometry.fold), String(describing: split))
+        }
+        #endif
         .onChange(of: split != nil) { _, isSplit in
             if isSplit, selection == 1 { selection = 0 }
         }
@@ -515,15 +522,19 @@ private struct MainTabView: View {
     private func runDuoTour(split isSplit: Bool) async {
         guard DuoScreenshotTour.isEnabled else { return }
         try? await Task.sleep(for: .seconds(DuoScreenshotTour.firstDelay))
-        for route in DuoScreenshotTour.routes(split: isSplit) {
-            guard !Task.isCancelled else { return }
-            NSLog("DUOTOUR %@ route=%@", isSplit ? "inner" : "outer", route)
-            showSettings = false
-            tourTodayPush = nil
-            tourTrendsPush = nil
-            try? await Task.sleep(for: .milliseconds(700))
-            openDuoRoute(route)
-            try? await Task.sleep(for: .seconds(DuoScreenshotTour.step))
+        // Loops until the panes split or join, so a slow capture still lands
+        // on every route.
+        while !Task.isCancelled {
+            for route in DuoScreenshotTour.routes(split: isSplit) {
+                guard !Task.isCancelled else { return }
+                NSLog("DUOTOUR %@ route=%@", isSplit ? "inner" : "outer", route)
+                showSettings = false
+                tourTodayPush = nil
+                tourTrendsPush = nil
+                try? await Task.sleep(for: .milliseconds(700))
+                openDuoRoute(route)
+                try? await Task.sleep(for: .seconds(DuoScreenshotTour.step))
+            }
         }
     }
 

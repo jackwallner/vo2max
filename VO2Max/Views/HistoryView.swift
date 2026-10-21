@@ -10,6 +10,8 @@ struct HistoryView: View {
     /// window a user picks here is the window they land in.
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPlusPaywall = false
+    /// The scroll view's own width, which the content is pinned to (below).
+    @State private var viewportWidth: CGFloat?
 
     private var range: CardioRange { ranges.resolved }
     private var period: Int { range.days }
@@ -61,8 +63,12 @@ struct HistoryView: View {
             // change badges, and the comparison rows can each ask for more width
             // than the screen has. Fixing the width means an over-wide row is
             // clipped rather than turning the whole tab into a two-axis scroller.
-            .containerRelativeFrame(.horizontal)
+            // Measured rather than `containerRelativeFrame`, which sized this
+            // to the wrong container as a pane of the unfolded iPhone Duo and
+            // pushed the cards under the fold.
+            .frame(width: viewportWidth)
         }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { viewportWidth = $0 }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
         .navigationTitle("Trends")
