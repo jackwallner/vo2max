@@ -60,7 +60,7 @@ Use the checked-in wrapper, one worker and one full Gradle build at a time.
 Stop the owned emulator during release/QA R8, then test after build completion.
 From the Air, run non-release tasks with `fm-gradle <tasks>` from `android/`
 (runs them on jmbp, copies outputs back); never `./gradlew` there except
-signed `bundleRelease`/`assembleRelease`.
+signed `bundleRelease`/`assembleRelease`. The full command on jmbp itself:
 
 ```sh
 python3 scripts/sync-android-parity.py
@@ -83,7 +83,7 @@ and rejects a wrong reviewer code. Final onboarding, free Today, locked paywall
 and masked rejection captures were inspected. Onboarding uses safe drawing
 padding so its step label and controls avoid the system bars.
 
-Current proof is under `~/fleet-work/android-ports/verification/vo2max/`, with
+Current proof is under `~/fleet-work/android-ports/verification/vo2max/` on jmbp, with
 `vo2max-vc2-final-build.log` and `vo2max-vc2-final-artifacts.log` at its parent.
 The final device orchestrator stops only its owned AVD on completion.
 
