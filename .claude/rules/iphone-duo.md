@@ -19,6 +19,14 @@ paths:
 - Each pane gets `horizontalSizeClass = .compact`, so it lays out as on a phone.
   A pane frame must sit after the tab bar `safeAreaInset`, which fills its
   proposal and would centre a narrower pane across the fold.
+- Never pin a pane's scroll content with `containerRelativeFrame`: as the
+  trailing pane it resolved to the wrong container (466 pt in a 371.5 pt pane)
+  and pushed Trends under the fold. `HistoryView` measures its scroll view.
+- Today's ring shrinks on short screens (`availableHeight - 485`, floor 140) so
+  the signal row clears the floating tab bar; on standard iPhones it is unchanged.
+- Measured on the gh-sim iPhone Duo (iOS 27.1): inner root 867 pt wide (84 pt
+  vertical bar on the trailing edge), fold division 455.5...495.5, so panes are
+  0-455.5 and 495.5-867. The outer display also has an 84 pt trailing bar.
 - Settings is owned by `MainTabView` (`showSettings`, bound into
   `DashboardView`): a sheet when folded, the trailing pane when split. Unfolding
   with the sheet up moves it to the pane. `SettingsView(onDone:)` closes the pane.
