@@ -247,13 +247,23 @@ private struct MainTabView: View {
     @StateObject private var routeCoordinator = NotificationRouteCoordinator.shared
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var selection = 0
+    /// The container's width and fold, measured so the unfolded iPhone Duo can
+    /// put Today and Trends on opposite sides of the fold.
+    @State private var paneGeometry = PaneGeometry(width: 0, fold: nil)
+    /// Settings, from Today's gear or What's New: a sheet, or the trailing pane
+    /// while split.
+    @State private var showSettings = false
+    #if DEBUG
+    @State private var tourTodayPush: DuoScreenshotTour.Screen?
+    @State private var tourTrendsPush: DuoScreenshotTour.Screen?
+    #endif
 
     // What's New
     @State private var showWhatsNew = false
     @State private var whatsNewEvaluated = false
-    @State private var showSettingsFromWhatsNew = false
     @State private var showPaywallFromWhatsNew = false
     @State private var pendingSettingsAfterWhatsNew = false
     @State private var pendingPaywallAfterWhatsNew = false
@@ -264,15 +274,68 @@ private struct MainTabView: View {
     // Rating ask
     @State private var reviewPromptShownThisSession = false
 
+    /// Unfolded, Trends has its own pane beside Today, so it is never a tab.
+    private var split: UnfoldedSplit? {
+        UnfoldedSplit.make(
+            width: paneGeometry.width,
+            isRegularWidth: horizontalSizeClass == .regular,
+            fold: paneGeometry.fold
+        )
+    }
+
+    /// Each unfolded pane is phone-width, so its screen lays out as on a phone.
+    private var paneSizeClass: UserInterfaceSizeClass? {
+        split == nil ? horizontalSizeClass : .compact
+    }
+
+    private var showsTrends: Bool {
+        split == nil ? selection == 1 : !showSettings
+    }
+
+    /// Folded, Settings is a sheet. Unfolding with it up moves it to the pane,
+    /// so the sheet's own dismissal must not close it.
+    private var settingsSheet: Binding<Bool> {
+        Binding(
+            get: { showSettings && split == nil },
+            set: { if !$0, split == nil { showSettings = false } }
+        )
+    }
+
     var body: some View {
-        ZStack(alignment: .bottom) {
-            tabContent(tab: 0) { DashboardView() }
-            tabContent(tab: 1) { HistoryView() }
-            tabContent(tab: 2) { PlusTabView() }
+        // One view tree in every pose: opening or closing the Duo only moves
+        // these frames, so no tab is rebuilt and each keeps its scroll position
+        // and pushed screens.
+        ZStack(alignment: .bottomLeading) {
+            // Behind the fold and the inner display's vertical status bar,
+            // which the panes leave uncovered.
+            Theme.background.ignoresSafeArea()
+
+            tabContent(tab: 0, isVisible: selection == 0, paneWidth: split?.primaryWidth) {
+                todayRoot
+            }
+            tabContent(tab: 2, isVisible: selection == 2, paneWidth: split?.primaryWidth) {
+                PlusTabView()
+            }
+            tabContent(tab: 1, isVisible: showsTrends, paneWidth: split?.secondaryWidth, paneX: split?.secondaryX ?? 0) {
+                trendsRoot
+            }
+
+            ZStack(alignment: .leading) {
+                if let split, showSettings {
+                    NavigationStack { SettingsView(onDone: { showSettings = false }) }
+                        .environment(\.horizontalSizeClass, .compact)
+                        .frame(maxWidth: split.secondaryWidth, maxHeight: .infinity)
+                        .padding(.leading, split.secondaryX)
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: showSettings)
 
             HStack(spacing: 0) {
                 TabButton(icon: "heart.fill", label: "Today", isSelected: selection == 0) { selection = 0 }
-                TabButton(icon: "chart.bar.fill", label: "Trends", isSelected: selection == 1) { selection = 1 }
+                if split == nil {
+                    TabButton(icon: "chart.bar.fill", label: "Trends", isSelected: selection == 1) { selection = 1 }
+                }
                 TabButton(icon: "sparkles", label: "VO2+", isSelected: selection == 2) { selection = 2 }
             }
             .padding(.horizontal, 8)
@@ -280,6 +343,18 @@ private struct MainTabView: View {
             .background(.ultraThinMaterial.opacity(0.8), in: Capsule())
             .overlay(Capsule().stroke(Color(.separator).opacity(0.3), lineWidth: 0.5))
             .padding(.bottom, 12)
+            // Within the leading pane while split, never across the fold.
+            .frame(maxWidth: split?.primaryWidth ?? .infinity)
+        }
+        .onGeometryChange(for: PaneGeometry.self) { proxy in
+            PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
+        } action: { paneGeometry = $0 }
+        .onChange(of: split != nil) { _, isSplit in
+            if isSplit, selection == 1 { selection = 0 }
+        }
+        .onChange(of: selection) { _, tab in
+            // Notification routes and the screenshot hook still ask for Trends.
+            if tab == 1, split != nil { selection = 0 }
         }
         .ignoresSafeArea(edges: .bottom)
         .tint(Theme.cardio)
@@ -287,6 +362,9 @@ private struct MainTabView: View {
             selection = initialTab
             evaluateWhatsNew()
         }
+        #if DEBUG
+        .task(id: split != nil) { await runDuoTour(split: split != nil) }
+        #endif
         .task(id: recapSchedulingKey) { await syncMonthlyRecapSchedule() }
         .onChange(of: routeCoordinator.pendingRecap) { _, pending in
             guard pending else { return }
@@ -304,7 +382,7 @@ private struct MainTabView: View {
         .sheet(isPresented: $showWhatsNew, onDismiss: {
             if pendingSettingsAfterWhatsNew {
                 pendingSettingsAfterWhatsNew = false
-                showSettingsFromWhatsNew = true
+                showSettings = true
             } else if pendingPaywallAfterWhatsNew {
                 pendingPaywallAfterWhatsNew = false
                 showPaywallFromWhatsNew = true
@@ -321,11 +399,12 @@ private struct MainTabView: View {
                 onDismiss: { showWhatsNew = false }
             )
         }
-        .sheet(isPresented: $showSettingsFromWhatsNew) {
+        .sheet(isPresented: settingsSheet) {
             NavigationStack { SettingsView() }
                 .environmentObject(settings)
                 .environmentObject(store)
         }
+        .blocksReviewPrompt(showSettings)
         .sheet(isPresented: $showPaywallFromWhatsNew) {
             PaywallView().environmentObject(store)
         }
@@ -385,7 +464,7 @@ private struct MainTabView: View {
     private var isTodayClear: Bool {
         selection == 0
             && !showWhatsNew
-            && !showSettingsFromWhatsNew
+            && !showSettings
             && !showPaywallFromWhatsNew
             && !pendingSettingsAfterWhatsNew
             && !pendingPaywallAfterWhatsNew
@@ -399,20 +478,86 @@ private struct MainTabView: View {
     /// `NavigationStack` as well as to the stack itself: the outer one alone does
     /// not reach the stack's hosted content, so VoiceOver used to walk all three
     /// tabs' worth of elements before reaching the one on screen.
+    ///
+    /// `paneWidth` and `paneX` place the pane while split; `nil` is the full
+    /// width. The frame sits after the inset, which fills its proposal
+    /// and would otherwise centre a narrower pane across the fold. Only the
+    /// leading pane holds the tab bar, so only it reserves room for it.
     private func tabContent<Content: View>(
         tab: Int,
+        isVisible: Bool,
+        paneWidth: CGFloat?,
+        paneX: CGFloat = 0,
         @ViewBuilder content: () -> Content
     ) -> some View {
         NavigationStack {
             content()
-                .environment(\.isActiveTab, selection == tab)
-                .accessibilityHidden(selection != tab)
+                .environment(\.isActiveTab, isVisible)
+                .accessibilityHidden(!isVisible)
         }
+        .environment(\.horizontalSizeClass, paneSizeClass)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            Color.clear.frame(height: 92)
+            Color.clear.frame(height: split != nil && tab == 1 ? 0 : 92)
         }
-        .tabVisibility(selection == tab)
+        .frame(maxWidth: paneWidth ?? .infinity, maxHeight: .infinity)
+        .padding(.leading, paneX)
+        .tabVisibility(isVisible)
     }
+
+    private var todayRoot: some View {
+        DashboardView(showSettings: $showSettings)
+        #if DEBUG
+            .navigationDestination(item: $tourTodayPush) { $0.view }
+        #endif
+    }
+
+    private var trendsRoot: some View {
+        HistoryView()
+        #if DEBUG
+            .navigationDestination(item: $tourTrendsPush) { $0.view }
+        #endif
+    }
+
+    #if DEBUG
+    /// See `DuoScreenshotTour`. Each route starts from a clean tab: sheets
+    /// close and earlier pushes pop first.
+    private func runDuoTour(split isSplit: Bool) async {
+        guard DuoScreenshotTour.isEnabled else { return }
+        try? await Task.sleep(for: .seconds(DuoScreenshotTour.firstDelay))
+        for route in DuoScreenshotTour.routes(split: isSplit) {
+            guard !Task.isCancelled else { return }
+            NSLog("DUOTOUR %@ route=%@", isSplit ? "inner" : "outer", route)
+            showSettings = false
+            tourTodayPush = nil
+            tourTrendsPush = nil
+            try? await Task.sleep(for: .milliseconds(700))
+            openDuoRoute(route)
+            try? await Task.sleep(for: .seconds(DuoScreenshotTour.step))
+        }
+    }
+
+    private func openDuoRoute(_ route: String) {
+        switch route {
+        case "today": selection = 0
+        case "trends": selection = 1
+        case "plus": selection = 2
+        case "settings":
+            selection = 0
+            showSettings = true
+        case _ where route.hasPrefix("trends/"):
+            if split == nil { selection = 1 }
+            tourTrendsPush = DuoScreenshotTour.Screen(rawValue: String(route.dropFirst(7)))
+        default:
+            selection = 0
+            tourTodayPush = DuoScreenshotTour.Screen(rawValue: route)
+        }
+    }
+    #endif
+}
+
+private struct PaneGeometry: Equatable, Sendable {
+    var width: CGFloat
+    var fold: ClosedRange<CGFloat>?
 }
 
 /// Whether the tab this view sits in is the one on screen. All three tabs are
@@ -433,7 +578,7 @@ extension EnvironmentValues {
 
 private extension View {
     func tabVisibility(_ isVisible: Bool) -> some View {
-        frame(maxWidth: .infinity, maxHeight: .infinity)
+        frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .opacity(isVisible ? 1 : 0)
             .allowsHitTesting(isVisible)
             .accessibilityHidden(!isVisible)

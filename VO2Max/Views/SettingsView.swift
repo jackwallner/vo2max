@@ -10,6 +10,10 @@ struct SettingsView: View {
     @Environment(\.openURL) private var openURL
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
 
+    /// Closes Settings when it is a pane of the unfolded iPhone Duo rather than
+    /// a sheet, where `dismiss` has nothing to dismiss.
+    var onDone: (() -> Void)?
+
     @State private var showPaywall = false
     @State private var paywallFocus: PlusFeature?
     @State private var showTrialOffer = false
@@ -46,7 +50,9 @@ struct SettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") { dismiss() }
+                Button("Done") {
+                    if let onDone { onDone() } else { dismiss() }
+                }
             }
         }
         .sheet(isPresented: $showPaywall) {
