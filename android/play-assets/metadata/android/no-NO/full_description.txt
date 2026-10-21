@@ -1,0 +1,27 @@
+Hold oversikt over kondisjonen din.
+
+VO2 Max leser estimater som kompatible treningsapper og wearables deler via Health Connect. Se siste verdi, følg trenden, sett et personlig mål og utforsk et grovt anslag på kondisjonsalderen din.
+
+GRATIS INNEHOLDER
+• Siste VO2 max-estimat og kildens dato
+• Enkel kondisjonstrend og historikk over målinger
+• Anslag på kondisjonsalder
+• Personlig målområde og lyst, mørkt eller systemutseende
+
+VO2+ LEGGER TIL
+• Hvilepuls og kontekst rundt kondisjonsbelastning
+• Dypere sammenligninger og egne datoperioder
+• Måloversikt, aldersreferanser og personlige rekorder
+• Månedsoppsummering, valgfrie varsler og PDF-rapporter du kan dele
+
+DU TRENGER EN DATAKILDE
+Health Connect beregner ikke VO2 max. En kompatibel app eller wearable må dele estimater først, og det du ser avhenger av kilden og tillatelsene dine. Widgets og Wear OS er ikke med i denne versjonen.
+
+PRIVAT FRA GRUNNEN AV
+Helsemålingene dine blir på enheten, og appen ber bare om lesetilgang. Trekk tilbake tillatelser i Health Connect når du vil. Ingen annonser, ingen konto.
+
+VO2+ er en valgfri oppgradering: månedlig, årlig eller én gang for alltid. Lokale priser og eventuell prøveperiode vises før kjøp. Abonnementer fornyes automatisk til du sier dem opp i Google Play.
+
+Selve appen er på engelsk.
+
+Bare for å følge med på formen. Estimater er ikke medisinske målinger, og VO2 Max stiller ingen diagnoser og erstatter ingen behandling. Snakk med helsepersonell om du er bekymret for helsen.

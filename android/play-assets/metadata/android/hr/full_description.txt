@@ -1,0 +1,27 @@
+Držite svoju kondiciju na oku.
+
+VO2 Max čita procjene koje kompatibilne fitness aplikacije i nosivi uređaji dijele putem Health Connecta. Pogledajte posljednju vrijednost, pratite trend, postavite osobni cilj i istražite okvirnu procjenu fitness dobi.
+
+BESPLATNE FUNKCIJE
+• Posljednja procjena VO2 max i datum izvora
+• Osnovni trend kondicije i povijest mjerenja
+• Procjena fitness dobi
+• Osobni ciljni raspon te svijetli, tamni ili sustavni izgled
+
+VO2+ DODAJE
+• Puls u mirovanju i kontekst kardio opterećenja
+• Dublje usporedbe i vlastita razdoblja
+• Pogled na cilj, dobne reference i osobni rekordi
+• Mjesečni sažetak, neobavezne obavijesti i PDF izvješća za dijeljenje
+
+POTREBAN JE IZVOR PODATAKA
+Health Connect ne izračunava VO2 max. Kompatibilna aplikacija ili uređaj mora prvo podijeliti procjene, a ono što vidite ovisi o izvoru i dopuštenjima. Widgeti i Wear OS nisu uključeni u ovu verziju.
+
+PRIVATNO PO DIZAJNU
+Zdravstvena mjerenja ostaju na vašem uređaju, a aplikacija traži samo pristup za čitanje. Dopuštenja možete povući u Health Connectu u bilo kojem trenutku. Bez oglasa i bez računa.
+
+VO2+ je neobavezna nadogradnja: mjesečna, godišnja ili doživotna. Lokalne cijene i moguće probno razdoblje prikazuju se prije kupnje. Pretplate se obnavljaju automatski dok ih ne otkažete u Google Playu.
+
+Sama aplikacija je na engleskom.
+
+Samo za pregled kondicije. Procjene nisu medicinska mjerenja, a VO2 Max ne postavlja dijagnoze niti zamjenjuje liječenje. Zdravstvene nedoumice razgovarajte s kvalificiranim stručnjakom.

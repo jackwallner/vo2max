@@ -1,0 +1,27 @@
+Pidä kuntosi silmällä.
+
+VO2 Max lukee arvioita, joita yhteensopivat kuntosovellukset ja puettavat laitteet jakavat Health Connectin kautta. Näe viimeisin arvo, seuraa trendiä, aseta henkilökohtainen tavoite ja tutustu suuntaa-antavaan kuntoikäarvioon.
+
+ILMAISET OMINAISUUDET
+• Viimeisin VO2 max -arvio ja lähteen päivämäärä
+• Perustrendi ja mittaushistoria
+• Kuntoikäarvio
+• Henkilökohtainen tavoitealue sekä vaalea, tumma tai järjestelmän teema
+
+VO2+ LISÄÄ
+• Leposyke ja kuormituksen konteksti
+• Syvemmät vertailut ja omat aikavälit
+• Tavoitenäkymä, ikäviitteet ja henkilökohtaiset ennätykset
+• Kuukausiyhteenveto, valinnaiset ilmoitukset ja jaettavat PDF-raportit
+
+TARVITSET TIETOLÄHTEEN
+Health Connect ei laske VO2 maxia. Yhteensopivan sovelluksen tai laitteen täytyy ensin jakaa arviot, ja näkemäsi riippuu lähteestä ja käyttöoikeuksista. Widgetit ja Wear OS eivät kuulu tähän versioon.
+
+YKSITYINEN SUUNNITTELUSSA
+Terveystiedot pysyvät laitteellasi, ja sovellus pyytää vain lukuoikeutta. Peru oikeudet Health Connectissa milloin tahansa. Ei mainoksia, ei tiliä.
+
+VO2+ on valinnainen päivitys: kuukausi-, vuosi- tai kertaosto. Paikalliset hinnat ja mahdollinen kokeilu näytetään ennen ostoa. Tilaukset uusiutuvat automaattisesti, kunnes peruutat ne Google Playssa.
+
+Itse sovellus on englanniksi.
+
+Vain kunnon seurantaan. Arviot eivät ole lääketieteellisiä mittauksia, eikä VO2 Max tee diagnooseja tai korvaa hoitoa. Keskustele terveyshuolista pätevän ammattilaisen kanssa.

@@ -1,0 +1,26 @@
+Keep your cardio fitness in view.
+
+VO2 Max reads estimates shared by compatible fitness apps and wearables through Health Connect. See your latest number, follow its trend, set a personal target and explore a broad fitness age estimate.
+
+FREE FEATURES
+• Latest VO2 max estimate and source date
+• Basic cardio fitness trend
+• Fitness age estimate and reading history
+• Personal target range and optional reference profile
+• Light, dark and system appearance
+
+VO2+ ADDS
+• Resting heart rate and cardio load context
+• Deep comparisons and custom date ranges
+• Target outlook, age references and personal bests
+• Monthly recap, optional alerts and shareable PDF reports
+
+A DATA SOURCE IS REQUIRED
+Health Connect does not calculate VO2 max. A compatible app or wearable must share VO2 max estimates first. Available data depends on your source and permissions. One-minute heart rate recovery is unavailable through Health Connect. Wear OS and home-screen widgets are not included in this version.
+
+PRIVATE BY DESIGN
+Health readings and display caches stay on your device. The app requests read-only access. Revoke individual permissions in Health Connect at any time. Reports leave your device only when you choose to share them. RevenueCat and Google Play process purchase information. No ads or app account.
+
+VO2+ offers monthly and yearly subscriptions and a lifetime purchase. Local prices and any eligible trial appear before purchase. Subscriptions renew automatically unless cancelled in Google Play. Your latest estimate, basic trend and fitness age remain free.
+
+For fitness awareness only. Estimates and broad reference context are not medical measurements. VO2 Max does not diagnose, treat, cure or prevent any condition. Discuss health concerns with a qualified clinician.

@@ -1,0 +1,27 @@
+Mantén tu forma cardiovascular a la vista.
+
+VO2 Max lee las estimaciones que comparten aplicaciones de fitness y dispositivos compatibles a través de Health Connect. Consulta tu último valor, sigue su tendencia, fija un objetivo personal y explora una estimación aproximada de tu edad física.
+
+FUNCIONES GRATUITAS
+• Última estimación de VO2 max y fecha de la fuente
+• Tendencia cardio básica e historial de lecturas
+• Estimación de la edad física
+• Rango objetivo personal y apariencia clara, oscura o del sistema
+
+VO2+ AÑADE
+• Frecuencia cardíaca en reposo y contexto de carga cardio
+• Comparaciones en profundidad y rangos de fechas personalizados
+• Perspectiva del objetivo, referencias por edad y mejores marcas
+• Resumen mensual, avisos opcionales e informes PDF para compartir
+
+HACE FALTA UNA FUENTE DE DATOS
+Health Connect no calcula el VO2 max. Una aplicación o un dispositivo compatible debe compartir antes las estimaciones, y lo que ves depende de tu fuente y de tus permisos. Los widgets y Wear OS no están incluidos en esta versión.
+
+PRIVADA POR DISEÑO
+Tus lecturas de salud se quedan en tu dispositivo y la app solo pide acceso de lectura. Revoca los permisos en Health Connect cuando quieras. Sin anuncios y sin cuenta.
+
+VO2+ es una mejora opcional: mensual, anual o de por vida. Los precios locales y cualquier prueba disponible se muestran antes de comprar. Las suscripciones se renuevan automáticamente hasta que las canceles en Google Play.
+
+La aplicación está en inglés.
+
+Solo para conocer tu estado físico. Las estimaciones no son mediciones médicas, y VO2 Max no diagnostica ni sustituye ningún tratamiento. Consulta tus dudas de salud con un profesional sanitario.

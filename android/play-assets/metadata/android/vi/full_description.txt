@@ -1,0 +1,27 @@
+Luôn nắm được thể lực tim mạch của bạn.
+
+VO2 Max đọc các ước tính do ứng dụng thể dục và thiết bị đeo tương thích chia sẻ qua Health Connect. Xem chỉ số mới nhất, theo dõi xu hướng, đặt mục tiêu cá nhân và khám phá ước tính sơ bộ về tuổi thể lực.
+
+TÍNH NĂNG MIỄN PHÍ
+• Ước tính VO2 max mới nhất và ngày của nguồn
+• Xu hướng thể lực tim mạch cơ bản và lịch sử số đo
+• Ước tính tuổi thể lực
+• Khoảng mục tiêu cá nhân và giao diện sáng, tối hoặc theo hệ thống
+
+VO2+ BỔ SUNG
+• Nhịp tim lúc nghỉ và bối cảnh tải tim mạch
+• So sánh chuyên sâu và khoảng ngày tùy chọn
+• Triển vọng mục tiêu, mốc tham chiếu theo tuổi và thành tích cá nhân
+• Tổng kết tháng, cảnh báo tùy chọn và báo cáo PDF để chia sẻ
+
+CẦN CÓ NGUỒN DỮ LIỆU
+Health Connect không tự tính VO2 max. Một ứng dụng hoặc thiết bị đeo tương thích phải chia sẻ ước tính trước, và những gì bạn thấy phụ thuộc vào nguồn và quyền truy cập. Phiên bản này chưa có widget và Wear OS.
+
+RIÊNG TƯ NGAY TỪ THIẾT KẾ
+Số đo sức khỏe ở lại trên thiết bị của bạn và ứng dụng chỉ xin quyền đọc. Bạn có thể thu hồi quyền trong Health Connect bất cứ lúc nào. Không quảng cáo, không cần tài khoản.
+
+VO2+ là bản nâng cấp tùy chọn: theo tháng, theo năm hoặc trọn đời. Giá địa phương và bản dùng thử nếu đủ điều kiện được hiển thị trước khi mua. Gói đăng ký tự động gia hạn cho đến khi bạn hủy trong Google Play.
+
+Bản thân ứng dụng bằng tiếng Anh.
+
+Chỉ để nắm tình trạng thể lực. Ước tính không phải số đo y tế, và VO2 Max không chẩn đoán hay thay thế điều trị. Hãy trao đổi mối lo về sức khỏe với chuyên gia có chuyên môn.

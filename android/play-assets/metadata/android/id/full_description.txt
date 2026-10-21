@@ -1,0 +1,27 @@
+Pantau kebugaran kardio Anda.
+
+VO2 Max membaca estimasi yang dibagikan aplikasi kebugaran dan perangkat wearable yang kompatibel lewat Health Connect. Lihat angka terbaru, ikuti tren, tetapkan target pribadi, dan jelajahi perkiraan kasar usia kebugaran.
+
+FITUR GRATIS
+• Estimasi VO2 max terbaru dan tanggal sumber
+• Tren kebugaran kardio dasar dan riwayat pembacaan
+• Perkiraan usia kebugaran
+• Rentang target pribadi dan tampilan terang, gelap, atau sistem
+
+VO2+ MENAMBAHKAN
+• Detak jantung istirahat dan konteks beban kardio
+• Perbandingan mendalam dan rentang tanggal kustom
+• Prospek target, acuan usia, dan rekor pribadi
+• Rekap bulanan, peringatan opsional, dan laporan PDF yang bisa dibagikan
+
+SUMBER DATA DIPERLUKAN
+Health Connect tidak menghitung VO2 max. Aplikasi atau wearable yang kompatibel harus membagikan estimasi lebih dulu, dan yang Anda lihat bergantung pada sumber dan izin. Widget dan Wear OS belum termasuk di versi ini.
+
+PRIVAT SEJAK AWAL
+Data kesehatan tetap di perangkat Anda dan aplikasi hanya meminta akses baca. Cabut izin kapan saja di Health Connect. Tanpa iklan, tanpa akun.
+
+VO2+ adalah peningkatan opsional: bulanan, tahunan, atau seumur hidup. Harga lokal dan uji coba yang tersedia ditampilkan sebelum pembelian. Langganan diperpanjang otomatis sampai Anda membatalkannya di Google Play.
+
+Aplikasinya sendiri berbahasa Inggris.
+
+Hanya untuk wawasan kebugaran. Estimasi bukan pengukuran medis, dan VO2 Max tidak mendiagnosis maupun menggantikan pengobatan. Bicarakan kekhawatiran kesehatan dengan tenaga kesehatan yang berkualifikasi.

@@ -1,0 +1,27 @@
+Tartsd szemmel a kondíciódat.
+
+A VO2 Max a Health Connecten keresztül olvassa a kompatibilis fitneszalkalmazások és viselhető eszközök által megosztott becsléseket. Nézd meg a legutóbbi értéket, kövesd a trendet, tűzz ki személyes célt, és fedezd fel a fitneszkorod hozzávetőleges becslését.
+
+INGYENES FUNKCIÓK
+• Legutóbbi VO2 max becslés és a forrás dátuma
+• Alap kondíciótrend és a mérések előzményei
+• Fitneszkor-becslés
+• Személyes célsáv, világos, sötét vagy rendszer megjelenés
+
+A VO2+ BŐVÍTI
+• Nyugalmi pulzus és a kardióterhelés háttere
+• Mélyebb összehasonlítások és egyéni időszakok
+• Célkilátás, korhoz viszonyított referenciák és egyéni rekordok
+• Havi összefoglaló, opcionális értesítések és megosztható PDF-jelentések
+
+ADATFORRÁS SZÜKSÉGES
+A Health Connect nem számol VO2 maxot. Egy kompatibilis alkalmazásnak vagy eszköznek először meg kell osztania a becsléseket, és amit látsz, a forrástól és az engedélyektől függ. Widgetek és Wear OS nincsenek ebben a verzióban.
+
+ALAPBÓL MAGÁNÉLETBARÁT
+Az egészségügyi adatok az eszközödön maradnak, az alkalmazás csak olvasási hozzáférést kér. Az engedélyeket bármikor visszavonhatod a Health Connectben. Nincs hirdetés, nincs fiók.
+
+A VO2+ opcionális bővítés: havi, éves vagy egyszeri, élethosszig tartó. A helyi árak és az esetleges próbaidőszak vásárlás előtt látszanak. Az előfizetések automatikusan megújulnak, amíg a Google Playben le nem mondod őket.
+
+Maga az alkalmazás angol nyelvű.
+
+Kizárólag a kondíció követésére. A becslések nem orvosi mérések, a VO2 Max pedig nem állít fel diagnózist és nem helyettesít kezelést. Egészségügyi aggályaidat beszéld meg képzett szakemberrel.
