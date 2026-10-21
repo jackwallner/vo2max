@@ -10,7 +10,9 @@ struct DashboardView: View {
     @EnvironmentObject private var store: StoreService
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @StateObject private var health = HealthKitService.shared
-    @State private var showSettings = false
+    /// Owned by `MainTabView`, which opens Settings as a sheet, or beside Today
+    /// in the trailing pane of the unfolded iPhone Duo.
+    @Binding var showSettings: Bool
     @State private var animateRing = false
     @State private var animateContent = false
     /// Measured top safe-area inset, used to size the mask that keeps scrolled
@@ -47,10 +49,6 @@ struct DashboardView: View {
         // scroll content (same fix as Vitals).
         .overlay(alignment: .top) { statusBarMask }
         .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: $showSettings) {
-            NavigationStack { SettingsView() }
-        }
-        .blocksReviewPrompt(showSettings)
         .onAppear {
             withAnimation(.easeOut(duration: 0.5)) { animateContent = true }
             withAnimation(.spring(duration: 1.0, bounce: 0.15).delay(0.3)) { animateRing = true }
