@@ -180,12 +180,17 @@ final class CardioContextService: ObservableObject {
     #if DEBUG
     private static func demoRestingHeartRate() -> [CardioFitnessPoint] {
         // A full 500 days so every range in the picker, and the window before it,
-        // has something to draw.
+        // has something to draw. Whole bpm with day-to-day scatter, the odd
+        // high morning after a hard session and a few nights without the watch,
+        // as Apple Health records it.
         (0..<500).compactMap { index in
             let daysAgo = 499 - index
-            guard let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
+            guard demoNoise(index, salt: 3) > -0.84,
+                  let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
             let drift = -Double(index) * 0.012
-            return CardioFitnessPoint(date: date, value: 62 + drift + sin(Double(index) * 0.4) * 1.6)
+            let spike = demoNoise(index, salt: 5) > 0.82 ? 2.5 : 0
+            let value = (61.5 + drift + demoNoise(index, salt: 1) * 1.6 + spike).rounded()
+            return CardioFitnessPoint(date: date, value: value)
         }
     }
 
@@ -193,8 +198,19 @@ final class CardioContextService: ObservableObject {
         (0..<125).compactMap { index in
             let daysAgo = (124 - index) * 4
             guard let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
-            return CardioFitnessPoint(date: date, value: 21 + Double(index) * 0.06 + sin(Double(index) * 0.7))
+            let value = (21 + Double(index) * 0.05 + demoNoise(index, salt: 2) * 2.2).rounded()
+            return CardioFitnessPoint(date: date, value: value)
         }
+    }
+
+    /// Repeatable scatter in -1...1 (a SplitMix64 hash of the index), so demo
+    /// charts look like real readings and every capture run draws the same ones.
+    private static func demoNoise(_ index: Int, salt: UInt64) -> Double {
+        var z = UInt64(index) &* 0x9E37_79B9_7F4A_7C15 &+ salt &* 0xBF58_476D_1CE4_E5B9
+        z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
+        z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
+        z ^= z >> 31
+        return Double(z >> 11) / Double(1 << 53) * 2 - 1
     }
 
     private static func demoWorkouts() -> [WorkoutSummary] {

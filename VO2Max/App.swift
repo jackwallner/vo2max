@@ -315,6 +315,7 @@ private struct MainTabView: View {
                 if let split, showSettings {
                     NavigationStack { SettingsView(onDone: { showSettings = false }) }
                         .environment(\.horizontalSizeClass, .compact)
+                        .horizontalToolbarInPane(true)
                         .frame(maxWidth: split.secondaryWidth, maxHeight: .infinity)
                         .padding(.leading, split.secondaryX)
                         .transition(.opacity)
@@ -494,12 +495,30 @@ private struct MainTabView: View {
                 .accessibilityHidden(!isVisible)
         }
         .environment(\.horizontalSizeClass, paneSizeClass)
+        .horizontalToolbarInPane(split != nil)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            Color.clear.frame(height: split != nil && tab == 1 ? 0 : 92)
+            tabBarBand.frame(height: split != nil && tab == 1 ? 0 : 92)
         }
         .frame(maxWidth: paneWidth ?? .infinity, maxHeight: .infinity)
         .padding(.leading, paneX)
         .tabVisibility(isVisible)
+    }
+
+    /// The room kept under a pane for the floating tab bar. Folded it stays
+    /// clear, as on every iPhone. Split, it is filled, so the leading pane's
+    /// cards end above the bar instead of running underneath it beside an
+    /// uncovered Trends pane.
+    private var tabBarBand: some View {
+        LinearGradient(
+            stops: [
+                .init(color: Theme.background.opacity(0), location: 0.12),
+                .init(color: Theme.background, location: 0.26)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .opacity(split == nil ? 0 : 1)
+        .allowsHitTesting(false)
     }
 
     private var todayRoot: some View {
@@ -579,6 +598,19 @@ extension EnvironmentValues {
 }
 
 private extension View {
+    /// iOS 27.1 can move a stack's back button into a vertical bar on its
+    /// trailing edge, which in a pane is beside the fold, with the title still
+    /// leading. A pane keeps the phone's horizontal bar, back button leading.
+    /// Folded, the system default is unchanged.
+    @ViewBuilder
+    func horizontalToolbarInPane(_ isPane: Bool) -> some View {
+        if #available(iOS 27.1, *) {
+            toolbarVerticalBehavior(isPane ? .disabled : .automatic)
+        } else {
+            self
+        }
+    }
+
     func tabVisibility(_ isVisible: Bool) -> some View {
         frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .opacity(isVisible ? 1 : 0)

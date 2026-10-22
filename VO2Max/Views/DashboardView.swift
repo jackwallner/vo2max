@@ -66,8 +66,9 @@ struct DashboardView: View {
     private func mainContent(availableHeight: CGFloat) -> some View {
         // The cards below the ring and the floating tab bar need about 485 pt.
         // On short screens (the iPhone Duo folded or unfolded, SE-size phones)
-        // the ring gives way, so the signal row never sits under the tab bar.
-        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - 485, 140))
+        // the ring and the gaps give way, so the signal row ends above the tab bar.
+        let isShort = availableHeight < 625
+        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - 485, isShort ? 128 : 140))
         let numberSize: CGFloat = min(availableHeight * 0.085, 72, ringSize * 0.3)
         let ringLineWidth: CGFloat = min(availableHeight * 0.022, 18)
 
@@ -79,7 +80,7 @@ struct DashboardView: View {
                 .offset(y: animateContent ? 0 : 10)
 
             if let latest = samples.first {
-                Spacer(minLength: 16)
+                Spacer(minLength: isShort ? 8 : 16)
 
                 heroRing(
                     latest,
@@ -91,7 +92,7 @@ struct DashboardView: View {
                 // Keep the ring, its target caption, and the cards together as one
                 // group so the caption never strands in a large void; the flexible
                 // Spacers above and below center the whole cluster.
-                Color.clear.frame(height: 24)
+                Color.clear.frame(height: isShort ? 16 : 24)
 
                 trendCard
                     .padding(.horizontal, 24)
@@ -120,7 +121,7 @@ struct DashboardView: View {
                     .opacity(animateContent ? 1 : 0)
             }
 
-            Spacer(minLength: 16)
+            Spacer(minLength: isShort ? 0 : 16)
         }
     }
 
