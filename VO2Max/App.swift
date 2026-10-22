@@ -492,6 +492,7 @@ private struct MainTabView: View {
         NavigationStack {
             content()
                 .environment(\.isActiveTab, isVisible)
+                .environment(\.isUnfoldedPane, split != nil)
                 .accessibilityHidden(!isVisible)
         }
         .environment(\.horizontalSizeClass, paneSizeClass)
@@ -590,10 +591,20 @@ private struct IsActiveTabKey: EnvironmentKey {
     static let defaultValue = true
 }
 
+/// Whether this screen fills one pane of the unfolded iPhone Duo split.
+private struct IsUnfoldedPaneKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
 extension EnvironmentValues {
     var isActiveTab: Bool {
         get { self[IsActiveTabKey.self] }
         set { self[IsActiveTabKey.self] = newValue }
+    }
+
+    var isUnfoldedPane: Bool {
+        get { self[IsUnfoldedPaneKey.self] }
+        set { self[IsUnfoldedPaneKey.self] = newValue }
     }
 }
 

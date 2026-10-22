@@ -18,6 +18,7 @@ struct DashboardView: View {
     /// Measured top safe-area inset, used to size the mask that keeps scrolled
     /// content from colliding with the status bar (nav bar is hidden here).
     @State private var topSafeAreaInset: CGFloat = 0
+    @Environment(\.isUnfoldedPane) private var isUnfoldedPane
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -42,7 +43,9 @@ struct DashboardView: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 .refreshable { await health.refreshCache() }
+                .ignoresSafeArea(.container, edges: paneTopEdge)
             }
+            .ignoresSafeArea(.container, edges: paneTopEdge)
         }
         // The dashboard hides the navigation bar for its custom date header, so
         // repaint the status-bar strip with the page background above the
@@ -55,9 +58,15 @@ struct DashboardView: View {
         }
     }
 
+    /// In an unfolded iPhone Duo pane the system status bar sits over the
+    /// other pane and the toolbar is horizontal, so the top band above Today
+    /// would be empty. Today rises into it, its date row level with the
+    /// neighbouring pane's title.
+    private var paneTopEdge: Edge.Set { isUnfoldedPane ? .top : [] }
+
     private var statusBarMask: some View {
         Theme.background
-            .frame(height: topSafeAreaInset)
+            .frame(height: isUnfoldedPane ? 0 : topSafeAreaInset)
             .frame(maxWidth: .infinity)
             .ignoresSafeArea(edges: .top)
             .allowsHitTesting(false)
@@ -75,7 +84,7 @@ struct DashboardView: View {
         return VStack(spacing: 0) {
             header
                 .padding(.horizontal, 24)
-                .padding(.top, 16)
+                .padding(.top, isUnfoldedPane ? 28 : 16)
                 .opacity(animateContent ? 1 : 0)
                 .offset(y: animateContent ? 0 : 10)
 

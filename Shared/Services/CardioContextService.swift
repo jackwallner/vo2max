@@ -180,16 +180,17 @@ final class CardioContextService: ObservableObject {
     #if DEBUG
     private static func demoRestingHeartRate() -> [CardioFitnessPoint] {
         // A full 500 days so every range in the picker, and the window before it,
-        // has something to draw. Whole bpm with day-to-day scatter, the odd
-        // high morning after a hard session and a few nights without the watch,
-        // as Apple Health records it.
-        (0..<500).compactMap { index in
+        // has something to draw. A slow drift down, a few days of wander either
+        // side of it and a little daily scatter, with the odd night without the
+        // watch, as Apple Health records it.
+        var wander = 0.0
+        return (0..<500).compactMap { index in
+            wander = wander * 0.8 + demoNoise(index, salt: 1) * 0.7
             let daysAgo = 499 - index
-            guard demoNoise(index, salt: 3) > -0.84,
+            guard demoNoise(index, salt: 3) > -0.88,
                   let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: .now) else { return nil }
             let drift = -Double(index) * 0.012
-            let spike = demoNoise(index, salt: 5) > 0.82 ? 2.5 : 0
-            let value = (61.5 + drift + demoNoise(index, salt: 1) * 1.6 + spike).rounded()
+            let value = 61.5 + drift + wander + demoNoise(index, salt: 5) * 0.4
             return CardioFitnessPoint(date: date, value: value)
         }
     }
