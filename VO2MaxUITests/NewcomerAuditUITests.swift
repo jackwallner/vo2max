@@ -174,4 +174,31 @@ final class NewcomerAuditUITests: XCTestCase {
         app.buttons["Continue"].tap(); sleep(2); shot("43-large-trial")
         if tapIfThere(app.buttons["Get Started"]) { sleep(3); shot("44-large-today") }
     }
+
+    /// Trends right after onboarding (no detail screen visited first), then again
+    /// after a push and pop on Today. Records the width of the Trends content.
+    func testTrendsWidthDirectAndAfterPush() {
+        let app = launch(["-DemoData"])
+        XCTAssertTrue(app.buttons["Continue"].waitForExistence(timeout: 20))
+        for _ in 0..<3 { app.buttons["Continue"].tap(); sleep(1) }
+        XCTAssertTrue(tapIfThere(app.buttons["Get Started"]))
+        sleep(3)
+        XCTAssertTrue(tapIfThere(app.buttons["Trends"]))
+        sleep(3)
+        shot("50-trends-direct")
+        note("direct: Readings label", app.staticTexts["Readings"])
+        note("direct: Average label", app.staticTexts["Average"])
+        let direct = app.scrollViews.firstMatch
+        note("direct: first scroll view", direct)
+
+        app.buttons["Today"].tap(); sleep(1)
+        let trend = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Cardio fitness trend'")).firstMatch
+        if tapIfThere(trend) { sleep(2); app.navigationBars.buttons.firstMatch.tap(); sleep(1) }
+        app.buttons["Trends"].tap(); sleep(3)
+        shot("51-trends-after-push")
+        note("after push: Readings label", app.staticTexts["Readings"])
+        note("after push: Average label", app.staticTexts["Average"])
+        note("after push: first scroll view", app.scrollViews.firstMatch)
+        flushFrames("target-frames-trends.txt")
+    }
 }
