@@ -22,9 +22,11 @@ paths:
 - Never pin a pane's scroll content with `containerRelativeFrame`: as the
   trailing pane it resolved to the wrong container (466 pt in a 371.5 pt pane)
   and pushed Trends under the fold. `HistoryView` measures its scroll view.
-- Today's ring and gaps shrink on short screens (under 625 pt: ring floor 128,
-  tighter spacers) so the signal row clears the floating tab bar; standard
-  iPhones are unchanged.
+- Today's ring (floor 140 pt, where its caption still fits) and gaps shrink
+  on short screens so the signal row clears the floating tab bar; standard
+  iPhones are unchanged. A pane reserves 510 pt instead of 485, because its
+  measured height runs under the tab bar band, and drops the content's
+  `minHeight` so the spacers can't re-centre the cards into the band.
 - iOS 27.1 moves a `NavigationStack`'s back button into a vertical bar on the
   stack's trailing edge, which in a pane lands beside the fold with the title
   still leading. Pane stacks (and the Settings pane) set
