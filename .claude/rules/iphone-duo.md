@@ -29,11 +29,18 @@ paths:
   stack's trailing edge, which in a pane lands beside the fold with the title
   still leading. Pane stacks (and the Settings pane) set
   `toolbarVerticalBehavior(.disabled)` while split; folded keeps `.automatic`.
+  With both panes horizontal the system drops its vertical bar: the root is
+  the full 951 pt, panes 0-455.5 and 495.5-951, and the status bar runs across
+  the top of the trailing pane, level with its title (top safe area about 81 pt).
+- Today hides its nav bar, so split it ignores that top inset
+  (`isUnfoldedPane` environment) and sets its date row level with the other
+  pane's title; otherwise the empty band pushed its signal row under the pill.
 - Split, the leading pane fills its 92 pt tab-bar inset with a background band,
   so no card or disclaimer shows under the pill. Folded it stays clear.
-- Measured on the gh-sim iPhone Duo (iOS 27.1): inner root 867 pt wide (84 pt
-  vertical bar on the trailing edge), fold division 455.5...495.5, so panes are
-  0-455.5 and 495.5-867. The outer display also has an 84 pt trailing bar.
+- Measured on the gh-sim iPhone Duo (iOS 27.1): fold division 455.5...495.5.
+  With automatic toolbars the inner root was 867 pt (84 pt trailing vertical
+  bar); see the horizontal-pane note above for the current 951 pt. The folded
+  outer display keeps its 84 pt trailing bar (382 pt root).
 - Settings is owned by `MainTabView` (`showSettings`, bound into
   `DashboardView`): a sheet when folded, the trailing pane when split. Unfolding
   with the sheet up moves it to the pane. `SettingsView(onDone:)` closes the pane.

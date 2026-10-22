@@ -38,8 +38,10 @@ struct DashboardView: View {
 
             GeometryReader { geo in
                 ScrollView(showsIndicators: false) {
+                    // A pane keeps the content's own height, so the spacers
+                    // can't push the signal row back down toward the tab bar.
                     mainContent(availableHeight: geo.size.height)
-                        .frame(minHeight: geo.size.height)
+                        .frame(minHeight: isUnfoldedPane ? nil : geo.size.height)
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 .refreshable { await health.refreshCache() }
@@ -73,11 +75,14 @@ struct DashboardView: View {
     }
 
     private func mainContent(availableHeight: CGFloat) -> some View {
-        // The cards below the ring and the floating tab bar need about 485 pt.
-        // On short screens (the iPhone Duo folded or unfolded, SE-size phones)
-        // the ring and the gaps give way, so the signal row ends above the tab bar.
-        let isShort = availableHeight < 625
-        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - 485, isShort ? 128 : 140))
+        // The cards below the ring and the floating tab bar need about 485 pt
+        // (510 in a Duo pane, whose measured height runs under the tab bar
+        // band). On short screens (the iPhone Duo folded or unfolded, SE-size
+        // phones) the ring and the gaps give way, so the signal row ends above
+        // the tab bar.
+        let reserved: CGFloat = isUnfoldedPane ? 510 : 485
+        let isShort = availableHeight - reserved < 140
+        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - reserved, isShort ? 124 : 140))
         let numberSize: CGFloat = min(availableHeight * 0.085, 72, ringSize * 0.3)
         let ringLineWidth: CGFloat = min(availableHeight * 0.022, 18)
 
