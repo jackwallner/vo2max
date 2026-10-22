@@ -78,11 +78,11 @@ struct DashboardView: View {
         // The cards below the ring and the floating tab bar need about 485 pt
         // (510 in a Duo pane, whose measured height runs under the tab bar
         // band). On short screens (the iPhone Duo folded or unfolded, SE-size
-        // phones) the ring and the gaps give way, so the signal row ends above
-        // the tab bar.
+        // phones) the ring, down to 140 pt so its caption still fits, and the
+        // gaps give way, so the signal row ends above the tab bar.
         let reserved: CGFloat = isUnfoldedPane ? 510 : 485
         let isShort = availableHeight - reserved < 140
-        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - reserved, isShort ? 124 : 140))
+        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - reserved, 140))
         let numberSize: CGFloat = min(availableHeight * 0.085, 72, ringSize * 0.3)
         let ringLineWidth: CGFloat = min(availableHeight * 0.022, 18)
 
