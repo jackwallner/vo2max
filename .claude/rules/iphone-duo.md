@@ -22,8 +22,15 @@ paths:
 - Never pin a pane's scroll content with `containerRelativeFrame`: as the
   trailing pane it resolved to the wrong container (466 pt in a 371.5 pt pane)
   and pushed Trends under the fold. `HistoryView` measures its scroll view.
-- Today's ring shrinks on short screens (`availableHeight - 485`, floor 140) so
-  the signal row clears the floating tab bar; on standard iPhones it is unchanged.
+- Today's ring and gaps shrink on short screens (under 625 pt: ring floor 128,
+  tighter spacers) so the signal row clears the floating tab bar; standard
+  iPhones are unchanged.
+- iOS 27.1 moves a `NavigationStack`'s back button into a vertical bar on the
+  stack's trailing edge, which in a pane lands beside the fold with the title
+  still leading. Pane stacks (and the Settings pane) set
+  `toolbarVerticalBehavior(.disabled)` while split; folded keeps `.automatic`.
+- Split, the leading pane fills its 92 pt tab-bar inset with a background band,
+  so no card or disclaimer shows under the pill. Folded it stays clear.
 - Measured on the gh-sim iPhone Duo (iOS 27.1): inner root 867 pt wide (84 pt
   vertical bar on the trailing edge), fold division 455.5...495.5, so panes are
   0-455.5 and 495.5-867. The outer display also has an 84 pt trailing bar.
