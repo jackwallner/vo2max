@@ -168,6 +168,13 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
 
     private override init() {
         super.init()
+        #if DEBUG
+        // UI tests share one simulator, and `-DemoPro` persists its grant through
+        // the cached flag. Without this reset a later "free" launch starts as Pro.
+        if ProcessInfo.processInfo.arguments.contains("-ResetProCache") {
+            defaults.set(false, forKey: Self.cachedProKey)
+        }
+        #endif
         isPro = defaults.bool(forKey: Self.cachedProKey)
     }
 

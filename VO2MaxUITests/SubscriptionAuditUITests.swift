@@ -13,7 +13,7 @@ final class SubscriptionAuditUITests: XCTestCase {
     private func launch(_ extra: [String] = [], env: [String: String] = [:]) -> XCUIApplication {
         continueAfterFailure = true
         let app = XCUIApplication(bundleIdentifier: "com.jackwallner.vo2max")
-        app.launchArguments += ["-DemoData"] + extra
+        app.launchArguments += ["-DemoData", "-ResetProCache"] + extra
         for (key, value) in env { app.launchEnvironment[key] = value }
         app.launch()
         return app
@@ -61,6 +61,19 @@ final class SubscriptionAuditUITests: XCTestCase {
     private func any(_ app: XCUIApplication, containing text: String) -> XCUIElement {
         app.descendants(matching: .any)
             .matching(NSPredicate(format: "label CONTAINS[c] %@", text)).firstMatch
+    }
+
+    /// A SwiftUI Toggle row ignores a tap on its label centre in this layout, so
+    /// press the switch itself at the trailing edge.
+    private func flip(_ sw: XCUIElement) {
+        sw.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+    }
+
+    /// The Trends tab keeps a second page alive behind the visible one, so a
+    /// label can match twice. Take the one on screen.
+    private func visible(_ app: XCUIApplication, _ label: String) -> XCUIElement {
+        let all = app.buttons.matching(NSPredicate(format: "label == %@", label)).allElementsBoundByIndex
+        return all.first(where: { $0.isHittable }) ?? app.buttons[label].firstMatch
     }
 
     private func dismissSheet(_ app: XCUIApplication, _ tag: String) {
@@ -120,8 +133,8 @@ final class SubscriptionAuditUITests: XCTestCase {
         // Trends tab: Custom range and the deep trends teaser.
         if tapIfThere(app.buttons["Trends"]) {
             sleep(2); shot("06-trends-free")
-            for r in ["30D", "90D", "6M", "1Y", "Custom"] { note("range \(r)", app.buttons[r]) }
-            if tapIfThere(app.buttons["Custom"]) {
+            for r in ["30D", "90D", "6M", "1Y", "Custom"] { note("range \(r)", visible(app, r)) }
+            if tapIfThere(visible(app, "Custom")) {
                 sleep(2)
                 shot("07-tap-custom-free")
                 dismissSheet(app, "custom paywall")
@@ -176,7 +189,8 @@ final class SubscriptionAuditUITests: XCTestCase {
         for i in 0..<min(app.switches.count, 4) {
             note("switch \(i) '\(app.switches.element(boundBy: i).label)'", app.switches.element(boundBy: i))
         }
-        if tapIfThere(sw) {
+        flip(sw)
+        if sw.exists {
             sleep(2)
             shot("25-locked-toggle-tapped")
             frames.append("switch value after tap: \(String(describing: app.switches.firstMatch.value))")
@@ -339,7 +353,8 @@ final class SubscriptionAuditUITests: XCTestCase {
         // Lapse: the debug override turns Pro off in place.
         let override = app.switches["Local Pro override"]
         note("Local Pro override", override)
-        if tapIfThere(override, wait: 3) {
+        if override.waitForExistence(timeout: 3) {
+            flip(override)
             sleep(2)
             shot("64-after-lapse-settings")
             texts(app, "settings-after-lapse")
@@ -360,7 +375,7 @@ final class SubscriptionAuditUITests: XCTestCase {
         let app = launch(["-DemoPro", "-ScreenshotTab", "1"])
         XCTAssertTrue(app.buttons["Trends"].waitForExistence(timeout: 30))
         sleep(2)
-        if tapIfThere(app.buttons["Custom"]) {
+        if tapIfThere(visible(app, "Custom")) {
             sleep(2)
             if tapIfThere(app.buttons["Apply"], wait: 4) { sleep(2) }
         }
@@ -372,15 +387,15 @@ final class SubscriptionAuditUITests: XCTestCase {
         sleep(2)
         app.swipeUp(); sleep(1); app.swipeUp(); sleep(1)
         let override = app.switches["Local Pro override"]
-        if tapIfThere(override, wait: 3) { sleep(2) }
+        if override.waitForExistence(timeout: 3) { flip(override); sleep(2) }
         if app.buttons["Done"].exists { app.swipeDown(velocity: .fast); sleep(1) }
         if app.buttons["Done"].exists { app.buttons["Done"].tap(); sleep(1) }
         if tapIfThere(app.buttons["Trends"], wait: 5) {
             sleep(2)
             shot("71-trends-after-lapse-custom")
             texts(app, "trends-after-lapse")
-            frames.append("Custom selected after lapse: \(app.buttons["Custom"].isSelected)")
-            frames.append("90D selected after lapse: \(app.buttons["90D"].isSelected)")
+            frames.append("Custom selected after lapse: \(visible(app, "Custom").isSelected)")
+            frames.append("90D selected after lapse: \(visible(app, "90D").isSelected)")
         }
         flushFrames("frames-lapse-custom.txt")
     }
