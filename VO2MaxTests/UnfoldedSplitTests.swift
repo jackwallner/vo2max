@@ -55,4 +55,17 @@ struct UnfoldedSplitTests {
             #expect(split.secondaryX + split.secondaryWidth == width)
         }
     }
+
+    @Test func tabBarBandEndsTheContentAGapAboveTheBar() {
+        // The 55 pt bar measured on the gh-sim iPhone Duo, in a 669 pt pane.
+        let band = UnfoldedSplit.tabBarBandHeight(barHeight: 55)
+        let barTop = 669 - UnfoldedSplit.tabBarBottomPadding - 55
+        #expect(band == 77)
+        #expect(barTop - (669 - band) == UnfoldedSplit.tabBarGap)
+    }
+
+    @Test func unmeasuredTabBarStillKeepsItsMargins() {
+        #expect(UnfoldedSplit.tabBarBandHeight(barHeight: 0) == UnfoldedSplit.tabBarBottomPadding + UnfoldedSplit.tabBarGap)
+        #expect(UnfoldedSplit.tabBarBandHeight(barHeight: -4) == UnfoldedSplit.tabBarBandHeight(barHeight: 0))
+    }
 }

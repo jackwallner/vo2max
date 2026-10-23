@@ -37,8 +37,11 @@ paths:
 - Today hides its nav bar, so split it ignores that top inset
   (`isUnfoldedPane` environment) and sets its date row level with the other
   pane's title; otherwise the empty band pushed its signal row under the pill.
-- Split, the leading pane fills its 92 pt tab-bar inset with a background band,
-  so no card or disclaimer shows under the pill. Folded it stays clear.
+- Split, the leading pane's tab-bar inset is an opaque band with a hairline
+  top edge, sized from the measured bar (`UnfoldedSplit.tabBarBandHeight`:
+  bar + 12 pt margin + 10 pt gap, 77 pt on the Duo). Content stops at a hard
+  edge there. A gradient band was rejected (2026-10-23 review): glyph halves
+  showed as a faded line beside the pill. Folded it stays a clear 92 pt.
 - Measured on the gh-sim iPhone Duo (iOS 27.1): fold division 455.5...495.5.
   With automatic toolbars the inner root was 867 pt (84 pt trailing vertical
   bar); see the horizontal-pane note above for the current 951 pt. The folded
@@ -48,8 +51,9 @@ paths:
   with the sheet up moves it to the pane. `SettingsView(onDone:)` closes the pane.
 - Still across the fold: onboarding (root view on first launch) and the paywall,
   What's New, recap and range sheets, which present as centred form sheets.
-- Unattended captures: `-DemoData -DemoPro -ScreenshotTab 0 -DuoTour` plus
-  `-DuoTourFirst`, `-DuoTourStep`, `-DuoRoutes`, `-DuoRoutesRegular` (see
-  `DuoScreenshotTour`). `DUOTOUR` lines in app.log map shots to routes.
-  `simctl openurl` raises an alert on iOS 27, so the tour runs on a timer and
-  gh-sim's `--url noop://N` only paces the screenshots.
+- Unattended captures: base args `-DemoData -DemoPro -ScreenshotTab 0`, then
+  one gh-sim `--screen "-DuoScreen <route>"` per surface (today, plus,
+  fitness-age, trends/resting, settings); it holds that route, folded and
+  split (`DUOSCREEN` lines in app.log). `-DuoTour` (with `-DuoTourFirst`,
+  `-DuoTourStep`, `-DuoRoutes`, `-DuoRoutesRegular`) walks them on a timer for
+  recordings. Never `--url`: `simctl openurl` raises an alert on iOS 27.

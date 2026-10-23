@@ -13,13 +13,19 @@ import SwiftUI
 /// the panes split or join, so each display gets all of it. Every step is logged as a
 /// `DUOTOUR` line, which maps the captures to routes.
 ///
+/// `-DuoScreen <route>` instead opens one route shortly after launch and
+/// holds it, for gh-sim's `--screen`, which relaunches the app per surface.
+///
 /// Routes: today, trends, plus, settings, and pushes onto Today's stack
 /// (fitness-age, trend, readings, resting, recovery, load) or, with a
 /// `trends/` prefix, onto the Trends stack.
 enum DuoScreenshotTour {
     private static let arguments = ProcessInfo.processInfo.arguments
 
-    static var isEnabled: Bool { arguments.contains("-DuoTour") }
+    static var isEnabled: Bool { arguments.contains("-DuoTour") || screen != nil }
+
+    /// The single route `-DuoScreen` holds, if any.
+    static var screen: String? { value("-DuoScreen") }
 
     static func routes(split: Bool) -> [String] {
         let list = value(split ? "-DuoRoutesRegular" : "-DuoRoutes")
