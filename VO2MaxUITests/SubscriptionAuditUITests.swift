@@ -42,7 +42,7 @@ final class SubscriptionAuditUITests: XCTestCase {
 
     /// Every visible static text, so the report can quote what the user reads.
     private func texts(_ app: XCUIApplication, _ name: String) {
-        let all = app.staticTexts.allElementsBoundByIndex.map(\.label).filter { !$0.isEmpty }
+        let all = app.staticTexts.allElementsBoundByIndex.map { $0.label }.filter { !$0.isEmpty }
         attach(all.joined(separator: "\n"), "texts-\(name).txt")
     }
 
