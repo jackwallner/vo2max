@@ -12,7 +12,8 @@ struct PlusTabView: View {
     @ObservedObject private var context = CardioContextService.shared
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @State private var showRecap = false
-    @State private var visibleHeight: CGFloat?
+    @State private var restTop = PaneRestTop()
+    @Environment(\.paneRestEdge) private var paneRestEdge
     @Environment(\.isUnfoldedPane) private var isUnfoldedPane
 
     private var points: [CardioFitnessPoint] {
@@ -52,11 +53,12 @@ struct PlusTabView: View {
                 contextSection
                 accountNote
             }
+            .measurePaneRestTop($restTop)
             .padding(.horizontal, 20)
             .padding(.top, Self.topPadding)
             .padding(.bottom, 28)
         }
-        .onScrollVisibleHeightChange { visibleHeight = $0 }
+        .onScrollIdleChange { restTop.isIdle = $0 }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
         .navigationTitle("VO2+")
@@ -71,10 +73,9 @@ struct PlusTabView: View {
 
     private static let topPadding: CGFloat = 10
 
-    /// Split, the cards rest whole above the tab bar band, whose top is
-    /// measured from the top of the cards.
+    /// Split, the cards rest whole above the tab bar band.
     private var contentLayout: AnyLayout {
-        let restHeight = isUnfoldedPane ? visibleHeight.map { $0 - Self.topPadding } : nil
+        let restHeight = isUnfoldedPane ? restTop.restHeight(edge: paneRestEdge) : nil
         return UnfoldedSplit.contentLayout(spacing: 22, restHeight: restHeight)
     }
 

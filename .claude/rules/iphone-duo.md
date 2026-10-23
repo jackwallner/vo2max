@@ -48,9 +48,12 @@ paths:
   VO2+'s Heart Rate Recovery row, Fitness Age's methodology card). Split, their
   cards stack in `PaneRestStack` (`UnfoldedSplit.restingTops`): the first card
   the band's edge would cut starts at that edge, so the pane rests on whole
-  cards. The rest height is the scroll view's frame less its safe area
-  (`onScrollVisibleHeightChange`); `ScrollGeometry` container size less its
-  content insets read about 74 pt short and pushed cards that fit. To keep the main cards above the bar, VO2+ drops its active
+  cards. The rest height is the band's global top (`paneRestEdge`, leading
+  pane only) less the cards' global top at rest (`PaneRestTop`, idle scroll,
+  lowest top kept). Safe-area arithmetic fails here: `ScrollGeometry`
+  container less content insets and the scroll view's frame less its safe
+  area both read about 74 pt short on the Duo (gh-sim runs 40013299548 and
+  40027765409) and pushed cards that fit. To keep the main cards above the bar, VO2+ drops its active
   banner and Fitness Age tightens its gaps and moves the disclaimer under the
   methodology card. Folded both keep a plain `VStack` (one `AnyLayout`).
 - Measured on the gh-sim iPhone Duo (iOS 27.1): fold division 455.5...495.5.

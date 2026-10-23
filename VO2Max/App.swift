@@ -259,6 +259,9 @@ private struct MainTabView: View {
     /// The floating tab bar's measured height, which sizes the leading pane's
     /// tab bar band while split.
     @State private var tabBarHeight: CGFloat = 55
+    /// The top of the leading pane's tab bar band in global space, where its
+    /// scroll content comes to rest while split.
+    @State private var tabBarBandTop: CGFloat?
     @Environment(\.displayScale) private var displayScale
     #if DEBUG
     @State private var tourTodayPush: DuoScreenshotTour.Screen?
@@ -511,9 +514,14 @@ private struct MainTabView: View {
         }
         .environment(\.horizontalSizeClass, paneSizeClass)
         .environment(\.isUnfoldedPane, split != nil)
+        .environment(\.paneRestEdge, split != nil && tab != 1 ? tabBarBandTop : nil)
         .horizontalToolbarInPane(split != nil)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            tabBarBand.frame(height: tabBarBandHeight(tab: tab))
+            tabBarBand
+                .frame(height: tabBarBandHeight(tab: tab))
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+                    if tab == 0 { tabBarBandTop = top }
+                }
         }
         .frame(maxWidth: paneWidth ?? .infinity, maxHeight: .infinity)
         .padding(.leading, paneX)
@@ -625,6 +633,12 @@ private struct IsUnfoldedPaneKey: EnvironmentKey {
     static let defaultValue = false
 }
 
+/// Where the leading pane's scroll content comes to rest (the tab bar band's
+/// top, in global space) while split; `nil` elsewhere.
+private struct PaneRestEdgeKey: EnvironmentKey {
+    static let defaultValue: CGFloat? = nil
+}
+
 extension EnvironmentValues {
     var isActiveTab: Bool {
         get { self[IsActiveTabKey.self] }
@@ -634,6 +648,11 @@ extension EnvironmentValues {
     var isUnfoldedPane: Bool {
         get { self[IsUnfoldedPaneKey.self] }
         set { self[IsUnfoldedPaneKey.self] = newValue }
+    }
+
+    var paneRestEdge: CGFloat? {
+        get { self[PaneRestEdgeKey.self] }
+        set { self[PaneRestEdgeKey.self] = newValue }
     }
 }
 

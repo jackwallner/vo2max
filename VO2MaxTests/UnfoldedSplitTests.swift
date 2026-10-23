@@ -106,4 +106,31 @@ struct UnfoldedSplitTests {
             }
         }
     }
+
+    @Test func restTopKeepsTheTopOfTheScrollWhileIdle() {
+        var rest = PaneRestTop()
+        #expect(rest.restHeight(edge: 592) == nil)
+        rest.observe(CGRect(x: 20, y: 92, width: 415, height: 900))
+        #expect(rest.restHeight(edge: 592) == 500)
+        // Scrolled down and settled: the top of the scroll still counts.
+        rest.observe(CGRect(x: 20, y: -140, width: 415, height: 900))
+        #expect(rest.restHeight(edge: 592) == 500)
+        #expect(rest.restHeight(edge: nil) == nil)
+    }
+
+    @Test func restTopIgnoresAnOverscrollWhileScrolling() {
+        var rest = PaneRestTop()
+        rest.observe(CGRect(x: 20, y: 92, width: 415, height: 900))
+        rest.isIdle = false
+        rest.observe(CGRect(x: 20, y: 160, width: 415, height: 900))
+        rest.isIdle = true
+        #expect(rest.restHeight(edge: 592) == 500)
+    }
+
+    @Test func restTopMeasuresAgainWhenThePaneResizes() {
+        var rest = PaneRestTop()
+        rest.observe(CGRect(x: 20, y: 120, width: 342, height: 900))
+        rest.observe(CGRect(x: 20, y: 92, width: 415, height: 900))
+        #expect(rest.restHeight(edge: 592) == 500)
+    }
 }

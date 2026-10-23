@@ -360,7 +360,8 @@ struct FitnessAgeDetailView: View {
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @State private var showSettings = false
     @State private var showPaywall = false
-    @State private var visibleHeight: CGFloat?
+    @State private var restTop = PaneRestTop()
+    @Environment(\.paneRestEdge) private var paneRestEdge
     @Environment(\.isUnfoldedPane) private var isUnfoldedPane
 
     var body: some View {
@@ -377,9 +378,10 @@ struct FitnessAgeDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            .measurePaneRestTop($restTop)
             .padding()
         }
-        .onScrollVisibleHeightChange { visibleHeight = $0 }
+        .onScrollIdleChange { restTop.isIdle = $0 }
         .background(Theme.background)
         .navigationTitle("Fitness Age")
         .navigationBarTitleDisplayMode(.inline)
@@ -393,11 +395,9 @@ struct FitnessAgeDetailView: View {
         .blocksReviewPrompt(showPaywall)
     }
 
-    /// Split, the cards sit closer and rest whole above the tab bar band,
-    /// whose top is measured from the top of the cards (below the 16 pt
-    /// content padding).
+    /// Split, the cards sit closer and rest whole above the tab bar band.
     private var contentLayout: AnyLayout {
-        let restHeight = isUnfoldedPane ? visibleHeight.map { $0 - 16 } : nil
+        let restHeight = isUnfoldedPane ? restTop.restHeight(edge: paneRestEdge) : nil
         return UnfoldedSplit.contentLayout(spacing: isUnfoldedPane ? 12 : 16, restHeight: restHeight)
     }
 

@@ -99,17 +99,52 @@ struct PaneRestStack: Layout {
     }
 }
 
+/// Where a pane's cards start at rest, in global space, so `PaneRestStack`
+/// knows how far down the band's edge falls. Safe-area arithmetic doesn't
+/// work here: both `ScrollGeometry` (container less content insets) and the
+/// scroll view's frame less its safe area read the Duo pane about 74 pt short
+/// and pushed cards that fit. So the cards' own top is measured, only while
+/// the scroll view is idle, keeping the lowest one (the top of the scroll),
+/// and measured again when the pane's width changes on a fold or unfold.
+struct PaneRestTop: Equatable, Sendable {
+    private(set) var top: CGFloat?
+    private var width: CGFloat?
+    var isIdle = true
+
+    mutating func observe(_ frame: CGRect) {
+        if frame.width != width {
+            width = frame.width
+            top = nil
+        }
+        guard isIdle else { return }
+        top = max(top ?? frame.minY, frame.minY)
+    }
+
+    /// The band's edge measured from the cards' top, or `nil` when either is
+    /// unknown.
+    func restHeight(edge: CGFloat?) -> CGFloat? {
+        guard let edge, let top else { return nil }
+        return edge - top
+    }
+}
+
 extension View {
-    /// Reports the height a scroll view shows between its bars and insets
-    /// (the tab bar band included): its frame less its safe area, which holds
-    /// whether or not the frame runs under the bars. `ScrollGeometry`'s
-    /// container size less its content insets came out about 74 pt short on
-    /// the Duo and pushed cards that fit.
-    func onScrollVisibleHeightChange(_ action: @escaping (CGFloat) -> Void) -> some View {
-        onGeometryChange(for: CGFloat.self) { proxy in
-            proxy.size.height - proxy.safeAreaInsets.top - proxy.safeAreaInsets.bottom
-        } action: { height in
-            action(height)
+    /// Feeds `rest` the cards' global frame. Apply to the stack inside the
+    /// scroll view; `onScrollIdleChange` on the scroll view gates it.
+    func measurePaneRestTop(_ rest: Binding<PaneRestTop>) -> some View {
+        onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frame in
+            rest.wrappedValue.observe(frame)
+        }
+    }
+
+    /// Whether the scroll view is at rest. Before iOS 18 there is no Duo and
+    /// it always reports idle.
+    @ViewBuilder
+    func onScrollIdleChange(_ action: @escaping (Bool) -> Void) -> some View {
+        if #available(iOS 18, *) {
+            onScrollPhaseChange { _, phase in action(phase == .idle) }
+        } else {
+            self
         }
     }
 }
