@@ -12,6 +12,8 @@ struct PlusTabView: View {
     @ObservedObject private var context = CardioContextService.shared
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @State private var showRecap = false
+    @State private var visibleHeight: CGFloat?
+    @Environment(\.isUnfoldedPane) private var isUnfoldedPane
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -40,8 +42,10 @@ struct PlusTabView: View {
 
     private var subscriberHub: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 22) {
-                activeHeader
+            contentLayout {
+                // In a Duo pane the title and tab bar already say VO2+, and
+                // without the banner the figures and signals fit above the bar.
+                if !isUnfoldedPane { activeHeader }
                 currentHighlights
                 signalsSection
                 estimateSection
@@ -49,9 +53,10 @@ struct PlusTabView: View {
                 accountNote
             }
             .padding(.horizontal, 20)
-            .padding(.top, 10)
+            .padding(.top, Self.topPadding)
             .padding(.bottom, 28)
         }
+        .onScrollVisibleHeightChange { visibleHeight = $0 }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
         .navigationTitle("VO2+")
@@ -62,6 +67,15 @@ struct PlusTabView: View {
         .sheet(isPresented: $showRecap) {
             MonthlyRecapView().environmentObject(settings)
         }
+    }
+
+    private static let topPadding: CGFloat = 10
+
+    /// Split, the cards rest whole above the tab bar band, whose top is
+    /// measured from the top of the cards.
+    private var contentLayout: AnyLayout {
+        let restHeight = isUnfoldedPane ? visibleHeight.map { $0 - Self.topPadding } : nil
+        return UnfoldedSplit.contentLayout(spacing: 22, restHeight: restHeight)
     }
 
     // MARK: - Header

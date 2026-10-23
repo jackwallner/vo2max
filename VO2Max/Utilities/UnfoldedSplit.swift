@@ -45,6 +45,79 @@ struct UnfoldedSplit: Equatable, Sendable {
     static func tabBarBandHeight(barHeight: CGFloat) -> CGFloat {
         max(barHeight, 0) + tabBarBottomPadding + tabBarGap
     }
+
+    /// Tops for a pane's stacked cards, so the pane comes to rest on whole
+    /// cards: the first card that `restHeight` (the bottom of the visible
+    /// area, from the stack's top) would cut starts at that edge instead, and
+    /// the cards after it keep their spacing. The first card never moves.
+    static func restingTops(heights: [CGFloat], spacing: CGFloat, restHeight: CGFloat) -> [CGFloat] {
+        var tops: [CGFloat] = []
+        var y: CGFloat = 0
+        for height in heights {
+            if !tops.isEmpty {
+                y += spacing
+                if y < restHeight, y + height > restHeight { y = restHeight }
+            }
+            tops.append(y)
+            y += height
+        }
+        return tops
+    }
+
+    /// The stack for a pane's scroll content: `PaneRestStack` while split,
+    /// once the visible height is known, else a plain `VStack`. One
+    /// `AnyLayout`, so folding keeps every card's state.
+    @MainActor
+    static func contentLayout(spacing: CGFloat, restHeight: CGFloat?) -> AnyLayout {
+        guard let restHeight, restHeight > 0 else { return AnyLayout(VStackLayout(spacing: spacing)) }
+        return AnyLayout(PaneRestStack(spacing: spacing, restHeight: restHeight))
+    }
+}
+
+/// A centred `VStack` that rests on whole cards (`UnfoldedSplit.restingTops`).
+/// Split, the leading pane's content stops at the opaque tab bar band, and a
+/// card cut by its edge read as chopped off; the screen edge under the
+/// trailing pane doesn't have that problem, so only pane content uses this.
+struct PaneRestStack: Layout {
+    var spacing: CGFloat
+    var restHeight: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let sizes = subviews.map { $0.sizeThatFits(ProposedViewSize(width: proposal.width, height: nil)) }
+        guard let last = sizes.last else { return .zero }
+        let tops = UnfoldedSplit.restingTops(heights: sizes.map(\.height), spacing: spacing, restHeight: restHeight)
+        return CGSize(width: sizes.map(\.width).max() ?? 0, height: tops[tops.count - 1] + last.height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let childProposal = ProposedViewSize(width: proposal.width, height: nil)
+        let heights = subviews.map { $0.sizeThatFits(childProposal).height }
+        let tops = UnfoldedSplit.restingTops(heights: heights, spacing: spacing, restHeight: restHeight)
+        for (subview, top) in zip(subviews, tops) {
+            subview.place(at: CGPoint(x: bounds.midX, y: bounds.minY + top), anchor: .top, proposal: childProposal)
+        }
+    }
+}
+
+extension View {
+    /// Reports the height a scroll view shows between its bars and insets
+    /// (the tab bar band included). Before iOS 18 there is no Duo and nothing
+    /// is reported.
+    @ViewBuilder
+    func onScrollVisibleHeightChange(_ action: @escaping (CGFloat) -> Void) -> some View {
+        if #available(iOS 18, *) {
+            onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.containerSize.height - geometry.contentInsets.top - geometry.contentInsets.bottom
+            } action: { _, height in
+                #if DEBUG
+                if DuoScreenshotTour.isEnabled { NSLog("PANEREST visible=%.1f", Double(height)) }
+                #endif
+                action(height)
+            }
+        } else {
+            self
+        }
+    }
 }
 
 extension GeometryProxy {

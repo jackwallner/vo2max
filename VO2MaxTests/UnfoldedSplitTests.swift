@@ -68,4 +68,42 @@ struct UnfoldedSplitTests {
         #expect(UnfoldedSplit.tabBarBandHeight(barHeight: 0) == UnfoldedSplit.tabBarBottomPadding + UnfoldedSplit.tabBarGap)
         #expect(UnfoldedSplit.tabBarBandHeight(barHeight: -4) == UnfoldedSplit.tabBarBandHeight(barHeight: 0))
     }
+
+    @Test func cardsThatFitKeepTheirStackPositions() {
+        let tops = UnfoldedSplit.restingTops(heights: [100, 120, 80], spacing: 20, restHeight: 500)
+        #expect(tops == [0, 120, 260])
+    }
+
+    @Test func theFirstCutCardStartsAtTheRestEdge() {
+        // VO2+ in the leading Duo pane: figures and signals fit, the estimate
+        // section would show its title above the band, so it starts at the band.
+        let tops = UnfoldedSplit.restingTops(heights: [187, 261, 260, 180], spacing: 22, restHeight: 501)
+        #expect(tops == [0, 209, 501, 783])
+    }
+
+    @Test func aCardAlreadyBelowTheEdgeIsNotMoved() {
+        let tops = UnfoldedSplit.restingTops(heights: [480, 100], spacing: 22, restHeight: 500)
+        #expect(tops == [0, 502])
+    }
+
+    @Test func aCardEndingExactlyAtTheEdgeStays() {
+        let tops = UnfoldedSplit.restingTops(heights: [300, 180, 50], spacing: 10, restHeight: 490)
+        #expect(tops == [0, 310, 500])
+    }
+
+    @Test func theFirstCardNeverMoves() {
+        let tops = UnfoldedSplit.restingTops(heights: [700, 100], spacing: 16, restHeight: 500)
+        #expect(tops == [0, 716])
+        #expect(UnfoldedSplit.restingTops(heights: [], spacing: 16, restHeight: 500).isEmpty)
+    }
+
+    @Test func everyVisibleCardEndsAboveTheEdge() {
+        let heights: [CGFloat] = [154, 138, 160, 48, 90, 200]
+        for rest in stride(from: CGFloat(150), through: 900, by: 3) {
+            let tops = UnfoldedSplit.restingTops(heights: heights, spacing: 12, restHeight: rest)
+            for (top, height) in zip(tops.dropFirst(), heights.dropFirst()) where top < rest {
+                #expect(top + height <= rest)
+            }
+        }
+    }
 }

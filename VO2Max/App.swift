@@ -510,6 +510,7 @@ private struct MainTabView: View {
                 .accessibilityHidden(!isVisible)
         }
         .environment(\.horizontalSizeClass, paneSizeClass)
+        .environment(\.isUnfoldedPane, split != nil)
         .horizontalToolbarInPane(split != nil)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             tabBarBand.frame(height: tabBarBandHeight(tab: tab))

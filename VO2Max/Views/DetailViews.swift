@@ -360,16 +360,26 @@ struct FitnessAgeDetailView: View {
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @State private var showSettings = false
     @State private var showPaywall = false
+    @State private var visibleHeight: CGFloat?
+    @Environment(\.isUnfoldedPane) private var isUnfoldedPane
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
+            contentLayout {
                 estimateCard
                 typicalRangeCard
                 methodologyCard
+                // In a Duo pane the disclaimer follows the card, so the
+                // methodology itself fits above the tab bar.
+                if isUnfoldedPane {
+                    disclaimer
+                        .padding(.horizontal, 16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
             .padding()
         }
+        .onScrollVisibleHeightChange { visibleHeight = $0 }
         .background(Theme.background)
         .navigationTitle("Fitness Age")
         .navigationBarTitleDisplayMode(.inline)
@@ -383,6 +393,14 @@ struct FitnessAgeDetailView: View {
         .blocksReviewPrompt(showPaywall)
     }
 
+    /// Split, the cards sit closer and rest whole above the tab bar band,
+    /// whose top is measured from the top of the cards (below the 16 pt
+    /// content padding).
+    private var contentLayout: AnyLayout {
+        let restHeight = isUnfoldedPane ? visibleHeight.map { $0 - 16 } : nil
+        return UnfoldedSplit.contentLayout(spacing: isUnfoldedPane ? 12 : 16, restHeight: restHeight)
+    }
+
     @ViewBuilder
     private var estimateCard: some View {
         if let latest = samples.first,
@@ -390,7 +408,7 @@ struct FitnessAgeDetailView: View {
                value: latest.value,
                referenceSex: settings.referenceSex
            ) {
-            VStack(spacing: 8) {
+            VStack(spacing: isUnfoldedPane ? 6 : 8) {
                 Text("About \(estimate)")
                     .font(Theme.bigNumber(44))
                     .foregroundStyle(Theme.cardio)
@@ -404,7 +422,8 @@ struct FitnessAgeDetailView: View {
                     .foregroundStyle(Theme.cardioBlue)
             }
             .frame(maxWidth: .infinity)
-            .padding(20)
+            .padding(.horizontal, 20)
+            .padding(.vertical, isUnfoldedPane ? 14 : 20)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         } else {
             VStack(spacing: 12) {
@@ -483,12 +502,16 @@ struct FitnessAgeDetailView: View {
             Text("Your latest cardio fitness estimate is compared with broad age and sex reference curves to find the age whose typical value most closely matches your number. Higher relative cardio fitness maps to a younger estimate.")
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
-            Text("Fitness age is a broad motivational estimate. It is not clinically validated, does not diagnose anything, and does not predict longevity or health outcomes.")
-                .font(.caption)
-                .foregroundStyle(Theme.textSecondary)
+            if !isUnfoldedPane { disclaimer }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
+    }
+
+    private var disclaimer: some View {
+        Text("Fitness age is a broad motivational estimate. It is not clinically validated, does not diagnose anything, and does not predict longevity or health outcomes.")
+            .font(.caption)
+            .foregroundStyle(Theme.textSecondary)
     }
 }
