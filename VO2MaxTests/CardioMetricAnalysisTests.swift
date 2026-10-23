@@ -16,6 +16,18 @@ struct CardioMetricAnalysisTests {
         #expect(summary?.maximum == 58)
     }
 
+    /// A window resolved before a reading arrived ends before it. Today's HRR
+    /// tile kept such a range and read 27 while VO2+, resolving on render,
+    /// read the new 26, so every signal view resolves its range when it draws.
+    @Test func aWindowResolvedBeforeAReadingLeavesItOut() {
+        let reading = now.addingTimeInterval(5)
+        let points = makePoints([(4, 27)]) + [CardioFitnessPoint(date: reading, value: 26)]
+        let stale = CardioMetricAnalysis.summarize(points: points, days: 90, now: now)
+        let fresh = CardioMetricAnalysis.summarize(points: points, days: 90, now: reading)
+        #expect(stale?.latest == 27)
+        #expect(fresh?.latest == 26)
+    }
+
     @Test func summarizeReturnsNilWhenTheWindowIsEmpty() {
         let points = makePoints([(120, 54)])
         #expect(CardioMetricAnalysis.summarize(points: points, days: 30, now: now) == nil)

@@ -207,6 +207,15 @@ struct DashboardView: View {
         let bandWidth = max(settings.targetUpper - settings.targetLower, 1)
         let floor = settings.targetLower - bandWidth
         let progress = min(max((latest.value - floor) / (settings.targetUpper - floor), 0.02), 1)
+        // The captions sit about a fifth of the ring below its centre, where the
+        // open centre narrows. Keep 12 pt clear of the stroke on each side; on the
+        // 140 pt floor ring that shrinks "In target range" a little instead of
+        // letting it run into the ring.
+        let captionWidth = max(ProgressRing.innerChord(
+            size: ringSize,
+            lineWidth: ringLineWidth,
+            offset: ringSize * 0.2
+        ) - 24, 0)
 
         return NavigationLink {
             ReadingHistoryDetailView()
@@ -231,10 +240,16 @@ struct DashboardView: View {
                         Text(status.label)
                             .font(.system(.subheadline, design: .rounded, weight: .bold))
                             .foregroundStyle(statusColor(status))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .frame(maxWidth: captionWidth)
                             .padding(.top, 2)
                         Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
                             .font(.system(.caption2, design: .rounded))
                             .foregroundStyle(Theme.textTertiary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .frame(maxWidth: captionWidth)
                     }
                 }
             }

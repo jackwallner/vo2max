@@ -133,4 +133,25 @@ struct UnfoldedSplitTests {
         rest.observe(CGRect(x: 20, y: 92, width: 415, height: 900))
         #expect(rest.restHeight(edge: 592) == 500)
     }
+
+    /// The stroke straddles the ring's frame, so the open centre is the frame
+    /// less one line width across, narrowing away from the middle.
+    @Test func ringInnerChordFollowsTheStrokesInnerEdge() {
+        #expect(ProgressRing.innerChord(size: 140, lineWidth: 14, offset: 0) == 126)
+        #expect(ProgressRing.innerChord(size: 140, lineWidth: 14, offset: 63) == 0)
+        #expect(ProgressRing.innerChord(size: 140, lineWidth: 14, offset: -80) == 0)
+        let chord = ProgressRing.innerChord(size: 140, lineWidth: 14, offset: 28)
+        #expect(abs(chord - 112.87) < 0.01)
+    }
+
+    /// Today's caption on the 140 pt floor ring (the Duo pane) gets the chord
+    /// less 12 pt a side, under "In target range"'s ~105 pt natural width, so
+    /// it scales down instead of touching the stroke. Full-size rings keep it.
+    @Test func ringCaptionScalesOnlyOnTheFloorRing() {
+        let floor = ProgressRing.innerChord(size: 140, lineWidth: 14, offset: 28) - 24
+        let full = ProgressRing.innerChord(size: 260, lineWidth: 18, offset: 52) - 24
+        #expect(floor < 105)
+        #expect(floor >= 105 * 0.7)
+        #expect(full > 105)
+    }
 }

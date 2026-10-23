@@ -43,4 +43,13 @@ struct ProgressRing: View {
         .frame(width: size, height: size)
         .accessibilityHidden(true)
     }
+
+    /// Width of the ring's open centre along a horizontal line `offset` points
+    /// above or below its middle. The stroke straddles the frame's circle, so
+    /// the inner edge sits half a line width inside it.
+    nonisolated static func innerChord(size: CGFloat, lineWidth: CGFloat, offset: CGFloat) -> CGFloat {
+        let radius = size / 2 - lineWidth / 2
+        guard abs(offset) < radius else { return 0 }
+        return 2 * (radius * radius - offset * offset).squareRoot()
+    }
 }

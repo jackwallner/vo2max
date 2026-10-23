@@ -352,10 +352,10 @@ struct SignalReading {
 /// value blurred out behind a lock, so the shape of what they'd get is honest.
 struct CardioSignalCard: View {
     let signal: CardioSignal
-    let range: CardioRange
 
     @EnvironmentObject private var store: StoreService
     @ObservedObject private var context = CardioContextService.shared
+    @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPaywall = false
 
     var body: some View {
@@ -382,6 +382,12 @@ struct CardioSignalCard: View {
         case .load: CardioLoadDetailView()
         }
     }
+
+    /// Resolved on every render, never handed in by the parent: a fixed window
+    /// ends at `.now`, and a range resolved before a reading arrived ends before
+    /// it, so the card kept showing the previous reading while VO2+ showed the
+    /// new one.
+    private var range: CardioRange { ranges.resolved }
 
     private var reading: SignalReading? {
         SignalReading.make(signal: signal, range: range, context: context)
@@ -570,10 +576,10 @@ struct ChangeBadge: View {
 /// scaled down.
 struct CardioSignalTile: View {
     let signal: CardioSignal
-    let range: CardioRange
 
     @EnvironmentObject private var store: StoreService
     @ObservedObject private var context = CardioContextService.shared
+    @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPaywall = false
 
     var body: some View {
@@ -600,6 +606,11 @@ struct CardioSignalTile: View {
         case .load: CardioLoadDetailView()
         }
     }
+
+    /// Resolved on render, as in `CardioSignalCard`: a range the row resolved
+    /// earlier ended before the newest reading, so Today's HRR tile read 27
+    /// while VO2+ read 26.
+    private var range: CardioRange { ranges.resolved }
 
     private var reading: SignalReading? {
         SignalReading.make(signal: signal, range: range, context: context)
@@ -663,12 +674,10 @@ struct CardioSignalTile: View {
 /// The Today row: resting heart rate, heart rate recovery, cardio load. These
 /// move while the estimate itself is quiet, which is most of the time.
 struct CardioSignalRow: View {
-    @ObservedObject private var ranges = CardioRangeStore.shared
-
     var body: some View {
         HStack(spacing: 10) {
             ForEach(CardioSignal.all) { signal in
-                CardioSignalTile(signal: signal, range: ranges.resolved)
+                CardioSignalTile(signal: signal)
             }
         }
     }

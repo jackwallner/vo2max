@@ -45,7 +45,7 @@ struct HistoryView: View {
                 // this window: these are the numbers that keep moving when it
                 // doesn't, and each card carries its value without a tap.
                 ForEach(CardioSignal.all) { signal in
-                    CardioSignalCard(signal: signal, range: range)
+                    CardioSignalCard(signal: signal)
                 }
 
                 if !visibleSamples.isEmpty {
