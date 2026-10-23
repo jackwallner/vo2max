@@ -113,3 +113,16 @@ extension View {
         }
     }
 }
+
+extension GeometryProxy {
+    /// The vertical fold's horizontal extent in this proxy's space. Inactive
+    /// folds count too, so the panes don't jump while the device opens.
+    func verticalFold() -> ClosedRange<CGFloat>? {
+        guard #available(iOS 27.1, *) else { return nil }
+        let fold = reservedRegions(kind: .division, options: .includeInactive)
+            .map(\.frame)
+            .first { $0.height > $0.width && $0.minX > 0 && $0.maxX < size.width }
+        guard let fold else { return nil }
+        return fold.minX...fold.maxX
+    }
+}
