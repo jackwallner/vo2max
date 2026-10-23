@@ -32,6 +32,19 @@ struct UnfoldedSplit: Equatable, Sendable {
         let half = (width / 2).rounded(.down)
         return UnfoldedSplit(primaryWidth: half, secondaryX: half, secondaryWidth: width - half)
     }
+
+    /// The tab bar's margin above the bottom edge.
+    static let tabBarBottomPadding: CGFloat = 12
+    /// Clear page between the leading pane's content and the top of its tab bar.
+    static let tabBarGap: CGFloat = 10
+
+    /// Room the leading pane keeps under its content for the tab bar, which
+    /// sits on an opaque band: the bar, its bottom margin and the gap above
+    /// it. The content ends at a hard edge at the band's top, so no row fades
+    /// or shows under the bar, and the last row scrolls fully clear of it.
+    static func tabBarBandHeight(barHeight: CGFloat) -> CGFloat {
+        max(barHeight, 0) + tabBarBottomPadding + tabBarGap
+    }
 }
 
 extension GeometryProxy {

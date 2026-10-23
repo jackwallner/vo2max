@@ -256,6 +256,10 @@ private struct MainTabView: View {
     /// Settings, from Today's gear or What's New: a sheet, or the trailing pane
     /// while split.
     @State private var showSettings = false
+    /// The floating tab bar's measured height, which sizes the leading pane's
+    /// tab bar band while split.
+    @State private var tabBarHeight: CGFloat = 55
+    @Environment(\.displayScale) private var displayScale
     #if DEBUG
     @State private var tourTodayPush: DuoScreenshotTour.Screen?
     @State private var tourTrendsPush: DuoScreenshotTour.Screen?
@@ -343,7 +347,8 @@ private struct MainTabView: View {
             .padding(.vertical, 6)
             .background(.ultraThinMaterial.opacity(0.8), in: Capsule())
             .overlay(Capsule().stroke(Color(.separator).opacity(0.3), lineWidth: 0.5))
-            .padding(.bottom, 12)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tabBarHeight = $0 }
+            .padding(.bottom, UnfoldedSplit.tabBarBottomPadding)
             // Within the leading pane while split, never across the fold.
             .frame(maxWidth: split?.primaryWidth ?? .infinity)
         }
@@ -507,28 +512,34 @@ private struct MainTabView: View {
         .environment(\.horizontalSizeClass, paneSizeClass)
         .horizontalToolbarInPane(split != nil)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            tabBarBand.frame(height: split != nil && tab == 1 ? 0 : 92)
+            tabBarBand.frame(height: tabBarBandHeight(tab: tab))
         }
         .frame(maxWidth: paneWidth ?? .infinity, maxHeight: .infinity)
         .padding(.leading, paneX)
         .tabVisibility(isVisible)
     }
 
+    /// Folded, every tab keeps 92 pt under its content, as before. Split, the
+    /// leading pane keeps the bar's own height plus its margins, and Trends,
+    /// which has no bar, keeps none.
+    private func tabBarBandHeight(tab: Int) -> CGFloat {
+        guard split != nil else { return 92 }
+        return tab == 1 ? 0 : UnfoldedSplit.tabBarBandHeight(barHeight: tabBarHeight)
+    }
+
     /// The room kept under a pane for the floating tab bar. Folded it stays
-    /// clear, as on every iPhone. Split, it is filled, so the leading pane's
-    /// cards end above the bar instead of running underneath it beside an
-    /// uncovered Trends pane.
+    /// clear, as on every iPhone. Split, it is an opaque band with a hairline
+    /// top edge, so the leading pane's content stops cleanly above the bar
+    /// instead of fading out under it beside an uncovered Trends pane.
     private var tabBarBand: some View {
-        LinearGradient(
-            stops: [
-                .init(color: Theme.background.opacity(0), location: 0.12),
-                .init(color: Theme.background, location: 0.26)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .opacity(split == nil ? 0 : 1)
-        .allowsHitTesting(false)
+        Theme.background
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color(.separator))
+                    .frame(height: 1 / displayScale)
+            }
+            .opacity(split == nil ? 0 : 1)
+            .allowsHitTesting(false)
     }
 
     private var todayRoot: some View {
@@ -550,6 +561,14 @@ private struct MainTabView: View {
     /// close and earlier pushes pop first.
     private func runDuoTour(split isSplit: Bool) async {
         guard DuoScreenshotTour.isEnabled else { return }
+        if let screen = DuoScreenshotTour.screen {
+            // One surface per launch, opened again when the panes split or join.
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { return }
+            NSLog("DUOSCREEN %@ route=%@", isSplit ? "inner" : "outer", screen)
+            openDuoRoute(screen)
+            return
+        }
         try? await Task.sleep(for: .seconds(DuoScreenshotTour.firstDelay))
         // Loops until the panes split or join, so a slow capture still lands
         // on every route.
