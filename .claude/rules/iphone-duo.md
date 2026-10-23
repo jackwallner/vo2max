@@ -26,7 +26,10 @@ paths:
   and pushed Trends under the fold. `HistoryView` measures its scroll view.
 - Today's ring (floor 140 pt, where its caption still fits) and gaps shrink
   on short screens so the signal row clears the floating tab bar; standard
-  iPhones are unchanged. A pane reserves 510 pt instead of 485, because its
+  iPhones are unchanged. On that floor ring the status and target captions
+  are bounded by the ring's inner chord less 12 pt a side
+  (`ProgressRing.innerChord`) and scale down; unbounded, "In target range"
+  ran into the stroke (2026-10-23 review). A pane reserves 510 pt instead of 485, because its
   measured height runs under the tab bar band, and drops the content's
   `minHeight` so the spacers can't re-centre the cards into the band.
 - iOS 27.1 moves a `NavigationStack`'s back button into a vertical bar on the
