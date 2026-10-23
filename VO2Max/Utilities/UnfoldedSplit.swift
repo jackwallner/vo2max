@@ -101,34 +101,15 @@ struct PaneRestStack: Layout {
 
 extension View {
     /// Reports the height a scroll view shows between its bars and insets
-    /// (the tab bar band included). Before iOS 18 there is no Duo and nothing
-    /// is reported.
-    @ViewBuilder
+    /// (the tab bar band included): its frame less its safe area, which holds
+    /// whether or not the frame runs under the bars. `ScrollGeometry`'s
+    /// container size less its content insets came out about 74 pt short on
+    /// the Duo and pushed cards that fit.
     func onScrollVisibleHeightChange(_ action: @escaping (CGFloat) -> Void) -> some View {
-        if #available(iOS 18, *) {
-            onScrollGeometryChange(for: CGFloat.self) { geometry in
-                geometry.containerSize.height - geometry.contentInsets.top - geometry.contentInsets.bottom
-            } action: { _, height in
-                #if DEBUG
-                if DuoScreenshotTour.isEnabled { NSLog("PANEREST visible=%.1f", Double(height)) }
-                #endif
-                action(height)
-            }
-        } else {
-            self
+        onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.height - proxy.safeAreaInsets.top - proxy.safeAreaInsets.bottom
+        } action: { height in
+            action(height)
         }
-    }
-}
-
-extension GeometryProxy {
-    /// The vertical fold's horizontal extent in this proxy's space. Inactive
-    /// folds count too, so the panes don't jump while the device opens.
-    func verticalFold() -> ClosedRange<CGFloat>? {
-        guard #available(iOS 27.1, *) else { return nil }
-        let fold = reservedRegions(kind: .division, options: .includeInactive)
-            .map(\.frame)
-            .first { $0.height > $0.width && $0.minX > 0 && $0.maxX < size.width }
-        guard let fold else { return nil }
-        return fold.minX...fold.maxX
     }
 }

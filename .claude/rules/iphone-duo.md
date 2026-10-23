@@ -5,6 +5,8 @@ paths:
   - "VO2Max/Utilities/DuoScreenshotTour.swift"
   - "VO2Max/Views/DashboardView.swift"
   - "VO2Max/Views/SettingsView.swift"
+  - "VO2Max/Views/PlusTabView.swift"
+  - "VO2Max/Views/DetailViews.swift"
 ---
 
 # VO2 Max: iPhone Duo (2026-10-21)
@@ -42,6 +44,15 @@ paths:
   bar + 12 pt margin + 10 pt gap, 77 pt on the Duo). Content stops at a hard
   edge there. A gradient band was rejected (2026-10-23 review): glyph halves
   showed as a faded line beside the pill. Folded it stays a clear 92 pt.
+- The band still cut long leading-pane screens mid-card (2026-10-23 review:
+  VO2+'s Heart Rate Recovery row, Fitness Age's methodology card). Split, their
+  cards stack in `PaneRestStack` (`UnfoldedSplit.restingTops`): the first card
+  the band's edge would cut starts at that edge, so the pane rests on whole
+  cards. The rest height is the scroll view's frame less its safe area
+  (`onScrollVisibleHeightChange`); `ScrollGeometry` container size less its
+  content insets read about 74 pt short and pushed cards that fit. To keep the main cards above the bar, VO2+ drops its active
+  banner and Fitness Age tightens its gaps and moves the disclaimer under the
+  methodology card. Folded both keep a plain `VStack` (one `AnyLayout`).
 - Measured on the gh-sim iPhone Duo (iOS 27.1): fold division 455.5...495.5.
   With automatic toolbars the inner root was 867 pt (84 pt trailing vertical
   bar); see the horizontal-pane note above for the current 951 pt. The folded
