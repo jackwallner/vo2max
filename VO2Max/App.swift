@@ -170,18 +170,27 @@ final class VO2NotificationDelegate: NSObject, UNUserNotificationCenterDelegate,
         [.banner, .sound]
     }
 
+    // Completion handler form, answered on the main thread. The async form's
+    // compiler-made thunk calls UIKit's handler from a background thread, and
+    // UIKit asserts the main thread there, so a tap could abort the app (the
+    // crash Baby build 66 and Recharge build 39 shipped).
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse
-    ) async {
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
         let route = response.notification.request.content.userInfo[NotificationService.routeKey] as? String
-        switch route {
-        case NotificationService.recapRouteValue:
-            await MainActor.run { NotificationRouteCoordinator.shared.requestRecap() }
-        case NotificationService.readingRouteValue:
-            await MainActor.run { NotificationRouteCoordinator.shared.requestToday() }
-        default:
-            break
+        nonisolated(unsafe) let done = completionHandler
+        Task { @MainActor in
+            switch route {
+            case NotificationService.recapRouteValue:
+                NotificationRouteCoordinator.shared.requestRecap()
+            case NotificationService.readingRouteValue:
+                NotificationRouteCoordinator.shared.requestToday()
+            default:
+                break
+            }
+            done()
         }
     }
 }
