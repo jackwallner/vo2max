@@ -14,7 +14,6 @@ struct DashboardView: View {
     /// in the trailing pane of the unfolded iPhone Duo.
     @Binding var showSettings: Bool
     @State private var animateRing = false
-    @State private var animateContent = false
     /// Measured top safe-area inset, used to size the mask that keeps scrolled
     /// content from colliding with the status bar (nav bar is hidden here).
     @State private var topSafeAreaInset: CGFloat = 0
@@ -55,7 +54,6 @@ struct DashboardView: View {
         .overlay(alignment: .top) { statusBarMask }
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
-            withAnimation(.easeOut(duration: 0.5)) { animateContent = true }
             withAnimation(.spring(duration: 1.0, bounce: 0.15).delay(0.3)) { animateRing = true }
         }
     }
@@ -90,8 +88,6 @@ struct DashboardView: View {
             header
                 .padding(.horizontal, 24)
                 .padding(.top, isUnfoldedPane ? 28 : 16)
-                .opacity(animateContent ? 1 : 0)
-                .offset(y: animateContent ? 0 : 10)
 
             if let latest = samples.first {
                 Spacer(minLength: isShort ? 8 : 16)
@@ -110,15 +106,11 @@ struct DashboardView: View {
 
                 trendCard
                     .padding(.horizontal, 24)
-                    .opacity(animateContent ? 1 : 0)
-                    .offset(y: animateContent ? 0 : 20)
 
                 Color.clear.frame(height: 12)
 
                 fitnessAgeCard(value: latest.value)
                     .padding(.horizontal, 24)
-                    .opacity(animateContent ? 1 : 0)
-                    .offset(y: animateContent ? 0 : 20)
 
                 Color.clear.frame(height: 12)
 
@@ -126,13 +118,10 @@ struct DashboardView: View {
                 // carries the three series that aren't: RHR, HRR, cardio load.
                 CardioSignalRow()
                     .padding(.horizontal, 24)
-                    .opacity(animateContent ? 1 : 0)
-                    .offset(y: animateContent ? 0 : 20)
             } else {
                 Spacer(minLength: 16)
                 noReadingCard
                     .padding(.horizontal, 24)
-                    .opacity(animateContent ? 1 : 0)
             }
 
             Spacer(minLength: isShort ? 0 : 16)
@@ -256,8 +245,6 @@ struct DashboardView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .opacity(animateContent ? 1 : 0)
-        .scaleEffect(animateContent ? 1 : 0.9)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Latest Apple Health estimate")
         .accessibilityValue("\(latest.value.formatted(.number.precision(.fractionLength(1)))) milliliters per kilogram per minute, \(status.label)")

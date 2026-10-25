@@ -62,9 +62,7 @@ struct WhatsNewSheet: View {
         }
         .onAppear {
             guard !reduceMotion else { return }
-            withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {
-                animateGlow = true
-            }
+            animateGlow = true
         }
     }
 
@@ -75,6 +73,7 @@ struct WhatsNewSheet: View {
                 .frame(width: 72, height: 72)
                 .shadow(color: Theme.cardio.opacity(0.4), radius: 14, x: 0, y: 6)
                 .scaleEffect(animateGlow ? 1.05 : 0.97)
+                .animation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true), value: animateGlow)
             Image(systemName: "sparkles")
                 .font(.system(size: 30, weight: .bold))
                 .foregroundStyle(.white)

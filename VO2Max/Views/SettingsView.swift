@@ -157,16 +157,26 @@ struct SettingsView: View {
         }
     }
 
+    private var healthStatusLabel: some View {
+        HStack(spacing: 5) {
+            Image(systemName: health.isAuthorized ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+            Text(health.isAuthorized ? "Connected" : "Needs access")
+        }
+        .foregroundStyle(health.isAuthorized ? Theme.positive : Theme.coral)
+    }
+
     private var healthSection: some View {
         Section {
-            HStack {
-                Text("Apple Health status")
-                Spacer()
-                HStack(spacing: 5) {
-                    Image(systemName: health.isAuthorized ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
-                    Text(health.isAuthorized ? "Connected" : "Needs access")
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    Text("Apple Health status")
+                    Spacer()
+                    healthStatusLabel
                 }
-                .foregroundStyle(health.isAuthorized ? Theme.positive : Theme.coral)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Apple Health status")
+                    healthStatusLabel
+                }
             }
             .accessibilityElement(children: .combine)
 

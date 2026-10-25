@@ -365,8 +365,7 @@ struct PaywallView: View {
                 }
                 .font(.system(.caption2, design: .rounded))
                 .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .minimumScaleFactor(0.9)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
 
                 HStack(spacing: 12) {

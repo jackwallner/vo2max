@@ -593,6 +593,7 @@ private struct TrialSellingPoint: View {
                 Text(title)
                     .font(.system(.body, design: .rounded, weight: .semibold))
                     .foregroundStyle(Theme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(detail)
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
