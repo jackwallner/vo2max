@@ -38,7 +38,7 @@ struct TrialOfferSheet: View {
 
     private var subheadline: String {
         focus?.intentSubheadline
-            ?? "Resting heart rate, heart rate recovery, and cardio load — trended over the range you pick."
+            ?? "Resting heart rate, heart rate recovery, and cardio load, trended over the range you pick."
     }
 
     /// Focused feature first with two related companions; generic trio otherwise.

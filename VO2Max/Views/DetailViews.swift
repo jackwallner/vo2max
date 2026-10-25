@@ -104,7 +104,7 @@ struct ReadingHistoryDetailView: View {
         guard let newest = samples.first?.date, let oldest = samples.last?.date else { return nil }
         let from = oldest.formatted(.dateTime.month(.abbreviated).day().year())
         let to = newest.formatted(.dateTime.month(.abbreviated).day().year())
-        return from == to ? from : "\(from) – \(to)"
+        return from == to ? from : "\(from) to \(to)"
     }
 
     private var listCard: some View {

@@ -144,7 +144,7 @@ struct CardioRange: Sendable, Equatable {
     var spanLabel: String {
         let from = start.formatted(.dateTime.month(.abbreviated).day())
         let to = end.formatted(.dateTime.month(.abbreviated).day().year())
-        return "\(from) – \(to)"
+        return "\(from) to \(to)"
     }
 
     /// The equivalent window immediately before this one, for "vs." captions.
@@ -153,7 +153,7 @@ struct CardioRange: Sendable, Equatable {
               let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: end) else { return nil }
         let from = priorStart.formatted(.dateTime.month(.abbreviated).day())
         let to = priorEnd.formatted(.dateTime.month(.abbreviated).day().year())
-        return "\(from) – \(to)"
+        return "\(from) to \(to)"
     }
 
     func contains(_ date: Date) -> Bool { date >= start && date <= end }

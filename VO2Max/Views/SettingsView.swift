@@ -210,7 +210,7 @@ struct SettingsView: View {
                     Text("Target range")
                         .font(.subheadline.weight(.medium))
                     Spacer()
-                    Text("\(Int(settings.targetLower))–\(Int(settings.targetUpper))")
+                    Text("\(Int(settings.targetLower))-\(Int(settings.targetUpper))")
                         .font(.headline.monospacedDigit())
                         .foregroundStyle(Theme.cardio)
                     Text("mL/kg/min")
@@ -222,7 +222,7 @@ struct SettingsView: View {
                     age: settings.chronologicalAge,
                     referenceSex: settings.referenceSex
                 )
-                Text("Broad typical range for your current profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+                Text("Broad typical range for your current profile: \(Int(typical.lowerBound.rounded()))-\(Int(typical.upperBound.rounded())) mL/kg/min")
                     .font(.caption)
                     .foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)

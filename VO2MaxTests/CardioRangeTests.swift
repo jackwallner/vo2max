@@ -102,7 +102,7 @@ struct CardioRangeTests {
 
     @Test func spanLabelStatesBothEnds() {
         let range = CardioRange.fixed(.month, now: now, calendar: calendar)
-        #expect(range.spanLabel.contains("–"))
+        #expect(range.spanLabel.contains(" to "))
         #expect(range.priorSpanLabel(calendar: calendar) != nil)
         #expect(range.priorSpanLabel(calendar: calendar) != range.spanLabel)
     }

@@ -71,7 +71,7 @@ struct CardioReportView: View {
                 )
                 MetricTile(
                     label: "LATEST",
-                    value: report.latest.map { formatValue($0.value) } ?? "—",
+                    value: report.latest.map { formatValue($0.value) } ?? "-",
                     sub: "mL/kg/min",
                     accent: reportColor,
                     trendPct: nil
@@ -80,15 +80,15 @@ struct CardioReportView: View {
             HStack(spacing: 10) {
                 MetricTile(
                     label: "RANGE",
-                    value: "\(formatValue(report.minValue))–\(formatValue(report.maxValue))",
-                    sub: "min–max",
+                    value: "\(formatValue(report.minValue))-\(formatValue(report.maxValue))",
+                    sub: "min to max",
                     accent: reportColor,
                     trendPct: nil
                 )
                 MetricTile(
                     label: "IN TARGET",
                     value: "\(report.readingsInTarget) / \(report.readingCount)",
-                    sub: "\(Int(report.targetLower))–\(Int(report.targetUpper)) mL/kg/min",
+                    sub: "\(Int(report.targetLower))-\(Int(report.targetUpper)) mL/kg/min",
                     accent: targetColor,
                     trendPct: nil
                 )
@@ -384,7 +384,7 @@ enum CardioReportShareText {
         📈 Trend: \(report.trend.label)
         \(trend)
 
-        Tracked with VO2 Max Daily Tracker — Apple Health estimates, private on your device.
+        Tracked with VO2 Max Daily Tracker. Apple Health estimates, private on your device.
         """
     }
 

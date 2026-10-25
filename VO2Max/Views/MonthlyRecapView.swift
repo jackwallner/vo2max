@@ -131,7 +131,7 @@ struct MonthlyRecapView: View {
                 Text(status.label)
                     .font(.system(.subheadline, design: .rounded, weight: .semibold))
                     .foregroundStyle(Theme.textPrimary)
-                Text("Target \(Int(settings.targetLower))–\(Int(settings.targetUpper)) mL/kg/min\(recap.latest.map { " · latest \($0.value.formatted(.number.precision(.fractionLength(1))))" } ?? "")")
+                Text("Target \(Int(settings.targetLower))-\(Int(settings.targetUpper)) mL/kg/min\(recap.latest.map { " · latest \($0.value.formatted(.number.precision(.fractionLength(1))))" } ?? "")")
                     .font(.system(.caption, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
             }

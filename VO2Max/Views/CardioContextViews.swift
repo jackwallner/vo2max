@@ -316,7 +316,7 @@ struct SignalReading {
             return SignalReading(
                 value: summary.latest,
                 change: summary.change,
-                detail: "avg \(average) · range \(low)–\(high) · \(summary.count) readings",
+                detail: "avg \(average) · range \(low)-\(high) · \(summary.count) readings",
                 compactDetail: "Avg \(average) · \(summary.count) \(summary.count == 1 ? "reading" : "readings")",
                 series: CardioMetricAnalysis.downsample(points.filter { range.contains($0.date) })
             )
@@ -629,7 +629,7 @@ struct CardioSignalTile: View {
                         .foregroundStyle(Theme.textPrimary)
                         .contentTransition(.numericText())
                 } else {
-                    Text("—")
+                    Text("-")
                         .font(Theme.bigNumber(26))
                         .foregroundStyle(Theme.textTertiary)
                 }
@@ -976,7 +976,7 @@ struct CardioLoadDetailView: View {
                     }
                 }
 
-                Text("Qualifying is the share of your weekly minutes from outdoor walks, runs, and hikes — the only sessions Apple Health can draw a new estimate from.")
+                Text("Qualifying is the share of your weekly minutes from outdoor walks, runs, and hikes, the only sessions Apple Health can draw a new estimate from.")
                     .font(.caption)
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)

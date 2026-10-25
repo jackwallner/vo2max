@@ -109,7 +109,7 @@ enum PlusFeature: CaseIterable {
 
     var intentSubheadline: String {
         switch self {
-        case .restingHeartRate: "Latest, average, low, high, and the change against the previous window — over 30 days, 90 days, 6 months, or a year."
+        case .restingHeartRate: "Latest, average, low, high, and the change against the previous window, over 30 days, 90 days, 6 months, or a year."
         case .heartRateRecovery: "How far your heart rate falls in the minute after a workout, trended across the range you pick."
         case .cardioLoad: "Minutes and sessions per week, where the minutes went, and how the load compares in the stretches where your estimate rose."
         case .freshnessNudges: "VO2 max only refreshes after a qualifying outdoor workout. Get told when yours has gone quiet, and exactly what brings it back."

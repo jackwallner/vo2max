@@ -96,7 +96,7 @@ struct HistoryView: View {
             Divider().frame(height: 36)
             statBlock(
                 "Change",
-                change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "—",
+                change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "-",
                 color: change.map { $0 >= 0 ? Theme.positive : Theme.negative }
             )
         }
@@ -290,7 +290,7 @@ struct HistoryView: View {
                             .foregroundStyle(change >= 0 ? Theme.positive : Theme.negative)
                             .frame(width: 44, alignment: .trailing)
                     } else {
-                        Text("—")
+                        Text("-")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                             .frame(width: 44, alignment: .trailing)

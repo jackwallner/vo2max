@@ -127,7 +127,7 @@ enum CardioDriverAnalysis {
             return "In the stretches where your estimate rose, you averaged \(rising) min/week of cardio versus \(other) in the stretches where it didn't."
         }
         if difference <= -10 {
-            return "Your estimate rose on \(rising) min/week of cardio and stalled on \(other) — more volume alone hasn't been what moved it."
+            return "Your estimate rose on \(rising) min/week of cardio and stalled on \(other). More volume alone hasn't been what moved it."
         }
         return "Your training volume looks similar whether the estimate rose (\(rising) min/week) or not (\(other) min/week)."
     }
