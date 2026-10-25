@@ -1,0 +1,17 @@
+{
+  "project": "VO2Max.xcodeproj",
+  "scheme": "VO2MaxUITests",
+  "uitests_dir": "VO2MaxUITests",
+  "journeys": [
+    "VO2MaxUITests/ReleaseJourneysUITests"
+  ],
+  "personas": [
+    "newcomer",
+    "accessibility",
+    "reduce-motion",
+    "german"
+  ],
+  "persona_overrides": {},
+  "slot": null,
+  "bundle_id": "com.jackwallner.vo2max"
+}
