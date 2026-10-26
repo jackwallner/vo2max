@@ -45,9 +45,17 @@ struct OnboardingView: View {
     var body: some View {
         VStack(spacing: 0) {
             if step == .trial {
-                // Trial must NOT live in a ScrollView: Spacers need a bounded
-                // height to center the pitch above the zero-shift CTA bar.
-                trialPage
+                // Trial avoids a ScrollView when it fits: Spacers need a bounded
+                // height to center the pitch above the zero-shift CTA bar. At
+                // accessibility sizes the pitch is taller than the screen and
+                // would push the CTA bar off the bottom, so it scrolls instead.
+                ViewThatFits(in: .vertical) {
+                    trialPage
+                    ScrollView {
+                        trialPage.padding(.vertical, 24)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                }
                     .padding(.horizontal, 24)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .onAppear {
