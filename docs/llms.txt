@@ -1,0 +1,20 @@
+# VO2 Max & Cardio Fitness
+
+> VO2 Max & Cardio Fitness is a VO2 max app for iPhone and Apple Watch. See your Apple Health VO2 max estimate, cardio fitness trend and fitness age. Private.
+
+## App
+
+- [VO2 Max App for iPhone | VO2 Max & Cardio Fitness](https://jackwallner.com/ios/vo2max/index.html.md): VO2 Max & Cardio Fitness is a VO2 max app for iPhone and Apple Watch. See your Apple Health VO2 max estimate, cardio fitness trend and fitness age. Private.
+
+## Guides
+
+- [Best VO2 Max App for Apple Watch (5 Compared)](https://jackwallner.com/ios/vo2max/best-vo2-max-app-for-apple-watch.html.md): Five iPhone apps for your Apple Watch VO2 max compared: Athlytic, VO2 Max Pro, Health Hive, VO2 Max Widget Notifications and VO2 Max & Cardio Fitness.
+- [VO2 Max Chart by Age and Sex: Apple Watch Levels](https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html.md): VO2 max percentiles by age and sex from the FRIEND registry, how Apple Watch cardio fitness levels use them, and how to read your own number. Sourced and plain.
+
+## Optional
+
+- [VO2 Max Android Privacy Policy](https://jackwallner.github.io/vo2max/android/privacy-policy.html.md)
+- [VO2 Max Android Terms](https://jackwallner.github.io/vo2max/android/terms.html.md)
+- [VO2 Max Daily Tracker Privacy Policy](https://jackwallner.com/ios/vo2max/privacy-policy.html.md): VO2 Max Daily Tracker reads cardio fitness information from Apple Health only after you grant permission. It does not require an account and does not...
+- [VO2 Max Support](https://jackwallner.com/ios/vo2max/support.html.md): Help and contact for the VO2 Max and Cardio Fitness app for iPhone and Apple Watch.
+- [VO2 Max Daily Tracker Terms of Use](https://jackwallner.com/ios/vo2max/terms.html.md): By using VO2 Max Daily Tracker, you agree to these Terms of Use and Apple's Standard Licensed Application End User License Agreement.
