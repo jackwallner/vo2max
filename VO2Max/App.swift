@@ -200,7 +200,7 @@ private struct RootView: View {
     @EnvironmentObject private var store: StoreService
 
     var body: some View {
-        if ProcessInfo.processInfo.arguments.contains("-PaywallSnapshot") {
+        if Self.isPaywallSnapshot {
             PaywallView()
         } else if Self.screenshotTab != nil {
             // DEBUG-only capture hook: jump straight into the tab bar on a chosen
@@ -225,6 +225,16 @@ private struct RootView: View {
     #else
     static let shouldSeedScreenshotData = false
     #endif
+
+    /// DEBUG-only: `-PaywallSnapshot` opens straight on the paywall for
+    /// capture. Always false in Release.
+    static var isPaywallSnapshot: Bool {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-PaywallSnapshot")
+        #else
+        return false
+        #endif
+    }
 
     /// DEBUG-only: `-ScreenshotTab N` (0 Today, 1 Trends, 2 VO2+) opens that tab
     /// with onboarding skipped, for App Store screenshot capture. nil in Release.
