@@ -10,6 +10,7 @@
 
 - [Best VO2 Max App for Apple Watch (5 Compared)](https://jackwallner.com/ios/vo2max/best-vo2-max-app-for-apple-watch.html.md): Five iPhone apps for your Apple Watch VO2 max compared: Athlytic, VO2 Max Pro, Health Hive, VO2 Max Widget Notifications and VO2 Max & Cardio Fitness.
 - [VO2 Max Chart by Age and Sex: Apple Watch Levels](https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html.md): VO2 max percentiles by age and sex from the FRIEND registry, how Apple Watch cardio fitness levels use them, and how to read your own number. Sourced and plain.
+- [Where to Find VO2 Max on iPhone (Health App Steps)](https://jackwallner.com/ios/vo2max/where-to-find-vo2-max-on-iphone.html.md): VO2 max is in the Health app under Browse, Heart, Cardio Fitness. Which Apple Watch you need, the workouts that count, and why no reading shows yet.
 
 ## Optional
 

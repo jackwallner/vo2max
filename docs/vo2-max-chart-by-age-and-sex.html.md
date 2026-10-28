@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html
 
 ## VO2 Max Chart by Age and Sex (Apple Watch Cardio Fitness Levels)
 
-By Jack Wallner. Last updated October 25, 2026.
+By Jack Wallner. Last updated October 28, 2026.
 
 VO2 max is a cardio fitness measure, in mL/kg/min, that labs test from oxygen use during a maximal treadmill test. Lab-measured VO2 max falls with age and differs by sex: the median is about 48 mL/kg/min for men and 38 for women in their twenties, dropping to about 24 and 18 in their seventies. Apple Watch shows an estimate (14 to 65 mL/kg/min) and compares it with people of your age and sex. Apple flags a result as low when it is in the bottom fifth for your sex and decade of age, or below 18 (men) or 15 (women) from age 60.
 
@@ -66,7 +66,7 @@ Because of that spread, the trend over weeks matters more than any single readin
 
 ## How VO2 Max helps
 
-VO2 Max & Cardio Fitness reads the cardio fitness estimate already stored in Apple Health, read-only, and shows it as a value with its date, a trend, widgets and an Apple Watch app. In VO2+ you can enter your age and a male or female reference, and the app compares your latest estimate with its own simplified age and sex curve. That curve runs from 41 (female) and 49 (male) at age 20 down to 24 and 30 at age 70, and the app labels you below, around, above or well above a typical range around it. It is a broad guide for setting a personal target, and it is not Apple's classification or the FRIEND percentiles above. Fitness age works the same way and is labeled an estimate in the app. Comparing apps? See the [best VO2 max app for Apple Watch](https://jackwallner.com/ios/vo2max/best-vo2-max-app-for-apple-watch.html).
+VO2 Max & Cardio Fitness reads the cardio fitness estimate already stored in Apple Health, read-only, and shows it as a value with its date, a trend, widgets and an Apple Watch app. In VO2+ you can enter your age and a male or female reference, and the app compares your latest estimate with its own simplified age and sex curve. That curve runs from 41 (female) and 49 (male) at age 20 down to 24 and 30 at age 70, and the app labels you below, around, above or well above a typical range around it. It is a broad guide for setting a personal target, and it is not Apple's classification or the FRIEND percentiles above. Fitness age works the same way and is labeled an estimate in the app. Comparing apps? See the [best VO2 max app for Apple Watch](https://jackwallner.com/ios/vo2max/best-vo2-max-app-for-apple-watch.html). Can't find your number? See [where to find VO2 max on iPhone](https://jackwallner.com/ios/vo2max/where-to-find-vo2-max-on-iphone.html).
 
 ## See your Apple Health VO2 max at a glance
 
