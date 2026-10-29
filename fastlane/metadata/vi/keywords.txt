@@ -1,1 +1,1 @@
-mạch,sức,khỏe,đồng,hồ,bền,phục,hồi,hiếu,khí,luyện,tập,vo2max,heart,rate
+mạch,sức,khỏe,đồng,hồ,bền,phục,hồi,hiếu,khí,luyện,tập,vo2max,nhịp,chạy,dục,oxy,tối,đa,đo,chỉ,số
