@@ -2,6 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>de</string>
+        <string>fr</string>
+        <string>nl</string>
+        <string>zh-Hant</string>
+        <string>ru</string>
+        <string>ar</string>
+        <string>es</string>
+        <string>ja</string>
+        <string>th</string>
+        <string>cs</string>
+        <string>it</string>
+        <string>hu</string>
+        <string>ro</string>
+        <string>el</string>
+        <string>pl</string>
+        <string>sk</string>
+        <string>sv</string>
+    </array>
 <key>CFBundleExecutable</key><string>$(EXECUTABLE_NAME)</string>
 <key>CFBundleIdentifier</key><string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 <key>CFBundleDisplayName</key><string>VO2 Max Complication</string>

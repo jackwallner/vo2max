@@ -8,6 +8,7 @@ import SwiftUI
 struct RangeSlider: View {
     @Binding var lowerValue: Double
     @Binding var upperValue: Double
+    @Environment(\.layoutDirection) private var layoutDirection
     let bounds: ClosedRange<Double>
     var step: Double = 1
     var tint: Color = Theme.cardio
@@ -38,14 +39,14 @@ struct RangeSlider: View {
                     let referenceEnd = position(referenceRange.upperBound, usable: usable, span: span)
                     Capsule()
                         .fill(Theme.cardio.opacity(0.24))
-                        .frame(width: max(referenceEnd - referenceStart, 0), height: 16)
-                        .offset(x: referenceStart + thumb / 2)
+                        .frame(width: abs(referenceEnd - referenceStart), height: 16)
+                        .offset(x: min(referenceStart, referenceEnd) + thumb / 2)
                 }
 
                 Capsule()
                     .fill(tint)
-                    .frame(width: max(upperX - lowerX, 0), height: trackHeight)
-                    .offset(x: lowerX + thumb / 2)
+                    .frame(width: abs(upperX - lowerX), height: trackHeight)
+                    .offset(x: min(lowerX, upperX) + thumb / 2)
 
                 handle.offset(x: lowerX)
                     .gesture(drag(.lower, usable: usable, span: span))
@@ -54,11 +55,13 @@ struct RangeSlider: View {
             }
             .frame(height: thumb)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .environment(\.layoutDirection, .leftToRight)
+            .coordinateSpace(name: "targetRangeSlider")
         }
         .frame(height: 40)
         .accessibilityElement()
         .accessibilityLabel("Target range")
-        .accessibilityValue("\(Int(lowerValue)) to \(Int(upperValue))")
+        .accessibilityValue(String(localized: "Target from \(Int(lowerValue)) to \(Int(upperValue))"))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: upperValue = min(upperValue + step, bounds.upperBound)
@@ -77,16 +80,19 @@ struct RangeSlider: View {
     }
 
     private func position(_ value: Double, usable: CGFloat, span: Double) -> CGFloat {
-        CGFloat((value - bounds.lowerBound) / span) * usable
+        let progress = CGFloat((value - bounds.lowerBound) / span)
+        let visualProgress = layoutDirection == .rightToLeft ? 1 - progress : progress
+        return visualProgress * usable
     }
 
     private func value(atX x: CGFloat, usable: CGFloat, span: Double) -> Double {
-        let raw = bounds.lowerBound + Double(min(max(x, 0), usable) / usable) * span
+        let logicalX = layoutDirection == .rightToLeft ? usable - x : x
+        let raw = bounds.lowerBound + Double(min(max(logicalX, 0), usable) / usable) * span
         return (raw / step).rounded() * step
     }
 
     private func drag(_ handle: Handle, usable: CGFloat, span: Double) -> some Gesture {
-        DragGesture(minimumDistance: 0)
+        DragGesture(minimumDistance: 0, coordinateSpace: .named("targetRangeSlider"))
             .onChanged { g in
                 let v = value(atX: g.location.x - thumb / 2, usable: usable, span: span)
                 switch handle {

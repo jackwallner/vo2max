@@ -2,6 +2,13 @@ import Charts
 import SwiftData
 import SwiftUI
 
+private func formattedWorkoutDuration(_ minutes: Double) -> String {
+    let formatter = DateComponentsFormatter()
+    formatter.allowedUnits = [.minute]
+    formatter.unitsStyle = .abbreviated
+    return formatter.string(from: minutes.rounded() * 60) ?? "–"
+}
+
 // MARK: - Shared range
 
 /// Range control for every window-scoped screen, plus the date span it resolves
@@ -222,28 +229,28 @@ enum CardioSignal: Identifiable, Hashable {
     var title: String {
         switch self {
         case .heart(let metric): metric.title
-        case .load: "Cardio Load"
+        case .load: String(localized: "Cardio Load")
         }
     }
 
     var abbreviation: String {
         switch self {
         case .heart(let metric): metric.abbreviation
-        case .load: "LOAD"
+        case .load: String(localized: "Load")
         }
     }
 
     var unit: String {
         switch self {
         case .heart(let metric): metric.unitDetail
-        case .load: "min/week"
+        case .load: String(localized: "min/week")
         }
     }
 
     var shortUnit: String {
         switch self {
         case .heart: "bpm"
-        case .load: "min/wk"
+        case .load: String(localized: "min/week")
         }
     }
 
@@ -257,7 +264,7 @@ enum CardioSignal: Identifiable, Hashable {
     var subtitle: String {
         switch self {
         case .heart(let metric): metric.subtitle
-        case .load: "Cardio minutes and sessions from your workout history"
+        case .load: String(localized: "Cardio minutes and sessions from your workout history")
         }
     }
 
@@ -316,8 +323,8 @@ struct SignalReading {
             return SignalReading(
                 value: summary.latest,
                 change: summary.change,
-                detail: "avg \(average) · range \(low)–\(high) · \(summary.count) readings",
-                compactDetail: "Avg \(average) · \(summary.count) \(summary.count == 1 ? "reading" : "readings")",
+                detail: String(localized: "Average: \(average). Range: \(low) to \(high). \(summary.count) readings."),
+                compactDetail: String(localized: "Average: \(average). \(summary.count) readings."),
                 series: CardioMetricAnalysis.downsample(points.filter { range.contains($0.date) })
             )
         case .load:
@@ -331,10 +338,10 @@ struct SignalReading {
             return SignalReading(
                 value: summary.minutesPerWeek,
                 change: summary.change,
-                detail: "\(sessions) sessions/week · \(qualifying) min/week can refresh the estimate",
+                detail: String(localized: "Sessions per week: \(sessions). Estimate-refreshing minutes per week: \(qualifying)."),
                 // No second "min/wk": the row prints that unit beside the value,
                 // and repeating it here wrapped the line mid-token.
-                compactDetail: "\(sessions) sessions/wk · \(qualifying) qualifying",
+                compactDetail: String(localized: "Sessions per week: \(sessions). Qualifying minutes per week: \(qualifying)."),
                 series: CardioDriverAnalysis.weeklyLoad(
                     workouts: context.workouts,
                     weeks: range.chartWeeks,
@@ -427,7 +434,7 @@ struct CardioSignalCard: View {
             }
             Spacer(minLength: 6)
             if store.isPro {
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.textTertiary)
             } else {
@@ -456,7 +463,7 @@ struct CardioSignalCard: View {
                     ChangeBadge(
                         change: change,
                         lowerIsBetter: signal.lowerIsBetter,
-                        caption: "vs. \(range.priorPhrase)"
+                        caption: String(localized: "Change versus \(range.priorPhrase)")
                     )
                 }
             }
@@ -523,10 +530,12 @@ struct CardioSignalCard: View {
 
     private var emptyMessage: String {
         switch signal {
-        case .heart(let metric):
-            "No \(metric.title.lowercased()) recorded in the \(range.phrase). Choose a longer range, or check that Apple Health holds this data."
+        case .heart(.restingHeartRate):
+            String(localized: "No resting heart rate readings in \(range.phrase). Choose a longer range, or check that Apple Health has this data.")
+        case .heart(.heartRateRecovery):
+            String(localized: "No Cardio Recovery readings in \(range.phrase). Choose a longer range, or check that Apple Health has this data.")
         case .load:
-            "No cardio workouts recorded in the \(range.phrase)."
+            String(localized: "No cardio workouts recorded in \(range.phrase).")
         }
     }
 
@@ -607,9 +616,12 @@ struct CardioSignalTile: View {
 
     private var tile: some View {
         VStack(spacing: 3) {
-            Text(signal.abbreviation)
+            Text(signal.title)
                 .font(.system(.caption2, design: .rounded, weight: .bold))
                 .foregroundStyle(Theme.cardio)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: false, vertical: true)
 
             if store.isPro {
                 if let reading {
@@ -651,12 +663,12 @@ struct CardioSignalTile: View {
     }
 
     private var accessibilityValue: String {
-        guard store.isPro else { return "Locked. Included with VO2+" }
-        guard let reading else { return "No readings in the \(range.phrase)" }
+        guard store.isPro else { return String(localized: "Locked. Included with VO2+") }
+        guard let reading else { return String(localized: "No readings for \(signal.title) in \(range.phrase).") }
         let value = reading.value.formatted(.number.precision(.fractionLength(0)))
-        guard let change = reading.change else { return "\(value) \(signal.shortUnit)" }
+        guard let change = reading.change else { return String(localized: "\(value) \(signal.shortUnit).") }
         let signed = change.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always()))
-        return "\(value) \(signal.shortUnit), \(signed) vs. \(range.priorPhrase)"
+        return String(localized: "\(value) \(signal.shortUnit), change \(signed) versus \(range.priorPhrase).")
     }
 }
 
@@ -737,13 +749,13 @@ struct HeartMetricDetailView: View {
             Divider()
 
             HStack(spacing: 0) {
-                statBlock("Average", summary.average.formatted(.number.precision(.fractionLength(1))))
+                    statBlock(String(localized: "Average"), summary.average.formatted(.number.precision(.fractionLength(1))))
                 Divider().frame(height: 34)
-                statBlock("Low", "\(Int(summary.minimum.rounded()))")
+                statBlock(String(localized: "Low"), "\(Int(summary.minimum.rounded()))")
                 Divider().frame(height: 34)
-                statBlock("High", "\(Int(summary.maximum.rounded()))")
+                statBlock(String(localized: "High"), "\(Int(summary.maximum.rounded()))")
                 Divider().frame(height: 34)
-                statBlock("Readings", "\(summary.count)")
+                statBlock(String(localized: "Readings"), "\(summary.count)")
             }
 
             if let change = summary.change {
@@ -830,7 +842,7 @@ struct HeartMetricDetailView: View {
                         Text(month.monthStart, format: .dateTime.month(.wide).year())
                             .font(.subheadline)
                         Spacer()
-                        Text("\(month.count) \(month.count == 1 ? "reading" : "readings")")
+                        Text(String(localized: "\(month.count) readings"))
                             .font(.caption)
                             .foregroundStyle(Theme.textSecondary)
                         Text(month.average, format: .number.precision(.fractionLength(1)))
@@ -852,9 +864,9 @@ struct HeartMetricDetailView: View {
                 .foregroundStyle(Theme.cardio)
             Text("No readings in the \(range.phrase)")
                 .font(.headline)
-            Text(metric == .restingHeartRate
-                 ? "Apple Watch records resting heart rate in the background as you wear it. Choose a longer range, or check that Apple Health holds this data."
-                 : "Apple Watch records the one-minute drop after a recorded workout. Choose a longer range, or record a workout with your Watch on.")
+                Text(metric == .restingHeartRate
+                     ? String(localized: "Apple Watch records resting heart rate in the background as you wear it. Choose a longer range, or check that Apple Health has this data.")
+                     : String(localized: "Apple Watch records the one-minute drop after a recorded workout. Choose a longer range, or record a workout with your Watch on."))
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
@@ -869,7 +881,7 @@ struct HeartMetricDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             Label("Where this comes from", systemImage: "info.circle")
                 .font(.headline)
-            Text("\(metric.subtitle). Read directly from Apple Health, never written to.")
+            Text(String(localized: "\(metric.subtitle). Read directly from Apple Health and never written to it."))
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -942,13 +954,13 @@ struct CardioLoadDetailView: View {
                 Divider()
 
                 HStack(spacing: 0) {
-                    statBlock("Sessions", "\(summary.sessions)")
+                statBlock(String(localized: "Sessions"), "\(summary.sessions)")
                     Divider().frame(height: 34)
-                    statBlock("Per week", summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1))))
+                statBlock(String(localized: "Per week"), summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1))))
                     Divider().frame(height: 34)
-                    statBlock("Total min", "\(Int(summary.totalMinutes.rounded()))")
+                statBlock(String(localized: "Total min"), "\(Int(summary.totalMinutes.rounded()))")
                     Divider().frame(height: 34)
-                    statBlock("Qual. min/wk", "\(Int(summary.qualifyingMinutesPerWeek.rounded()))")
+                statBlock(String(localized: "Qualifying min/week"), "\(Int(summary.qualifyingMinutesPerWeek.rounded()))")
                 }
 
                 if let change = summary.change {
@@ -1056,7 +1068,7 @@ struct CardioLoadDetailView: View {
 
                 HStack(spacing: 0) {
                     driverBlock(
-                        title: "Estimate rose",
+                        title: String(localized: "Estimate rose"),
                         minutes: summary.risingMinutesPerWeek,
                         sessions: summary.risingSessionsPerWeek,
                         count: summary.risingCount,
@@ -1064,7 +1076,7 @@ struct CardioLoadDetailView: View {
                     )
                     Divider().frame(height: 62)
                     driverBlock(
-                        title: "Flat or down",
+                        title: String(localized: "Flat or down"),
                         minutes: summary.otherMinutesPerWeek,
                         sessions: summary.otherSessionsPerWeek,
                         count: summary.otherCount,
@@ -1104,7 +1116,7 @@ struct CardioLoadDetailView: View {
             Text(title)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Theme.textPrimary)
-            Text("\(sessions.formatted(.number.precision(.fractionLength(1)))) sessions/week · \(count) stretches")
+            Text(String(localized: "Sessions per week: \(sessions.formatted(.number.precision(.fractionLength(1)))). Estimate intervals: \(count)."))
                 .font(.caption2)
                 .foregroundStyle(Theme.textTertiary)
                 .multilineTextAlignment(.center)
@@ -1136,12 +1148,12 @@ struct CardioLoadDetailView: View {
                         VStack(alignment: .leading, spacing: 1) {
                             Text(total.kind.label)
                                 .font(.subheadline.weight(.medium))
-                            Text("\(total.sessions) \(total.sessions == 1 ? "session" : "sessions")")
+                            Text(String(localized: "\(total.sessions) sessions"))
                                 .font(.caption)
                                 .foregroundStyle(Theme.textSecondary)
                         }
                         Spacer()
-                        Text("\(Int(total.minutes.rounded())) min")
+                        Text(formattedWorkoutDuration(total.minutes))
                             .font(.subheadline.monospacedDigit())
                     }
                 }
@@ -1259,10 +1271,10 @@ struct EstimateFreshnessDetailView: View {
     }
 
     private static let requirements = [
-        "An outdoor walk, run, or hike recorded with Apple Watch.",
-        "At least 20 minutes of steady, brisk effort.",
-        "Apple Watch worn snugly, with wrist detection on.",
-        "Location enabled so pace and elevation are available."
+        String(localized: "An outdoor walk, run, or hike recorded with Apple Watch."),
+        String(localized: "At least 20 minutes of steady, brisk effort."),
+        String(localized: "Apple Watch worn snugly, with wrist detection on."),
+        String(localized: "Location enabled so pace and elevation are available.")
     ]
 
     @ViewBuilder
@@ -1291,7 +1303,7 @@ struct EstimateFreshnessDetailView: View {
                                 .foregroundStyle(Theme.textSecondary)
                         }
                         Spacer()
-                        Text("\(Int(workout.minutes.rounded())) min")
+                        Text(formattedWorkoutDuration(workout.minutes))
                             .font(.subheadline.monospacedDigit())
                             .foregroundStyle(Theme.textSecondary)
                     }

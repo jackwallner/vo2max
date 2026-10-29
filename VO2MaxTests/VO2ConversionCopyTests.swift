@@ -25,14 +25,15 @@ struct VO2ConversionCopyTests {
     /// The billed amount leads the price line and the trial length trails it.
     @Test func billedAmountLeadsAndTrialTrails() {
         #expect(VO2ConversionCopy.billedAmount(priceLabel: "$14.99 / year") == "$14.99 per year")
+        #expect(VO2ConversionCopy.billedAmount(priceLabel: "$14.99 per year") == "$14.99 per year")
         #expect(
             VO2ConversionCopy.billedNote(trialLabel: "7-day free trial", eligibleForTrial: true)
-                == "7-day free trial included · Cancel anytime"
+                == "7-day free trial. Cancel anytime."
         )
         // Never promise a trial the Apple ID can't get.
         #expect(
             VO2ConversionCopy.billedNote(trialLabel: "7-day free trial", eligibleForTrial: false)
-                == "Billed automatically · Cancel anytime"
+                == "Billed automatically. Cancel anytime."
         )
     }
 
@@ -42,14 +43,14 @@ struct VO2ConversionCopyTests {
             priceLabel: "$14.99 / year",
             eligibleForTrial: true
         )
-        #expect(eligible.hasPrefix("$14.99 / year after the 7-day free trial."))
+        #expect(eligible.hasPrefix("$14.99 / year is charged after the free trial."))
 
         let ineligible = VO2ConversionCopy.disclosure(
             trialLabel: "7-day free trial",
             priceLabel: "$14.99 / year",
             eligibleForTrial: false
         )
-        #expect(ineligible.hasPrefix("$14.99 / year."))
+        #expect(ineligible.hasPrefix("$14.99 / year is charged now."))
         #expect(!ineligible.lowercased().contains("trial"))
     }
 
@@ -59,7 +60,7 @@ struct VO2ConversionCopyTests {
             priceLabel: "$14.99 / year",
             eligibleForTrial: true
         )
-        #expect(eligible.hasPrefix("$14.99 / year after the 7-day free trial."))
+        #expect(eligible.hasPrefix("$14.99 / year is charged after the free trial."))
         #expect(!eligible.hasPrefix("Free"))
     }
 

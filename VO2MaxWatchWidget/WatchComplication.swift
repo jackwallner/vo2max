@@ -52,7 +52,10 @@ struct WatchCardioView: View {
             case .accessoryRectangular:
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("VO2 MAX").font(.caption2)
+                        Text("Cardio Fitness")
+                            .font(.caption2)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
                         Text(value, format: .number.precision(.fractionLength(1))).font(.title3.bold())
                     }
                     Spacer()
@@ -63,7 +66,7 @@ struct WatchCardioView: View {
             case .accessoryCorner:
                 Text(value, format: .number.precision(.fractionLength(0)))
                     .font(.headline.bold())
-                    .widgetLabel { Label("VO2 Max", systemImage: "heart.fill") }
+                    .widgetLabel { Label("Cardio Fitness", systemImage: "heart.fill") }
             default:
                 Text(value, format: .number.precision(.fractionLength(1)))
             }
@@ -84,7 +87,7 @@ struct VO2MaxWatchWidget: Widget {
             WatchCardioView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("VO2 Max")
+        .configurationDisplayName("Cardio Fitness")
         .description("Your latest cardio fitness estimate and trend.")
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner])
     }

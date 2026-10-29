@@ -1,0 +1,232 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSHealthShareUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reads cardio fitness estimates, resting heart rate, Cardio Recovery, and workouts from Apple Health to show your latest value, target range, and cardio fitness trend. It never writes Health data."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liest Cardiofitness-Schätzwerte, Ruheherzfrequenz, Cardioerholung und Trainings aus Apple Health und zeigt deinen neuesten Wert, Zielbereich und Cardiofitness-Trend. Die App schreibt keine Gesundheitsdaten."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lit dans Apple Health les estimations de santé cardiovasculaire, la fréquence cardiaque au repos, la récupération cardiaque et les entraînements pour afficher votre dernière valeur, votre intervalle cible et la tendance de votre santé cardiovasculaire. L’app n’écrit aucune donnée de santé."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leest schattingen van je cardioconditie, je hartslag in rust, cardioherstel en trainingen uit Apple Health en toont je laatste waarde, doelbereik en cardioconditietrend. De app schrijft geen gezondheidsgegevens."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "讀取 Apple Health 中的心適能估算值、靜止心率、心跳恢復及運動記錄，以顯示最新數值、目標範圍和心適能趨勢。本 App 不會寫入健康資料。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Читает из Apple Health оценки кардиовыносливости, пульс в покое, восстановление пульса и тренировки, чтобы показать последнее значение, целевой диапазон и динамику кардиовыносливости. Приложение не записывает данные о здоровье."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يقرأ من Apple Health تقديرات اللياقة القلبية ومعدل ضربات القلب أثناء الراحة ومعدل تعافي النبض والتمارين لعرض أحدث قيمة والنطاق المستهدف واتجاه اللياقة القلبية. لا يكتب التطبيق أي بيانات صحية."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lee de Apple Health las estimaciones de capacidad aeróbica, la frecuencia cardíaca en reposo, la recuperación cardiaca y los entrenamientos para mostrar tu valor más reciente, el rango objetivo y la tendencia de tu capacidad aeróbica. La app no escribe datos de salud."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Health から心肺機能の推定値、安静時心拍数、心拍数回復、ワークアウトを読み取り、最新値、目標範囲、心肺機能の傾向を表示します。健康データを書き込むことはありません。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อ่านค่าประมาณคาร์ดิโอฟิตเนส อัตราการเต้นของหัวใจขณะพัก อัตราการฟื้นฟูคาร์ดิโอ และการออกกำลังกายจาก Apple Health เพื่อแสดงค่าล่าสุด ช่วงเป้าหมาย และแนวโน้มคาร์ดิโอฟิตเนส แอปจะไม่เขียนข้อมูลสุขภาพ"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čte odhady kardiovaskulární kondice, klidovou tepovou frekvenci, uklidnění kardiovaskulárního systému a tréninky z Apple Health, aby zobrazila nejnovější hodnotu, cílové rozmezí a trend kondice. Zdravotní data nezapisuje."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legge da Apple Health le stime del tono cardiovascolare, la frequenza cardiaca a riposo, il recupero cardiaco e gli allenamenti per mostrare il valore più recente, l'intervallo obiettivo e l'andamento del tono cardiovascolare. L'app non scrive dati sanitari."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beolvassa az Apple Healthből a kardiofitnesz-becsléseket, a nyugalmi pulzust, a pulzusmegnyugvást és az edzéseket, hogy megjelenítse a legutóbbi értéket, a célzónát és a kardiofitnesz alakulását. Az app nem ír egészségügyi adatokat."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Citește din Apple Health estimările capacității cardiorespiratorii, pulsul în repaus, ritmul cardiac de recuperare și antrenamentele pentru a afișa ultima valoare, intervalul țintă și tendința capacității cardiorespiratorii. Aplicația nu scrie date de sănătate."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διαβάζει από το Apple Health εκτιμήσεις καρδιαγγειακής κατάστασης, καρδιακό ρυθμό ηρεμίας, καρδιαγγειακή αποκατάσταση και προπονήσεις, για να εμφανίσει την πιο πρόσφατη τιμή, το εύρος στόχου και την τάση. Δεν γράφει δεδομένα υγείας."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odczytuje z Apple Health szacunki sprawności kardio, tętno spoczynkowe, normalizację tętna i treningi, aby pokazać najnowszy wynik, zakres docelowy i trend sprawności kardio. Aplikacja nie zapisuje danych zdrowotnych."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Číta z Apple Health odhady fyzickej kondície, tepovú frekvenciu v pokoji, regeneračnú fázu kardiovaskulárneho systému a tréningy, aby zobrazila najnovšiu hodnotu, cieľový rozsah a trend kondície. Zdravotné údaje nezapisuje."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läser konditionsuppskattningar, vilopuls, återhämtningspuls och träningspass från Apple Health och visar ditt senaste värde, målområde och din konditionstrend. Appen skriver inga hälsodata."
+          }
+        }
+      }
+    },
+    "NSHealthUpdateUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker never writes data to Apple Health."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker schreibt niemals Daten in Apple Health."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker n’écrit jamais de données dans Apple Health."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker schrijft nooit gegevens naar Apple Health."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker 絕不會寫入資料到 Apple Health。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker никогда не записывает данные в Apple Health."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يكتب VO2 Max Daily Tracker أي بيانات إلى Apple Health."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nunca escribe datos en Apple Health."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker は Apple Health にデータを書き込みません。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker จะไม่เขียนข้อมูลไปยัง Apple Health"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nikdy nezapisuje data do Apple Health."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker non scrive mai dati su Apple Health."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A VO2 Max Daily Tracker soha nem ír adatokat az Apple Healthbe."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nu scrie niciodată date în Apple Health."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το VO2 Max Daily Tracker δεν γράφει ποτέ δεδομένα στο Apple Health."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nigdy nie zapisuje danych w Apple Health."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nikdy nezapisuje údaje do Apple Health."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker skriver aldrig data till Apple Health."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

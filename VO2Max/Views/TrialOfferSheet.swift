@@ -33,12 +33,12 @@ struct TrialOfferSheet: View {
     /// trial — Apple 3.1.2(c) requires the billed amount to be the most
     /// conspicuous pricing element, so no pricing lives in the hero.
     private var headline: String {
-        focus?.intentHeadline ?? "Go further with VO2+"
+        focus?.intentHeadline ?? String(localized: "Go further with VO2+")
     }
 
     private var subheadline: String {
         focus?.intentSubheadline
-            ?? "Resting heart rate, heart rate recovery, and cardio load — trended over the range you pick."
+            ?? String(localized: "Resting heart rate, Cardio Recovery, and cardio load, trended over the range you pick.")
     }
 
     /// Focused feature first with two related companions; generic trio otherwise.
@@ -311,7 +311,7 @@ private struct TrialBulletRow: View {
                 .stroke(bullet.tint.opacity(highlighted ? 0.45 : 0.18), lineWidth: highlighted ? 1.5 : 1)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(bullet.title). \(bullet.detail)")
+        .accessibilityLabel(String(localized: "\(bullet.title). \(bullet.detail)"))
     }
 }
 

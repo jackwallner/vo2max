@@ -3,6 +3,27 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>de</string>
+        <string>fr</string>
+        <string>nl</string>
+        <string>zh-Hant</string>
+        <string>ru</string>
+        <string>ar</string>
+        <string>es</string>
+        <string>ja</string>
+        <string>th</string>
+        <string>cs</string>
+        <string>it</string>
+        <string>hu</string>
+        <string>ro</string>
+        <string>el</string>
+        <string>pl</string>
+        <string>sk</string>
+        <string>sv</string>
+    </array>
     <key>CFBundleExecutable</key><string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key><string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
@@ -12,8 +33,8 @@
     <key>CFBundleShortVersionString</key><string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key><string>$(CURRENT_PROJECT_VERSION)</string>
     <key>ITSAppUsesNonExemptEncryption</key><false/>
-    <key>NSHealthShareUsageDescription</key><string>VO2 Max Daily Tracker reads cardio fitness estimates from Apple Health to show your latest value, target range, and fitness trend. Resting heart rate, heart rate recovery, and workouts are read to show the cardio signals behind your estimate. It never writes Health data.</string>
-    <key>NSHealthUpdateUsageDescription</key><string>VO2 Max Daily Tracker does not write data to Apple Health.</string>
+    <key>NSHealthShareUsageDescription</key><string>Reads cardio fitness estimates, resting heart rate, Cardio Recovery, and workouts from Apple Health to show your latest value, target range, and cardio fitness trend. It never writes Health data.</string>
+    <key>NSHealthUpdateUsageDescription</key><string>VO2 Max Daily Tracker never writes data to Apple Health.</string>
     <key>UILaunchScreen</key><dict/>
     <key>UIRequiredDeviceCapabilities</key><array><string>healthkit</string></array>
     <key>UISupportedInterfaceOrientations</key><array><string>UIInterfaceOrientationPortrait</string></array>

@@ -20,34 +20,47 @@ enum MetricRange: Int, CaseIterable, Identifiable, Sendable {
 
     /// Segment label.
     var label: String {
+        if self == .custom { return String(localized: "Custom") }
+        var components = DateComponents()
         switch self {
-        case .month: "30D"
-        case .quarter: "90D"
-        case .halfYear: "6M"
-        case .year: "1Y"
-        case .custom: "Custom"
+        case .month: components.day = 30
+        case .quarter: components.day = 90
+        case .halfYear: components.month = 6
+        case .year: components.year = 1
+        case .custom: break
+        }
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.day, .month, .year]
+        formatter.unitsStyle = .abbreviated
+        if let label = formatter.string(from: components) { return label }
+        return switch self {
+        case .month: String(localized: "30 days")
+        case .quarter: String(localized: "90 days")
+        case .halfYear: String(localized: "6 months")
+        case .year: String(localized: "1 year")
+        case .custom: String(localized: "Custom")
         }
     }
 
     /// Used mid-sentence: "…in the last 90 days".
     var phrase: String {
         switch self {
-        case .month: "last 30 days"
-        case .quarter: "last 90 days"
-        case .halfYear: "last 6 months"
-        case .year: "last 12 months"
-        case .custom: "selected range"
+        case .month: String(localized: "last 30 days")
+        case .quarter: String(localized: "last 90 days")
+        case .halfYear: String(localized: "last 6 months")
+        case .year: String(localized: "last 12 months")
+        case .custom: String(localized: "selected range")
         }
     }
 
     /// Used for the vs-previous comparison line.
     var priorPhrase: String {
         switch self {
-        case .month: "prior 30 days"
-        case .quarter: "prior 90 days"
-        case .halfYear: "prior 6 months"
-        case .year: "prior 12 months"
-        case .custom: "matching range before it"
+        case .month: String(localized: "prior 30 days")
+        case .quarter: String(localized: "prior 90 days")
+        case .halfYear: String(localized: "prior 6 months")
+        case .year: String(localized: "prior 12 months")
+        case .custom: String(localized: "matching range before it")
         }
     }
 
@@ -136,24 +149,28 @@ struct CardioRange: Sendable, Equatable {
     /// previous 1 day" for a one-day custom pick.
     var priorPhrase: String {
         guard selection == .custom else { return selection.priorPhrase }
-        return "previous \(days) \(days == 1 ? "day" : "days")"
+        return String(localized: "previous \(days) days")
     }
 
     /// The actual dates this window covers, e.g. "May 3 – Aug 1, 2026". Shown
     /// under the picker and anywhere a screen states which period it is reading.
     var spanLabel: String {
-        let from = start.formatted(.dateTime.month(.abbreviated).day())
-        let to = end.formatted(.dateTime.month(.abbreviated).day().year())
-        return "\(from) – \(to)"
+        let formatter = DateIntervalFormatter()
+        formatter.locale = .current
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: start, to: end)
     }
 
     /// The equivalent window immediately before this one, for "vs." captions.
     func priorSpanLabel(calendar: Calendar = .current) -> String? {
         guard let priorEnd = calendar.date(byAdding: .day, value: -days, to: end),
               let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: end) else { return nil }
-        let from = priorStart.formatted(.dateTime.month(.abbreviated).day())
-        let to = priorEnd.formatted(.dateTime.month(.abbreviated).day().year())
-        return "\(from) – \(to)"
+        let formatter = DateIntervalFormatter()
+        formatter.locale = .current
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: priorStart, to: priorEnd)
     }
 
     func contains(_ date: Date) -> Bool { date >= start && date <= end }
@@ -170,16 +187,16 @@ enum HeartMetric: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .restingHeartRate: "Resting Heart Rate"
-        case .heartRateRecovery: "Heart Rate Recovery"
+        case .restingHeartRate: String(localized: "Resting Heart Rate")
+        case .heartRateRecovery: String(localized: "Cardio Recovery")
         }
     }
 
     /// Short form for tiles and axis labels.
     var abbreviation: String {
         switch self {
-        case .restingHeartRate: "RHR"
-        case .heartRateRecovery: "HRR"
+        case .restingHeartRate: String(localized: "RHR")
+        case .heartRateRecovery: String(localized: "HRR")
         }
     }
 
@@ -188,8 +205,8 @@ enum HeartMetric: String, CaseIterable, Identifiable, Sendable {
     /// Disambiguates the two: one is a rate, the other a one-minute drop.
     var unitDetail: String {
         switch self {
-        case .restingHeartRate: "bpm at rest"
-        case .heartRateRecovery: "bpm drop in 1 min"
+        case .restingHeartRate: String(localized: "bpm at rest")
+        case .heartRateRecovery: String(localized: "bpm drop in 1 min")
         }
     }
 
@@ -202,8 +219,8 @@ enum HeartMetric: String, CaseIterable, Identifiable, Sendable {
 
     var subtitle: String {
         switch self {
-        case .restingHeartRate: "Recorded in the background while you wear Apple Watch"
-        case .heartRateRecovery: "The one-minute fall after a recorded workout ends"
+        case .restingHeartRate: String(localized: "Recorded in the background while you wear Apple Watch")
+        case .heartRateRecovery: String(localized: "The one-minute fall after a recorded workout ends")
         }
     }
 

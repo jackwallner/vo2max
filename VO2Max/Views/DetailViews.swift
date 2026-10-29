@@ -81,13 +81,13 @@ struct ReadingHistoryDetailView: View {
                     .foregroundStyle(Theme.positive.opacity(0.6))
                 LineMark(
                     x: .value("Date", sample.date),
-                    y: .value("VO2 max", sample.value)
+                    y: .value(String(localized: "Cardio Fitness"), sample.value)
                 )
                 .foregroundStyle(Theme.cardioGradient)
                 .interpolationMethod(.catmullRom)
                 PointMark(
                     x: .value("Date", sample.date),
-                    y: .value("VO2 max", sample.value)
+                    y: .value(String(localized: "Cardio Fitness"), sample.value)
                 )
                 .foregroundStyle(Theme.cardio)
             }
@@ -102,9 +102,12 @@ struct ReadingHistoryDetailView: View {
     /// period rather than leaving the reader to scroll to the bottom for it.
     private var recordedSpan: String? {
         guard let newest = samples.first?.date, let oldest = samples.last?.date else { return nil }
-        let from = oldest.formatted(.dateTime.month(.abbreviated).day().year())
-        let to = newest.formatted(.dateTime.month(.abbreviated).day().year())
-        return from == to ? from : "\(from) – \(to)"
+        guard oldest != newest else { return oldest.formatted(.dateTime.month(.abbreviated).day().year()) }
+        let formatter = DateIntervalFormatter()
+        formatter.locale = .current
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: oldest, to: newest)
     }
 
     private var listCard: some View {
@@ -316,13 +319,13 @@ struct TrendDetailView: View {
     private func summaryText(_ trend: CardioTrend) -> String {
         switch trend {
         case .improving:
-            "Your more recent Apple Health estimates are meaningfully higher than the earlier part of the 90-day window."
+            String(localized: "Your more recent Apple Health estimates are meaningfully higher than the earlier part of the 90-day window.")
         case .stable:
-            "Your recent Apple Health estimates are holding within the app's normal-variation threshold."
+            String(localized: "Your recent Apple Health estimates are holding within the app's normal-variation threshold.")
         case .declining:
-            "Your more recent Apple Health estimates are meaningfully lower than the earlier part of the 90-day window."
+            String(localized: "Your more recent Apple Health estimates are meaningfully lower than the earlier part of the 90-day window.")
         case .insufficientData:
-            "Four Apple Health estimates within 90 days are needed before the app labels a direction."
+            String(localized: "Four Apple Health estimates within 90 days are needed before the app labels a direction.")
         }
     }
 
@@ -332,15 +335,15 @@ struct TrendDetailView: View {
             .number.precision(.fractionLength(1)).sign(strategy: .always())
         )
         if latest.value >= settings.targetLower {
-            return "Your latest estimate is in or above your target range. Recent pace: \(slope) mL/kg/min per month."
+            return String(localized: "Your latest estimate is in or above your target range. Recent pace: \(slope) mL/kg/min per month.")
         }
         if let months = projection.monthsToTarget {
-            return "At the recent pace of \(slope) mL/kg/min per month, the lower edge of your target range is roughly \(months) \(months == 1 ? "month" : "months") away."
+            return String(localized: "At the recent pace of \(slope) mL/kg/min per month, the lower edge of your target range is roughly \(months) months away.")
         }
         if projection.slopePerMonth <= 0.05 {
-            return "The recent cardio fitness trend is flat or declining, so a time-to-target estimate is not meaningful."
+            return String(localized: "The recent cardio fitness trend is flat or declining, so a time-to-target estimate is not meaningful.")
         }
-        return "The recent direction is positive, but too gradual for a useful timeframe."
+        return String(localized: "The recent direction is positive, but too gradual for a useful timeframe.")
     }
 
     private func trendColor(_ trend: CardioTrend) -> Color {
@@ -391,7 +394,7 @@ struct FitnessAgeDetailView: View {
                referenceSex: settings.referenceSex
            ) {
             VStack(spacing: 8) {
-                Text("About \(estimate)")
+                Text("About \(estimate.formatted())")
                     .font(Theme.bigNumber(44))
                     .foregroundStyle(Theme.cardio)
                 Text("Fitness age estimate")
@@ -413,7 +416,7 @@ struct FitnessAgeDetailView: View {
                     .foregroundStyle(Theme.cardio)
                 Text("Set a reference profile")
                     .font(.headline)
-                Text("Fitness age needs your age and a reference option plus at least one Apple Health estimate.")
+                Text("Fitness age needs your age, reference profile, and at least one Apple Health estimate.")
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)

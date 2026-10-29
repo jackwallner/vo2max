@@ -74,8 +74,8 @@ enum NotificationService {
         }
 
         let content = UNMutableNotificationContent()
-        content.title = "Your cardio fitness month"
-        content.body = "See how your VO2 max trend and target progress stacked up."
+        content.title = String(localized: "Your cardio fitness month")
+        content.body = String(localized: "See how your VO2 max trend and target progress stacked up.")
         content.sound = .default
         content.userInfo = [routeKey: recapRouteValue]
 
@@ -117,12 +117,12 @@ enum NotificationService {
         }
 
         let content = UNMutableNotificationContent()
-        content.title = "New cardio fitness estimate"
+        content.title = String(localized: "New cardio fitness estimate")
         let rounded = value.formatted(.number.precision(.fractionLength(1)))
         if let context, !context.isEmpty {
-            content.body = "Apple Health logged \(rounded) mL/kg/min. \(context)"
+            content.body = String(localized: "Apple Health logged \(rounded) mL/kg/min. \(context)")
         } else {
-            content.body = "Apple Health logged \(rounded) mL/kg/min."
+            content.body = String(localized: "Apple Health logged \(rounded) mL/kg/min.")
         }
         content.sound = .default
         content.userInfo = [routeKey: readingRouteValue]
@@ -152,8 +152,8 @@ enum NotificationService {
         }
 
         let content = UNMutableNotificationContent()
-        content.title = "Your estimate has gone quiet"
-        content.body = "Apple Health hasn't logged a VO2 max estimate in \(daysSinceLatest) days. \(CardioFreshnessAnalysis.refreshInstruction)"
+        content.title = String(localized: "Your estimate has gone quiet")
+        content.body = String(localized: "Apple Health hasn't logged a VO2 max estimate in \(daysSinceLatest) days. \(CardioFreshnessAnalysis.refreshInstruction)")
         content.sound = .default
         content.userInfo = [routeKey: readingRouteValue]
 

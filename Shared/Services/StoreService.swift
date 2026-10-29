@@ -55,27 +55,37 @@ extension Package {
 
     var vo2DisplayName: String {
         switch vo2PackageKind {
-        case .lifetime: "Lifetime"
-        case .yearly: "Yearly"
-        case .monthly: "Monthly"
+        case .lifetime: String(localized: "Lifetime")
+        case .yearly: String(localized: "Yearly")
+        case .monthly: String(localized: "Monthly")
         case .other: storeProduct.localizedTitle
         }
     }
 
     var vo2PriceLabel: String {
         guard let period = storeProduct.subscriptionPeriod else { return storeProduct.localizedPriceString }
-        let unit: String
-        switch period.unit {
-        case .day: unit = period.value == 1 ? "day" : "days"
-        case .week: unit = period.value == 1 ? "week" : "weeks"
-        case .month: unit = period.value == 1 ? "month" : "months"
-        case .year: unit = period.value == 1 ? "year" : "years"
-        @unknown default: unit = ""
-        }
         if period.value == 1 {
-            return "\(storeProduct.localizedPriceString) / \(unit)"
+            switch period.unit {
+            case .day: return String(localized: "\(storeProduct.localizedPriceString) per day")
+            case .week: return String(localized: "\(storeProduct.localizedPriceString) per week")
+            case .month: return String(localized: "\(storeProduct.localizedPriceString) per month")
+            case .year: return String(localized: "\(storeProduct.localizedPriceString) per year")
+            @unknown default: return storeProduct.localizedPriceString
+            }
         }
-        return "\(storeProduct.localizedPriceString) / \(period.value) \(unit)"
+        var components = DateComponents()
+        switch period.unit {
+        case .day: components.day = period.value
+        case .week: components.weekOfMonth = period.value
+        case .month: components.month = period.value
+        case .year: components.year = period.value
+        @unknown default: return storeProduct.localizedPriceString
+        }
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.allowedUnits = [.day, .weekOfMonth, .month, .year]
+        let duration = formatter.string(from: components) ?? ""
+        return String(localized: "\(storeProduct.localizedPriceString) every \(duration)")
     }
 
     /// Per-month equivalent of the recurring price, e.g. "$2.50" for a
@@ -96,7 +106,8 @@ extension Package {
         }
         guard months > 1 else { return nil }
         let formatter = storeProduct.priceFormatter ?? Self.vo2CurrencyFormatter(code: storeProduct.currencyCode)
-        return formatter.string(from: (storeProduct.price / months) as NSDecimalNumber)
+        guard let price = formatter.string(from: (storeProduct.price / months) as NSDecimalNumber) else { return nil }
+        return String(localized: "\(price) per month")
     }
 
     private static func vo2CurrencyFormatter(code: String?) -> NumberFormatter {
@@ -111,13 +122,19 @@ extension Package {
             return nil
         }
         let period = intro.subscriptionPeriod
+        var components = DateComponents()
         switch period.unit {
-        case .day: return "\(period.value)-day free trial"
-        case .week: return "\(period.value * 7)-day free trial"
-        case .month: return period.value == 1 ? "1-month free trial" : "\(period.value)-month free trial"
-        case .year: return period.value == 1 ? "1-year free trial" : "\(period.value)-year free trial"
+        case .day: components.day = period.value
+        case .week: components.weekOfMonth = period.value
+        case .month: components.month = period.value
+        case .year: components.year = period.value
         @unknown default: return nil
         }
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.allowedUnits = [.day, .weekOfMonth, .month, .year]
+        guard let duration = formatter.string(from: components) else { return nil }
+        return String(localized: "Free trial for \(duration)")
     }
 }
 
@@ -200,7 +217,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     /// annual figure reads as a saving instead of a bigger number.
     var monthlyAnchorPriceLabel: String? {
         guard let monthly = monthlyPackage else { return nil }
-        return "\(monthly.storeProduct.localizedPriceString)/mo"
+        return String(localized: "\(monthly.storeProduct.localizedPriceString) per month")
     }
 
     func isEligibleForIntroOffer(_ package: Package) -> Bool {
@@ -290,9 +307,9 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         defer { isLoading = false }
         do {
             update(customerInfo: try await Purchases.shared.restorePurchases())
-            errorMessage = isPro ? nil : "No active VO2+ purchase was found for this Apple ID."
+            errorMessage = isPro ? nil : String(localized: "No active VO2+ purchase was found for this Apple ID.")
         } catch {
-            errorMessage = "Restore failed. Please try again."
+            errorMessage = String(localized: "Restore failed. Please try again.")
         }
     }
 
@@ -384,7 +401,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         do {
             update(customerInfo: try await Purchases.shared.customerInfo(fetchPolicy: .fetchCurrent))
         } catch {
-            errorMessage = "Could not verify purchases."
+            errorMessage = String(localized: "Could not verify purchases.")
         }
     }
 
@@ -405,7 +422,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
             await refreshIntroEligibility()
         } catch {
             logger.error("Product fetch failed: \(String(describing: error), privacy: .public)")
-            errorMessage = "Couldn't load purchase options. Check your connection and try again."
+            errorMessage = String(localized: "Couldn't load purchase options. Check your connection and try again.")
         }
     }
 

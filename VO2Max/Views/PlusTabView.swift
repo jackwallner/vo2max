@@ -141,7 +141,7 @@ struct PlusTabView: View {
         var rows: [Highlight] = []
         if let best = CardioFitnessAnalysis.personalBest(points: points) {
             rows.append(Highlight(
-                label: "Personal best",
+                label: String(localized: "Personal best"),
                 value: best.value.formatted(.number.precision(.fractionLength(1))),
                 detail: best.date.formatted(.dateTime.month(.abbreviated).day().year())
             ))
@@ -153,9 +153,9 @@ struct PlusTabView: View {
                referenceSex: settings.referenceSex
            ) {
             rows.append(Highlight(
-                label: "Age reference",
+                label: String(localized: "Age reference"),
                 value: band,
-                detail: "Broad context for age \(settings.chronologicalAge)"
+                detail: String(localized: "Broad context for age \(settings.chronologicalAge)")
             ))
         }
         if let projection = CardioFitnessAnalysis.projection(
@@ -164,7 +164,7 @@ struct PlusTabView: View {
         ) {
             let outlook = projectionHighlight(projection)
             rows.append(Highlight(
-                label: "Target outlook",
+                label: String(localized: "Target outlook"),
                 value: outlook.value,
                 detail: outlook.detail
             ))
@@ -217,7 +217,7 @@ struct PlusTabView: View {
     /// a subscriber should not have to tap three times to read three numbers.
     private var signalsSection: some View {
         PlusSection(
-            title: "Your signals",
+            title: String(localized: "Your signals"),
             caption: ranges.resolved.spanLabel
         ) {
             ForEach(Array(CardioSignal.all.enumerated()), id: \.element.id) { index, signal in
@@ -253,29 +253,29 @@ struct PlusTabView: View {
     /// saying what the screen behind it is for rather than printing a zero.
     private func emptySignalDetail(_ signal: CardioSignal) -> String {
         switch signal {
-        case .heart(.restingHeartRate): "Latest, average, low, high, and the change vs. the window before"
-        case .heart(.heartRateRecovery): "The one-minute drop after each recorded workout"
-        case .load: "Minutes and sessions per week, and where they went"
+        case .heart(.restingHeartRate): String(localized: "Latest, average, low, high, and the change vs. the window before")
+        case .heart(.heartRateRecovery): String(localized: "The one-minute drop after each recorded workout")
+        case .load: String(localized: "Minutes and sessions per week, and where they went")
         }
     }
 
     private var estimateSection: some View {
-        PlusSection(title: "Your estimate") {
+        PlusSection(title: String(localized: "Your estimate")) {
             PlusLinkRow(
                 icon: "clock.badge.exclamationmark",
-                title: "Estimate Freshness",
+                title: String(localized: "Estimate Freshness"),
                 detail: freshnessRowDetail,
                 value: freshnessRowValue
             ) { EstimateFreshnessDetailView() }
             PlusLinkRow(
                 icon: "chart.bar.xaxis",
-                title: "Deep Trends",
+                title: String(localized: "Deep Trends"),
                 detail: deepTrendsRowDetail,
                 value: deepTrendsRowValue
             ) { HistoryView() }
             PlusLinkRow(
                 icon: "scope",
-                title: "Target Outlook",
+                title: String(localized: "Target Outlook"),
                 detail: targetOutlookRowDetail,
                 value: targetOutlookRowValue,
                 isLast: true
@@ -291,17 +291,17 @@ struct PlusTabView: View {
 
     private var freshnessRowValue: PlusRowValue? {
         guard let days = freshness.daysSinceLatest else { return nil }
-        guard days > 0 else { return PlusRowValue(text: "Today") }
-        return PlusRowValue(text: "\(days)", unit: days == 1 ? "day ago" : "days ago")
+        guard days > 0 else { return PlusRowValue(text: String(localized: "Today")) }
+        return PlusRowValue(text: String(localized: "\(days) days ago"))
     }
 
     private var freshnessRowDetail: String {
         let freshness = self.freshness
         guard freshness.state != .noReadings else {
-            return "Whether your estimate is due, and what refreshes it"
+            return String(localized: "Whether your estimate is due, and what refreshes it")
         }
         guard let gap = freshness.typicalGapDays else { return freshness.headline }
-        return "\(freshness.headline) · you usually get one every \(gap) days"
+        return String(localized: "\(freshness.headline). You usually get one every \(gap) days.")
     }
 
     private var deepTrendsComparison: PeriodComparison? {
@@ -312,60 +312,59 @@ struct PlusTabView: View {
         guard let comparison = deepTrendsComparison else { return nil }
         return PlusRowValue(
             text: comparison.currentAverage.formatted(.number.precision(.fractionLength(1))),
-            unit: "90-day avg",
+            unit: String(localized: "90-day average"),
             change: comparison.change
         )
     }
 
     private var deepTrendsRowDetail: String {
         guard let comparison = deepTrendsComparison else {
-            return "Compare 30, 90, and 180-day windows in context"
+            return String(localized: "Compare 30, 90, and 180-day windows in context")
         }
-        let unit = comparison.currentCount == 1 ? "reading" : "readings"
-        return "\(comparison.currentCount) \(unit) in the last 90 days"
+        return String(localized: "\(comparison.currentCount) readings in the last 90 days")
     }
 
     private var targetOutlookRowValue: PlusRowValue? {
         guard let latest = points.max(by: { $0.date < $1.date }) else { return nil }
-        guard latest.value < settings.targetLower else { return PlusRowValue(text: "In range") }
+        guard latest.value < settings.targetLower else { return PlusRowValue(text: String(localized: "In range")) }
         let gap = settings.targetLower - latest.value
-        return PlusRowValue(text: gap.formatted(.number.precision(.fractionLength(1))), unit: "to target")
+        return PlusRowValue(text: String(localized: "\(gap.formatted(.number.precision(.fractionLength(1)))) to target"))
     }
 
     private var targetOutlookRowDetail: String {
         guard let latest = points.max(by: { $0.date < $1.date }) else {
-            return "Direction toward target, and a broad timeframe when supported"
+            return String(localized: "Direction toward target, and a broad timeframe when supported")
         }
         // Deliberately not the highlight card's sentence: that one says the
         // estimate cleared the target, this one states what the target is.
         guard latest.value < settings.targetLower else {
-            return "Your target range is \(targetLowerLabel)–\(targetUpperLabel)"
+            return String(localized: "Your target range is \(targetLowerLabel)–\(targetUpperLabel)")
         }
         guard let projection = CardioFitnessAnalysis.projection(
             points: points,
             targetLower: settings.targetLower
         ) else {
-            return "Your target starts at \(targetLowerLabel)"
+            return String(localized: "Your target starts at \(targetLowerLabel)")
         }
         if let months = projection.monthsToTarget {
-            return "About \(months) \(months == 1 ? "month" : "months") away at your recent pace"
+            return String(localized: "About \(months) months away at your recent pace")
         }
         return projection.slopePerMonth > 0.05
-            ? "Recent direction is positive, no timeframe yet"
-            : "Recent direction is flat or declining"
+            ? String(localized: "Recent direction is positive, no timeframe yet")
+            : String(localized: "Recent direction is flat or declining")
     }
 
     private var contextSection: some View {
-        PlusSection(title: "Context and recaps") {
+        PlusSection(title: String(localized: "Context and recaps")) {
             PlusLinkRow(
                 icon: "person.crop.circle",
-                title: "Fitness Context",
-                detail: "Fitness age methodology and broad age references"
+                title: String(localized: "Fitness Context"),
+                detail: String(localized: "Fitness age methodology and broad age references")
             ) { FitnessAgeDetailView() }
             PlusActionRow(
                 icon: "calendar.badge.checkmark",
-                title: "Monthly Recap",
-                detail: "Your 30-day trend, target progress, and best reading",
+                title: String(localized: "Monthly Recap"),
+                detail: String(localized: "Your 30-day trend, target progress, and best reading"),
                 isLast: true
             ) { showRecap = true }
         }
@@ -384,20 +383,20 @@ struct PlusTabView: View {
     private func projectionHighlight(_ projection: TrendProjection) -> (value: String, detail: String) {
         let target = targetLowerLabel
         guard let latest = points.max(by: { $0.date < $1.date }) else {
-            return ("Available", "From the recent cardio fitness trend")
+            return (String(localized: "Available"), String(localized: "From the recent cardio fitness trend"))
         }
         if latest.value >= settings.targetLower {
-            return ("In target range", "Latest estimate is at or above \(target)")
+            return (String(localized: "In target range"), String(localized: "Latest estimate is at or above \(target)"))
         }
         if let months = projection.monthsToTarget {
             return (
-                "About \(months) \(months == 1 ? "month" : "months")",
-                "To \(target) at your recent pace"
+                String(localized: "About \(months) months"),
+                String(localized: "To \(target) at your recent pace")
             )
         }
         return projection.slopePerMonth > 0.05
-            ? ("Trending up", "No timeframe yet from the recent trend")
-            : ("Flat or declining", "From the recent cardio fitness trend")
+            ? (String(localized: "Trending up"), String(localized: "No timeframe yet from the recent trend"))
+            : (String(localized: "Flat or declining"), String(localized: "From the recent cardio fitness trend"))
     }
 
     private var targetLowerLabel: String { targetLabel(settings.targetLower) }
@@ -484,7 +483,7 @@ private struct PlusRowLabel: View {
                 }
                 Spacer(minLength: 8)
                 if let value { figures(value) }
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.bold))
                     .foregroundStyle(Theme.cardio)
             }
@@ -535,7 +534,7 @@ private struct PlusLinkRow<Destination: View>: View {
         .buttonStyle(PlusRowButtonStyle())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
-        .accessibilityHint("Opens \(title)")
+        .accessibilityHint(String(localized: "Opens \(title)"))
     }
 }
 
@@ -553,7 +552,7 @@ private struct PlusActionRow: View {
         .buttonStyle(PlusRowButtonStyle())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
-        .accessibilityHint("Opens \(title)")
+        .accessibilityHint(String(localized: "Opens \(title)"))
     }
 }
 

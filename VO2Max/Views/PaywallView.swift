@@ -26,19 +26,19 @@ enum PlusFeature: CaseIterable {
 
     var title: String {
         switch self {
-        case .restingHeartRate: "Track resting heart rate (RHR)"
-        case .heartRateRecovery: "Track heart rate recovery (HRR)"
-        case .cardioLoad: "Track cardio load in min/week"
-        case .freshnessNudges: "Know when your estimate goes stale"
-        case .monthlyRecap: "See your cardio fitness month in review"
-        case .reports: "Export a shareable fitness report"
-        case .readingAlerts: "Get notified on every new estimate"
-        case .deepTrends: "Compare every period with the one before"
-        case .customRange: "Trend any date range you pick"
-        case .targetProjection: "Understand direction toward your target"
-        case .fitnessBand: "Add broad age-reference context"
-        case .personalBest: "Keep personal bests visible"
-        case .extendedInsights: "Get new VO2+ insights as they arrive"
+        case .restingHeartRate: String(localized: "Track resting heart rate (RHR)")
+        case .heartRateRecovery: String(localized: "Track Cardio Recovery")
+        case .cardioLoad: String(localized: "Track cardio load in min/week")
+        case .freshnessNudges: String(localized: "Know when your estimate goes stale")
+        case .monthlyRecap: String(localized: "See your cardio fitness month in review")
+        case .reports: String(localized: "Export a shareable fitness report")
+        case .readingAlerts: String(localized: "Get notified on every new estimate")
+        case .deepTrends: String(localized: "Compare every period with the one before")
+        case .customRange: String(localized: "Trend any date range you pick")
+        case .targetProjection: String(localized: "Understand direction toward your target")
+        case .fitnessBand: String(localized: "Add broad age-reference context")
+        case .personalBest: String(localized: "Keep personal bests visible")
+        case .extendedInsights: String(localized: "Get new VO2+ insights as they arrive")
         }
     }
 
@@ -63,19 +63,19 @@ enum PlusFeature: CaseIterable {
     /// Short one-liner for the What's New sheet and Settings rows.
     var detail: String {
         switch self {
-        case .restingHeartRate: "Your Apple Health resting heart rate, trended over 30 days to a year with the change against the window before."
-        case .heartRateRecovery: "The one-minute drop after every recorded workout, trended and compared."
-        case .cardioLoad: "Cardio minutes and sessions per week, and how they line up with the stretches where your estimate rose."
-        case .freshnessNudges: "A nudge when Apple Health hasn't logged an estimate in a while, and what refreshes it."
-        case .monthlyRecap: "A monthly summary of your trend, target progress, and best reading."
-        case .reports: "A private PDF of any period you can save or share."
-        case .readingAlerts: "A notification each time Apple Health logs a new VO2 max estimate, with context."
-        case .deepTrends: "Matching 30, 90, and 180-day windows, compared."
-        case .customRange: "Set your own start and end date and every screen follows it, not just the four fixed windows."
-        case .targetProjection: "A broad outlook toward your target when data supports it."
-        case .fitnessBand: "Where your estimate sits against age references."
-        case .personalBest: "Your strongest Apple Health estimate, always in reach."
-        case .extendedInsights: "New VO2+ context added inside the screens you already use."
+        case .restingHeartRate: String(localized: "Your Apple Health resting heart rate, trended over 30 days to a year with the change against the window before.")
+        case .heartRateRecovery: String(localized: "The one-minute drop after each recorded workout, trended and compared.")
+        case .cardioLoad: String(localized: "Cardio minutes and sessions per week, and how they line up with the stretches where your estimate rose.")
+        case .freshnessNudges: String(localized: "A nudge when Apple Health hasn't logged an estimate in a while, and what refreshes it.")
+        case .monthlyRecap: String(localized: "A monthly summary of your trend, target progress, and best reading.")
+        case .reports: String(localized: "A private PDF of any period you can save or share.")
+        case .readingAlerts: String(localized: "A notification each time Apple Health logs a new VO2 max estimate, with context.")
+        case .deepTrends: String(localized: "Matching 30, 90, and 180-day windows, compared.")
+        case .customRange: String(localized: "Set your own start and end date and every screen follows it, not just the four fixed windows.")
+        case .targetProjection: String(localized: "A broad outlook toward your target when data supports it.")
+        case .fitnessBand: String(localized: "Where your estimate sits against age references.")
+        case .personalBest: String(localized: "Your strongest Apple Health estimate, always in reach.")
+        case .extendedInsights: String(localized: "New VO2+ context added inside the screens you already use.")
         }
     }
 
@@ -91,37 +91,37 @@ enum PlusFeature: CaseIterable {
 
     var intentHeadline: String {
         switch self {
-        case .restingHeartRate: "Follow your resting heart rate"
-        case .heartRateRecovery: "Follow your heart rate recovery"
-        case .cardioLoad: "See your cardio load"
-        case .freshnessNudges: "Never wonder why it hasn't updated"
-        case .monthlyRecap: "Your month in review"
-        case .reports: "Export your cardio fitness"
-        case .readingAlerts: "Never miss a new estimate"
-        case .deepTrends: "Compare every period"
-        case .customRange: "Pick your own date range"
-        case .targetProjection: "Understand your target direction"
-        case .fitnessBand: "Add context to your estimate"
-        case .personalBest: "Recognize your progress"
-        case .extendedInsights: "Go further with VO2+"
+        case .restingHeartRate: String(localized: "Follow your resting heart rate")
+        case .heartRateRecovery: String(localized: "Follow Cardio Recovery")
+        case .cardioLoad: String(localized: "See your cardio load")
+        case .freshnessNudges: String(localized: "Know when your estimate is overdue")
+        case .monthlyRecap: String(localized: "Your month in review")
+        case .reports: String(localized: "Export your cardio fitness")
+        case .readingAlerts: String(localized: "See every new estimate")
+        case .deepTrends: String(localized: "Compare every period")
+        case .customRange: String(localized: "Pick your own date range")
+        case .targetProjection: String(localized: "Understand your target direction")
+        case .fitnessBand: String(localized: "Add context to your estimate")
+        case .personalBest: String(localized: "Recognize your progress")
+        case .extendedInsights: String(localized: "Go further with VO2+")
         }
     }
 
     var intentSubheadline: String {
         switch self {
-        case .restingHeartRate: "Latest, average, low, high, and the change against the previous window — over 30 days, 90 days, 6 months, or a year."
-        case .heartRateRecovery: "How far your heart rate falls in the minute after a workout, trended across the range you pick."
-        case .cardioLoad: "Minutes and sessions per week, where the minutes went, and how the load compares in the stretches where your estimate rose."
-        case .freshnessNudges: "VO2 max only refreshes after a qualifying outdoor workout. Get told when yours has gone quiet, and exactly what brings it back."
-        case .monthlyRecap: "A monthly recap of your cardio fitness trend, target progress, and best reading."
-        case .reports: "Generate a private PDF report of any period to keep or share with a coach or clinician."
-        case .readingAlerts: "Get a notification the moment Apple Health logs a new VO2 max estimate, with how it compares."
-        case .deepTrends: "See matching-window averages and changes across 30, 90, and 180 days."
-        case .customRange: "A training block, a season, the months since an injury. Choose the start and end, and Trends, resting heart rate, recovery, and cardio load all read that window."
-        case .targetProjection: "Put the recent cardio fitness trend in target context when the data supports it."
-        case .fitnessBand: "Compare the latest estimate with broad reference values for your age and selected reference."
-        case .personalBest: "Keep the strongest Apple Health estimate and its date easy to find."
-        case .extendedInsights: "Deeper context that appears inside the screens you already use."
+        case .restingHeartRate: String(localized: "Latest, average, low, high, and the change against the previous window over 30 days, 90 days, 6 months, or a year.")
+        case .heartRateRecovery: String(localized: "How far your heart rate falls in the minute after a workout, trended across the range you pick.")
+        case .cardioLoad: String(localized: "Minutes and sessions per week, where the minutes went, and how the load compares in the stretches where your estimate rose.")
+        case .freshnessNudges: String(localized: "VO2 max refreshes after a qualifying outdoor workout. Get a nudge when yours is overdue, with details on what refreshes it.")
+        case .monthlyRecap: String(localized: "A monthly recap of your cardio fitness trend, target progress, and best reading.")
+        case .reports: String(localized: "Generate a private PDF report of any period to keep or share with a coach or clinician.")
+        case .readingAlerts: String(localized: "Get a notification when Apple Health logs a new VO2 max estimate, with how it compares.")
+        case .deepTrends: String(localized: "See matching-window averages and changes across 30, 90, and 180 days.")
+        case .customRange: String(localized: "Choose your own start and end dates. Trends, resting heart rate, recovery, and cardio load all follow that range.")
+        case .targetProjection: String(localized: "Put the recent cardio fitness trend in target context when the data supports it.")
+        case .fitnessBand: String(localized: "Compare the latest estimate with broad reference values for your age and selected reference.")
+        case .personalBest: String(localized: "Keep the strongest Apple Health estimate and its date easy to find.")
+        case .extendedInsights: String(localized: "Deeper context that appears inside the screens you already use.")
         }
     }
 
@@ -261,13 +261,13 @@ struct PaywallView: View {
                     .font(.system(size: 22, weight: .bold))
                     .foregroundStyle(.white)
             }
-            Text(focus?.intentHeadline ?? "Go further with VO2+")
+            Text(focus?.intentHeadline ?? String(localized: "Go further with VO2+"))
                 .font(.system(.title2, design: .rounded, weight: .bold))
                 .foregroundStyle(Theme.textPrimary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.85)
-            Text(focus?.intentSubheadline ?? "Extras that sit on top of your Apple Health estimates.")
+            Text(focus?.intentSubheadline ?? String(localized: "Extras that sit on top of your Apple Health estimates."))
                 .font(.system(.footnote, design: .rounded))
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
@@ -450,9 +450,9 @@ struct PaywallView: View {
     }
 
     private var ctaTitle: String {
-        guard let package = selectedPackage else { return "Continue" }
+        guard let package = selectedPackage else { return String(localized: "Continue") }
         // "Unlock Lifetime" names the plan, not a competing price or trial.
-        if package.vo2PackageKind == .lifetime { return "Unlock Lifetime" }
+        if package.vo2PackageKind == .lifetime { return String(localized: "Unlock Lifetime") }
         return VO2ConversionCopy.ctaLabel(
             trialLabel: package.vo2IntroOfferLabel,
             priceLabel: package.vo2PriceLabel,
@@ -463,13 +463,12 @@ struct PaywallView: View {
     private var disclosureText: String {
         guard let package = selectedPackage else { return "" }
         if package.vo2PackageKind == .lifetime {
-            return "\(package.storeProduct.localizedPriceString). One-time purchase. Lifetime access, no subscription."
+            return String(localized: "\(package.storeProduct.localizedPriceString). One-time purchase. Lifetime access, no subscription.")
         }
         return VO2ConversionCopy.disclosure(
             trialLabel: package.vo2IntroOfferLabel,
             priceLabel: package.vo2PriceLabel,
-            eligibleForTrial: store.isEligibleForIntroOffer(package),
-            renewClause: "Auto-renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel in Settings."
+            eligibleForTrial: store.isEligibleForIntroOffer(package)
         )
     }
 
@@ -519,9 +518,9 @@ private struct PlanCard: View {
                             .font(.system(.subheadline, design: .rounded, weight: .bold))
                             .foregroundStyle(Theme.textPrimary)
                         if let savingsPercent {
-                            badge("SAVE \(savingsPercent)%")
+                            badge(String(localized: "Save \(savingsPercent.formatted())%"))
                         } else if package.vo2PackageKind == .yearly {
-                            badge("BEST VALUE")
+                            badge(String(localized: "Best value"))
                         }
                     }
                     // Apple 3.1.2(c): trial framing is a secondary pricing
@@ -529,7 +528,7 @@ private struct PlanCard: View {
                     // amount on the trailing edge of the card.
                     Group {
                         if let trialLabel {
-                            Text("\(trialLabel.capitalized), then the price shown")
+                            Text(String(localized: "\(trialLabel), then the price shown."))
                         } else {
                             Text(" ")
                         }
@@ -559,11 +558,11 @@ private struct PlanCard: View {
                                     .strikethrough(true, color: Theme.textTertiary)
                                     // The strikethrough carries meaning VoiceOver
                                     // cannot see, so say it.
-                                    .accessibilityLabel("instead of \(monthlyAnchorLabel)")
+                                .accessibilityLabel(String(localized: "Instead of \(monthlyAnchorLabel)"))
                             }
-                            Text("\(perMonthLabel)/mo")
+                            Text(perMonthLabel)
                                 .foregroundStyle(Theme.textSecondary)
-                                .accessibilityLabel("\(perMonthLabel) per month")
+                                .accessibilityLabel(perMonthLabel)
                         }
                         .font(.system(size: 11, design: .rounded).monospacedDigit())
                         .lineLimit(1)

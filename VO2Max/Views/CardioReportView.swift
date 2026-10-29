@@ -47,7 +47,7 @@ struct CardioReportView: View {
                     Text(report.calendarLabel)
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundStyle(.gray)
-                    Text("\(report.readingCount) estimate\(report.readingCount == 1 ? "" : "s")")
+                    Text(String(localized: "\(report.readingCount) estimates"))
                         .font(.system(size: 10, design: .rounded))
                         .foregroundStyle(.gray)
                 }
@@ -63,14 +63,14 @@ struct CardioReportView: View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
                 MetricTile(
-                    label: "AVG VO2 MAX",
+                    label: String(localized: "Average cardio fitness"),
                     value: formatValue(report.average),
                     sub: "mL/kg/min",
                     accent: reportColor,
                     trendPct: report.changePct
                 )
                 MetricTile(
-                    label: "LATEST",
+                    label: String(localized: "Latest"),
                     value: report.latest.map { formatValue($0.value) } ?? "—",
                     sub: "mL/kg/min",
                     accent: reportColor,
@@ -79,14 +79,14 @@ struct CardioReportView: View {
             }
             HStack(spacing: 10) {
                 MetricTile(
-                    label: "RANGE",
+                    label: String(localized: "Range"),
                     value: "\(formatValue(report.minValue))–\(formatValue(report.maxValue))",
-                    sub: "min–max",
+                    sub: String(localized: "Low to high"),
                     accent: reportColor,
                     trendPct: nil
                 )
                 MetricTile(
-                    label: "IN TARGET",
+                    label: String(localized: "In target"),
                     value: "\(report.readingsInTarget) / \(report.readingCount)",
                     sub: "\(Int(report.targetLower))–\(Int(report.targetUpper)) mL/kg/min",
                     accent: targetColor,
@@ -114,14 +114,14 @@ struct CardioReportView: View {
                 ForEach(report.readings) { reading in
                     LineMark(
                         x: .value("Date", reading.date, unit: .day),
-                        y: .value("VO2 max", reading.value)
+                        y: .value(String(localized: "Cardio Fitness"), reading.value)
                     )
                     .foregroundStyle(reportColor)
                     .interpolationMethod(.catmullRom)
 
                     PointMark(
                         x: .value("Date", reading.date, unit: .day),
-                        y: .value("VO2 max", reading.value)
+                        y: .value(String(localized: "Cardio Fitness"), reading.value)
                     )
                     .foregroundStyle(reportColor)
                     .symbolSize(18)
@@ -147,7 +147,7 @@ struct CardioReportView: View {
         AxisMarks(values: .stride(by: .day, count: axisStrideDays)) { value in
             AxisValueLabel {
                 if let date = value.as(Date.self) {
-                    Text(Self.dateFmt.string(from: date))
+                    Text(date.formatted(.dateTime.month(.abbreviated).day()))
                         .font(.system(size: 8))
                         .foregroundStyle(.gray)
                 }
@@ -173,30 +173,30 @@ struct CardioReportView: View {
         HStack(spacing: 8) {
             if let peak = report.peak {
                 HighlightTile(
-                    label: "BEST ESTIMATE",
+                    label: String(localized: "Best estimate"),
                     value: formatValue(peak.value),
                     date: peak.date,
                     accent: reportColor
                 )
             }
             HighlightTile(
-                label: "TREND",
+                label: String(localized: "Trend"),
                 value: report.trend.label,
                 date: nil,
-                sub: "last 90 days",
+                sub: String(localized: "last 90 days"),
                 accent: reportColor
             )
             if let age = report.fitnessAge {
                 HighlightTile(
-                    label: "FITNESS AGE",
+                    label: String(localized: "Fitness age"),
                     value: "\(age)",
                     date: nil,
-                    sub: "vs. age \(report.chronologicalAge)",
+                    sub: String(localized: "Compared with age \(report.chronologicalAge)"),
                     accent: targetColor
                 )
             } else if let band = report.fitnessBand {
                 HighlightTile(
-                    label: "CONTEXT",
+                    label: String(localized: "Context"),
                     value: band,
                     date: nil,
                     accent: targetColor
@@ -215,11 +215,11 @@ struct CardioReportView: View {
                 .fill(Color.black.opacity(0.08))
                 .frame(height: 1)
             HStack {
-                Text("Generated by VO2 Max Daily Tracker on \(generatedAt)")
+                Text(String(localized: "Generated by VO2 Max Daily Tracker on \(generatedAt)"))
                     .font(.system(size: 9, design: .rounded))
                     .foregroundStyle(.gray)
                 Spacer()
-                Text("Data from Apple Health · stays on your device")
+                Text("Data from Apple Health. It stays on your device.")
                     .font(.system(size: 9, design: .rounded))
                     .foregroundStyle(.gray)
             }
@@ -227,20 +227,13 @@ struct CardioReportView: View {
     }
 
     private var generatedAt: String {
-        let f = DateFormatter()
-        f.dateStyle = .medium
-        return f.string(from: Date.now)
+        Date.now.formatted(date: .abbreviated, time: .omitted)
     }
 
     private func formatValue(_ value: Double) -> String {
         value.formatted(.number.precision(.fractionLength(1)))
     }
 
-    private static let dateFmt: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "MMM d"
-        return f
-    }()
 }
 
 // MARK: - Subcomponents
@@ -288,7 +281,7 @@ private struct TrendBadge: View {
         let isUp = pct >= 0
         let color = isUp ? Color(red: 0.20, green: 0.68, blue: 0.45) : Color(red: 0.85, green: 0.42, blue: 0.40)
         HStack(spacing: 2) {
-            Image(systemName: isUp ? "arrow.up.right" : "arrow.down.right")
+            Image(systemName: isUp ? "arrow.up.forward" : "arrow.down.forward")
                 .font(.system(size: 8, weight: .bold))
             Text("\(abs(pct).formatted(.number.precision(.fractionLength(1))))%")
                 .font(.system(size: 9, weight: .semibold, design: .rounded))
@@ -307,12 +300,6 @@ private struct HighlightTile: View {
     var sub: String? = nil
     let accent: Color
 
-    private static let dateFmt: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "MMM d"
-        return f
-    }()
-
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
@@ -327,7 +314,7 @@ private struct HighlightTile: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             if let date {
-                Text(Self.dateFmt.string(from: date))
+                Text(date.formatted(.dateTime.month(.abbreviated).day()))
                     .font(.system(size: 9, design: .rounded))
                     .foregroundStyle(.gray)
             } else if let sub {
@@ -360,7 +347,7 @@ enum CardioReportPDF {
 
         var pageBox = CGRect(x: 0, y: 0, width: 612, height: 792)
         guard let context = CGContext(url as CFURL, mediaBox: &pageBox, nil) else {
-            throw NSError(domain: "VO2Max.PDF", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not create PDF context."])
+            throw NSError(domain: "VO2Max.PDF", code: 1, userInfo: [NSLocalizedDescriptionKey: String(localized: "Could not create PDF context.")])
         }
 
         renderer.render { _, renderAction in
@@ -377,21 +364,22 @@ enum CardioReportPDF {
 enum CardioReportShareText {
     static func make(report: CardioReport) -> String {
         let trend = trendLine(report.changePct)
+        let average = report.average.formatted(.number.precision(.fractionLength(1)))
         return """
-        VO2+ \(report.title) 💙
-        ❤️ Avg cardio fitness: \(report.average.formatted(.number.precision(.fractionLength(1)))) mL/kg/min
-        🎯 In target: \(report.readingsInTarget)/\(report.readingCount) estimates
-        📈 Trend: \(report.trend.label)
+        \(String(localized: "VO2+ \(report.title) 💙"))
+        \(String(localized: "❤️ Average cardio fitness: \(average) mL/kg/min"))
+        \(String(localized: "🎯 In target: \(report.readingsInTarget) of \(report.readingCount) estimates"))
+        \(String(localized: "📈 Trend: \(report.trend.label)"))
         \(trend)
 
-        Tracked with VO2 Max Daily Tracker — Apple Health estimates, private on your device.
+        \(String(localized: "Tracked with VO2 Max Daily Tracker. Apple Health estimates stay private on your device."))
         """
     }
 
     private static func trendLine(_ percent: Double?) -> String {
-        guard let percent else { return "⬜️ Change: more data needed" }
+        guard let percent else { return String(localized: "⬜️ Change: more data needed") }
         let arrow = percent >= 0 ? "↗️" : "↘️"
-        return "\(arrow) Change: \(abs(percent).formatted(.number.precision(.fractionLength(1))))% vs. prior period"
+        return String(localized: "\(arrow) Change: \(abs(percent).formatted(.number.precision(.fractionLength(1))))% versus the prior period")
     }
 }
 

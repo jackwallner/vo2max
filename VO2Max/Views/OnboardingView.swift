@@ -67,7 +67,7 @@ struct OnboardingView: View {
                         case .trial: EmptyView()
                         }
                     }
-                    .padding(.top, 48)
+                    .padding(.top, step == .welcome ? 24 : 48)
                     .padding(.bottom, 24)
                     .padding(.horizontal, 24)
                 }
@@ -126,7 +126,7 @@ struct OnboardingView: View {
     // MARK: - Pages
 
     private var welcomePage: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 20) {
             VStack(spacing: 12) {
                 Image("OnboardingMark")
                     .resizable()
@@ -136,31 +136,31 @@ struct OnboardingView: View {
                 Text("Welcome to VO2 Max")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("See your cardio fitness from Apple Health in one simple view.")
+                Text("See your cardio fitness estimate and trend from Apple Health.")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 WelcomePoint(
                     icon: "heart.fill",
                     color: Theme.cardio,
-                    title: "Reads from Apple Health",
-                    detail: "Next we'll ask permission to read your VO2 max estimates. The app only reads; it never writes anything back."
+                    title: String(localized: "Reads from Apple Health"),
+                    detail: String(localized: "We'll ask permission to read your VO2 max estimates. We never write to Apple Health.")
                 )
                 WelcomePoint(
                     icon: "lock.fill",
                     color: Theme.cardioBlue,
-                    title: "Stays on your device",
-                    detail: "Your health data never leaves your devices. No account, no cloud sync."
+                    title: String(localized: "Stays on your device"),
+                    detail: String(localized: "Your health data never leaves your devices. No account, no cloud sync.")
                 )
                 WelcomePoint(
                     icon: "applewatch",
                     color: Theme.positive,
-                    title: "Glanceable",
-                    detail: "Widgets and real Apple Watch complications keep your latest estimate in view."
+                    title: String(localized: "At a glance"),
+                    detail: String(localized: "Widgets and Apple Watch show your latest estimate.")
                 )
             }
         }
@@ -175,7 +175,7 @@ struct OnboardingView: View {
                 Text("About you")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("Optional. Your age and reference power the fitness age estimate and set a target range tuned to you. Change both later in Settings.")
+                Text("Optional. Your age and reference profile inform a broad fitness age estimate and help set a target range for you. Change both later in Settings.")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -195,7 +195,7 @@ struct OnboardingView: View {
                 Text("Your target range")
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("Anchored to age \(age): typical cardio fitness for your profile is \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min. Fine-tune it if you like.")
+                Text("At age \(age), the typical cardio fitness range for your profile is \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min. Adjust it if you like.")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -286,7 +286,7 @@ struct OnboardingView: View {
                     Text("Go further with VO2+")
                         .font(.system(.title, design: .rounded, weight: .bold))
                         .multilineTextAlignment(.center)
-                    Text("Your number, trend, and fitness age stay free. VO2+ adds deeper context on top:")
+                    Text("Your Apple Health estimate, cardio fitness trend, and fitness age stay free. VO2+ adds deeper context:")
                         .font(.system(.subheadline, design: .rounded))
                         .foregroundStyle(Theme.textSecondary)
                         .multilineTextAlignment(.center)
@@ -297,26 +297,26 @@ struct OnboardingView: View {
                     TrialSellingPoint(
                         icon: "chart.bar.xaxis",
                         color: Theme.cardio,
-                        title: "Deep Trends",
-                        detail: "Compare 30, 90, and 180-day windows side by side"
+                        title: String(localized: "Deep Trends"),
+                        detail: String(localized: "Compare 30, 90, and 180-day windows side by side")
                     )
                     TrialSellingPoint(
                         icon: "scope",
                         color: Theme.cardioBlue,
-                        title: "Target outlook",
-                        detail: "Direction and broad timeframe toward your target"
+                        title: String(localized: "Target outlook"),
+                        detail: String(localized: "Direction and broad timeframe toward your target")
                     )
                     TrialSellingPoint(
                         icon: "person.2.crop.square.stack",
                         color: Theme.positive,
-                        title: "Age-reference context",
-                        detail: "Broad typical-range context for your profile"
+                        title: String(localized: "Age-reference context"),
+                        detail: String(localized: "Broad typical-range context for your profile")
                     )
                     TrialSellingPoint(
                         icon: "trophy",
                         color: Theme.coral,
-                        title: "Personal bests",
-                        detail: "Keep your strongest estimate visible"
+                        title: String(localized: "Personal bests"),
+                        detail: String(localized: "Keep your strongest estimate visible")
                     )
                 }
 
@@ -379,7 +379,7 @@ struct OnboardingView: View {
                 Task { await requestHealthAccessIfNeeded() }
                 withAnimation(.easeInOut(duration: 0.25)) { step = .profile }
             } label: {
-                primaryLabel("Continue")
+                primaryLabel(String(localized: "Continue"))
             }
             .padding(.horizontal, 24)
         case .profile:
@@ -389,7 +389,7 @@ struct OnboardingView: View {
                 anchorTargetToAge()
                 withAnimation(.easeInOut(duration: 0.25)) { step = .target }
             } label: {
-                primaryLabel("Continue")
+                primaryLabel(String(localized: "Continue"))
             }
             .padding(.horizontal, 24)
         case .target:
@@ -398,7 +398,7 @@ struct OnboardingView: View {
                 settings.targetUpper = targetUpper
                 withAnimation(.easeInOut(duration: 0.25)) { step = .trial }
             } label: {
-                primaryLabel("Continue")
+                primaryLabel(String(localized: "Continue"))
             }
             .padding(.horizontal, 24)
         case .trial:
@@ -482,7 +482,7 @@ struct OnboardingView: View {
 
     private var legalFooter: some View {
         HStack(spacing: 14) {
-            Button(isRestoring ? "Restoring…" : "Restore") { startRestore() }
+            Button(isRestoring ? String(localized: "Restoring…") : String(localized: "Restore")) { startRestore() }
                 .buttonStyle(.plain)
                 .disabled(isRestoring)
             Link("Terms", destination: VO2Links.standardEULA)
@@ -497,7 +497,7 @@ struct OnboardingView: View {
     /// Neutral by design: the trial length and the billed amount are stated
     /// together in the price line directly above, so the button carries no
     /// pricing words that could outweigh it (Apple 3.1.2(c)).
-    private var trialCTATitle: String { "Continue with VO2+" }
+    private var trialCTATitle: String { String(localized: "Continue with VO2+") }
 
     /// Must name the same plan the CTA buys, or it misstates what the user is
     /// charged (Apple 3.1.2). That plan is monthly here, not yearly.
@@ -540,7 +540,7 @@ struct OnboardingView: View {
             await store.restore()
             isRestoring = false
             if store.isPro { finishOnboarding() }
-            else { trialError = store.errorMessage ?? "No active VO2+ purchase was found." }
+            else { trialError = store.errorMessage ?? String(localized: "No active VO2+ purchase was found.") }
         }
     }
 }
@@ -568,7 +568,7 @@ private struct WelcomePoint: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(16)
+        .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.cardSurface.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
         .accessibilityElement(children: .combine)

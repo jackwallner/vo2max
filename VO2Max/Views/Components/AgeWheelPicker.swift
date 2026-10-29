@@ -29,6 +29,6 @@ struct AgeWheelPicker: View {
         .frame(height: 132)
         .clipped()
         .accessibilityLabel("Age")
-        .accessibilityValue("\(age) years")
+        .accessibilityValue(String(localized: "Age: \(age) years"))
     }
 }

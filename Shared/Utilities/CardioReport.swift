@@ -36,9 +36,11 @@ struct CardioReport: Sendable {
     var readingCount: Int { readings.count }
 
     var calendarLabel: String {
-        let f = DateFormatter()
-        f.dateFormat = "MMMM d, yyyy"
-        return "\(f.string(from: periodStart)) – \(f.string(from: periodEnd))"
+        let f = DateIntervalFormatter()
+        f.locale = .current
+        f.dateStyle = .medium
+        f.timeStyle = .none
+        return f.string(from: periodStart, to: periodEnd)
     }
 }
 

@@ -124,12 +124,12 @@ enum CardioDriverAnalysis {
         let rising = Int(summary.risingMinutesPerWeek.rounded())
         let other = Int(summary.otherMinutesPerWeek.rounded())
         if difference >= 10 {
-            return "In the stretches where your estimate rose, you averaged \(rising) min/week of cardio versus \(other) in the stretches where it didn't."
+            return String(localized: "In the stretches where your estimate rose, you averaged \(rising) min/week of cardio versus \(other) in the stretches where it didn't.")
         }
         if difference <= -10 {
-            return "Your estimate rose on \(rising) min/week of cardio and stalled on \(other) — more volume alone hasn't been what moved it."
+            return String(localized: "Your estimate rose on \(rising) min/week of cardio and stalled on \(other). More volume alone hasn't been what moved it.")
         }
-        return "Your training volume looks similar whether the estimate rose (\(rising) min/week) or not (\(other) min/week)."
+        return String(localized: "Your training volume looks similar whether the estimate rose (\(rising) min/week) or not (\(other) min/week).")
     }
 
     static func activityTotals(
