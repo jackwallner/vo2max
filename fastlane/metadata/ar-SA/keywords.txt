@@ -1,1 +1,1 @@
-صحة,هوائي,تحمل,تعافي,تدريب,ساعة,vo2max,cardiofitness,heart,training,rate
+لياقة,صحة,هوائي,تحمل,تعافي,تدريب,ساعة,متعقب,vo2max,cardiofitness,healthkit,heart,training,runvo2max

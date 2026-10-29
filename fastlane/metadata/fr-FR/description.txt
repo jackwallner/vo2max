@@ -1,4 +1,4 @@
-Consultez en un coup d’œil votre estimation Apple Santé de VO2 max, la tendance de votre forme cardio, votre plage cible personnelle et un an d’historique.
+Consultez votre estimation de VO2 max dans Santé d’Apple, la tendance de votre forme cardio, votre plage cible personnelle et un an d’historique.
 
 L’application affiche :
 
@@ -6,14 +6,14 @@ L’application affiche :
 • Tendance à l'amélioration, stable ou à la baisse
 • Une plage cible personnelle
 • Historique d'un an
-• Une estimation large de l'âge de forme physique avec une méthodologie claire
+• Une estimation approximative de votre âge physique, avec une méthode expliquée
 • Widgets d'écran d'accueil et d'écran de verrouillage
 • Application Apple Watch et complications
 • Des conseils lorsqu'aucune estimation n'est disponible
 
 Vos données de condition physique restent sur vos appareils. L'application lit les estimations Cardio Fitness d'Apple Health et n'écrit jamais de données de santé.
 
-La VO2 max et l’âge de forme physique sont des estimations générales de la conscience de la forme physique. Cette application ne diagnostique, ne traite, ne guérit ni ne prévient aucun problème de santé. Cela ne remplace pas un avis médical professionnel.
+La VO2 max et l’âge physique sont des estimations approximatives destinées à vous aider à suivre votre forme. Cette application ne diagnostique, ne traite, ne guérit ni ne prévient aucun problème de santé. Cela ne remplace pas un avis médical professionnel.
 
 VO2+ est facultatif. Choisissez un forfait mensuel, un forfait annuel ou un achat unique à vie. Les forfaits mensuels et annuels incluent un essai gratuit de 7 jours pour les nouveaux abonnés éligibles. Les prix sont affichés dans l'application avant l'achat et varient selon la région. Le paiement est débité de votre compte Apple lors de la confirmation. Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Votre compte est facturé pour le renouvellement dans les 24 heures avant la fin de la période en cours. Gérez ou annulez les abonnements dans les paramètres du compte Apple.
 

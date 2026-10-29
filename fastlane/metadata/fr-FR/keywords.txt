@@ -1,1 +1,1 @@
-aérobie,santé,montre,entraînement,endurance,récupération,vo2max,cardiofitness,healthkit
+cardio,aérobie,santé,forme,montre,entraînement,endurance,récupération,vo2max,cardiofitness,healthkit

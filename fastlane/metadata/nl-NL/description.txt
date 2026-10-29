@@ -1,4 +1,4 @@
-Bekijk je nieuwste VO2-maxschatting uit Apple Gezondheid, de trend van je cardiofitness, je persoonlijke doelbereik en een jaar geschiedenis in één overzicht.
+Bekijk uw nieuwste VO2-maxschatting uit Apple Gezondheid, de trend van uw cardiofitness, uw persoonlijke streefbereik en uw geschiedenis van het afgelopen jaar.
 
 De app toont:
 
@@ -11,7 +11,7 @@ De app toont:
 • Apple Watch-app en complicaties
 • Begeleiding wanneer er geen schatting beschikbaar is
 
-Je fitnessgegevens blijven op je apparaten staan. De app leest Cardio Fitness-schattingen van Apple Health en schrijft nooit gezondheidsgegevens.
+Uw fitnessgegevens blijven op uw apparaten staan. De app leest Cardio Fitness-schattingen van Apple Health en schrijft nooit gezondheidsgegevens.
 
 VO2 max en fitnessleeftijd zijn brede schattingen voor fitnessbewustzijn. Deze app diagnosticeert, behandelt, geneest of voorkomt geen enkele gezondheidstoestand. Het is geen vervanging voor professioneel medisch advies.
 
