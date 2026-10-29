@@ -1,6 +1,6 @@
-Bekijk uw Apple Health VO2 max-schatting en cardio-fitnesstrend in een rustig, gericht dashboard.
+Bekijk je nieuwste VO2-maxschatting uit Apple Gezondheid, de trend van je cardiofitness, je persoonlijke doelbereik en een jaar geschiedenis in één overzicht.
 
-VO2 Max Daily Tracker toont:
+De app toont:
 
 • Uw laatste Apple Health-schatting
 • Verbeterende, stabiele of dalende trend

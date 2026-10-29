@@ -1,1 +1,1 @@
-cardio,aerob,gesundheit,fitness,training,ausdauer,erholung,vo2max,cardiofitness,heart,healthkit
+cardio,aerob,gesundheit,training,ausdauer,erholung,vo2max,herzfrequenz,verlauf,heart,healthkit

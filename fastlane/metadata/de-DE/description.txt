@@ -1,6 +1,6 @@
-Sehen Sie sich Ihre Apple Health VO2-Max-Schätzung und Ihren Cardio-Fitness-Trend in einem ruhigen, fokussierten Dashboard an.
+Sehen Sie Ihre aktuelle VO2-Max-Schätzung aus Apple Health, den Cardio-Fitness-Trend, Ihren persönlichen Zielbereich und ein Jahr Verlauf auf einen Blick.
 
-VO2 Max Daily Tracker zeigt:
+Die App zeigt:
 
 • Ihre neueste Schätzung von Apple Health
 • Sich verbessernder, stabiler oder rückläufiger Trend
@@ -9,7 +9,7 @@ VO2 Max Daily Tracker zeigt:
 • Eine umfassende Schätzung des Fitnessalters mit klarer Methodik
 • Widgets für den Startbildschirm und den Sperrbildschirm
 • Apple Watch-App und Komplikationen
-• Beratung, wenn kein Kostenvoranschlag verfügbar ist
+• Hinweise, wenn keine Schätzung verfügbar ist
 
 Ihre Fitnessdaten bleiben auf Ihren Geräten. Die App liest Cardio-Fitness-Schätzungen von Apple Health und schreibt niemals Gesundheitsdaten.
 

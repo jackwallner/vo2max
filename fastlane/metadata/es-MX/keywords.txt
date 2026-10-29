@@ -1,1 +1,1 @@
-cardio,aeróbico,salud,reloj,entreno,resistencia,recuperación,vo2max,healthkit,applewatch,performance
+cardio,aeróbico,salud,reloj,entreno,resistencia,recuperación,vo2max,applewatch,heart,rate

@@ -1,1 +1,1 @@
-healthkit,applewatch,tracker,performance,insights,recovery,aerobic,endurance,widget,history,athlete
+tracker,performance,insights,recovery,aerobic,endurance,widget,history,athlete,vo2max,heart,rate
