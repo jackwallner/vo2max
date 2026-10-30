@@ -48,8 +48,11 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
   the persisted grant (not a live probe, which can transiently fail on a cold
   launch) and idempotent. Found while fixing the same gap in Recharge, where it
   is worse. There the phone owns the model, so the whole phone → watch chain
-  stopped. It is narrower here only because VO2MaxWatch reads Health itself.
-  Vitals has always done this and documents why.
+  stopped. VO2MaxWatch reads Health itself, so it needs the same thing: its
+  `App.init` calls `enableBackgroundDelivery()` and its entitlements carry
+  `healthkit.background-delivery` (missing until 2026-10-30, so the
+  complication only moved when the watch app was opened). Vitals has always
+  done this and documents why.
 
 ---
 Shared iOS conventions come from the global agent rules and the `ios-dev` skill.

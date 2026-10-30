@@ -67,8 +67,9 @@ final class HealthKitService: ObservableObject {
     /// iOS widgets stayed on the previous reading until somebody opened the
     /// app. Apple's guidance is to re-execute observer queries as early in
     /// launch as possible. The same gap was found and fixed in Recharge, where
-    /// it broke the whole phone → watch chain; here it is narrower, because
-    /// VO2MaxWatch reads Health itself and does not depend on this.
+    /// it broke the whole phone → watch chain. VO2MaxWatch reads Health itself
+    /// and calls this from its own `App.init`; both targets need the
+    /// background-delivery entitlement or the call fails.
     ///
     /// Gated on the persisted grant rather than on a live probe: the probe is
     /// asynchronous and can transiently fail on a cold launch, which is the
