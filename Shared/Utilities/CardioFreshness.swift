@@ -82,7 +82,12 @@ enum CardioFreshnessAnalysis {
             return EstimateFreshness(state: .noReadings, daysSinceLatest: nil, typicalGapDays: nil)
         }
 
-        let days = max(calendar.dateComponents([.day], from: latest.date, to: now).day ?? 0, 0)
+        // Calendar days, so last night's estimate reads "yesterday" at breakfast.
+        let days = max(calendar.dateComponents(
+            [.day],
+            from: calendar.startOfDay(for: latest.date),
+            to: calendar.startOfDay(for: now)
+        ).day ?? 0, 0)
         let typical = typicalGapDays(points: points, now: now, calendar: calendar)
         let reference = typical ?? defaultGapDays
 
@@ -95,6 +100,36 @@ enum CardioFreshnessAnalysis {
             state = .stale
         }
         return EstimateFreshness(state: state, daysSinceLatest: days, typicalGapDays: typical)
+    }
+
+    /// Minimum days between two freshness nudges, so a long quiet stretch
+    /// produces a reminder rather than a nag.
+    static let nudgeSpacingDays = 5
+
+    /// When the next "your estimate has gone quiet" nudge should fire: the day
+    /// `assess` first calls the estimate stale, or now if it already is, and
+    /// never sooner than `nudgeSpacingDays` after a nudge that was delivered.
+    /// Scheduled ahead of time so it reaches people who stopped opening the app,
+    /// who are the ones it is for.
+    ///
+    /// `lastNudge` is the fire date of the previous nudge. One still in the
+    /// future is the pending request this one replaces, so it is ignored.
+    static func nextNudgeDate(
+        points: [CardioFitnessPoint],
+        lastNudge: Date?,
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> Date? {
+        guard let latest = points.max(by: { $0.date < $1.date }) else { return nil }
+        let reference = typicalGapDays(points: points, now: now, calendar: calendar) ?? defaultGapDays
+        guard let staleDate = calendar.date(byAdding: .day, value: reference * 2 + 1, to: latest.date) else { return nil }
+
+        var date = max(staleDate, now)
+        if let lastNudge, lastNudge <= now,
+           let spaced = calendar.date(byAdding: .day, value: nudgeSpacingDays, to: lastNudge) {
+            date = max(date, spaced)
+        }
+        return date
     }
 
     /// Median gap between consecutive estimates over the last year. Needs four

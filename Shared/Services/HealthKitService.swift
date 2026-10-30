@@ -20,6 +20,7 @@ final class HealthKitService: ObservableObject {
         .unitDivided(by: .gramUnit(with: .kilo))
         .unitDivided(by: .minute())
     private var observerQuery: HKObserverQuery?
+    private var refreshTask: Task<Void, Never>?
 
     private static let grantedKey = "hasGrantedHealthAccess"
 
@@ -130,8 +131,21 @@ final class HealthKitService: ObservableObject {
         await refreshCache()
     }
 
+    /// Runs one refresh at a time. A caller that arrives mid-refresh waits for
+    /// it instead of returning early, so the observer acknowledges a background
+    /// wake only after the cache, widgets and alerts are updated.
     func refreshCache() async {
-        guard !isRefreshing else { return }
+        if let inFlight = refreshTask {
+            await inFlight.value
+            return
+        }
+        let task = Task { await performRefresh() }
+        refreshTask = task
+        await task.value
+        refreshTask = nil
+    }
+
+    private func performRefresh() async {
         isRefreshing = true
         defer { isRefreshing = false }
         do {
@@ -145,7 +159,7 @@ final class HealthKitService: ObservableObject {
 
             let inserted = try cache(readings: readings)
             handleNewReadings(inserted: inserted, priorLatest: priorLatest, priorBest: priorBest)
-            evaluateFreshnessNudge(readings: readings)
+            syncFreshnessNudge()
 
             lastError = nil
             // Rows came back, which is only possible with read access granted.
@@ -228,16 +242,16 @@ final class HealthKitService: ObservableObject {
         let existing = try context.fetch(FetchDescriptor<CardioFitnessSample>())
         var byID = Dictionary(uniqueKeysWithValues: existing.map { ($0.healthKitID, $0) })
 
-        // Samples deleted from Apple Health must disappear here too. An empty
-        // fetch is left alone: HealthKit returns nothing when read access is
-        // off, and that must not wipe a previously valid cache.
-        if !readings.isEmpty {
-            let fetchedIDs = Set(readings.map(\.id))
-            let cutoff = Calendar.current.date(byAdding: .day, value: -365, to: .now) ?? .distantPast
-            for record in existing where record.date >= cutoff && !fetchedIDs.contains(record.healthKitID) {
-                context.delete(record)
-                byID.removeValue(forKey: record.healthKitID)
-            }
+        // Samples deleted from Apple Health must disappear here too.
+        let prunable = HealthKitCacheReconciliation.prunableIDs(
+            existing: existing.map { CachedRecordKey(id: $0.healthKitID, date: $0.date) },
+            fetchedIDs: Set(readings.map(\.id)),
+            fetchWindowStart: Calendar.current.date(byAdding: .day, value: -365, to: .now) ?? .distantPast,
+            earliestPermitted: store.earliestPermittedSampleDate()
+        )
+        for record in existing where prunable.contains(record.healthKitID) {
+            context.delete(record)
+            byID.removeValue(forKey: record.healthKitID)
         }
 
         var inserted: [CardioFitnessReading] = []
@@ -314,31 +328,38 @@ final class HealthKitService: ObservableObject {
     /// outdoor workout, so an estimate going quiet is the app's most actionable
     /// moment — and the one users misread as the app being broken.
     ///
-    /// Rate-limited to one nudge per `freshnessNudgeCooldownDays` so a genuinely
-    /// inactive stretch produces a reminder, not a nag.
-    private func evaluateFreshnessNudge(readings: [CardioFitnessReading]) {
-        guard !readings.isEmpty else { return }
+    /// Scheduled ahead for the day the estimate turns stale, because nothing
+    /// wakes the app then: the observer only fires when a sample is saved or
+    /// deleted, and a new sample makes the estimate fresh again. Each refresh
+    /// replaces the pending request, so a new estimate pushes it back. Called
+    /// after every refresh and whenever entitlement or the toggle changes.
+    func syncFreshnessNudge() {
         let defaults = UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard
         guard defaults.bool(forKey: vo2CachedProKey),
-              defaults.bool(forKey: GoalSettings.freshnessNudgesKey) else { return }
-
-        let points = readings.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
-        let freshness = CardioFreshnessAnalysis.assess(points: points)
-        guard freshness.isStale, let days = freshness.daysSinceLatest else { return }
-
-        if let last = defaults.object(forKey: Self.lastFreshnessNudgeKey) as? Date,
-           Date.now.timeIntervalSince(last) < Double(Self.freshnessNudgeCooldownDays) * 86_400 {
+              defaults.bool(forKey: GoalSettings.freshnessNudgesKey) else {
+            NotificationService.cancelFreshnessNudge()
             return
         }
-        defaults.set(Date.now, forKey: Self.lastFreshnessNudgeKey)
+
+        let context = DataService.sharedModelContainer.mainContext
+        let samples = (try? context.fetch(FetchDescriptor<CardioFitnessSample>())) ?? []
+        let points = samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
+        let lastNudge = defaults.object(forKey: Self.lastFreshnessNudgeKey) as? Date
+        guard let latest = points.map(\.date).max(),
+              let date = CardioFreshnessAnalysis.nextNudgeDate(points: points, lastNudge: lastNudge) else {
+            NotificationService.cancelFreshnessNudge()
+            return
+        }
+        let days = Calendar.current.dateComponents([.day], from: latest, to: date).day ?? 0
 
         Task {
-            await NotificationService.scheduleFreshnessNudge(daysSinceLatest: days)
+            if await NotificationService.scheduleFreshnessNudge(at: date, daysSinceLatest: days) {
+                defaults.set(date, forKey: Self.lastFreshnessNudgeKey)
+            }
         }
     }
 
     private static let lastFreshnessNudgeKey = "lastFreshnessNudge"
-    private static let freshnessNudgeCooldownDays = 5
 
     private func readingAlertContext(
         newest: Double,
@@ -363,9 +384,14 @@ final class HealthKitService: ObservableObject {
                 completion()
                 return
             }
-            completion()
+            // Acknowledge only once the refresh is done: on a background
+            // launch the system may suspend the app as soon as HealthKit has
+            // its answer, before the cache, widgets and alerts are updated.
+            // HealthKit's handler is safe to call from any thread.
+            nonisolated(unsafe) let acknowledge = completion
             Task { @MainActor in
                 await self?.refreshCache()
+                acknowledge()
             }
         }
         observerQuery = query
@@ -393,4 +419,33 @@ final class HealthKitService: ObservableObject {
         }
     }
     #endif
+}
+
+struct CachedRecordKey: Sendable, Equatable {
+    let id: String
+    let date: Date
+}
+
+/// Which cached estimates a fetch proves were deleted from Apple Health.
+enum HealthKitCacheReconciliation {
+    /// A cached record is gone from Apple Health only if the fetch could have
+    /// returned it: it falls inside the fetch window and on or after the store's
+    /// `earliestPermittedSampleDate()`. Apple Watch keeps about a week of
+    /// HealthKit data, so on the watch anything older is simply out of reach and
+    /// must stay cached, or the watch trend never gets the four readings it
+    /// needs. On iPhone the permitted date is far in the past and this prunes
+    /// the whole window as before.
+    ///
+    /// An empty fetch prunes nothing: HealthKit returns nothing when read access
+    /// is off, and that must not wipe a previously valid cache.
+    static func prunableIDs(
+        existing: [CachedRecordKey],
+        fetchedIDs: Set<String>,
+        fetchWindowStart: Date,
+        earliestPermitted: Date
+    ) -> Set<String> {
+        guard !fetchedIDs.isEmpty else { return [] }
+        let cutoff = max(fetchWindowStart, earliestPermitted)
+        return Set(existing.lazy.filter { $0.date >= cutoff && !fetchedIDs.contains($0.id) }.map(\.id))
+    }
 }

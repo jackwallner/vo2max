@@ -142,13 +142,19 @@ enum NotificationService {
 
     // MARK: - Freshness nudge
 
-    /// Tells the user their estimate has gone quiet, and what refreshes it.
-    /// Rate-limiting and entitlement live with the caller (`HealthKitService`);
-    /// this only refuses to queue against a denied authorization.
-    static func scheduleFreshnessNudge(daysSinceLatest: Int) async {
+    /// Identifier of the one pending freshness nudge. Stable, so each refresh
+    /// replaces it rather than stacking another.
+    static let freshnessNudgeID = freshnessIDPrefix + "next"
+
+    /// Schedules the "estimate has gone quiet" nudge for `date`, replacing any
+    /// pending one. Rate-limiting, timing and entitlement live with the caller
+    /// (`HealthKitService`); this only refuses to queue against a denied
+    /// authorization. Returns whether a request was queued.
+    @discardableResult
+    static func scheduleFreshnessNudge(at date: Date, daysSinceLatest: Int) async -> Bool {
         guard await isAuthorized() else {
             logger.info("Freshness nudge skipped — notifications not authorized")
-            return
+            return false
         }
 
         let content = UNMutableNotificationContent()
@@ -157,14 +163,23 @@ enum NotificationService {
         content.sound = .default
         content.userInfo = [routeKey: readingRouteValue]
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let id = freshnessIDPrefix + UUID().uuidString
-        let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+        let interval = max(date.timeIntervalSinceNow, 1)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+        let request = UNNotificationRequest(identifier: freshnessNudgeID, content: content, trigger: trigger)
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [freshnessNudgeID])
         do {
-            try await UNUserNotificationCenter.current().add(request)
-            logger.info("Freshness nudge scheduled days=\(daysSinceLatest, privacy: .public)")
+            try await center.add(request)
+            logger.info("Freshness nudge scheduled days=\(daysSinceLatest, privacy: .public) in=\(Int(interval), privacy: .public)s")
+            return true
         } catch {
             logger.error("Freshness nudge failed: \(String(describing: error), privacy: .public)")
+            return false
         }
+    }
+
+    /// Cancels the pending freshness nudge (toggle off, or subscription lapsed).
+    static func cancelFreshnessNudge() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [freshnessNudgeID])
     }
 }

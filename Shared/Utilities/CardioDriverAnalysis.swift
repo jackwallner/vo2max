@@ -139,7 +139,7 @@ enum CardioDriverAnalysis {
         calendar: Calendar = .current
     ) -> [ActivityTotal] {
         let cutoff = calendar.date(byAdding: .day, value: -days, to: now) ?? .distantPast
-        let recent = workouts.filter { $0.date >= cutoff }
+        let recent = workouts.filter { $0.date >= cutoff && $0.date <= now }
         let grouped = Dictionary(grouping: recent, by: \.kind)
         return grouped
             .map { kind, sessions in

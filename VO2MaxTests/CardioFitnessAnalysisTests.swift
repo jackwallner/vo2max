@@ -53,9 +53,23 @@ struct CardioFitnessAnalysisTests {
         #expect(CardioFitnessAnalysis.fitnessBand(value: 40, age: 35, referenceSex: .unspecified) == nil)
         // Male age 35 reference = 44. 30/44 < 0.85 -> below.
         #expect(CardioFitnessAnalysis.fitnessBand(value: 30, age: 35, referenceSex: .male) == "Below typical range")
-        #expect(CardioFitnessAnalysis.fitnessBand(value: 42, age: 35, referenceSex: .male) == "Around typical range")
-        #expect(CardioFitnessAnalysis.fitnessBand(value: 46, age: 35, referenceSex: .male) == "Above typical range")
-        #expect(CardioFitnessAnalysis.fitnessBand(value: 55, age: 35, referenceSex: .male) == "Well above typical range")
+        #expect(CardioFitnessAnalysis.fitnessBand(value: 42, age: 35, referenceSex: .male) == "Within typical range")
+        #expect(CardioFitnessAnalysis.fitnessBand(value: 46, age: 35, referenceSex: .male) == "Within typical range")
+        #expect(CardioFitnessAnalysis.fitnessBand(value: 55, age: 35, referenceSex: .male) == "Above typical range")
+    }
+
+    /// Anything inside the typical range Settings states must read as within it.
+    @Test func bandInsideTheTypicalRangeIsNotAboveOrBelowIt() {
+        for age in 18...90 {
+            for sex in [ReferenceSex.male, .female] {
+                let range = CardioFitnessAnalysis.typicalRange(age: age, referenceSex: sex)
+                for value in stride(from: range.lowerBound + 0.01, to: range.upperBound, by: 0.5) {
+                    #expect(CardioFitnessAnalysis.fitnessBand(value: value, age: age, referenceSex: sex) == "Within typical range")
+                }
+                #expect(CardioFitnessAnalysis.fitnessBand(value: range.upperBound + 0.5, age: age, referenceSex: sex) == "Above typical range")
+                #expect(CardioFitnessAnalysis.fitnessBand(value: range.lowerBound - 0.5, age: age, referenceSex: sex) == "Below typical range")
+            }
+        }
     }
 
     @Test func fitnessBandClampsAgeOutsideCurve() {

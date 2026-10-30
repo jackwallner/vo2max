@@ -217,11 +217,12 @@ enum CardioFitnessAnalysis {
     static func fitnessBand(value: Double, age: Int, referenceSex: ReferenceSex) -> String? {
         guard let reference = referenceValue(age: age, referenceSex: referenceSex) else { return nil }
         let ratio = value / reference
+        // Same bounds as `typicalRange`, so the band never contradicts the
+        // range Settings and onboarding state.
         switch ratio {
         case ..<0.85: return "Below typical range"
-        case ..<1.0: return "Around typical range"
-        case ..<1.15: return "Above typical range"
-        default: return "Well above typical range"
+        case ...1.15: return "Within typical range"
+        default: return "Above typical range"
         }
     }
 
@@ -273,3 +274,10 @@ enum CardioFitnessAnalysis {
     }
 }
 
+/// The watch app's "Recent readings trend" series. Shared so it is unit tested.
+enum WatchSparkline {
+    /// The newest twelve estimates, oldest first, whatever order they arrive in.
+    static func recent(_ points: [CardioFitnessPoint], limit: Int = 12) -> [CardioFitnessPoint] {
+        Array(points.sorted { $0.date < $1.date }.suffix(limit))
+    }
+}

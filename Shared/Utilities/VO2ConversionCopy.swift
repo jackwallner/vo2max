@@ -73,4 +73,11 @@ enum VO2ConversionCopy {
             ? "Couldn't start your trial. Please try again."
             : "Couldn't complete the purchase. Please try again."
     }
+
+    /// What a finished restore tells the user. Every restore surface shows one of
+    /// these, so the button never reads as dead when nothing was found.
+    static func restoreResultMessage(isPro: Bool, errorMessage: String?) -> String {
+        if isPro { return "VO2+ restored." }
+        return errorMessage ?? "No active VO2+ purchase was found."
+    }
 }

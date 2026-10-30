@@ -24,6 +24,8 @@ struct SettingsView: View {
     @State private var reportPreview: ReportPreview?
     @State private var isGeneratingReport = false
     @State private var reportError: String?
+    @State private var isRestoring = false
+    @State private var restoreResult: String?
 
     private struct ReportPreview: Identifiable {
         let id = UUID()
@@ -310,7 +312,10 @@ struct SettingsView: View {
                     get: { settings.freshnessNudgesEnabled },
                     set: { newValue in
                         settings.freshnessNudgesEnabled = newValue
-                        if newValue { Task { await NotificationService.requestAuthorization() } }
+                        Task {
+                            if newValue { await NotificationService.requestAuthorization() }
+                            HealthKitService.shared.syncFreshnessNudge()
+                        }
                     }
                 )
             )
@@ -350,8 +355,21 @@ struct SettingsView: View {
                     .foregroundStyle(Theme.negative)
             }
 
-            Button("Restore Purchases") {
-                Task { await store.restore() }
+            Button {
+                restorePurchases()
+            } label: {
+                HStack {
+                    Text("Restore Purchases")
+                    Spacer()
+                    if isRestoring { ProgressView() }
+                }
+            }
+            .disabled(isRestoring)
+
+            if let restoreResult {
+                Text(restoreResult)
+                    .font(.caption)
+                    .foregroundStyle(store.isPro ? Theme.textSecondary : Theme.negative)
             }
 
             #if DEBUG
@@ -454,6 +472,16 @@ struct SettingsView: View {
         }
     }
 
+    private func restorePurchases() {
+        isRestoring = true
+        restoreResult = nil
+        Task {
+            await store.restore()
+            restoreResult = VO2ConversionCopy.restoreResultMessage(isPro: store.isPro, errorMessage: store.errorMessage)
+            isRestoring = false
+        }
+    }
+
     private func generateReport() {
         guard !points.isEmpty else { return }
         isGeneratingReport = true
@@ -466,6 +494,11 @@ struct SettingsView: View {
         let previousStart = calendar.date(byAdding: .day, value: -windowDays * 2, to: now) ?? now
         let current = points.filter { $0.date >= windowStart && $0.date <= now }
         let previous = points.filter { $0.date >= previousStart && $0.date < windowStart }
+        guard !current.isEmpty else {
+            isGeneratingReport = false
+            reportError = "No estimates in the last 180 days to report on."
+            return
+        }
         let periodStart = current.map(\.date).min() ?? windowStart
 
         let report = CardioReportGenerator.make(

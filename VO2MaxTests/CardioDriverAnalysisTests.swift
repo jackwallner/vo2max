@@ -97,6 +97,18 @@ struct CardioDriverAnalysisTests {
         #expect(totals[1].sessions == 2)
     }
 
+    /// A custom range that ends in the past must not count later workouts.
+    @Test func activityTotalsStopAtTheRangeEnd() {
+        let workouts = [
+            workout(daysAgo: 5, kind: .walk, minutes: 30),
+            workout(daysAgo: -10, kind: .walk, minutes: 60),
+        ]
+        let totals = CardioDriverAnalysis.activityTotals(workouts: workouts, days: 30, now: referenceDate)
+        #expect(totals.count == 1)
+        #expect(totals[0].minutes == 30)
+        #expect(totals[0].sessions == 1)
+    }
+
     @Test func weeklyLoadSeparatesQualifyingMinutes() {
         let workouts = [
             workout(daysAgo: 2, kind: .run, minutes: 40),

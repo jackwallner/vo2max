@@ -180,6 +180,9 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         #endif
         configureIfNeeded()
         guard isConfigured else { return }
+        // Loading starts now, not after the customerInfo round trip, so a slow
+        // network shows the paywall's loading state instead of "unavailable".
+        isLoadingProducts = true
         Task {
             await refreshStatus()
             await loadOffering(forceRefresh: forceRefresh)
@@ -247,6 +250,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     func purchase(_ package: Package) async -> PurchaseState? {
         guard isConfigured else { return nil }
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
         let startedTrial = isEligibleForIntroOffer(package)
         do {
@@ -287,6 +291,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     func restore() async {
         guard isConfigured else { return }
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
         do {
             update(customerInfo: try await Purchases.shared.restorePurchases())

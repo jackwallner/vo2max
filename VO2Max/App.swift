@@ -392,6 +392,7 @@ private struct MainTabView: View {
         .task(id: split != nil) { await runDuoTour(split: split != nil) }
         #endif
         .task(id: recapSchedulingKey) { await syncMonthlyRecapSchedule() }
+        .task(id: freshnessSchedulingKey) { HealthKitService.shared.syncFreshnessNudge() }
         .onChange(of: routeCoordinator.pendingRecap) { _, pending in
             guard pending else { return }
             routeCoordinator.pendingRecap = false
@@ -439,6 +440,10 @@ private struct MainTabView: View {
                 .environmentObject(settings)
         }
     }
+
+    /// Reschedules (or cancels) the stale-estimate nudge whenever entitlement or
+    /// the toggle changes, so a lapse or an opt-out leaves nothing pending.
+    private var freshnessSchedulingKey: String { "\(store.isPro)-\(settings.freshnessNudgesEnabled)" }
 
     /// Recomputes the recap schedule whenever entitlement or the toggle changes.
     private var recapSchedulingKey: String { "\(store.isPro)-\(settings.monthlyRecapEnabled)" }

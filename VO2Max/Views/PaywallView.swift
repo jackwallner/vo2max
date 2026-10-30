@@ -373,7 +373,7 @@ struct PaywallView: View {
                         Task {
                             await store.restore()
                             if !store.isPro {
-                                restoreMessage = store.errorMessage ?? "No active VO2+ purchase was found."
+                                restoreMessage = VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
                             }
                         }
                     }

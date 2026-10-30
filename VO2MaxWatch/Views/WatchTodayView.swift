@@ -10,7 +10,7 @@ struct WatchTodayView: View {
     }
 
     private var sparkline: some View {
-        let recent = points.suffix(12).sorted { $0.date < $1.date }
+        let recent = WatchSparkline.recent(points)
         let values = recent.map(\.value)
         let low = values.min() ?? 0
         let span = max((values.max() ?? 1) - low, 0.5)
@@ -72,4 +72,3 @@ struct WatchTodayView: View {
         .task { await health.synchronizeAuthorization() }
     }
 }
-

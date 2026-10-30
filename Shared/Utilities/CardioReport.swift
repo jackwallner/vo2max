@@ -74,7 +74,8 @@ enum CardioReportGenerator {
         let currentAvg = average
         let previousValues = previousPoints.map(\.value)
         let previousAvg = previousValues.isEmpty ? 0 : previousValues.reduce(0, +) / Double(previousValues.count)
-        let changePct: Double? = previousAvg > 0 ? ((currentAvg - previousAvg) / previousAvg) * 100 : nil
+        // No estimate in the period means no average to compare, not a 100% drop.
+        let changePct: Double? = previousAvg > 0 && !values.isEmpty ? ((currentAvg - previousAvg) / previousAvg) * 100 : nil
 
         let inTarget = readings.filter { $0.value >= targetLower && $0.value <= targetUpper }.count
 

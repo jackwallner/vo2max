@@ -342,7 +342,11 @@ struct PlusTabView: View {
 
     private var targetOutlookRowValue: PlusRowValue? {
         guard let latest = points.max(by: { $0.date < $1.date }) else { return nil }
-        guard latest.value < settings.targetLower else { return PlusRowValue(text: "In range") }
+        switch CardioFitnessAnalysis.targetStatus(value: latest.value, lower: settings.targetLower, upper: settings.targetUpper) {
+        case .above: return PlusRowValue(text: "Above range")
+        case .inRange: return PlusRowValue(text: "In range")
+        case .below: break
+        }
         let gap = settings.targetLower - latest.value
         return PlusRowValue(text: gap.formatted(.number.precision(.fractionLength(1))), unit: "to target")
     }
@@ -400,6 +404,9 @@ struct PlusTabView: View {
         let target = targetLowerLabel
         guard let latest = points.max(by: { $0.date < $1.date }) else {
             return ("Available", "From the recent cardio fitness trend")
+        }
+        if latest.value > settings.targetUpper {
+            return ("Above target range", "Latest estimate is above \(targetUpperLabel)")
         }
         if latest.value >= settings.targetLower {
             return ("In target range", "Latest estimate is at or above \(target)")
