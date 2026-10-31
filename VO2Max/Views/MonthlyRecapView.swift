@@ -12,12 +12,6 @@ struct MonthlyRecapView: View {
     @State private var recap: CardioRecap?
     @State private var loaded = false
 
-    private static let dayFmt: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "MMM d"
-        return f
-    }()
-
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
     }
@@ -80,7 +74,7 @@ struct MonthlyRecapView: View {
             Text(CardioRange.fixed(.month).spanLabel)
                 .font(.system(.caption, design: .rounded))
                 .foregroundStyle(Theme.textTertiary)
-            Text("\(recap.readingsThisPeriod) estimate\(recap.readingsThisPeriod == 1 ? "" : "s") from Apple Health")
+            Text(String(localized: "\(recap.readingsThisPeriod) estimates from Apple Health"))
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(Theme.textSecondary)
         }
@@ -106,8 +100,8 @@ struct MonthlyRecapView: View {
                 .minimumScaleFactor(0.6)
             if let pct = recap.changePct {
                 let up = pct >= 0
-                Label("\(up ? "+" : "")\(String(format: "%.1f", pct))% vs. prior 30 days",
-                      systemImage: up ? "arrow.up.right" : "arrow.down.right")
+                Label("\(pct.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())))% vs. prior 30 days",
+                      systemImage: up ? "arrow.up.forward" : "arrow.down.forward")
                     .font(.system(.caption2, design: .rounded, weight: .semibold))
                     .foregroundStyle(up ? Theme.positive : Theme.coral)
                     .labelStyle(.titleAndIcon)
@@ -131,7 +125,9 @@ struct MonthlyRecapView: View {
                 Text(status.label)
                     .font(.system(.subheadline, design: .rounded, weight: .semibold))
                     .foregroundStyle(Theme.textPrimary)
-                Text("Target \(Int(settings.targetLower))-\(Int(settings.targetUpper)) mL/kg/min\(recap.latest.map { " · latest \($0.value.formatted(.number.precision(.fractionLength(1))))" } ?? "")")
+                Text(recap.latest.map { latest in
+                    String(localized: "Target \(Int(settings.targetLower))-\(Int(settings.targetUpper)) mL/kg/min · latest \(latest.value.formatted(.number.precision(.fractionLength(1))))")
+                } ?? String(localized: "Target \(Int(settings.targetLower))-\(Int(settings.targetUpper)) mL/kg/min"))
                     .font(.system(.caption, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
             }
@@ -147,10 +143,10 @@ struct MonthlyRecapView: View {
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(Theme.coral)
             VStack(alignment: .leading, spacing: 2) {
-                Text(isAllTime ? "Personal best" : "Best this month")
+                Text(isAllTime ? String(localized: "Personal best") : String(localized: "Best this month"))
                     .font(.system(.subheadline, design: .rounded, weight: .semibold))
                     .foregroundStyle(Theme.textPrimary)
-                Text("\(Self.dayFmt.string(from: best.date)) · \(best.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min")
+                Text("\(best.date.formatted(.dateTime.month(.abbreviated).day())) · \(best.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min")
                     .font(.system(.caption, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
             }

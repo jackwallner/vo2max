@@ -92,7 +92,7 @@ final class HealthKitService: ObservableObject {
         }
         #endif
         guard HKHealthStore.isHealthDataAvailable() else {
-            lastError = "Apple Health is not available on this device."
+            lastError = String(localized: "Apple Health is not available on this device.")
             return
         }
         // Ask for the estimate and its supporting cardio signals in one sheet.
@@ -182,7 +182,7 @@ final class HealthKitService: ObservableObject {
                 return
             }
             healthLogger.error("Refresh failed: \(String(describing: error), privacy: .public)")
-            lastError = "Could not refresh Apple Health data."
+            lastError = String(localized: "Could not refresh Apple Health data.")
         }
     }
 
@@ -368,13 +368,13 @@ final class HealthKitService: ObservableObject {
         isNewPersonalBest: Bool,
         enteredTarget: Bool
     ) -> String {
-        if isNewPersonalBest { return "A new personal best." }
-        if enteredTarget { return "That's in your target range." }
+        if isNewPersonalBest { return String(localized: "A new personal best.") }
+        if enteredTarget { return String(localized: "That's in your target range.") }
         let delta = newest - previous
         let magnitude = abs(delta).formatted(.number.precision(.fractionLength(1)))
-        if delta > 0.05 { return "Up \(magnitude) from your last estimate." }
-        if delta < -0.05 { return "Down \(magnitude) from your last estimate." }
-        return "In line with your last estimate."
+        if delta > 0.05 { return String(localized: "Up \(magnitude) from your last estimate.") }
+        if delta < -0.05 { return String(localized: "Down \(magnitude) from your last estimate.") }
+        return String(localized: "In line with your last estimate.")
     }
 
     private func installObserver() {

@@ -56,7 +56,7 @@ struct WatchTodayView: View {
             } else {
                 VStack(spacing: 12) {
                     Image(systemName: "heart.text.square").font(.largeTitle).foregroundStyle(Theme.cardio)
-                    Text("No VO2 max estimate").font(.headline).multilineTextAlignment(.center)
+                    Text("No cardio fitness estimate yet").font(.headline).multilineTextAlignment(.center)
                     Text("Record a brisk outdoor walk, run, or hike with Apple Watch.")
                         .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
                     Button("Connect Health") {
@@ -68,7 +68,7 @@ struct WatchTodayView: View {
                 }
             }
         }
-        .navigationTitle("VO2 Max")
+        .navigationTitle("Cardio Fitness")
         .task { await health.synchronizeAuthorization() }
     }
 }

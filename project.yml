@@ -5,7 +5,9 @@ options:
     iOS: "17.0"
     watchOS: "10.0"
   xcodeVersion: "16.0"
-  minimumXcodeGenVersion: "2.38"
+  # XcodeGen 2.39 reads languages from Shared/Localizable.xcstrings into knownRegions.
+  minimumXcodeGenVersion: "2.39.0"
+  developmentLanguage: en
 
 settings:
   base:
@@ -87,6 +89,8 @@ targets:
       - path: Shared/Services/DataService.swift
       - path: Shared/Utilities/CardioFitnessAnalysis.swift
       - path: Shared/Utilities/Theme.swift
+      - path: Shared/Localizable.xcstrings
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max.widget
@@ -120,6 +124,8 @@ targets:
       - path: Shared/Services/DataService.swift
       - path: Shared/Utilities/CardioFitnessAnalysis.swift
       - path: Shared/Utilities/Theme.swift
+      - path: Shared/Localizable.xcstrings
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.vo2max.watch.widget
@@ -132,6 +138,8 @@ targets:
     platform: iOS
     sources:
       - path: VO2MaxTests
+      - path: Shared/Localizable.xcstrings
+        buildPhase: resources
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES

@@ -1,0 +1,244 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSHealthShareUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reads cardio fitness estimates, resting heart rate, Cardio Recovery, and workouts from Apple Health to show your latest value, target range, and cardio fitness trend. It never writes Health data."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker liest Cardiofitness-Schätzwerte aus Apple Health und zeigt dir deinen aktuellen Wert, Zielbereich und Trend. Außerdem liest die App Ruheherzfrequenz, Cardio-Erholung und Trainings, um die Cardio-Signale hinter deinem Schätzwert darzustellen. Gesundheitsdaten werden nicht geschrieben."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker lit les estimations de forme cardio dans Apple Health pour afficher votre dernière valeur, votre plage cible et la tendance de forme cardio. L’app lit aussi la fréquence cardiaque au repos, la récupération cardio et les entraînements afin de donner du contexte aux signaux associés à votre estimation. Aucune donnée de santé n’est écrite."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker leest cardiofitnessschattingen uit Apple Health om je nieuwste waarde, doelbereik en trend te tonen. De app leest ook hartslag in rust, cardioherstel en trainingen om context te geven bij de signalen achter je schatting. Er worden geen gezondheidsgegevens geschreven."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "讀取 Apple Health 中的心肺適能估算值、靜止心率、心肺恢復和訓練紀錄，以顯示最新估算值、目標範圍和趨勢。本 App 不會寫入健康資料。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Читает из Apple Health оценки кардиовыносливости, пульс в покое, восстановление пульса и тренировки, чтобы показать последнее значение, целевой диапазон и динамику кардиовыносливости. Приложение не записывает данные о здоровье."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يقرأ التطبيق تقديرات اللياقة القلبية ومعدل ضربات القلب أثناء الراحة وتعافي القلب والتمارين من Apple Health لعرض أحدث تقدير والنطاق المستهدف والاتجاه. لا يكتب التطبيق بيانات صحية."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lee estimaciones de capacidad aeróbica, frecuencia cardíaca en reposo, recuperación cardíaca y entrenamientos de Apple Health para mostrar la última estimación, el rango objetivo y la tendencia. La app no escribe datos de salud."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Healthから心肺機能の推定値、安静時心拍数、心拍数の回復、ワークアウトを読み取り、最新の推定値、目標範囲、推移を表示します。健康データを書き込むことはありません。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อ่านค่าประมาณสมรรถภาพหัวใจและหลอดเลือด อัตราการเต้นของหัวใจขณะพัก การฟื้นตัวของอัตราการเต้นของหัวใจ และการออกกำลังกายจาก Apple Health เพื่อแสดงค่าประมาณล่าสุด ช่วงเป้าหมาย และแนวโน้ม แอปจะไม่เขียนข้อมูลสุขภาพ"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čte odhady kardiorespirační kondice, klidovou srdeční frekvenci, obnovu tepové frekvence a tréninky z Apple Health. Zobrazuje nejnovější hodnotu, cílové rozmezí a trend kondice. Zdravotní data nezapisuje."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legge da Apple Health le stime di fitness cardiovascolare, la frequenza cardiaca a riposo, il recupero della frequenza cardiaca e gli allenamenti. Mostra il valore più recente, l’intervallo obiettivo e l’andamento. Non scrive dati sanitari."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Az Apple Healthből olvassa a kardiofitnesz-becsléseket, a nyugalmi pulzust, a pulzus-visszaállást és az edzéseket. Megjeleníti a legutóbbi értéket, a céltartományt és a trendet. Nem ír egészségügyi adatot."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Citește din Apple Health estimări de fitness cardiovascular, frecvența cardiacă în repaus, recuperarea frecvenței cardiace și antrenamente. Afișează cea mai recentă valoare, intervalul țintă și tendința. Nu scrie date de sănătate."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διαβάζει από το Apple Health εκτιμήσεις καρδιοαναπνευστικής φυσικής κατάστασης, καρδιακό ρυθμό σε ηρεμία, αποκατάσταση καρδιακού ρυθμού και προπονήσεις. Εμφανίζει την πιο πρόσφατη τιμή, το εύρος στόχου και την τάση. Δεν γράφει δεδομένα υγείας."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odczytuje z Apple Health oszacowania kondycji kardio, tętno spoczynkowe, regenerację tętna i treningi. Pokazuje najnowszą wartość, zakres docelowy i trend. Nie zapisuje danych zdrowotnych."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z Apple Health číta odhady kardiorespiračnej kondície, pokojový srdcový tep, regeneráciu srdcového tepu a tréningy. Zobrazuje najnovšiu hodnotu, cieľové rozpätie a trend. Zdravotné údaje nezapisuje."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läser konditionsuppskattningar, vilopuls, pulsåterhämtning och träningspass från Apple Health. Visar det senaste värdet, målintervallet och trenden. Skriver inte hälsodata."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "קוראת מ-Apple Health אומדני כושר אירובי, דופק במנוחה, התאוששות הדופק ואימונים. הנתונים משמשים להצגת הערך האחרון, טווח היעד ומגמת הכושר. האפליקציה אינה כותבת נתוני בריאות."
+          }
+        }
+      }
+    },
+    "NSHealthUpdateUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker never writes data to Apple Health."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker schreibt keine Daten in Apple Health."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker n’écrit aucune donnée dans Apple Health."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker schrijft geen gegevens naar Apple Health."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker 不會寫入任何資料至 Apple Health。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker никогда не записывает данные в Apple Health."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا يكتب VO2 Max Daily Tracker أي بيانات إلى Apple Health."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nunca escribe datos en Apple Health."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily TrackerはApple Healthにデータを書き込みません。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker จะไม่เขียนข้อมูลใดๆ ลง Apple Health"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nikdy nezapisuje data do Apple Health."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker non scrive mai dati su Apple Health."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A VO2 Max soha nem ír adatot az Apple Healthbe."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nu scrie niciodată date în Apple Health."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το VO2 Max Daily Tracker δεν γράφει ποτέ δεδομένα στο Apple Health."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nigdy nie zapisuje danych w Apple Health."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker nikdy nezapisuje údaje do Apple Health."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker skriver aldrig data till Apple Health."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 Max Daily Tracker לעולם אינה כותבת נתונים ל-Apple Health."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

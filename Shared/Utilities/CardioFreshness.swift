@@ -20,36 +20,36 @@ struct EstimateFreshness: Sendable, Equatable {
 
     var headline: String {
         switch state {
-        case .noReadings: "No estimate yet"
-        case .fresh: "Estimate is current"
-        case .aging: "Estimate is getting old"
-        case .stale: "Time to refresh your estimate"
+        case .noReadings: String(localized: "No estimate yet")
+        case .fresh: String(localized: "Estimate is current")
+        case .aging: String(localized: "Estimate is getting old")
+        case .stale: String(localized: "Time to refresh your estimate")
         }
     }
 
     var detail: String {
         guard let daysSinceLatest else {
-            return "Apple Health records a VO2 max estimate after a qualifying outdoor workout with Apple Watch. \(CardioFreshnessAnalysis.refreshInstruction)"
+            return String(localized: "Apple Health records a VO2 max estimate after a qualifying outdoor workout with Apple Watch. \(CardioFreshnessAnalysis.refreshInstruction)")
         }
         let ago = CardioFreshnessAnalysis.dayPhrase(daysSinceLatest)
         switch state {
         case .noReadings:
-            return "Apple Health records a VO2 max estimate after a qualifying outdoor workout with Apple Watch. \(CardioFreshnessAnalysis.refreshInstruction)"
+            return String(localized: "Apple Health records a VO2 max estimate after a qualifying outdoor workout with Apple Watch. \(CardioFreshnessAnalysis.refreshInstruction)")
         case .fresh:
             if let typicalGapDays {
-                return "Your last estimate landed \(ago), in line with your usual cadence of about \(typicalGapDays) days."
+                return String(localized: "Your last estimate landed \(ago), in line with your usual cadence of about \(typicalGapDays) days.")
             }
-            return "Your last estimate landed \(ago)."
+            return String(localized: "Your last estimate landed \(ago).")
         case .aging:
             if let typicalGapDays {
-                return "Your last estimate landed \(ago). You usually get one about every \(typicalGapDays) days. \(CardioFreshnessAnalysis.refreshInstruction)"
+                return String(localized: "Your last estimate landed \(ago). You usually get one about every \(typicalGapDays) days. \(CardioFreshnessAnalysis.refreshInstruction)")
             }
-            return "Your last estimate landed \(ago). \(CardioFreshnessAnalysis.refreshInstruction)"
+            return String(localized: "Your last estimate landed \(ago). \(CardioFreshnessAnalysis.refreshInstruction)")
         case .stale:
             if let typicalGapDays {
-                return "Your last estimate landed \(ago), well past your usual \(typicalGapDays) days. \(CardioFreshnessAnalysis.refreshInstruction)"
+                return String(localized: "Your last estimate landed \(ago), well past your usual \(typicalGapDays)-day cadence. \(CardioFreshnessAnalysis.refreshInstruction)")
             }
-            return "Your last estimate landed \(ago). \(CardioFreshnessAnalysis.refreshInstruction)"
+            return String(localized: "Your last estimate landed \(ago). \(CardioFreshnessAnalysis.refreshInstruction)")
         }
     }
 }
@@ -71,7 +71,7 @@ enum CardioFreshnessAnalysis {
 
     /// The action that actually refreshes the number. Deliberately concrete, and
     /// deliberately not a training prescription.
-    static let refreshInstruction = "A brisk outdoor walk, run, or hike of about 20 minutes with Apple Watch on your wrist lets Apple Health record a new one."
+    static let refreshInstruction = String(localized: "A brisk outdoor walk, run, or hike of about 20 minutes with Apple Watch on your wrist lets Apple Health record a new one.")
 
     static func assess(
         points: [CardioFitnessPoint],
@@ -160,9 +160,9 @@ enum CardioFreshnessAnalysis {
 
     static func dayPhrase(_ days: Int) -> String {
         switch days {
-        case ..<1: "today"
-        case 1: "yesterday"
-        default: "\(days) days ago"
+        case ..<1: String(localized: "today")
+        case 1: String(localized: "yesterday")
+        default: String(localized: "\(days) days ago")
         }
     }
 }

@@ -350,11 +350,11 @@ private struct MainTabView: View {
             .animation(.easeInOut(duration: 0.2), value: showSettings)
 
             HStack(spacing: 0) {
-                TabButton(icon: "heart.fill", label: "Today", isSelected: selection == 0) { selection = 0 }
+                TabButton(icon: "heart.fill", label: String(localized: "Today"), isSelected: selection == 0) { selection = 0 }
                 if split == nil {
-                    TabButton(icon: "chart.bar.fill", label: "Trends", isSelected: selection == 1) { selection = 1 }
+                    TabButton(icon: "chart.bar.fill", label: String(localized: "Trends"), isSelected: selection == 1) { selection = 1 }
                 }
-                TabButton(icon: "sparkles", label: "VO2+", isSelected: selection == 2) { selection = 2 }
+                TabButton(icon: "sparkles", label: String(localized: "VO2+"), isSelected: selection == 2) { selection = 2 }
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)

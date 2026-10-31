@@ -146,6 +146,6 @@ private struct WhatsNewFeatureRow: View {
         .padding(.vertical, 12)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(feature.title). \(feature.detail)")
+        .accessibilityLabel(String(localized: "\(feature.title). \(feature.detail)"))
     }
 }

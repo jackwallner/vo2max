@@ -160,7 +160,7 @@ struct DashboardView: View {
                 } else if let latest = samples.first {
                     // Replaces the old standing freshness card: the same fact,
                     // one line, without a block that says "nothing happened".
-                    Text("Latest estimate \(latest.date, format: .relative(presentation: .named))\(cadenceSuffix)")
+                    Text(latestStatusLine(for: latest.date))
                         .font(.system(.caption2, design: .rounded))
                         .foregroundStyle(Theme.textTertiary)
                 } else {
@@ -173,11 +173,12 @@ struct DashboardView: View {
         }
     }
 
-    /// " · usually every N days", once there's enough history to know this
-    /// person's own cadence. Empty otherwise rather than guessing.
-    private var cadenceSuffix: String {
-        guard let typical = CardioFreshnessAnalysis.typicalGapDays(points: points) else { return "" }
-        return " · usually every \(typical) days"
+    private func latestStatusLine(for date: Date) -> String {
+        let dateLabel = date.formatted(.relative(presentation: .named))
+        guard let typical = CardioFreshnessAnalysis.typicalGapDays(points: points) else {
+            return String(localized: "Latest estimate \(dateLabel).")
+        }
+        return String(localized: "Latest estimate \(dateLabel). You usually get one every \(typical) days.")
     }
 
     // MARK: - Hero ring (Vitals calorie-ring pattern, VO2 data)
@@ -233,7 +234,7 @@ struct DashboardView: View {
                             .minimumScaleFactor(0.7)
                             .frame(maxWidth: captionWidth)
                             .padding(.top, 2)
-                        Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))-\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
+                        Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
                             .font(.system(.caption2, design: .rounded))
                             .foregroundStyle(Theme.textTertiary)
                             .lineLimit(1)
@@ -247,7 +248,7 @@ struct DashboardView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Latest Apple Health estimate")
-        .accessibilityValue("\(latest.value.formatted(.number.precision(.fractionLength(1)))) milliliters per kilogram per minute, \(status.label)")
+        .accessibilityValue(String(localized: "\(latest.value.formatted(.number.precision(.fractionLength(1)))) milliliters per kilogram per minute, \(status.label)"))
         .accessibilityHint("Opens all Apple Health estimates")
     }
 
@@ -285,7 +286,7 @@ struct DashboardView: View {
                     }
                 }
                 Spacer(minLength: 8)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.textTertiary)
             }
@@ -315,7 +316,7 @@ struct DashboardView: View {
                         value: value,
                         referenceSex: settings.referenceSex
                     ) {
-                        Text("About \(estimate)")
+                        Text("About \(estimate.formatted())")
                             .font(.system(.headline, design: .rounded))
                             .foregroundStyle(Theme.textPrimary)
                         Text("Chronological age \(settings.chronologicalAge)")
@@ -332,7 +333,7 @@ struct DashboardView: View {
                     }
                 }
                 Spacer(minLength: 8)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.textTertiary)
             }
@@ -352,12 +353,14 @@ struct DashboardView: View {
                 .foregroundStyle(Theme.cardio)
 
             VStack(spacing: 6) {
-                Text(health.isAuthorized ? "Your first estimate will appear here" : "Connect Apple Health")
+                Text(health.isAuthorized
+                     ? String(localized: "Your first estimate will appear here")
+                     : String(localized: "Connect Apple Health"))
                     .font(.system(.title2, design: .rounded, weight: .bold))
                     .multilineTextAlignment(.center)
                 Text(health.isAuthorized
-                     ? "Apple Watch creates cardio fitness estimates during qualifying outdoor walks, runs, and hikes. Wear it snugly and record a brisk outdoor workout for at least 20 minutes."
-                     : "Tap Connect and allow VO2 max. If no prompt appears (iOS only shows it once), open Apple Health, tap your profile picture, then Privacy › Apps › VO2 Max Daily Tracker and turn VO2 max on.")
+                     ? String(localized: "Apple Watch creates cardio fitness estimates during qualifying outdoor walks, runs, and hikes. Wear it snugly and record a brisk outdoor workout for at least 20 minutes.")
+                     : String(localized: "Tap Connect and allow VO2 max. If no prompt appears (iOS only shows it once), open Apple Health, tap your profile picture, then Privacy > Apps > VO2 Max Daily Tracker and turn VO2 max on."))
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
@@ -377,7 +380,9 @@ struct DashboardView: View {
                 }
             } label: {
                 Label(
-                    health.isAuthorized ? "Refresh Apple Health" : "Connect Apple Health",
+                    health.isAuthorized
+                        ? String(localized: "Refresh Apple Health")
+                        : String(localized: "Connect Apple Health"),
                     systemImage: health.isAuthorized ? "arrow.clockwise" : "heart.fill"
                 )
                 .font(.system(.headline, design: .rounded))

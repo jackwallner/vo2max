@@ -90,12 +90,12 @@ struct HistoryView: View {
         // No span caption here: the picker states it two rows above, and
         // repeating it that close together reads as a second, different window.
         return HStack(spacing: 0) {
-            statBlock("Readings", "\(values.count)")
+            statBlock(String(localized: "Readings"), "\(values.count)")
             Divider().frame(height: 36)
-            statBlock("Average", average.formatted(.number.precision(.fractionLength(1))))
+            statBlock(String(localized: "Average"), average.formatted(.number.precision(.fractionLength(1))))
             Divider().frame(height: 36)
             statBlock(
-                "Change",
+                String(localized: "Change"),
                 change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "-",
                 color: change.map { $0 >= 0 ? Theme.positive : Theme.negative }
             )
@@ -138,16 +138,16 @@ struct HistoryView: View {
             // `Chart(visibleSamples)` these two rules were redrawn for every
             // reading in the window.
             Chart {
-                RuleMark(y: .value("Target lower", settings.targetLower))
+                RuleMark(y: .value(String(localized: "Target lower"), settings.targetLower))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Theme.positive.opacity(0.65))
-                RuleMark(y: .value("Target upper", settings.targetUpper))
+                RuleMark(y: .value(String(localized: "Target upper"), settings.targetUpper))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Theme.positive.opacity(0.65))
                 ForEach(visibleSamples) { sample in
                     LineMark(
-                        x: .value("Date", sample.date),
-                        y: .value("VO2 max", sample.value)
+                        x: .value(String(localized: "Date"), sample.date),
+                        y: .value(String(localized: "Cardio Fitness"), sample.value)
                     )
                     .foregroundStyle(Theme.cardioGradient)
                     .interpolationMethod(.catmullRom)
@@ -156,12 +156,12 @@ struct HistoryView: View {
                     // element per reading, carrying the estimate it plots.
                     .accessibilityHidden(true)
                     PointMark(
-                        x: .value("Date", sample.date),
-                        y: .value("VO2 max", sample.value)
+                        x: .value(String(localized: "Date"), sample.date),
+                        y: .value(String(localized: "Cardio Fitness"), sample.value)
                     )
                     .foregroundStyle(Theme.cardio)
                     .accessibilityLabel(sample.date.formatted(.dateTime.month(.abbreviated).day().year()))
-                    .accessibilityValue("\(sample.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min")
+                    .accessibilityValue(String(localized: "\(sample.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min"))
                 }
             }
             .chartYAxisLabel("mL/kg/min")
@@ -191,7 +191,7 @@ struct HistoryView: View {
                         .foregroundStyle(Theme.textSecondary)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
             }
@@ -243,7 +243,7 @@ struct HistoryView: View {
                 Text("Deep Trends")
                     .font(.headline)
                 Spacer()
-                Text(locked ? "VO2+" : "Active")
+                Text(locked ? String(localized: "VO2+") : String(localized: "Active"))
                     .font(.system(size: 10, weight: .bold, design: .rounded))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
@@ -254,7 +254,7 @@ struct HistoryView: View {
             if locked {
                 lockedTeaser(comparisons: comparisons)
             } else if comparisons.isEmpty {
-                Text("Deep Trends compare each period with the matching one before it once both windows contain Apple Health estimates.")
+                Text("Compare each period with the matching one before it once both windows contain Apple Health estimates.")
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -363,8 +363,9 @@ struct HistoryView: View {
                             .foregroundStyle(Theme.textSecondary)
                     }
                     Spacer()
-                    Text("41.3").font(.subheadline.bold().monospacedDigit())
-                    Text("+0.8")
+                    Text(41.3, format: .number.precision(.fractionLength(1)))
+                        .font(.subheadline.bold().monospacedDigit())
+                    Text(0.8, format: .number.precision(.fractionLength(1)).sign(strategy: .always()))
                         .font(.caption.bold().monospacedDigit())
                         .foregroundStyle(Theme.positive)
                         .frame(width: 44, alignment: .trailing)

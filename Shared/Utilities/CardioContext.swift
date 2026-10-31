@@ -16,14 +16,14 @@ enum CardioActivityKind: String, Sendable, CaseIterable {
 
     var label: String {
         switch self {
-        case .walk: "Walking"
-        case .run: "Running"
-        case .hike: "Hiking"
-        case .cycle: "Cycling"
-        case .swim: "Swimming"
-        case .elliptical: "Elliptical"
-        case .rowing: "Rowing"
-        case .intervals: "Intervals"
+        case .walk: String(localized: "Walking")
+        case .run: String(localized: "Running")
+        case .hike: String(localized: "Hiking")
+        case .cycle: String(localized: "Cycling")
+        case .swim: String(localized: "Swimming")
+        case .elliptical: String(localized: "Elliptical")
+        case .rowing: String(localized: "Rowing")
+        case .intervals: String(localized: "Intervals")
         }
     }
 

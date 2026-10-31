@@ -65,19 +65,19 @@ struct VO2MaxWidgetView: View {
             case .accessoryRectangular:
                 rectangular(value)
             case .accessoryInline:
-                Text("VO2 max \(value, format: .number.precision(.fractionLength(1))) · \(entry.trend.label)")
+                Text("Cardio Fitness \(value, format: .number.precision(.fractionLength(1))) · \(entry.trend.label)")
             default:
                 small(value)
             }
         } else {
-            ContentUnavailableView("No VO2 max", systemImage: "heart.text.square", description: Text("Open the app to sync"))
+            ContentUnavailableView("No estimate yet", systemImage: "heart.text.square", description: Text("Open the app to sync"))
                 .containerBackground(.fill.tertiary, for: .widget)
         }
     }
 
     private func small(_ value: Double) -> some View {
         VStack(alignment: .leading, spacing: 7) {
-            Label("VO2 MAX", systemImage: "heart.fill")
+            Label("Cardio Fitness", systemImage: "heart.fill")
                 .font(.caption2.bold())
                 .foregroundStyle(Theme.cardio)
             Spacer()
@@ -89,7 +89,7 @@ struct VO2MaxWidgetView: View {
                 .font(.caption.bold())
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("VO2 max \(value.formatted(.number.precision(.fractionLength(1)))) milliliters per kilogram per minute, trend \(entry.trend.label)")
+        .accessibilityLabel("Cardio Fitness \(value.formatted(.number.precision(.fractionLength(1)))) milliliters per kilogram per minute, trend \(entry.trend.label)")
         .containerBackground(.fill.tertiary, for: .widget)
     }
 
@@ -108,7 +108,7 @@ struct VO2MaxWidgetView: View {
                 Image(systemName: entry.trend.symbol)
                     .font(.title.bold()).foregroundStyle(Theme.cardio)
                 Text(entry.trend.label).font(.headline)
-                Text("Target \(entry.targetLower.formatted(.number.precision(.fractionLength(0))))-\(entry.targetUpper.formatted(.number.precision(.fractionLength(0))))")
+                Text("Target \(entry.targetLower.formatted(.number.precision(.fractionLength(0))))–\(entry.targetUpper.formatted(.number.precision(.fractionLength(0))))")
                     .font(.caption).foregroundStyle(.secondary)
                 if let readingDate = entry.readingDate {
                     Text(readingDate, format: .dateTime.month(.abbreviated).day())
@@ -134,7 +134,7 @@ struct VO2MaxWidgetView: View {
     private func rectangular(_ value: Double) -> some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("VO2 max").font(.caption)
+                Text("Cardio Fitness").font(.caption)
                 Text(value, format: .number.precision(.fractionLength(1))).font(.title2.bold())
             }
             Spacer()
@@ -156,7 +156,7 @@ struct VO2MaxWidget: Widget {
         StaticConfiguration(kind: kind, provider: CardioProvider()) { entry in
             VO2MaxWidgetView(entry: entry)
         }
-        .configurationDisplayName("VO2 Max")
+        .configurationDisplayName("Cardio Fitness")
         .description("Your latest cardio fitness estimate and trend.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryCircular, .accessoryRectangular, .accessoryInline])
     }

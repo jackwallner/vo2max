@@ -110,7 +110,7 @@ struct SettingsView: View {
     }
 
     private func trialCTATitle(for package: Package?) -> String {
-        guard let package else { return "Continue with VO2+" }
+        guard let package else { return String(localized: "Continue with VO2+") }
         return VO2ConversionCopy.ctaLabel(
             trialLabel: package.vo2IntroOfferLabel,
             priceLabel: package.vo2PriceLabel,
@@ -162,7 +162,7 @@ struct SettingsView: View {
     private var healthStatusLabel: some View {
         HStack(spacing: 5) {
             Image(systemName: health.isAuthorized ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
-            Text(health.isAuthorized ? "Connected" : "Needs access")
+            Text(health.isAuthorized ? String(localized: "Connected") : String(localized: "Needs access"))
         }
         .foregroundStyle(health.isAuthorized ? Theme.positive : Theme.coral)
     }
@@ -171,12 +171,12 @@ struct SettingsView: View {
         Section {
             ViewThatFits(in: .horizontal) {
                 HStack {
-                    Text("Apple Health status")
+                    Text(String(localized: "Apple Health status"))
                     Spacer()
                     healthStatusLabel
                 }
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Apple Health status")
+                    Text(String(localized: "Apple Health status"))
                     healthStatusLabel
                 }
             }
@@ -192,7 +192,9 @@ struct SettingsView: View {
                 }
             } label: {
                 Label(
-                    health.isAuthorized ? "Refresh Apple Health" : "Connect Apple Health",
+                    health.isAuthorized
+                        ? String(localized: "Refresh Apple Health")
+                        : String(localized: "Connect Apple Health"),
                     systemImage: health.isAuthorized ? "arrow.clockwise" : "heart.fill"
                 )
             }
@@ -222,7 +224,7 @@ struct SettingsView: View {
                     Text("Target range")
                         .font(.subheadline.weight(.medium))
                     Spacer()
-                    Text("\(Int(settings.targetLower))-\(Int(settings.targetUpper))")
+                    Text("\(Int(settings.targetLower))–\(Int(settings.targetUpper))")
                         .font(.headline.monospacedDigit())
                         .foregroundStyle(Theme.cardio)
                     Text("mL/kg/min")
@@ -234,7 +236,7 @@ struct SettingsView: View {
                     age: settings.chronologicalAge,
                     referenceSex: settings.referenceSex
                 )
-                Text("Broad typical range for your current profile: \(Int(typical.lowerBound.rounded()))-\(Int(typical.upperBound.rounded())) mL/kg/min")
+                Text("Broad typical range for your current profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
                     .font(.caption)
                     .foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -373,7 +375,7 @@ struct SettingsView: View {
             }
 
             #if DEBUG
-            Toggle("Local Pro override", isOn: Binding(
+            Toggle("Enable Pro locally", isOn: Binding(
                 get: { store.isPro },
                 set: { store.setLocalOverride(isPro: $0) }
             ))
@@ -382,8 +384,8 @@ struct SettingsView: View {
             Text("VO2+")
         } footer: {
             Text(store.isPro
-                ? "Freshness nudges, reading alerts, and the monthly recap keep your cardio fitness in view between Apple Health estimates. What Moved It and Heart Signals live in Trends and the VO2+ hub."
-                : "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free. VO2+ adds what moved your estimate, resting heart rate and recovery, freshness nudges, a monthly recap, and a shareable report.")
+                 ? String(localized: "Freshness nudges, reading alerts, and the monthly recap keep your cardio fitness in view between Apple Health estimates. What Moved It and Heart Signals live in Trends and the VO2+ hub.")
+                 : String(localized: "Your latest estimate, basic cardio fitness trend, widgets, and Watch experience remain free. VO2+ adds what moved your estimate, resting heart rate and recovery, freshness nudges, a monthly recap, and a shareable report."))
         }
     }
 
@@ -502,7 +504,7 @@ struct SettingsView: View {
         let periodStart = current.map(\.date).min() ?? windowStart
 
         let report = CardioReportGenerator.make(
-            title: "Cardio Fitness Report",
+            title: String(localized: "Cardio Fitness Report"),
             periodStart: periodStart,
             periodEnd: now,
             points: current,
@@ -522,7 +524,7 @@ struct SettingsView: View {
                 shareText: CardioReportShareText.make(report: report)
             )
         } catch {
-            reportError = "Could not generate the report. Please try again."
+            reportError = String(localized: "Could not generate the report. Please try again.")
         }
         isGeneratingReport = false
     }
@@ -547,7 +549,7 @@ struct SettingsView: View {
         }
     }
 
-    private func plusBenefit(_ icon: String, _ title: String, _ detail: String) -> some View {
+    private func plusBenefit(_ icon: String, _ title: LocalizedStringKey, _ detail: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: icon)
                 .foregroundStyle(Theme.cardio)

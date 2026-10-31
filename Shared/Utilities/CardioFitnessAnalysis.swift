@@ -8,18 +8,18 @@ enum CardioTrend: String, Sendable {
 
     var label: String {
         switch self {
-        case .improving: "Improving"
-        case .stable: "Stable"
-        case .declining: "Declining"
-        case .insufficientData: "Building trend"
+        case .improving: String(localized: "Improving")
+        case .stable: String(localized: "Stable")
+        case .declining: String(localized: "Declining")
+        case .insufficientData: String(localized: "Building trend")
         }
     }
 
     var symbol: String {
         switch self {
-        case .improving: "arrow.up.right"
-        case .stable: "arrow.right"
-        case .declining: "arrow.down.right"
+        case .improving: "arrow.up.forward"
+        case .stable: "arrow.forward"
+        case .declining: "arrow.down.forward"
         case .insufficientData: "ellipsis"
         }
     }
@@ -32,9 +32,9 @@ enum TargetRangeStatus: Sendable {
 
     var label: String {
         switch self {
-        case .below: "Below target"
-        case .inRange: "In target range"
-        case .above: "Above target"
+        case .below: String(localized: "Below target")
+        case .inRange: String(localized: "In target range")
+        case .above: String(localized: "Above target")
         }
     }
 }
@@ -51,9 +51,9 @@ enum ReferenceSex: Int, CaseIterable, Sendable {
 
     var label: String {
         switch self {
-        case .unspecified: "Not set"
-        case .female: "Female reference"
-        case .male: "Male reference"
+        case .unspecified: String(localized: "Not set")
+        case .female: String(localized: "Female reference")
+        case .male: String(localized: "Male reference")
         }
     }
 }
@@ -220,9 +220,9 @@ enum CardioFitnessAnalysis {
         // Same bounds as `typicalRange`, so the band never contradicts the
         // range Settings and onboarding state.
         switch ratio {
-        case ..<0.85: return "Below typical range"
-        case ...1.15: return "Within typical range"
-        default: return "Above typical range"
+        case ..<0.85: return String(localized: "Below typical range")
+        case ...1.15: return String(localized: "Within typical range")
+        default: return String(localized: "Above typical range")
         }
     }
 
