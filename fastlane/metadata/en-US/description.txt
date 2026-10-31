@@ -1,21 +1,35 @@
-See your latest Apple Health VO2 max estimate, cardio fitness trend, personal target range and a year of history.
+VO2 Max & Cardio Fitness shows the VO2 max estimate your Apple Watch saves to Apple Health, which way it is trending, and a broad fitness age, on iPhone and Apple Watch. The core view is free, with no account, and your data stays on your devices.
 
-VO2 Max Daily Tracker shows:
-
-• Your latest Apple Health estimate
-• Improving, stable, or declining trend
+YOUR CARDIO FITNESS
+• Your latest Apple Health VO2 max estimate
+• Whether it is improving, stable or declining
 • A personal target range
-• One-year history
-• A broad fitness-age estimate with clear methodology
-• Home Screen and Lock Screen widgets
-• Apple Watch app and complications
-• Guidance when no estimate is available
+• A broad fitness-age estimate from your age and a reference option you choose
+• One year of history
+• Guidance when Apple Health has no estimate yet
 
-Your fitness data stays on your devices. The app reads Cardio Fitness estimates from Apple Health and never writes Health data.
+WIDGETS AND APPLE WATCH
+• Home Screen and Lock Screen widgets
+• An Apple Watch app and watch face complications
+
+PRIVACY
+• No account, no ads and no cross-app tracking
+• The app reads Cardio Fitness and related heart data from Apple Health and never writes to it
+• Your readings are stored on your devices
+
+FREE AND VO2+
+Everything above is free and does not expire. VO2+ is an optional upgrade, as a monthly or yearly subscription or a one-time lifetime purchase. Subscriptions include a free trial for eligible new subscribers, and the app shows its length before you start. VO2+ adds:
+• Resting heart rate, heart rate recovery and weekly cardio minutes, trended next to your VO2 max
+• Every period compared with the one before, and a trend for any date range you pick
+• Direction toward your target range
+• Broad age-reference context for your estimate
+• A monthly recap and your personal bests
+• An alert for each new estimate, and a heads-up when your estimate is overdue
+• A shareable fitness report
+
+Prices appear in the app before you buy and vary by region. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Manage or cancel in Settings > Apple ID > Subscriptions.
 
 VO2 max and fitness age are broad estimates for fitness awareness. This app does not diagnose, treat, cure, or prevent any health condition. It is not a substitute for professional medical advice.
 
-VO2+ is optional. Choose a monthly plan, a yearly plan, or a one-time lifetime purchase. Monthly and yearly plans include a 7-day free trial for eligible new subscribers. Prices are shown in the app before you buy and vary by region. Payment is charged to your Apple Account at confirmation. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Your account is charged for renewal within 24 hours before the current period ends. Manage or cancel subscriptions in Apple Account settings.
-
-Terms of Use (Apple Standard EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy Policy: https://jackwallner.github.io/vo2max/privacy-policy.html
+Terms (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.com/ios/vo2max/privacy-policy.html
