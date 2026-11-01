@@ -91,7 +91,7 @@ struct WhatsNewSheet: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .background(Theme.cardioGradient, in: Capsule())
+                    .background(Theme.buttonGradient, in: Capsule())
             }
             .buttonStyle(.plain)
 

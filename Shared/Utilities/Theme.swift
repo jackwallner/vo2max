@@ -93,3 +93,61 @@ extension View {
     }
 }
 #endif
+
+#if !os(watchOS)
+/// One figure in a `StatStrip`.
+struct StatItem {
+    let title: String
+    let value: String
+    var color: Color?
+}
+
+/// Side-by-side figures with dividers. At accessibility text sizes three or
+/// four columns leave each one narrower than its own caption, so the label
+/// broke mid-word ("Read-ings"); there the figures stack as label and value rows.
+struct StatStrip: View {
+    let items: [StatItem]
+    var valueSize: CGFloat = 19
+    var captionFont: Font = .caption2
+    var dividerHeight: CGFloat = 34
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    var body: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(spacing: 10) {
+                ForEach(items.indices, id: \.self) { index in
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Text(items[index].title)
+                            .font(.subheadline)
+                            .foregroundStyle(Theme.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(items[index].value)
+                            .font(Theme.bigNumber(valueSize))
+                            .foregroundStyle(items[index].color ?? Theme.textPrimary)
+                            .lineLimit(1)
+                    }
+                    .accessibilityElement(children: .combine)
+                    if index < items.count - 1 { Divider() }
+                }
+            }
+            .padding(.horizontal, 14)
+        } else {
+            HStack(spacing: 0) {
+                ForEach(items.indices, id: \.self) { index in
+                    VStack(spacing: 3) {
+                        Text(items[index].value)
+                            .font(Theme.bigNumber(valueSize))
+                            .foregroundStyle(items[index].color ?? Theme.textPrimary)
+                        Text(items[index].title)
+                            .font(captionFont)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .accessibilityElement(children: .combine)
+                    if index < items.count - 1 { Divider().frame(height: dividerHeight) }
+                }
+            }
+        }
+    }
+}
+#endif

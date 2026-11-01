@@ -186,6 +186,7 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isActiveTab) private var isActiveTab
     @Environment(\.isUnfoldedPane) private var isUnfoldedPane
+    @Environment(\.dynamicTypeSize) private var typeSize
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
     var embedded = false
@@ -234,6 +235,8 @@ struct PaywallView: View {
     /// Hero, benefits, and plans scroll as one purchase surface. The selected
     /// plan card carries the conspicuous billed amount; the pinned footer keeps
     /// only the CTA and required renewal disclosure, matching the Vitals+ layout.
+    private var largeText: Bool { typeSize.isAccessibilitySize }
+
     private var content: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
@@ -241,8 +244,14 @@ struct PaywallView: View {
                 // A Duo pane is short: with the benefit list the last plan
                 // card rested behind the Continue button. Plans and the CTA
                 // are what the pane needs to show whole.
-                if !isUnfoldedPane { featureList }
+                // At accessibility sizes the benefit list alone fills the screen
+                // and pushes the plans out of reach, so the plans lead there too.
+                if !isUnfoldedPane && !largeText { featureList }
                 planCards
+                // The disclosure and links are taller than the page at these
+                // sizes, so they scroll with the plans instead of being pinned
+                // over them; the pinned footer keeps only the CTA.
+                if largeText { legalBlock }
             }
             .padding(.horizontal, 22)
             .padding(.top, embedded ? 20 : 44)
@@ -345,51 +354,22 @@ struct PaywallView: View {
                     Text(ctaTitle)
                         .font(.system(.headline, design: .rounded, weight: .bold))
                         .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(largeText ? 3 : 1)
+                        .minimumScaleFactor(largeText ? 1 : 0.72)
                         .opacity(store.isLoading ? 0 : 1)
                     if store.isLoading { ProgressView().tint(.white) }
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: 50)
-                .background(Theme.buttonGradient, in: Capsule())
+                .padding(.vertical, largeText ? 12 : 0)
+                .padding(.horizontal, largeText ? 16 : 0)
+                .frame(minHeight: 50)
+                .background(Theme.buttonGradient, in: RoundedRectangle(cornerRadius: 25))
             }
             .buttonStyle(.plain)
             .disabled(store.isLoading || selectedPackage == nil)
 
-            VStack(spacing: 4) {
-                Group {
-                    if let error = store.errorMessage {
-                        Text(error).foregroundStyle(Theme.negative)
-                    } else if let restoreMessage {
-                        Text(restoreMessage).foregroundStyle(Theme.textSecondary)
-                    } else {
-                        Text(disclosureText).foregroundStyle(Theme.textTertiary)
-                    }
-                }
-                .font(.system(.caption2, design: .rounded))
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity)
-
-                HStack(spacing: 12) {
-                    Button("Restore") {
-                        Task {
-                            await store.restore()
-                            if !store.isPro {
-                                restoreMessage = VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .footerTapTarget()
-                    Link("Terms", destination: VO2Links.standardEULA).footerTapTarget()
-                    Link("Privacy", destination: VO2Links.privacyPolicy).footerTapTarget()
-                }
-                .font(.system(.caption2, design: .rounded, weight: .semibold))
-                .foregroundStyle(Theme.textSecondary)
-            }
-            .frame(minHeight: 60, alignment: .top)
+            if !largeText { legalBlock }
         }
         .padding(.horizontal, 22)
         .padding(.top, 8)
@@ -401,6 +381,42 @@ struct PaywallView: View {
         // capsule's height explicitly here so the whole footer clears it.
         .padding(.bottom, embedded ? 88 : 10)
         .background(Theme.background)
+    }
+
+    private var legalBlock: some View {
+        VStack(spacing: 4) {
+            Group {
+                if let error = store.errorMessage {
+                    Text(error).foregroundStyle(Theme.negative)
+                } else if let restoreMessage {
+                    Text(restoreMessage).foregroundStyle(Theme.textSecondary)
+                } else {
+                    Text(disclosureText).foregroundStyle(Theme.textTertiary)
+                }
+            }
+            .font(.system(.caption2, design: .rounded))
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
+
+            HStack(spacing: 12) {
+                Button("Restore") {
+                    Task {
+                        await store.restore()
+                        if !store.isPro {
+                            restoreMessage = VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+                .footerTapTarget()
+                Link("Terms", destination: VO2Links.standardEULA).footerTapTarget()
+                Link("Privacy", destination: VO2Links.privacyPolicy).footerTapTarget()
+            }
+            .font(.system(.caption2, design: .rounded, weight: .semibold))
+            .foregroundStyle(Theme.textSecondary)
+        }
+        .frame(minHeight: largeText ? 0 : 60, alignment: .top)
     }
 
     private var closeButton: some View {
@@ -504,6 +520,9 @@ private struct PlanCard: View {
     /// `perMonthLabel` so the comparison is explicit rather than implied.
     let monthlyAnchorLabel: String?
     let onTap: () -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var stacked: Bool { typeSize.isAccessibilitySize }
 
     var body: some View {
         Button(action: onTap) {
@@ -535,44 +554,19 @@ private struct PlanCard: View {
                         if let trialLabel {
                             Text(String(localized: "\(trialLabel), then the price shown."))
                         } else {
-                            Text(" ")
+                            Text(" ").hidden()
                         }
                     }
                     .font(.system(size: 11, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(1)
+                    .lineLimit(stacked ? 3 : 1)
                     .minimumScaleFactor(0.8)
+                    if stacked { priceBlock(alignment: .leading) }
                 }
 
-                Spacer(minLength: 8)
-
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(package.vo2PriceLabel)
-                        .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
-                        .foregroundStyle(Theme.textPrimary)
-                        .multilineTextAlignment(.trailing)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.8)
-                    if let perMonthLabel {
-                        HStack(spacing: 5) {
-                            // Only strike the monthly price when yearly really is
-                            // cheaper per month; otherwise it is not an anchor.
-                            if let monthlyAnchorLabel, savingsPercent != nil {
-                                Text(monthlyAnchorLabel)
-                                    .foregroundStyle(Theme.textTertiary)
-                                    .strikethrough(true, color: Theme.textTertiary)
-                                    // The strikethrough carries meaning VoiceOver
-                                    // cannot see, so say it.
-                                .accessibilityLabel(String(localized: "Instead of \(monthlyAnchorLabel)"))
-                            }
-                            Text(perMonthLabel)
-                                .foregroundStyle(Theme.textSecondary)
-                                .accessibilityLabel(perMonthLabel)
-                        }
-                        .font(.system(size: 11, design: .rounded).monospacedDigit())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                    }
+                if !stacked {
+                    Spacer(minLength: 8)
+                    priceBlock(alignment: .trailing)
                 }
             }
             .frame(minHeight: 54)
@@ -587,6 +581,37 @@ private struct PlanCard: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
+    }
+
+    private func priceBlock(alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 2) {
+            Text(package.vo2PriceLabel)
+                .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
+                .foregroundStyle(Theme.textPrimary)
+                .multilineTextAlignment(alignment == .leading ? .leading : .trailing)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+            if let perMonthLabel {
+                HStack(spacing: 5) {
+                    // Only strike the monthly price when yearly really is
+                    // cheaper per month; otherwise it is not an anchor.
+                    if let monthlyAnchorLabel, savingsPercent != nil {
+                        Text(monthlyAnchorLabel)
+                            .foregroundStyle(Theme.textTertiary)
+                            .strikethrough(true, color: Theme.textTertiary)
+                            // The strikethrough carries meaning VoiceOver
+                            // cannot see, so say it.
+                            .accessibilityLabel(String(localized: "Instead of \(monthlyAnchorLabel)"))
+                    }
+                    Text(perMonthLabel)
+                        .foregroundStyle(Theme.textSecondary)
+                        .accessibilityLabel(perMonthLabel)
+                }
+                .font(.system(size: 11, design: .rounded).monospacedDigit())
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            }
+        }
     }
 
     private func badge(_ text: String) -> some View {

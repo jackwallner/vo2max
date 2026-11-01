@@ -22,6 +22,7 @@ struct OnboardingView: View {
 
     @EnvironmentObject private var settings: GoalSettings
     @EnvironmentObject private var store: StoreService
+    @Environment(\.dynamicTypeSize) private var typeSize
     @StateObject private var health = HealthKitService.shared
 
     @State private var step: Step = .welcome
@@ -341,6 +342,8 @@ struct OnboardingView: View {
                         )
                     )
                 }
+
+                if legalInPage { trialSoftExitAndDisclosure(inset: 0) }
             }
 
             // Capped so the pitch settles just above the CTA bar and the billed
@@ -375,9 +378,13 @@ struct OnboardingView: View {
         switch step {
         case .welcome: welcomeTrustLine
         case .profile, .target: EmptyView()
-        case .trial: trialSoftExitAndDisclosure
+        // At accessibility sizes the disclosure alone is taller than the page,
+        // so it joins the scrolling pitch and the bar keeps only the CTA.
+        case .trial: if !legalInPage { trialSoftExitAndDisclosure(inset: 24) }
         }
     }
+
+    private var legalInPage: Bool { typeSize.isAccessibilitySize }
 
     @ViewBuilder
     private var primaryButton: some View {
@@ -432,6 +439,8 @@ struct OnboardingView: View {
     private func primaryLabel(_ title: String) -> some View {
         Text(title)
             .font(.system(.headline, design: .rounded))
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(Theme.buttonFill, in: RoundedRectangle(cornerRadius: 14))
@@ -456,7 +465,7 @@ struct OnboardingView: View {
 
     /// Trial-page content ABOVE the primary button: the de-emphasized free
     /// exit, then disclosure or error — none of it can shift the CTA.
-    private var trialSoftExitAndDisclosure: some View {
+    private func trialSoftExitAndDisclosure(inset: CGFloat) -> some View {
         VStack(spacing: 12) {
             Button {
                 finishOnboarding()
@@ -469,7 +478,7 @@ struct OnboardingView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .padding(.horizontal, 24)
+            .padding(.horizontal, inset)
 
             // Render no disclosure until the package loads — never a phantom
             // price. Error replaces disclosure in the same slot.
@@ -478,14 +487,14 @@ struct OnboardingView: View {
                     .font(.system(.caption2, design: .rounded))
                     .foregroundStyle(Theme.negative)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, inset)
             } else if let disclosure = trialDisclosure {
                 Text(disclosure)
                     .font(.system(.caption2, design: .rounded))
                     .foregroundStyle(Theme.textTertiary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, inset)
             }
         }
     }
