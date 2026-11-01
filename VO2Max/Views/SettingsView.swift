@@ -217,19 +217,35 @@ struct SettingsView: View {
         }
     }
 
+    private var targetValue: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Text("\(Int(settings.targetLower))-\(Int(settings.targetUpper))")
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(Theme.cardio)
+            Text("mL/kg/min")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .lineLimit(1)
+        .fixedSize()
+    }
+
     private var targetSection: some View {
         Section {
             VStack(spacing: 12) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Target range")
-                        .font(.subheadline.weight(.medium))
-                    Spacer()
-                    Text("\(Int(settings.targetLower))-\(Int(settings.targetUpper))")
-                        .font(.headline.monospacedDigit())
-                        .foregroundStyle(Theme.cardio)
-                    Text("mL/kg/min")
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Target range")
+                            .font(.subheadline.weight(.medium))
+                            .lineLimit(1)
+                        Spacer()
+                        targetValue
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Target range")
+                            .font(.subheadline.weight(.medium))
+                        HStack(alignment: .firstTextBaseline) { targetValue }
+                    }
                 }
 
                 let typical = CardioFitnessAnalysis.typicalRange(

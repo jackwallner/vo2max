@@ -86,7 +86,7 @@ struct TrialOfferSheet: View {
             VStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(Theme.cardioGradient)
+                        .fill(Theme.buttonGradient)
                         .frame(width: 60, height: 60)
                         .shadow(color: Theme.cardio.opacity(0.45), radius: 14, x: 0, y: 4)
                         .scaleEffect(animateGlow ? 1.06 : 0.96)
@@ -198,7 +198,7 @@ struct TrialOfferSheet: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 13)
-                        .background(Theme.cardioGradient, in: Capsule())
+                        .background(Theme.buttonGradient, in: Capsule())
                     }
                     .buttonStyle(.plain)
                     .disabled(isPurchasing)
@@ -212,12 +212,12 @@ struct TrialOfferSheet: View {
                     .disabled(isPurchasing)
 
                     HStack(spacing: 4) {
-                        Link("Terms", destination: VO2Links.standardEULA)
+                        Link("Terms", destination: VO2Links.standardEULA).footerTapTarget()
                         Text("·")
-                        Link("Privacy Policy", destination: VO2Links.privacyPolicy)
+                        Link("Privacy Policy", destination: VO2Links.privacyPolicy).footerTapTarget()
                     }
                     .font(.system(.caption2, design: .rounded))
-                    .foregroundStyle(Theme.textTertiary)
+                    .foregroundStyle(Theme.textSecondary)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 10)

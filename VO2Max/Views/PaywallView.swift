@@ -254,7 +254,7 @@ struct PaywallView: View {
         VStack(spacing: 6) {
             ZStack {
                 Circle()
-                    .fill(Theme.cardioGradient)
+                    .fill(Theme.buttonGradient)
                     .frame(width: 52, height: 52)
                     .shadow(color: Theme.cardio.opacity(0.3), radius: 10, y: 4)
                 Image(systemName: "sparkles")
@@ -348,7 +348,7 @@ struct PaywallView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
-                .background(Theme.cardioGradient, in: Capsule())
+                .background(Theme.buttonGradient, in: Capsule())
             }
             .buttonStyle(.plain)
             .disabled(store.isLoading || selectedPackage == nil)
@@ -377,8 +377,10 @@ struct PaywallView: View {
                             }
                         }
                     }
-                    Link("Terms", destination: VO2Links.standardEULA)
-                    Link("Privacy", destination: VO2Links.privacyPolicy)
+                    .buttonStyle(.plain)
+                    .footerTapTarget()
+                    Link("Terms", destination: VO2Links.standardEULA).footerTapTarget()
+                    Link("Privacy", destination: VO2Links.privacyPolicy).footerTapTarget()
                 }
                 .font(.system(.caption2, design: .rounded, weight: .semibold))
                 .foregroundStyle(Theme.textSecondary)

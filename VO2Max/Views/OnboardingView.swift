@@ -434,8 +434,9 @@ struct OnboardingView: View {
             .font(.system(.headline, design: .rounded))
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
-            .background(Theme.cardio, in: RoundedRectangle(cornerRadius: 14))
+            .background(Theme.buttonFill, in: RoundedRectangle(cornerRadius: 14))
             .foregroundStyle(.white)
+            .contentShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var welcomeTrustLine: some View {
@@ -492,12 +493,13 @@ struct OnboardingView: View {
         HStack(spacing: 14) {
             Button(isRestoring ? String(localized: "Restoring…") : String(localized: "Restore")) { startRestore() }
                 .buttonStyle(.plain)
+                .footerTapTarget()
                 .disabled(isRestoring)
-            Link("Terms", destination: VO2Links.standardEULA)
-            Link("Privacy", destination: VO2Links.privacyPolicy)
+            Link("Terms", destination: VO2Links.standardEULA).footerTapTarget()
+            Link("Privacy", destination: VO2Links.privacyPolicy).footerTapTarget()
         }
         .font(.system(.caption2, design: .rounded, weight: .semibold))
-        .foregroundStyle(Theme.textTertiary)
+        .foregroundStyle(Theme.textSecondary)
     }
 
     // MARK: - Trial copy

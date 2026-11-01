@@ -707,7 +707,7 @@ private struct TabButton: View {
                 Text(label)
                     .font(.system(size: 10, weight: .semibold, design: .rounded))
             }
-            .foregroundStyle(isSelected ? Theme.cardio : Color(.tertiaryLabel))
+            .foregroundStyle(isSelected ? Theme.cardio : Theme.textSecondary)
             .frame(width: 72, height: 44)
             .background(
                 isSelected ? Theme.cardio.opacity(0.12) : .clear,
