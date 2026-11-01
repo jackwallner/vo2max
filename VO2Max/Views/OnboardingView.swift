@@ -465,7 +465,8 @@ struct OnboardingView: View {
                     .font(.system(.footnote, design: .rounded, weight: .semibold))
                     .foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 7)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 24)

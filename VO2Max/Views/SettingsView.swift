@@ -197,12 +197,14 @@ struct SettingsView: View {
                         : String(localized: "Connect Apple Health"),
                     systemImage: health.isAuthorized ? "arrow.clockwise" : "heart.fill"
                 )
+                .foregroundStyle(Theme.cardio)
             }
 
             Button {
                 openAppleHealth()
             } label: {
                 Label("Open Apple Health", systemImage: "arrow.up.forward.app")
+                    .foregroundStyle(Theme.cardio)
             }
 
             if let error = health.lastError {

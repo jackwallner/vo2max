@@ -185,6 +185,7 @@ struct BilledAmountBlock: View {
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isActiveTab) private var isActiveTab
+    @Environment(\.isUnfoldedPane) private var isUnfoldedPane
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
     var embedded = false
@@ -237,7 +238,10 @@ struct PaywallView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 12) {
                 header
-                featureList
+                // A Duo pane is short: with the benefit list the last plan
+                // card rested behind the Continue button. Plans and the CTA
+                // are what the pane needs to show whole.
+                if !isUnfoldedPane { featureList }
                 planCards
             }
             .padding(.horizontal, 22)
