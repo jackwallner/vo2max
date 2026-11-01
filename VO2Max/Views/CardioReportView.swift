@@ -80,7 +80,7 @@ struct CardioReportView: View {
             HStack(spacing: 10) {
                 MetricTile(
                     label: String(localized: "Range").uppercased(),
-                    value: String(localized: "\(formatValue(report.minValue))–\(formatValue(report.maxValue))"),
+                    value: String(localized: "\(formatValue(report.minValue))-\(formatValue(report.maxValue))"),
                     sub: String(localized: "min to max"),
                     accent: reportColor,
                     trendPct: nil
@@ -88,7 +88,7 @@ struct CardioReportView: View {
                 MetricTile(
                     label: String(localized: "In target"),
                     value: "\(report.readingsInTarget) / \(report.readingCount)",
-                    sub: String(localized: "\(Int(report.targetLower))–\(Int(report.targetUpper)) mL/kg/min"),
+                    sub: String(localized: "\(Int(report.targetLower))-\(Int(report.targetUpper)) mL/kg/min"),
                     accent: targetColor,
                     trendPct: nil
                 )

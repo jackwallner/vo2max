@@ -357,7 +357,7 @@ struct PlusTabView: View {
         // Deliberately not the highlight card's sentence: that one says the
         // estimate cleared the target, this one states what the target is.
         guard latest.value < settings.targetLower else {
-            return String(localized: "Your target range is \(targetLowerLabel)–\(targetUpperLabel)")
+            return String(localized: "Your target range is \(targetLowerLabel)-\(targetUpperLabel)")
         }
         guard let projection = CardioFitnessAnalysis.projection(
             points: points,

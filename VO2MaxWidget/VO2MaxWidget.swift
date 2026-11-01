@@ -108,7 +108,7 @@ struct VO2MaxWidgetView: View {
                 Image(systemName: entry.trend.symbol)
                     .font(.title.bold()).foregroundStyle(Theme.cardio)
                 Text(entry.trend.label).font(.headline)
-                Text("Target \(entry.targetLower.formatted(.number.precision(.fractionLength(0))))–\(entry.targetUpper.formatted(.number.precision(.fractionLength(0))))")
+                Text("Target \(entry.targetLower.formatted(.number.precision(.fractionLength(0))))-\(entry.targetUpper.formatted(.number.precision(.fractionLength(0))))")
                     .font(.caption).foregroundStyle(.secondary)
                 if let readingDate = entry.readingDate {
                     Text(readingDate, format: .dateTime.month(.abbreviated).day())

@@ -250,11 +250,11 @@ struct OnboardingView: View {
                 Text("Target range")
                     .font(.system(.headline, design: .rounded))
                 Spacer()
-                Text("\(Int(targetLower))–\(Int(targetUpper))")
+                Text("\(Int(targetLower))-\(Int(targetUpper))")
                     .font(Theme.bigNumber(22))
                     .foregroundStyle(Theme.cardio)
             }
-            Text("Typical for your profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
+            Text("Typical for your profile: \(Int(typical.lowerBound.rounded()))-\(Int(typical.upperBound.rounded())) mL/kg/min")
                 .font(.system(.caption, design: .rounded))
                 .foregroundStyle(Theme.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)

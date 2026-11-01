@@ -6,7 +6,7 @@ private func formattedWorkoutDuration(_ minutes: Double) -> String {
     let formatter = DateComponentsFormatter()
     formatter.allowedUnits = [.minute]
     formatter.unitsStyle = .abbreviated
-    return formatter.string(from: minutes.rounded() * 60) ?? "–"
+    return formatter.string(from: minutes.rounded() * 60) ?? "-"
 }
 
 // MARK: - Shared range
@@ -324,7 +324,7 @@ struct SignalReading {
             return SignalReading(
                 value: summary.latest,
                 change: summary.change,
-                detail: String(localized: "avg \(average) · range \(low)–\(high) · \(readings)"),
+                detail: String(localized: "avg \(average) · range \(low)-\(high) · \(readings)"),
                 compactDetail: String(localized: "Avg \(average) · \(readings)"),
                 series: CardioMetricAnalysis.downsample(points.filter { range.contains($0.date) })
             )

@@ -2,7 +2,7 @@ import XCTest
 
 /// The release gate's journeys (`qa-gate run`). Each step ends in a
 /// `QA.checkpoint`, which runs the fleet oracles on whatever is on screen.
-/// Journeys assert reachability only.
+/// Core-loop journeys assert outcomes; the rest assert reachability.
 ///
 /// `-DemoData` stands in for Apple Health, and `-rcfunnelprobe` loads plans from
 /// RevenueCat's Test Store (a separate app in the project, never the production
@@ -44,7 +44,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         XCTAssertTrue(app.buttons[L("Today")].waitForExistence(timeout: 20))
         QA.checkpoint(app, "today")
 
-        tap(L("Trends"), in: app)
+        openTrends(in: app)
         QA.checkpoint(app, "trends")
 
         tap(L("VO2+"), in: app)
@@ -55,7 +55,11 @@ final class ReleaseJourneysUITests: XCTestCase {
         tap(L("Settings"), in: app)
         XCTAssertTrue(app.navigationBars[L("Settings")].waitForExistence(timeout: 15))
         QA.checkpoint(app, "settings")
-        app.swipeDown(velocity: .fast)
+        if app.buttons[L("Done")].firstMatch.exists {
+            tap(L("Done"), in: app)
+        } else {
+            QA.swipe(app.windows.firstMatch, .down)
+        }
         XCTAssertTrue(app.buttons[L("Today")].waitForExistence(timeout: 15))
 
         QA.interrupt(app)
@@ -97,12 +101,13 @@ final class ReleaseJourneysUITests: XCTestCase {
         let slider = app.descendants(matching: .any)
             .matching(NSPredicate(format: "label == %@ AND elementType != %d", L("Target range"),
                                   XCUIElement.ElementType.staticText.rawValue)).firstMatch
-        XCTAssertTrue(slider.waitForExistence(timeout: 15), "target range slider")
+        let scroller = [app.collectionViews, app.tables, app.scrollViews].map(\.firstMatch).first { $0.exists } ?? app.windows.firstMatch
         var scrolls = 0
-        while !slider.isHittable && scrolls < 5 {
-            QA.swipe(app.collectionViews.firstMatch.exists ? app.collectionViews.firstMatch : app.windows.firstMatch, .up)
+        while !(slider.exists && slider.isHittable) && scrolls < 8 {
+            QA.swipe(scroller, .up)
             scrolls += 1
         }
+        XCTAssertTrue(slider.waitForExistence(timeout: 15), "target range slider")
         return slider
     }
 
@@ -127,8 +132,8 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     private func assertTodayTarget(_ lower: Int, _ upper: Int, in app: XCUIApplication) {
         XCTAssertTrue(app.buttons[L("Today")].waitForExistence(timeout: 20))
-        let caption = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "\(lower)–\(upper)")).firstMatch
-        XCTAssertTrue(caption.waitForExistence(timeout: 15), "Today shows the \(lower)–\(upper) target")
+        let caption = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "\(lower)-\(upper)")).firstMatch
+        XCTAssertTrue(caption.waitForExistence(timeout: 15), "Today shows the \(lower)-\(upper) target")
     }
 
     /// The German strings the journeys look for; other personas see the English source.
@@ -141,6 +146,19 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     private func L(_ english: String) -> String {
         QA.persona == "german" ? Self.german[english] ?? english : english
+    }
+
+    /// Trends is a tab button on a phone; on the unfolded Duo it is the trailing
+    /// pane and the tab button is hidden, so the pane's title stands in.
+    private func openTrends(in app: XCUIApplication) {
+        let tab = app.buttons[L("Trends")].firstMatch
+        if tab.waitForExistence(timeout: 15) && tab.isHittable {
+            tab.tap()
+            return
+        }
+        let title = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label == %@", L("Trends"))).firstMatch
+        XCTAssertTrue(title.waitForExistence(timeout: 15), "Trends missing")
     }
 
     private func tap(_ label: String, in app: XCUIApplication) {
