@@ -265,14 +265,19 @@ struct PaywallView: View {
 
     private var header: some View {
         VStack(spacing: 6) {
-            ZStack {
-                Circle()
-                    .fill(Theme.buttonGradient)
-                    .frame(width: 52, height: 52)
-                    .shadow(color: Theme.cardio.opacity(0.3), radius: 10, y: 4)
-                Image(systemName: "sparkles")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.white)
+            // At accessibility sizes the headline alone is two tall lines; the
+            // badge and the long pitch would push every plan below the CTA.
+            if !largeText {
+                ZStack {
+                    Circle()
+                        .fill(Theme.buttonGradient)
+                        .frame(width: 52, height: 52)
+                        .shadow(color: Theme.cardio.opacity(0.3), radius: 10, y: 4)
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+                .accessibilityHidden(true)
             }
             Text(focus?.intentHeadline ?? String(localized: "Go further with VO2+"))
                 .font(.system(.title2, design: .rounded, weight: .bold))
@@ -280,12 +285,14 @@ struct PaywallView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.85)
-            Text(focus?.intentSubheadline ?? String(localized: "Extras that sit on top of your Apple Health estimates."))
-                .font(.system(.footnote, design: .rounded))
-                .foregroundStyle(Theme.textSecondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .minimumScaleFactor(0.88)
+            if !largeText {
+                Text(focus?.intentSubheadline ?? String(localized: "Extras that sit on top of your Apple Health estimates."))
+                    .font(.system(.footnote, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.88)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -569,6 +576,7 @@ private struct PlanCard: View {
                     priceBlock(alignment: .trailing)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .frame(minHeight: 54)
             .padding(.horizontal, 14)
             .padding(.vertical, 9)

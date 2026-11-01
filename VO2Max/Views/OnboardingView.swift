@@ -295,38 +295,44 @@ struct OnboardingView: View {
                     Text("Go further with VO2+")
                         .font(.system(.title, design: .rounded, weight: .bold))
                         .multilineTextAlignment(.center)
-                    Text("Your Apple Health estimate, cardio fitness trend, and fitness age stay free. VO2+ adds deeper context:")
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundStyle(Theme.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if !legalInPage {
+                        Text("Your Apple Health estimate, cardio fitness trend, and fitness age stay free. VO2+ adds deeper context:")
+                            .font(.system(.subheadline, design: .rounded))
+                            .foregroundStyle(Theme.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
-                    TrialSellingPoint(
-                        icon: "chart.bar.xaxis",
-                        color: Theme.cardio,
-                        title: String(localized: "Deep Trends"),
-                        detail: String(localized: "Compare 30, 90, and 180-day windows side by side")
-                    )
-                    TrialSellingPoint(
-                        icon: "scope",
-                        color: Theme.cardioBlue,
-                        title: String(localized: "Target outlook"),
-                        detail: String(localized: "Direction and broad timeframe toward your target")
-                    )
-                    TrialSellingPoint(
-                        icon: "person.2.crop.square.stack",
-                        color: Theme.positive,
-                        title: String(localized: "Age-reference context"),
-                        detail: String(localized: "Broad typical-range context for your profile")
-                    )
-                    TrialSellingPoint(
-                        icon: "trophy",
-                        color: Theme.coral,
-                        title: String(localized: "Personal bests"),
-                        detail: String(localized: "Keep your strongest estimate visible")
-                    )
+                // At accessibility sizes the benefit list would push the billed
+                // amount off the first screen, and the price must stay visible.
+                if !legalInPage {
+                    VStack(alignment: .leading, spacing: 12) {
+                        TrialSellingPoint(
+                            icon: "chart.bar.xaxis",
+                            color: Theme.cardio,
+                            title: String(localized: "Deep Trends"),
+                            detail: String(localized: "Compare 30, 90, and 180-day windows side by side")
+                        )
+                        TrialSellingPoint(
+                            icon: "scope",
+                            color: Theme.cardioBlue,
+                            title: String(localized: "Target outlook"),
+                            detail: String(localized: "Direction and broad timeframe toward your target")
+                        )
+                        TrialSellingPoint(
+                            icon: "person.2.crop.square.stack",
+                            color: Theme.positive,
+                            title: String(localized: "Age-reference context"),
+                            detail: String(localized: "Broad typical-range context for your profile")
+                        )
+                        TrialSellingPoint(
+                            icon: "trophy",
+                            color: Theme.coral,
+                            title: String(localized: "Personal bests"),
+                            detail: String(localized: "Keep your strongest estimate visible")
+                        )
+                    }
                 }
 
                 // Apple 3.1.2(c): the billed amount is the largest pricing
