@@ -1,1 +1,1 @@
-Cải tiến phía sau và sửa lỗi để VO2 Max chạy mượt mà. Cảm ơn bạn đã đồng hành.
+VO2 Max now speaks 18 languages. Apple Watch readings arrive in the background more reliably, the reminder when your data goes stale fires on schedule, and Restore Purchases tells you what it found. The Trends tab fills the screen on first open.
