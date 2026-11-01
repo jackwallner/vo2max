@@ -77,11 +77,9 @@ final class ReleaseJourneysUITests: XCTestCase {
         let slider = targetSlider(in: app)
         let (_, upper) = range(of: slider)
         XCTAssertLessThan(upper, 70, "the target can still widen")
-        slider.increment()
-        let widened = NSPredicate(format: "value CONTAINS %@", " \(upper + 1)")
-        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: widened, object: slider)], timeout: 5),
-                       .completed, "the slider moves the top of the range")
+        dragUpperHandleToEnd(slider, from: upper)
         let (lower, raised) = range(of: slider)
+        XCTAssertGreaterThan(raised, upper, "the slider moves the top of the range")
         QA.checkpoint(app, "target-widened")
         tap(L("Done"), in: app)
         assertTodayTarget(lower, raised, in: app)
@@ -106,6 +104,17 @@ final class ReleaseJourneysUITests: XCTestCase {
             scrolls += 1
         }
         return slider
+    }
+
+    /// Drags the upper handle to the end of the track (the Settings bounds are
+    /// 20...70, with 30-point handles along the top of the control).
+    private func dragUpperHandleToEnd(_ slider: XCUIElement, from upper: Int) {
+        let width = slider.frame.width
+        let handleX = CGFloat(upper - 20) / 50 * (width - 30) + 15
+        let origin = slider.coordinate(withNormalizedOffset: .zero)
+        origin.withOffset(CGVector(dx: handleX, dy: 15))
+            .press(forDuration: 0.05, thenDragTo: origin.withOffset(CGVector(dx: width + 20, dy: 15)),
+                   withVelocity: .slow, thenHoldForDuration: 0.1)
     }
 
     /// The slider reads "Target from 40 to 55" (German "Zielbereich von 40 bis 55").
