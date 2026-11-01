@@ -68,6 +68,9 @@ struct HistoryView: View {
             // pushed the cards under the fold.
             .frame(width: viewportWidth)
         }
+        // The scroll view takes the width it is offered, never its content's:
+        // sized by the pinned content, a first narrow measurement could never grow.
+        .frame(maxWidth: .infinity)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { viewportWidth = $0 }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
