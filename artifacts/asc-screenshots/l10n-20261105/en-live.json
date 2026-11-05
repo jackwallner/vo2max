@@ -1,0 +1,49 @@
+{
+ "phone": {
+  "display_type": "APP_IPHONE_67",
+  "frames": [
+   {
+    "file": "01-see-cardio-fitness-moving.png",
+    "md5": "886f36be2a291d5cfefba4537d8b6c8f",
+    "url": "https://is1-ssl.mzstatic.com/image/thumb/xw4cdh2gbHWuh6NG5L_iEA/1320x2868bb.png",
+    "w": 1320,
+    "h": 2868
+   },
+   {
+    "file": "02-make-the-daily-number-easier-to-read.png",
+    "md5": "b14f70f0dd667d5126d6f1c734bb34ed",
+    "url": "https://is1-ssl.mzstatic.com/image/thumb/4u8Yq4LtNTYkaIi6YxflCA/1320x2868bb.png",
+    "w": 1320,
+    "h": 2868
+   },
+   {
+    "file": "03-read-your-score-history.png",
+    "md5": "57fedd11128420a208a7032fb83f9788",
+    "url": "https://is1-ssl.mzstatic.com/image/thumb/WLGgRfdFT7s7LBkJkpydBQ/1320x2868bb.png",
+    "w": 1320,
+    "h": 2868
+   },
+   {
+    "file": "04-see-the-change-by-time-window.png",
+    "md5": "3b35dbd8f10c828fd761d10656b2e37e",
+    "url": "https://is1-ssl.mzstatic.com/image/thumb/_P8jZB_SD1uBypu9V6gLwg/1320x2868bb.png",
+    "w": 1320,
+    "h": 2868
+   },
+   {
+    "file": "05-keep-supporting-detail-close.png",
+    "md5": "fa66c9a121b6ffa6a612ea9abb261b80",
+    "url": "https://is1-ssl.mzstatic.com/image/thumb/-8Ie8lWkMnYAWL64nHDi8g/1320x2868bb.png",
+    "w": 1320,
+    "h": 2868
+   },
+   {
+    "file": "06-review-your-supporting-signals.png",
+    "md5": "2bf7b82cbd2279d842c56bcc0490bfb3",
+    "url": "https://is1-ssl.mzstatic.com/image/thumb/obicRkCzkgRxaoGxWt7hSw/1320x2868bb.png",
+    "w": 1320,
+    "h": 2868
+   }
+  ]
+ }
+}

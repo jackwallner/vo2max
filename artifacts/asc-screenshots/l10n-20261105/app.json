@@ -1,0 +1,45 @@
+{
+ "repo": "health",
+ "github": "jackwallner/vo2max",
+ "bundle": "com.jackwallner.vo2max",
+ "family": "scene",
+ "asc_id": "6791235742",
+ "live_version": "1.1.5",
+ "targets": [
+  {
+   "rank": 40,
+   "store_locale": "de-DE",
+   "lang": "de",
+   "apple_languages": "(de)",
+   "apple_locale": "de_DE",
+   "regions": [
+    "Germany"
+   ],
+   "customers": 17.0
+  },
+  {
+   "rank": 54,
+   "store_locale": "nl-NL",
+   "lang": "nl",
+   "apple_languages": "(nl)",
+   "apple_locale": "nl_NL",
+   "regions": [
+    "Netherlands"
+   ],
+   "customers": 12.0
+  },
+  {
+   "rank": 84,
+   "store_locale": "fr-FR",
+   "lang": "fr",
+   "apple_languages": "(fr)",
+   "apple_locale": "fr_FR",
+   "regions": [
+    "France"
+   ],
+   "customers": 8.0
+  }
+ ],
+ "store_locales_missing": [],
+ "dest": "artifacts/asc-screenshots/l10n-20261105"
+}
