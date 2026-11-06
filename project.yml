@@ -155,6 +155,10 @@ targets:
     platform: iOS
     sources:
       - path: VO2MaxUITests
+        excludes:
+          - StoreScreenshotLocales.json
+      - path: VO2MaxUITests/StoreScreenshotLocales.json
+        buildPhase: resources
     dependencies:
       - target: VO2Max
     settings:

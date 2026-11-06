@@ -1,5 +1,15 @@
 import XCTest
 
+private struct StoreScreenshotLocale: Decodable {
+    let store_locale: String
+    let language: String
+    let apple_locale: String
+}
+
+private struct StoreScreenshotLocales: Decodable {
+    let locales: [StoreScreenshotLocale]
+}
+
 /// The release gate's journeys (`qa-gate run`). Each step ends in a
 /// `QA.checkpoint`, which runs the fleet oracles on whatever is on screen.
 /// Journeys assert reachability only.
@@ -64,6 +74,42 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.relaunch(app)
         XCTAssertTrue(app.buttons["Today"].waitForExistence(timeout: 20))
         QA.checkpoint(app, "today-after-relaunch")
+    }
+
+    func testLocalizedStoreScreenshots() throws {
+        let bundles = [Bundle(for: Self.self), Bundle.main]
+        let url = try XCTUnwrap(bundles.compactMap {
+            $0.url(forResource: "StoreScreenshotLocales", withExtension: "json")
+        }.first)
+        let config = try JSONDecoder().decode(StoreScreenshotLocales.self, from: Data(contentsOf: url))
+        let scenes = [
+            (name: "trends", route: "trends"),
+            (name: "today", route: "today"),
+            (name: "readings", route: "readings"),
+            (name: "trend", route: "trend"),
+            (name: "plus", route: "plus")
+        ]
+
+        for locale in config.locales {
+            for scene in scenes {
+                let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+                app.launchArguments = [
+                    "-DemoData", "-DemoPro", "-ScreenshotTab", "0",
+                    "-AppleLanguages", "(\(locale.language))",
+                    "-AppleLocale", locale.apple_locale,
+                    "-DuoScreen", scene.route
+                ]
+                app.launch()
+                XCTAssertTrue(app.buttons["VO2+"].firstMatch.waitForExistence(timeout: 120), "App UI missing for \(locale.store_locale)/\(scene.name)")
+                Thread.sleep(forTimeInterval: 3)
+
+                let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+                attachment.name = "\(locale.store_locale)__\(scene.name).png"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+                app.terminate()
+            }
+        }
     }
 
     private func tap(_ label: String, in app: XCUIApplication) {
