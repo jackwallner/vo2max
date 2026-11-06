@@ -1,19 +1,82 @@
 {
   "verdict": "FIX",
-  "header_fixes": [],
-  "unsure": [],
-  "ui_defects": [
+  "header_fixes": [
     {
       "locale": "de-DE",
-      "file": "all frames",
-      "what": "Not captured: the UI-test job could not load the locale JSON before the earlier run hit its job limit. The XcodeGen resource declaration is now corrected. Capture and install the same five frames as French.",
+      "file": "01-see-cardio-fitness-moving.png",
+      "before": "Cardiofitness-Trend\nim Blick",
+      "after": "So entwickelt sich\ndeine Cardiofitness",
+      "why": "Balances the lines and naturally describes the cardio fitness trend using the catalog term Cardiofitness"
+    },
+    {
+      "locale": "de-DE",
+      "file": "03-read-your-score-history.png",
+      "before": "Dein Verlauf\nder Messwerte",
+      "after": "Deine Messwerte\nim Verlauf",
+      "why": "Replaces the awkward possessive phrase Dein Verlauf der Messwerte with natural German and retains the catalog term Messwerte"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "01-see-cardio-fitness-moving.png",
+      "before": "Volg je\ncardiofitnesstrend",
+      "after": "Volg de trend in\nje cardiofitness",
+      "why": "Balances the short Volg je line against the long compound while preserving the cardio fitness trend meaning and catalog terminology"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "03-read-your-score-history.png",
+      "before": "Bekijk je\nmeetgeschiedenis",
+      "after": "Al je metingen\nop een rij",
+      "why": "Balances the lines and uses natural Dutch store copy with the catalog term metingen for the reading history"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "06-review-your-supporting-signals.png",
+      "before": "Bekijk ook\nje andere signalen",
+      "after": "Je andere signalen\nin één overzicht",
+      "why": "Balances the lines and keeps the supporting signals explicit using the catalog term signalen"
+    }
+  ],
+  "ui_defects": [
+    {
+      "locale": "fr-FR",
+      "file": "04_see-the-change-by-time-window.png",
+      "what": "The UI heading Changer par fenêtre mistranslates Change by window as a command about a window. The catalog contains this same incorrect translation. Use Évolution par période, then regenerate the screenshot through the orchestrator.",
+      "severity": "blocker"
+    },
+    {
+      "locale": "de-DE",
+      "file": "04_see-the-change-by-time-window.png",
+      "what": "The 365-day row reads 6. Nov. bis 6. Nov. 2026, omitting the starting year and making the interval look like one day. Show both years for this cross-year range, 6 November 2025 through 6 November 2026, using localized formatting. Requires an app fix and screenshot regeneration by the orchestrator.",
       "severity": "blocker"
     },
     {
       "locale": "nl-NL",
-      "file": "all frames",
-      "what": "Not captured, same cause as de-DE. Capture and install the same five frames as French.",
+      "file": "04_see-the-change-by-time-window.png",
+      "what": "The 365-day row reads van 6 nov tot 6 nov 2026, omitting the starting year and making the interval look like one day. Show both years for this cross-year range, 6 November 2025 through 6 November 2026, using localized formatting. Requires an app fix and screenshot regeneration by the orchestrator.",
       "severity": "blocker"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "04_see-the-change-by-time-window.png",
+      "what": "The 365-day row reads du 6 nov. au 6 nov. 2026, omitting the starting year and making the interval look like one day. Show both years for this cross-year range, 6 November 2025 through 6 November 2026, using localized formatting. Requires an app fix and screenshot regeneration by the orchestrator.",
+      "severity": "blocker"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "01_see-cardio-fitness-moving.png",
+      "what": "The resting-heart-rate comparison caption is visibly truncated as Changement par rapport à 90 jours... while the German and Dutch captions fit. Shorten the translation or allow the complete label to fit, then regenerate through the orchestrator.",
+      "severity": "minor"
+    },
+    {
+      "locale": "fr-FR",
+      "file": "04_see-the-change-by-time-window.png",
+      "what": "The target projection paragraph breaks mL/kg/min across lines after mL/kg/. Keep the measurement unit together when regenerating the screenshot.",
+      "severity": "minor"
     }
+  ],
+  "unsure": [
+    "Reviewed all three English/localized phone sheets and all 15 managed PNGs. The excluded English Apple Watch frame 05 is outside this review. Raw captures are absent, so raw-to-frame checks were skipped.",
+    "Header fixes are saved in copy/headers.json only. tools/reskin.py requires every raw capture and has no existing-screen reuse mode. The orchestrator must render the five revised headers and verify their final wrapping, fit and uniform size. Existing screenshot PNGs were left unchanged."
   ]
 }
