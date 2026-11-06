@@ -1,0 +1,168 @@
+{
+  "english_locale": "en-US",
+  "omitted_store_files": [
+    "05_keep-supporting-detail-close.png"
+  ],
+  "sets": {
+    "phone": {
+      "canvas": [
+        1320,
+        2868
+      ],
+      "frames": [
+        {
+          "file": "01-see-cardio-fitness-moving.png",
+          "store_file": "01_see-cardio-fitness-moving.png",
+          "base": "en-live/phone/01-see-cardio-fitness-moving.png",
+          "raw": "trends",
+          "screen": [
+            110,
+            590,
+            1100,
+            2063
+          ],
+          "radius": 105,
+          "header_box": [
+            40,
+            66,
+            1240,
+            410
+          ],
+          "font": "AvenirNext-Medium",
+          "color": [
+            28,
+            45,
+            74
+          ],
+          "max_size": 150,
+          "min_size": 70,
+          "align": "center",
+          "extra_text": []
+        },
+        {
+          "file": "02-make-the-daily-number-easier-to-read.png",
+          "store_file": "02_make-the-daily-number-easier-to-read.png",
+          "base": "en-live/phone/02-make-the-daily-number-easier-to-read.png",
+          "raw": "today",
+          "screen": [
+            110,
+            590,
+            1100,
+            2063
+          ],
+          "radius": 105,
+          "header_box": [
+            40,
+            66,
+            1240,
+            410
+          ],
+          "font": "AvenirNext-Medium",
+          "color": [
+            28,
+            45,
+            74
+          ],
+          "max_size": 150,
+          "min_size": 70,
+          "align": "center",
+          "extra_text": []
+        },
+        {
+          "file": "03-read-your-score-history.png",
+          "store_file": "03_read-your-score-history.png",
+          "base": "en-live/phone/03-read-your-score-history.png",
+          "raw": "readings",
+          "screen": [
+            110,
+            590,
+            1100,
+            2063
+          ],
+          "radius": 105,
+          "header_box": [
+            40,
+            80,
+            1240,
+            410
+          ],
+          "font": "AvenirNext-Medium",
+          "color": [
+            28,
+            45,
+            74
+          ],
+          "max_size": 150,
+          "min_size": 70,
+          "align": "center",
+          "extra_text": []
+        },
+        {
+          "file": "04-see-the-change-by-time-window.png",
+          "store_file": "04_see-the-change-by-time-window.png",
+          "base": "en-live/phone/04-see-the-change-by-time-window.png",
+          "raw": "trend",
+          "screen": [
+            110,
+            590,
+            1100,
+            2063
+          ],
+          "radius": 105,
+          "header_box": [
+            40,
+            66,
+            1240,
+            410
+          ],
+          "font": "AvenirNext-Medium",
+          "color": [
+            28,
+            45,
+            74
+          ],
+          "max_size": 150,
+          "min_size": 70,
+          "align": "center",
+          "extra_text": []
+        },
+        {
+          "file": "06-review-your-supporting-signals.png",
+          "store_file": "06_review-your-supporting-signals.png",
+          "base": "en-live/phone/06-review-your-supporting-signals.png",
+          "raw": "plus",
+          "screen": [
+            110,
+            590,
+            1100,
+            2063
+          ],
+          "radius": 105,
+          "header_box": [
+            40,
+            80,
+            1240,
+            410
+          ],
+          "font": "AvenirNext-Medium",
+          "color": [
+            28,
+            45,
+            74
+          ],
+          "max_size": 150,
+          "min_size": 70,
+          "align": "center",
+          "extra_text": []
+        }
+      ]
+    }
+  },
+  "english_headers": {
+    "01-see-cardio-fitness-moving.png": "See how your cardio fitness is moving",
+    "02-make-the-daily-number-easier-to-read.png": "Read your daily number",
+    "03-read-your-score-history.png": "Read your score history",
+    "04-see-the-change-by-time-window.png": "See the change by time window",
+    "06-review-your-supporting-signals.png": "Review your supporting signals"
+  }
+}

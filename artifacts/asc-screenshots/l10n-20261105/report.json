@@ -1,0 +1,23 @@
+{
+  "locales": [
+    "de-DE",
+    "nl-NL",
+    "fr-FR"
+  ],
+  "frames": 5,
+  "gate": {
+    "de-DE": "FAIL",
+    "nl-NL": "FAIL",
+    "fr-FR": "PASS"
+  },
+  "gh_sim_jobs": 6,
+  "app_code_changed": [],
+  "defects": [
+    "de-DE and nl-NL captures are unavailable. The sixth GH-SIM job failed because the UI test bundle could not load StoreScreenshotLocales.json; the resource declaration was corrected after the six-job limit.",
+    "Only the French phone set was captured and gated in this run."
+  ],
+  "left_out": [
+    "05-keep-supporting-detail-close.png: Watch display stays English and is not part of the localized phone set"
+  ],
+  "adapter": "xcuitest"
+}

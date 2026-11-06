@@ -90,7 +90,7 @@ def main() -> int:
         p.error('--catalog requires --lang')
     data, headers = config(args.config), read_json(args.headers)
     english_locale = data.get('english_locale', 'en-US')
-    english = headers.get(english_locale, headers.get('en', {}))
+    english = headers.get(english_locale, headers.get('en', data.get('english_headers', {})))
     failures = []
     raw_frames = {}
     seen = {}

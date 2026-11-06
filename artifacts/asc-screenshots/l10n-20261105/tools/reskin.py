@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from common import config, destinations, erase_header, header_job, headline, paste_screen, raw_path, read_json, source
 
@@ -45,6 +45,42 @@ def main() -> None:
             rendered = headline(jobs)
             if not all(r['fits'] for r in rendered):
                 raise ValueError(f'{key}: uniform header size does not fit')
+
+            extra_text: dict[str, list[tuple[dict, dict]]] = {}
+            extra_jobs = []
+            extra_index = 0
+            for frame in frames:
+                entries = []
+                for extra in frame.get('extra_text', []):
+                    header_key = f"{frame['file']}#{extra['key']}"
+                    if header_key not in headers:
+                        raise ValueError(f"{args.locale}: missing extra text {header_key}")
+                    box = extra['box']
+                    extra_job = {
+                        'text': headers[header_key],
+                        'locale': args.locale,
+                        'font': extra['font'],
+                        'color': extra['color'],
+                        'box': box[2:],
+                        'maxSize': extra.get('max_size', extra.get('size', 32)),
+                        'minSize': extra.get('min_size', 1),
+                        'align': extra.get('align', 'center'),
+                        'out': str(Path(tmp) / f'extra-{extra_index}.png'),
+                    }
+                    if 'size' in extra:
+                        extra_job['size'] = extra['size']
+                    extra_jobs.append(extra_job)
+                    entries.append((extra, extra_job))
+                    extra_index += 1
+                extra_text[frame['file']] = entries
+            if extra_jobs:
+                extra_results = headline(extra_jobs)
+                for extra_job, result in zip(extra_jobs, extra_results):
+                    if not result['fits'] or result['size'] < extra_job['minSize']:
+                        raise ValueError(
+                            f"{key}: extra text does not fit; text={extra_job['text']!r}"
+                        )
+
             output = args.out / args.locale / key
             output.mkdir(parents=True, exist_ok=True)
             for frame, job in zip(frames, jobs):
@@ -62,6 +98,19 @@ def main() -> None:
                         paste_screen(canvas, raw, target['rect'], target.get('radius', 0))
                 with Image.open(job['out']) as overlay:
                     canvas.paste(overlay, tuple(frame['header_box'][:2]), overlay)
+                for extra, extra_job in extra_text[frame['file']]:
+                    x, y, width, height = map(int, extra['box'])
+                    if 'fill_color' in extra:
+                        draw = ImageDraw.Draw(canvas)
+                        fill = tuple(extra['fill_color'])
+                        radius = int(extra.get('radius', 0))
+                        shape = (x, y, x + width - 1, y + height - 1)
+                        if radius:
+                            draw.rounded_rectangle(shape, radius=radius, fill=fill)
+                        else:
+                            draw.rectangle(shape, fill=fill)
+                    with Image.open(extra_job['out']) as overlay:
+                        canvas.paste(overlay, (x, y), overlay)
                 canvas.save(output / frame['file'], format='PNG', optimize=True)
             print(f'{args.locale}/{key}: {len(frames)} frames size={size:g}')
 
