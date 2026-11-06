@@ -10,20 +10,41 @@
     "nl-NL": "PASS",
     "fr-FR": "PASS"
   },
-  "gh_sim_jobs": 12,
+  "gh_sim_jobs": 16,
+  "gh_sim_job_ids": [
+    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-223436-5922",
+    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-225516-13066",
+    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-232158-2564",
+    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-233549-1646"
+  ],
   "app_code_changed": [
     "VO2Max/Views/DetailViews.swift",
+    "Shared/Utilities/CardioMetricAnalysis.swift",
     "Shared/Localizable.xcstrings"
   ],
   "defects": [],
   "resolved": [
-    "de-DE and nl-NL: captured and gated all five managed phone frames after bundling the locale JSON in the UI-test target.",
-    "Reading history: localized the dynamic date-span suffix across the 18 catalog languages and regenerated the affected sets.",
-    "Capture adapter: match attachment scene names exactly so trend does not collide with trends."
+    "fr-FR: changed Change by window to Évolution par période.",
+    "de-DE, nl-NL, fr-FR: cross-year date ranges show both years using localized date formatting.",
+    "fr-FR: shortened the resting-heart-rate comparison caption so it fits.",
+    "fr-FR: kept mL/kg/min together when the target projection wraps.",
+    "All five managed phone frames were recomposed with the revised headers and gated."
   ],
   "left_out": [],
   "excluded_by_design": [
-    "05-keep-supporting-detail-close.png: Apple Watch display stays English and is not part of the localized phone set"
+    "05-keep-supporting-detail-close.png: Apple Watch display stays English and is outside the localized phone set"
   ],
-  "adapter": "xcuitest"
+  "adapter": "GH-SIM localized UI test screenshot attachments, 14-second post-readiness wait",
+  "captured_scenes": [
+    "trends",
+    "trend"
+  ],
+  "reused_from_job": "health-shots@20261105-201645-ef00-codex-mbpro3c86-1105-215038-23510",
+  "unit_tests": {
+    "status": "PASS",
+    "target": "VO2MaxTests",
+    "passed": 134,
+    "failed": 0,
+    "gh_sim_job_id": "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-233549-1646"
+  }
 }

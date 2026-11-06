@@ -106,4 +106,14 @@ struct CardioRangeTests {
         #expect(range.priorSpanLabel(calendar: calendar) != nil)
         #expect(range.priorSpanLabel(calendar: calendar) != range.spanLabel)
     }
+
+    @Test func spanLabelIncludesBothYearsAcrossNewYear() {
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(secondsFromGMT: 0)!
+        let end = utc.date(from: DateComponents(year: 2026, month: 11, day: 6, hour: 12))!
+        let range = CardioRange.trailing(days: 365, now: end, calendar: utc)
+
+        #expect(range.spanLabel.contains("2025"))
+        #expect(range.spanLabel.contains("2026"))
+    }
 }

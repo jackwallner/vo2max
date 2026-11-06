@@ -22822,7 +22822,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Changer par fenêtre"
+            "value": "Évolution par période"
           }
         },
         "nl": {
@@ -22941,7 +22941,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Changement par rapport à %1$@"
+            "value": "Écart avec %1$@"
           }
         },
         "nl": {

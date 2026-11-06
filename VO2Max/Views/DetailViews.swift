@@ -337,15 +337,22 @@ struct TrendDetailView: View {
             .number.precision(.fractionLength(1)).sign(strategy: .always())
         )
         if latest.value >= settings.targetLower {
-            return String(localized: "Your latest estimate is in or above your target range. Recent pace: \(slope) mL/kg/min per month.")
+            return keepMeasurementUnitTogether(String(localized: "Your latest estimate is in or above your target range. Recent pace: \(slope) mL/kg/min per month."))
         }
         if let months = projection.monthsToTarget {
-            return String(localized: "At the recent pace of \(slope) mL/kg/min per month, the lower edge of your target range is roughly \(months) months away.")
+            return keepMeasurementUnitTogether(String(localized: "At the recent pace of \(slope) mL/kg/min per month, the lower edge of your target range is roughly \(months) months away."))
         }
         if projection.slopePerMonth <= 0.05 {
             return String(localized: "The recent cardio fitness trend is flat or declining, so a time-to-target estimate is not meaningful.")
         }
         return String(localized: "The recent direction is positive, but too gradual for a useful timeframe.")
+    }
+
+    private func keepMeasurementUnitTogether(_ text: String) -> String {
+        text.replacingOccurrences(
+            of: "mL/kg/min",
+            with: "mL\u{2060}/\u{2060}kg\u{2060}/\u{2060}min"
+        )
     }
 
     private func trendColor(_ trend: CardioTrend) -> Color {

@@ -8,8 +8,10 @@ paths:
 
 # Localized store sets
 
-Run `artifacts/asc-screenshots/l10n-20261105/tools/capture.sh` from the repo root to recapture all target locales. Pass store locale IDs such as `fr-FR` to limit the run. The script uses one GH-SIM UI-test job for the selected locales and the English reference, then composes, gates, sheets, and copies the root-level phone frames.
+Run `artifacts/asc-screenshots/l10n-20261105/tools/capture.sh` from the repo root to recapture all target locales. Pass store locale IDs such as `fr-FR` to limit the run. The script uses one GH-SIM UI test job for the selected locales and English reference, waits for the app's tab bar, then waits 14 seconds before each screenshot attachment. It composes, gates, sheets, and copies the root-level phone frames.
 
-The UI-test adapter launches the real app with `-DemoData`, `-DemoPro`, `-ScreenshotTab 0`, and `-DuoScreen <route>`. It waits for the tab bar before taking each screenshot. GH-SIM launch captures sometimes remained blank on English startup, so keep the UI-state wait in the test.
+Screenshots come from XCUITest attachments because headless GH-SIM launch screenshots were blank for this app. The test starts the real app with `-DemoData`, `-DemoPro`, and `-ScreenshotTab 0`, then applies the locale and `-DuoScreen <route>` arguments. Keep the 14-second wait after the UI appears because shorter captures sometimes remained blank.
+
+For a targeted repair, pass `--scenes trends,trend --reuse-job <gh-sim-id>`. The adapter seeds unchanged scenes from that run's attachments, captures only the selected routes, then still composes and gates every managed frame.
 
 Frame 05 is an Apple Watch display and stays English. The localized phone set contains frames 01, 02, 03, 04, and 06. `-DemoPro` is local screenshot state and does not configure RevenueCat.

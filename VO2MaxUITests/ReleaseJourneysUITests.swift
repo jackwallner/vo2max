@@ -6,8 +6,14 @@ private struct StoreScreenshotLocale: Decodable {
     let apple_locale: String
 }
 
+private struct StoreScreenshotScene: Decodable {
+    let name: String
+    let route: String
+}
+
 private struct StoreScreenshotLocales: Decodable {
     let locales: [StoreScreenshotLocale]
+    let scenes: [StoreScreenshotScene]
 }
 
 /// The release gate's journeys (`qa-gate run`). Each step ends in a
@@ -82,16 +88,8 @@ final class ReleaseJourneysUITests: XCTestCase {
             $0.url(forResource: "StoreScreenshotLocales", withExtension: "json")
         }.first)
         let config = try JSONDecoder().decode(StoreScreenshotLocales.self, from: Data(contentsOf: url))
-        let scenes = [
-            (name: "trends", route: "trends"),
-            (name: "today", route: "today"),
-            (name: "readings", route: "readings"),
-            (name: "trend", route: "trend"),
-            (name: "plus", route: "plus")
-        ]
-
         for locale in config.locales {
-            for scene in scenes {
+            for scene in config.scenes {
                 let app = XCUIApplication(bundleIdentifier: Self.bundleID)
                 app.launchArguments = [
                     "-DemoData", "-DemoPro", "-ScreenshotTab", "0",
@@ -101,7 +99,7 @@ final class ReleaseJourneysUITests: XCTestCase {
                 ]
                 app.launch()
                 XCTAssertTrue(app.buttons["VO2+"].firstMatch.waitForExistence(timeout: 120), "App UI missing for \(locale.store_locale)/\(scene.name)")
-                Thread.sleep(forTimeInterval: 3)
+                Thread.sleep(forTimeInterval: 14)
 
                 let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
                 attachment.name = "\(locale.store_locale)__\(scene.name).png"

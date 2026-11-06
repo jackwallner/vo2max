@@ -152,24 +152,32 @@ struct CardioRange: Sendable, Equatable {
         return String(localized: "previous \(days) days")
     }
 
-    /// The actual dates this window covers, e.g. "May 3 – Aug 1, 2026". Shown
-    /// under the picker and anywhere a screen states which period it is reading.
+    /// The actual dates this window covers. Show the starting year when a
+    /// window crosses New Year's so both ends remain clear.
     var spanLabel: String {
-        let from = start.formatted(.dateTime.month(.abbreviated).day())
-        let to = end.formatted(.dateTime.month(.abbreviated).day().year())
-        return String(localized: "\(from) to \(to)")
+        localizedDateSpan(from: start, to: end)
     }
 
     /// The equivalent window immediately before this one, for "vs." captions.
     func priorSpanLabel(calendar: Calendar = .current) -> String? {
         guard let priorEnd = calendar.date(byAdding: .day, value: -days, to: end),
               let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: end) else { return nil }
-        let from = priorStart.formatted(.dateTime.month(.abbreviated).day())
-        let to = priorEnd.formatted(.dateTime.month(.abbreviated).day().year())
-        return String(localized: "\(from) to \(to)")
+        return localizedDateSpan(from: priorStart, to: priorEnd)
     }
 
     func contains(_ date: Date) -> Bool { date >= start && date <= end }
+}
+
+private func localizedDateSpan(from start: Date, to end: Date) -> String {
+    let crossesYear = Calendar.current.component(.year, from: start) != Calendar.current.component(.year, from: end)
+    let from: String
+    if crossesYear {
+        from = start.formatted(.dateTime.month(.abbreviated).day().year())
+    } else {
+        from = start.formatted(.dateTime.month(.abbreviated).day())
+    }
+    let to = end.formatted(.dateTime.month(.abbreviated).day().year())
+    return String(localized: "\(from) to \(to)")
 }
 
 /// The two Apple Health heart series this app trends alongside the estimate.
