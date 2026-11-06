@@ -1,0 +1,19 @@
+{
+  "verdict": "FIX",
+  "header_fixes": [],
+  "unsure": [],
+  "ui_defects": [
+    {
+      "locale": "de-DE",
+      "file": "all frames",
+      "what": "Not captured: the UI-test job could not load the locale JSON before the earlier run hit its job limit. The XcodeGen resource declaration is now corrected. Capture and install the same five frames as French.",
+      "severity": "blocker"
+    },
+    {
+      "locale": "nl-NL",
+      "file": "all frames",
+      "what": "Not captured, same cause as de-DE. Capture and install the same five frames as French.",
+      "severity": "blocker"
+    }
+  ]
+}
