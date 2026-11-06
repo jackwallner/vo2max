@@ -6,18 +6,24 @@
   ],
   "frames": 5,
   "gate": {
-    "de-DE": "FAIL",
-    "nl-NL": "FAIL",
+    "de-DE": "PASS",
+    "nl-NL": "PASS",
     "fr-FR": "PASS"
   },
-  "gh_sim_jobs": 6,
-  "app_code_changed": [],
-  "defects": [
-    "de-DE and nl-NL captures are unavailable. The sixth GH-SIM job failed because the UI test bundle could not load StoreScreenshotLocales.json; the resource declaration was corrected after the six-job limit.",
-    "Only the French phone set was captured and gated in this run."
+  "gh_sim_jobs": 12,
+  "app_code_changed": [
+    "VO2Max/Views/DetailViews.swift",
+    "Shared/Localizable.xcstrings"
   ],
-  "left_out": [
-    "05-keep-supporting-detail-close.png: Watch display stays English and is not part of the localized phone set"
+  "defects": [],
+  "resolved": [
+    "de-DE and nl-NL: captured and gated all five managed phone frames after bundling the locale JSON in the UI-test target.",
+    "Reading history: localized the dynamic date-span suffix across the 18 catalog languages and regenerated the affected sets.",
+    "Capture adapter: match attachment scene names exactly so trend does not collide with trends."
+  ],
+  "left_out": [],
+  "excluded_by_design": [
+    "05-keep-supporting-detail-close.png: Apple Watch display stays English and is not part of the localized phone set"
   ],
   "adapter": "xcuitest"
 }
