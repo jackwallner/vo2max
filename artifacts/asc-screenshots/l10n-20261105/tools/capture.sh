@@ -98,8 +98,13 @@ collect(manifest)
 for locale in ["en-US", *selected]:
     for scene in scenes:
         prefix = f"{locale}__{scene}"
-        matches = [item for item in records
-                   if Path(item["suggestedHumanReadableName"]).name.startswith(prefix)]
+        matches = []
+        for item in records:
+            stem = Path(item["suggestedHumanReadableName"]).stem
+            parts = stem.rsplit("_", 2)
+            key = parts[0] if len(parts) == 3 and parts[1].isdigit() else stem
+            if key == prefix:
+                matches.append(item)
         if len(matches) != 1:
             raise SystemExit(f"expected one screenshot attachment for {prefix}, found {len(matches)}")
         filename = Path(matches[0]["exportedFileName"]).name

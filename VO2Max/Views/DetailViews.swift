@@ -69,7 +69,7 @@ struct ReadingHistoryDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Reading history")
                 .font(.headline)
-            Text("Every cached Apple Health estimate, shown read-only.\(recordedSpan.map { " Covers \($0)." } ?? "")")
+            Text("Every cached Apple Health estimate, shown read-only.\(recordedSpanCaption)")
                 .font(.caption)
                 .foregroundStyle(Theme.textSecondary)
             Chart(samples) { sample in
@@ -105,6 +105,11 @@ struct ReadingHistoryDetailView: View {
         let from = oldest.formatted(.dateTime.month(.abbreviated).day().year())
         let to = newest.formatted(.dateTime.month(.abbreviated).day().year())
         return from == to ? from : String(localized: "\(from) to \(to)")
+    }
+
+    private var recordedSpanCaption: String {
+        guard let recordedSpan else { return "" }
+        return " " + String(localized: "Covers \(recordedSpan).")
     }
 
     private var listCard: some View {
