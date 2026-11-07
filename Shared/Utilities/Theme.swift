@@ -20,12 +20,19 @@ enum Theme {
     static let cardSurfaceLight = Color(.tertiarySystemBackground)
     static let ringTrack = Color(.systemFill)
     static let textPrimary = Color(.label)
-    static let textSecondary = Color(.secondaryLabel)
+    // secondaryLabel measured 3.4 to 3.7:1 on the grouped card surface in light
+    // mode, so light uses a solid gray that clears 4.5:1 there. Dark keeps the
+    // system value, which is already above it.
+    static let textSecondary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor.secondaryLabel
+            : UIColor(white: traits.accessibilityContrast == .high ? 0.25 : 0.34, alpha: 1)
+    })
     // tertiaryLabel is about 1.7:1 on the system backgrounds. Footnotes and locked
     // rows must reach 4.5:1 in light, dark and increased contrast, so this follows
     // secondaryLabel (about 5:1 or better, and the system darkens it further for
     // increased contrast).
-    static let textTertiary = Color(.secondaryLabel)
+    static let textTertiary = textSecondary
     #endif
 
     // Cardio fitness palette
@@ -51,9 +58,23 @@ enum Theme {
     static let cardioDeep = Color(red: 0.0, green: 0.45, blue: 0.47)
     static let cardioBlueDeep = Color(red: 0.05, green: 0.34, blue: 0.80)
 
+    // Status colors are drawn as text on the card surface, so light mode uses
+    // deeper tones (4.5:1 or better); dark keeps the bright originals.
+    #if os(watchOS)
     static let coral = Color(red: 1.0, green: 0.45, blue: 0.40)
     static let positive = Color(red: 0.20, green: 0.72, blue: 0.48)
     static let negative = Color(red: 0.92, green: 0.36, blue: 0.38)
+    #else
+    private static func adaptive(light: UIColor, dark: UIColor) -> Color {
+        Color(UIColor { $0.userInterfaceStyle == .dark ? dark : light })
+    }
+    static let coral = adaptive(light: UIColor(red: 0.72, green: 0.22, blue: 0.18, alpha: 1),
+                                dark: UIColor(red: 1.0, green: 0.45, blue: 0.40, alpha: 1))
+    static let positive = adaptive(light: UIColor(red: 0.0, green: 0.46, blue: 0.25, alpha: 1),
+                                   dark: UIColor(red: 0.20, green: 0.72, blue: 0.48, alpha: 1))
+    static let negative = adaptive(light: UIColor(red: 0.78, green: 0.18, blue: 0.20, alpha: 1),
+                                   dark: UIColor(red: 0.92, green: 0.36, blue: 0.38, alpha: 1))
+    #endif
 
     // MARK: - Constants
 

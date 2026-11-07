@@ -10,6 +10,7 @@ struct HistoryView: View {
     /// window a user picks here is the window they land in.
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPlusPaywall = false
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var range: CardioRange { ranges.resolved }
     private var period: Int { range.days }
@@ -89,16 +90,24 @@ struct HistoryView: View {
 
         // No span caption here: the picker states it two rows above, and
         // repeating it that close together reads as a second, different window.
-        return HStack(spacing: 0) {
+        let blocks = Group {
             statBlock(String(localized: "Readings"), "\(values.count)")
-            Divider().frame(height: 36)
+            if typeSize.isAccessibilitySize { Divider() } else { Divider().frame(height: 36) }
             statBlock(String(localized: "Average"), average.formatted(.number.precision(.fractionLength(1))))
-            Divider().frame(height: 36)
+            if typeSize.isAccessibilitySize { Divider() } else { Divider().frame(height: 36) }
             statBlock(
                 String(localized: "Change"),
                 change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "-",
                 color: change.map { $0 >= 0 ? Theme.positive : Theme.negative }
             )
+        }
+        // Three columns break "Readings" mid-word at accessibility sizes, so stack them.
+        return Group {
+            if typeSize.isAccessibilitySize {
+                VStack(spacing: 8) { blocks }.padding(.horizontal, 16)
+            } else {
+                HStack(spacing: 0) { blocks }
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)

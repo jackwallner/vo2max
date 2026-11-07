@@ -239,17 +239,25 @@ struct PaywallView: View {
     /// plan card carries the conspicuous billed amount; the pinned footer keeps
     /// only the CTA and required renewal disclosure, matching the Vitals+ layout.
     private var content: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 12) {
-                header
-                featureList
-                planCards
+        ScrollViewReader { proxy in
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 12) {
+                    header
+                    featureList
+                    planCards
+                }
+                .padding(.horizontal, 22)
+                .padding(.top, embedded ? 20 : 44)
+                .padding(.bottom, 12)
             }
-            .padding(.horizontal, 22)
-            .padding(.top, embedded ? 20 : 44)
-            .padding(.bottom, 12)
+            .scrollBounceBehavior(.basedOnSize)
+            // At large text or in a short pane the plans start below the fold,
+            // so bring the selected one (and its price) into view.
+            .task(id: selectedPackage?.identifier) {
+                guard let id = selectedPackage?.identifier else { return }
+                proxy.scrollTo(id, anchor: .center)
+            }
         }
-        .scrollBounceBehavior(.basedOnSize)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             checkoutFooter
         }
@@ -330,6 +338,7 @@ struct PaywallView: View {
                 ) {
                     selectedPackage = package
                 }
+                .id(package.identifier)
             }
         }
     }

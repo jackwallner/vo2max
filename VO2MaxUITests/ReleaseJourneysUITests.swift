@@ -96,7 +96,10 @@ final class ReleaseJourneysUITests: XCTestCase {
         assertReadingCount(15, in: app)
         QA.checkpoint(app, "core-trends")
 
-        tap(["All Readings", "Alle Messwerte"], in: app)
+        // The row is one button whose label also carries its caption.
+        let allReadings = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'All Readings' OR label BEGINSWITH 'Alle Messwerte'")).firstMatch
+        XCTAssertTrue(allReadings.waitForExistence(timeout: 15), "All Readings missing")
+        allReadings.tap()
         XCTAssertTrue(app.navigationBars.matching(NSPredicate(format: "identifier IN %@", ["All Readings", "Alle Messwerte"]))
             .firstMatch.waitForExistence(timeout: 15))
         QA.checkpoint(app, "core-all-readings")
