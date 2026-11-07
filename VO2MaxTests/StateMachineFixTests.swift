@@ -103,4 +103,27 @@ struct StateMachineFixTests {
         #expect(next > pending)
         #expect(!CardioFreshnessAnalysis.assess(points: fresh, now: next.addingTimeInterval(-86_400)).isStale)
     }
+
+    // MARK: - SM-5: the paywall footer shows only its own attempt's outcome
+
+    private func source(_ path: String) throws -> String {
+        let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        return try String(contentsOf: repo.appendingPathComponent(path), encoding: .utf8)
+    }
+
+    /// `store.errorMessage` is a process-wide singleton set by every purchase
+    /// surface. The paywall may copy it right after an attempt it started, but
+    /// must never render it live, or a cancel in onboarding replaces this
+    /// footer's renewal disclosure with "Trial wasn't started".
+    @Test func sm5_paywallNeverRendersTheSharedStoreError() throws {
+        let lines = try source("VO2Max/Views/PaywallView.swift")
+            .split(separator: "\n")
+            .filter { $0.contains("store.errorMessage") && !$0.trimmingCharacters(in: .whitespaces).hasPrefix("///") }
+        #expect(!lines.isEmpty)
+        for line in lines {
+            let copiedAfterAttempt = line.contains("attemptMessage = store.errorMessage")
+                || line.contains("errorMessage: store.errorMessage")
+            #expect(copiedAfterAttempt, "renders the shared store error: \(line)")
+        }
+    }
 }
