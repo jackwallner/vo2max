@@ -48,8 +48,8 @@ struct OvernightP1Tests {
         )
     }
 
-    /// A nudge still pending in the future is the one being replaced, so it
-    /// must not push its own replacement back.
+    /// A nudge still pending in the future is the one being replaced; the
+    /// replacement lands on it rather than somewhere else.
     @Test func pendingNudgeDoesNotDelayItsReplacement() {
         let points = makePoints(daysAgo: [3, 10, 17, 24])
         let pending = day(12)
