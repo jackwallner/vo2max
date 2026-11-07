@@ -8453,7 +8453,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld–%2$lld"
+            "value": "%1$lld to %2$lld"
           }
         },
         "de": {
@@ -20787,7 +20787,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Broad typical range for your current profile: %1$lld–%2$lld mL/kg/min"
+            "value": "Broad typical range for your current profile: %1$lld to %2$lld mL/kg/min"
           }
         },
         "de": {
@@ -53987,7 +53987,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Target %1$@–%2$@"
+            "value": "Target %1$@ to %2$@"
           }
         },
         "de": {
@@ -59183,7 +59183,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Typical for your profile: %1$lld–%2$lld mL/kg/min"
+            "value": "Typical for your profile: %1$lld to %2$lld mL/kg/min"
           }
         },
         "de": {

@@ -551,10 +551,10 @@ private struct MainTabView: View {
         return tab == 1 ? 0 : UnfoldedSplit.tabBarBandHeight(barHeight: tabBarHeight)
     }
 
-    /// The room kept under a pane for the floating tab bar. Folded it stays
-    /// clear, as on every iPhone. Split, it is an opaque band with a hairline
-    /// top edge, so the leading pane's content stops cleanly above the bar
-    /// instead of fading out under it beside an uncovered Trends pane.
+    /// The room kept under a pane for the floating tab bar: an opaque band with
+    /// a hairline top edge, so content stops cleanly above the bar instead of
+    /// scrolling under it (folded, the release gate flagged cards overlapping
+    /// the tab buttons) or fading out beside an uncovered Trends pane.
     private var tabBarBand: some View {
         Theme.background
             .overlay(alignment: .top) {
@@ -562,7 +562,6 @@ private struct MainTabView: View {
                     .fill(Color(.separator))
                     .frame(height: 1 / displayScale)
             }
-            .opacity(split == nil ? 0 : 1)
             .allowsHitTesting(false)
     }
 

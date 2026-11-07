@@ -46,7 +46,7 @@ paths:
   top edge, sized from the measured bar (`UnfoldedSplit.tabBarBandHeight`:
   bar + 12 pt margin + 10 pt gap, 77 pt on the Duo). Content stops at a hard
   edge there. A gradient band was rejected (2026-10-23 review): glyph halves
-  showed as a faded line beside the pill. Folded it stays a clear 92 pt.
+  showed as a faded line beside the pill. Folded it is the same opaque band at 92 pt (it was clear until 2026-11-06, when the release gate flagged Trends cards overlapping the tab buttons).
 - The band still cut long leading-pane screens mid-card (2026-10-23 review:
   VO2+'s Heart Rate Recovery row, Fitness Age's methodology card). Split, their
   cards stack in `PaneRestStack` (`UnfoldedSplit.restingTops`): the first card

@@ -35,21 +35,21 @@ final class ReleaseJourneysUITests: XCTestCase {
     func test1FirstRunToTrial() {
         let app = XCUIApplication(bundleIdentifier: Self.bundleID)
         QA.launch(app, environment: Self.customer, arguments: ["-DemoData", "-rcfunnelprobe"])
-        checkpoint("welcome", button: "Continue", in: app)
-        tap("Continue", in: app)
-        checkpoint("profile", button: "Continue", in: app)
-        tap("Continue", in: app)
-        checkpoint("target", button: "Continue", in: app)
-        tap("Continue", in: app)
-        XCTAssertTrue(app.buttons["Continue with VO2+"].waitForExistence(timeout: 20))
+        checkpoint("welcome", button: ["Continue", "Weiter"], in: app)
+        tap(["Continue", "Weiter"], in: app)
+        checkpoint("profile", button: ["Continue", "Weiter"], in: app)
+        tap(["Continue", "Weiter"], in: app)
+        checkpoint("target", button: ["Continue", "Weiter"], in: app)
+        tap(["Continue", "Weiter"], in: app)
+        XCTAssertTrue(button(["Continue with VO2+", "Weiter mit VO2+"], in: app).waitForExistence(timeout: 20))
         QA.checkpoint(app, "onboarding-trial", paywall: true)
-        tap("Get Started", in: app)
-        let whatsNew = app.buttons["Not now"]
+        tap(["Get Started", "Los geht's"], in: app)
+        let whatsNew = button(["Not now", "Nicht jetzt"], in: app)
         if whatsNew.waitForExistence(timeout: 8) {
             QA.checkpoint(app, "whats-new")
             whatsNew.tap()
         }
-        XCTAssertTrue(app.buttons["Today"].waitForExistence(timeout: 20))
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
         QA.checkpoint(app, "first-today")
     }
 
@@ -57,29 +57,57 @@ final class ReleaseJourneysUITests: XCTestCase {
         let app = XCUIApplication(bundleIdentifier: Self.bundleID)
         QA.launch(app, environment: Self.customer,
                   arguments: ["-DemoData", "-SeedScreenshotData", "-rcfunnelprobe", "-ScreenshotTab", "0"])
-        XCTAssertTrue(app.buttons["Today"].waitForExistence(timeout: 20))
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
         QA.checkpoint(app, "today")
 
-        tap("Trends", in: app)
+        openTrends(in: app)
         QA.checkpoint(app, "trends")
 
-        tap("VO2+", in: app)
-        XCTAssertTrue(app.buttons["Restore"].firstMatch.waitForExistence(timeout: 20))
+        tap(["VO2+"], in: app)
+        XCTAssertTrue(button(["Restore", "Wiederherstellen"], in: app).waitForExistence(timeout: 20))
         QA.checkpoint(app, "upgrade", paywall: true)
 
-        tap("Today", in: app)
-        tap("Settings", in: app)
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 15))
+        tap(Self.today, in: app)
+        tap(["Settings", "Einstellungen"], in: app)
+        XCTAssertTrue(settingsBar(in: app).waitForExistence(timeout: 15))
         QA.checkpoint(app, "settings")
-        app.swipeDown(velocity: .fast)
-        XCTAssertTrue(app.buttons["Today"].waitForExistence(timeout: 15))
+        tap(["Done", "Fertig"], in: app)
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 15))
 
         QA.interrupt(app)
-        XCTAssertTrue(app.buttons["Today"].waitForExistence(timeout: 15))
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 15))
         QA.checkpoint(app, "today-after-background")
         QA.relaunch(app)
-        XCTAssertTrue(app.buttons["Today"].waitForExistence(timeout: 20))
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
         QA.checkpoint(app, "today-after-relaunch")
+    }
+
+    /// Core loop: read the estimate on Today, see the same window's readings
+    /// on Trends, open the full list, and find all of it again after a relaunch.
+    func testCoreLoopEstimateAndReadingsSurviveRelaunch() {
+        let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+        QA.launch(app, environment: Self.customer,
+                  arguments: ["-DemoData", "-SeedScreenshotData", "-rcfunnelprobe", "-ScreenshotTab", "0"])
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
+        assertEstimateOnToday(in: app)
+        QA.checkpoint(app, "core-today")
+
+        openTrends(in: app)
+        assertReadingCount(15, in: app)
+        QA.checkpoint(app, "core-trends")
+
+        tap(["All Readings", "Alle Messwerte"], in: app)
+        XCTAssertTrue(app.navigationBars.matching(NSPredicate(format: "identifier IN %@", ["All Readings", "Alle Messwerte"]))
+            .firstMatch.waitForExistence(timeout: 15))
+        QA.checkpoint(app, "core-all-readings")
+
+        QA.relaunch(app)
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
+        assertEstimateOnToday(in: app)
+        QA.checkpoint(app, "core-today-after-relaunch")
+        openTrends(in: app)
+        assertReadingCount(15, in: app)
+        QA.checkpoint(app, "core-trends-after-relaunch")
     }
 
     func testLocalizedStoreScreenshots() throws {
@@ -110,14 +138,42 @@ final class ReleaseJourneysUITests: XCTestCase {
         }
     }
 
-    private func tap(_ label: String, in app: XCUIApplication) {
-        let button = app.buttons[label].firstMatch
-        XCTAssertTrue(button.waitForExistence(timeout: 15), "\(label) missing")
-        button.tap()
+    private static let today = ["Today", "Heute"]
+
+    private func button(_ labels: [String], in app: XCUIApplication) -> XCUIElement {
+        app.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
     }
 
-    private func checkpoint(_ name: String, button label: String, in app: XCUIApplication) {
-        XCTAssertTrue(app.buttons[label].firstMatch.waitForExistence(timeout: 15), "\(label) missing")
-        QA.checkpoint(app, name)
+    private func settingsBar(in app: XCUIApplication) -> XCUIElement {
+        app.navigationBars.matching(NSPredicate(format: "identifier IN %@", ["Settings", "Einstellungen"])).firstMatch
+    }
+
+    private func tap(_ labels: [String], in app: XCUIApplication) {
+        let target = button(labels, in: app)
+        XCTAssertTrue(target.waitForExistence(timeout: 15), "\(labels[0]) missing")
+        target.tap()
+    }
+
+    /// Folded, Trends is a tab. On the unfolded Duo it is the trailing pane and
+    /// the tab button is hidden, so only wait for the screen.
+    private func openTrends(in app: XCUIApplication) {
+        let tab = app.buttons["Trends"].firstMatch
+        if tab.waitForExistence(timeout: 5), tab.isHittable { tab.tap() }
+        XCTAssertTrue(app.navigationBars["Trends"].waitForExistence(timeout: 15), "Trends missing")
+    }
+
+    private func assertEstimateOnToday(in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let estimate = app.staticTexts.matching(NSPredicate(format: "label IN %@", ["43.3", "43,3"])).firstMatch
+        XCTAssertTrue(estimate.waitForExistence(timeout: 15), "Today estimate 43.3 missing", file: file, line: line)
+    }
+
+    private func assertReadingCount(_ count: Int, in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let readings = app.staticTexts.matching(NSPredicate(format: "label == %@", "\(count)")).firstMatch
+        XCTAssertTrue(readings.waitForExistence(timeout: 15), "\(count) readings missing on Trends", file: file, line: line)
+    }
+
+    private func checkpoint(_ name: String, button labels: [String], in app: XCUIApplication, journey: String = #function) {
+        XCTAssertTrue(button(labels, in: app).waitForExistence(timeout: 15), "\(labels[0]) missing")
+        QA.checkpoint(app, name, journey: journey)
     }
 }

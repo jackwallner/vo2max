@@ -10,8 +10,6 @@ struct HistoryView: View {
     /// window a user picks here is the window they land in.
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPlusPaywall = false
-    /// The scroll view's own width, which the content is pinned to (below).
-    @State private var viewportWidth: CGFloat?
 
     private var range: CardioRange { ranges.resolved }
     private var period: Int { range.days }
@@ -30,6 +28,7 @@ struct HistoryView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
+            PinnedWidth {
             VStack(spacing: 12) {
                 MetricRangePicker()
 
@@ -63,12 +62,13 @@ struct HistoryView: View {
             // change badges, and the comparison rows can each ask for more width
             // than the screen has. Fixing the width means an over-wide row is
             // clipped rather than turning the whole tab into a two-axis scroller.
-            // Measured rather than `containerRelativeFrame`, which sized this
-            // to the wrong container as a pane of the unfolded iPhone Duo and
-            // pushed the cards under the fold.
-            .frame(width: viewportWidth)
+            // Taken from the width the scroll view proposes, not
+            // `containerRelativeFrame` (which sized this to the wrong container
+            // as a pane of the unfolded iPhone Duo and pushed the cards under
+            // the fold) and not a measured @State copy (which stayed at a
+            // transient narrow width after onboarding and squeezed the cards).
+            }
         }
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { viewportWidth = $0 }
         .scrollBounceBehavior(.basedOnSize)
         .background(Theme.background)
         .navigationTitle("Trends")
@@ -372,5 +372,19 @@ struct HistoryView: View {
                 }
             }
         }
+    }
+}
+
+/// Lays its child out at exactly the width it is proposed, however wide the
+/// child would like to be.
+private struct PinnedWidth: Layout {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard let child = subviews.first else { return .zero }
+        let width = proposal.width ?? child.sizeThatFits(.unspecified).width
+        return CGSize(width: width, height: child.sizeThatFits(ProposedViewSize(width: width, height: nil)).height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        subviews.first?.place(at: bounds.origin, proposal: ProposedViewSize(width: bounds.width, height: nil))
     }
 }
