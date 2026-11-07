@@ -172,4 +172,18 @@ struct StateMachineFixTests {
         let store = try source("Shared/Services/StoreService.swift")
         #expect(store.contains("if oldValue {\n                NotificationService.cancelMonthlyRecap()"))
     }
+
+    // MARK: - SM-4: a notification tap that beats the first render still routes
+
+    /// `onChange` never fires for a flag that was already true when
+    /// `MainTabView` appeared, so the flags are also consumed on appear, ahead
+    /// of What's New.
+    @Test func sm4_pendingRoutesAreConsumedOnAppear() throws {
+        let app = try source("VO2Max/App.swift")
+        let appear = try #require(app.range(of: "selection = initialTab"))
+        let consume = try #require(app.range(of: "consumePendingRoutes()", range: appear.upperBound..<app.endIndex))
+        let whatsNew = try #require(app.range(of: "evaluateWhatsNew()", range: appear.upperBound..<app.endIndex))
+        #expect(consume.lowerBound < whatsNew.lowerBound)
+        #expect(!app.contains("guard pending else { return }"))
+    }
 }
