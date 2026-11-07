@@ -63,6 +63,21 @@ struct LocalizationTests {
         #expect(String(localized: "\(2) estimates from Apple Health", bundle: german, locale: locale) == "2 Schätzwerte aus Apple Health")
     }
 
+    /// State machine audit 2026-11-06, product call 8: the restore outcome
+    /// came back as bare English literals, so Settings said "VO2+ restored."
+    /// in English in every locale.
+    @Test func restoreResultIsLocalized() throws {
+        let german = try #require(bundle("de"))
+        let locale = Locale(identifier: "de")
+        #expect(String(localized: "VO2+ restored.", bundle: german, locale: locale) == "VO2+ wiederhergestellt.")
+        #expect(String(localized: "No active VO2+ purchase was found.", bundle: german, locale: locale) == "Kein aktives VO2+-Abo gefunden.")
+
+        let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        let copy = try String(contentsOf: repo.appendingPathComponent("Shared/Utilities/VO2ConversionCopy.swift"), encoding: .utf8)
+        #expect(copy.contains(#"return String(localized: "VO2+ restored.")"#))
+        #expect(copy.contains(#"errorMessage ?? String(localized: "No active VO2+ purchase was found.")"#))
+    }
+
     @Test func russianPluralCategoriesResolve() throws {
         let russian = try #require(bundle("ru"))
         let locale = Locale(identifier: "ru")
