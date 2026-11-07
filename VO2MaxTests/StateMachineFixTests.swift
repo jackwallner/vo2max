@@ -149,4 +149,27 @@ struct StateMachineFixTests {
         let card = try source("VO2Max/Views/CardioContextViews.swift")
         #expect(card.contains("settings.freshnessNudgesEnabled && !notificationsDenied"))
     }
+
+    // MARK: - SM-6: a lapse reaches the recap tap and background alerts
+
+    /// A recap request scheduled while subscribed still fires after a lapse;
+    /// the sheet it opens must check the live entitlement.
+    @Test func sm6_recapSheetChecksTheEntitlement() throws {
+        let app = try source("VO2Max/App.swift")
+        let sheet = try #require(app.range(of: ".sheet(isPresented: $showRecap)"))
+        let recap = try #require(app.range(of: "MonthlyRecapView()", range: sheet.upperBound..<app.endIndex))
+        #expect(app[sheet.upperBound..<recap.lowerBound].contains("if store.isPro"))
+    }
+
+    /// A background refresh re-verifies the entitlement before posting reading
+    /// alerts or rescheduling the nudge, and a lapse withdraws pending requests.
+    @Test func sm6_backgroundRefreshVerifiesBeforeNotifying() throws {
+        let health = try source("Shared/Services/HealthKitService.swift")
+        let verify = try #require(health.range(of: "verifyEntitlementForBackgroundWork()"))
+        let alerts = try #require(health.range(of: "handleNewReadings(inserted:"))
+        #expect(verify.lowerBound < alerts.lowerBound)
+
+        let store = try source("Shared/Services/StoreService.swift")
+        #expect(store.contains("if oldValue {\n                NotificationService.cancelMonthlyRecap()"))
+    }
 }

@@ -162,6 +162,10 @@ final class HealthKitService: ObservableObject {
             let priorBest = existing.map(\.value).max()
 
             let inserted = try cache(readings: readings)
+            #if os(iOS)
+            // No scene verifies the entitlement on a background wake.
+            if !Self.appIsVisible { await StoreService.shared.verifyEntitlementForBackgroundWork() }
+            #endif
             handleNewReadings(inserted: inserted, priorLatest: priorLatest, priorBest: priorBest)
             syncFreshnessNudge()
 

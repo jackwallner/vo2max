@@ -151,6 +151,24 @@ extension Offering {
     }
 }
 
+/// Resumes with whichever answers first, the customer info or the timeout.
+private final class CustomerInfoRace: @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<CustomerInfo?, Never>?
+
+    init(_ continuation: CheckedContinuation<CustomerInfo?, Never>) {
+        self.continuation = continuation
+    }
+
+    func finish(_ info: CustomerInfo?) {
+        lock.lock()
+        let pending = continuation
+        continuation = nil
+        lock.unlock()
+        pending?.resume(returning: info)
+    }
+}
+
 @MainActor
 final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     static let shared = StoreService()
@@ -163,6 +181,12 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
             guard oldValue != isPro else { return }
             defaults.set(isPro, forKey: Self.cachedProKey)
             WidgetCenter.shared.reloadAllTimelines()
+            // A lapse found with no scene connected (a background refresh) must
+            // still withdraw the VO2+ requests a scene would have cancelled.
+            if oldValue {
+                NotificationService.cancelMonthlyRecap()
+                NotificationService.cancelFreshnessNudge()
+            }
         }
     }
     @Published private(set) var packages: [Package] = []
@@ -400,6 +424,26 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         Purchases.shared.delegate = self
         isConfigured = true
         #endif
+    }
+
+    /// Re-checks a cached entitlement before a background refresh posts VO2+
+    /// notifications. Only the scene's `start()` verified it, so a subscriber
+    /// who lapsed and never opened the app kept getting reading alerts and
+    /// nudges on the cached flag. Bounded, because a HealthKit background wake
+    /// has little time; on a timeout or an error the cached flag stands.
+    func verifyEntitlementForBackgroundWork(timeout: Duration = .seconds(8)) async {
+        guard isPro else { return }
+        configureIfNeeded()
+        guard isConfigured else { return }
+        let info: CustomerInfo? = await withCheckedContinuation { continuation in
+            let race = CustomerInfoRace(continuation)
+            Purchases.shared.getCustomerInfo(fetchPolicy: .fetchCurrent) { info, _ in race.finish(info) }
+            Task {
+                try? await Task.sleep(for: timeout)
+                race.finish(nil)
+            }
+        }
+        if let info { update(customerInfo: info) }
     }
 
     private func refreshStatus() async {
