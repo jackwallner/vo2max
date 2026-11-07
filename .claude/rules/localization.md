@@ -53,3 +53,10 @@ route for a per-app language change. iOS hides the app's Language option on a
 device with one preferred language unless `UIPrefersShowingLanguageSettings` is
 YES in `Info.plist`, so keep that key. The simulator's Settings opens at its root
 for this link; check the landing on a real iPhone.
+
+## Ranges
+
+Never print a range with an en dash ("31–51"). Each range string in the catalog
+spells the connector in the language ("31 to 51", "31 bis 51", "de 31 à 51",
+"от 31 до 51"); Japanese keeps the wave dash. Keys may keep the dash, the
+translated values may not. German labels the paywall privacy link "Datenschutz".
