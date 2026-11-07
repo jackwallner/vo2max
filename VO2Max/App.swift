@@ -386,7 +386,6 @@ private struct MainTabView: View {
         .tint(Theme.cardio)
         .onAppear {
             selection = initialTab
-            consumePendingRoutes()
             evaluateWhatsNew()
             // A moment recorded before this view existed (the launch refresh
             // can finish first) posted to nobody; pick it up here.
@@ -397,8 +396,16 @@ private struct MainTabView: View {
         #endif
         .task(id: recapSchedulingKey) { await syncMonthlyRecapSchedule() }
         .task(id: freshnessSchedulingKey) { HealthKitService.shared.syncFreshnessNudge() }
-        .onChange(of: routeCoordinator.pendingRecap) { _, _ in consumePendingRoutes() }
-        .onChange(of: routeCoordinator.pendingToday) { _, _ in consumePendingRoutes() }
+        .onChange(of: routeCoordinator.pendingRecap) { _, pending in
+            guard pending else { return }
+            routeCoordinator.pendingRecap = false
+            showRecap = true
+        }
+        .onChange(of: routeCoordinator.pendingToday) { _, pending in
+            guard pending else { return }
+            routeCoordinator.pendingToday = false
+            selection = 0
+        }
         .onReceive(NotificationCenter.default.publisher(for: .vo2PositiveMomentForReview)) { _ in
             scheduleReviewPromptAfterPositiveMoment()
         }
@@ -455,21 +462,6 @@ private struct MainTabView: View {
             await NotificationService.scheduleMonthlyRecap()
         } else {
             NotificationService.cancelMonthlyRecap()
-        }
-    }
-
-    /// Opens what a tapped notification asked for. Also run on appear: a tap
-    /// that cold-launches the app can set a flag before this view exists, and
-    /// `onChange` never fires for a value that was already true, which left
-    /// the flag stuck and every later tap a no-op.
-    private func consumePendingRoutes() {
-        if routeCoordinator.pendingRecap {
-            routeCoordinator.pendingRecap = false
-            showRecap = true
-        }
-        if routeCoordinator.pendingToday {
-            routeCoordinator.pendingToday = false
-            selection = 0
         }
     }
 
