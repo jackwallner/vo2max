@@ -18,7 +18,9 @@ struct ReviewPromptTrackerTests {
         let moments = ReviewPromptTracker.positiveMomentCount
         let pending = ReviewPromptTracker.hasPendingPositiveMoment
         let seenReading = ReviewPromptTracker.hasSeenReading
+        let returnFired = ReviewPromptTracker.returnWithReadingFired
         defer {
+            ReviewPromptTracker.returnWithReadingFired = returnFired
             ReviewPromptTracker.appLaunchCount = launches
             ReviewPromptTracker.firstAppOpenDate = firstOpen
             ReviewPromptTracker.lastShownDate = lastShown
@@ -32,6 +34,7 @@ struct ReviewPromptTrackerTests {
         ReviewPromptTracker.lastShownDate = nil
         ReviewPromptTracker.outcome = nil
         ReviewPromptTracker.hasPendingPositiveMoment = false
+        ReviewPromptTracker.returnWithReadingFired = false
         body()
     }
 
@@ -104,8 +107,26 @@ struct ReviewPromptTrackerTests {
         withCleanTracker {
             ReviewPromptTracker.appLaunchCount = 1
             ReviewPromptTracker.hasSeenReading = true
-            #expect(!ReviewPromptTracker.recordReturnWithReading())
+            #expect(!ReviewPromptTracker.recordReturnWithReading(appIsVisible: true))
             #expect(!ReviewPromptTracker.hasPendingPositiveMoment)
+        }
+    }
+
+    /// SM-3 (state machine audit 2026-11-06): a HealthKit background relaunch
+    /// counts as launch 2 and refreshes with nothing on screen. It must leave
+    /// the once-ever return moment for the user's visible return.
+    @Test func sm3_backgroundRelaunchLeavesTheReturnMomentForTheVisibleReturn() {
+        withCleanTracker {
+            ReviewPromptTracker.appLaunchCount = 2
+            ReviewPromptTracker.hasSeenReading = true
+
+            #expect(!ReviewPromptTracker.recordReturnWithReading(appIsVisible: false))
+            #expect(!ReviewPromptTracker.returnWithReadingFired)
+            #expect(!ReviewPromptTracker.hasPendingPositiveMoment)
+
+            #expect(ReviewPromptTracker.recordReturnWithReading(appIsVisible: true))
+            #expect(ReviewPromptTracker.hasPendingPositiveMoment)
+            #expect(!ReviewPromptTracker.recordReturnWithReading(appIsVisible: true))
         }
     }
 }

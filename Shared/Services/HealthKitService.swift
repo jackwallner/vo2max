@@ -3,6 +3,9 @@ import HealthKit
 import os
 import SwiftData
 import WidgetKit
+#if os(iOS)
+import UIKit
+#endif
 
 private let healthLogger = Logger(subsystem: "com.jackwallner.vo2max", category: "HealthKit")
 
@@ -168,7 +171,7 @@ final class HealthKitService: ObservableObject {
             if !readings.isEmpty {
                 markAuthorized()
                 ReviewPromptTracker.recordReadingsAvailable()
-                if ReviewPromptTracker.recordReturnWithReading() {
+                if ReviewPromptTracker.recordReturnWithReading(appIsVisible: Self.appIsVisible) {
                     NotificationCenter.default.post(name: .vo2PositiveMomentForReview, object: nil)
                 }
             }
@@ -361,6 +364,15 @@ final class HealthKitService: ObservableObject {
     }
 
     private static let lastFreshnessNudgeKey = "lastFreshnessNudge"
+
+    /// False during a HealthKit background relaunch, when no scene is on screen.
+    private static var appIsVisible: Bool {
+        #if os(iOS)
+        UIApplication.shared.applicationState != .background
+        #else
+        true
+        #endif
+    }
 
     private func readingAlertContext(
         newest: Double,

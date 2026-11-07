@@ -116,15 +116,26 @@ enum ReviewPromptTracker {
         hasSeenReading = true
     }
 
+    /// True once the return-visit moment has fired.
+    static var returnWithReadingFired: Bool {
+        get { defaults.bool(forKey: returnMomentFiredKey) }
+        set { defaults.set(newValue, forKey: returnMomentFiredKey) }
+    }
+
     /// VO2 max moves too slowly for a personal best or a target crossing to
     /// reach most users, so the first return visit with an estimate on screen
     /// also counts, once ever. Returns whether it fired.
+    ///
+    /// `appIsVisible` is false for a HealthKit background relaunch: nothing is
+    /// on screen there, and spending the once-ever moment on it left the
+    /// user's real return with no ask.
     @discardableResult
-    static func recordReturnWithReading() -> Bool {
-        guard hasSeenReading,
+    static func recordReturnWithReading(appIsVisible: Bool) -> Bool {
+        guard appIsVisible,
+              hasSeenReading,
               appLaunchCount >= minimumLaunchCount,
-              !defaults.bool(forKey: returnMomentFiredKey) else { return false }
-        defaults.set(true, forKey: returnMomentFiredKey)
+              !returnWithReadingFired else { return false }
+        returnWithReadingFired = true
         recordPositiveMoment()
         return true
     }
