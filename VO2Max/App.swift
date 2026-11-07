@@ -387,6 +387,9 @@ private struct MainTabView: View {
         .onAppear {
             selection = initialTab
             evaluateWhatsNew()
+            // A moment recorded before this view existed (the launch refresh
+            // can finish first) posted to nobody; pick it up here.
+            scheduleReviewPromptAfterPositiveMoment()
         }
         #if DEBUG
         .task(id: split != nil) { await runDuoTour(split: split != nil) }

@@ -62,6 +62,35 @@ enum NotificationService {
         }
     }
 
+    /// True when iOS has notifications turned off for the app. The toggles and
+    /// the freshness card read this so they never claim a feature is on when
+    /// nothing can be delivered.
+    static func isDenied() async -> Bool {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .denied
+    }
+
+    /// What turning a notification feature on got from iOS.
+    enum OptIn: Equatable, Sendable {
+        case allowed
+        /// The user tapped Don't Allow on the prompt just now.
+        case declined
+        /// Denied earlier, so iOS shows no prompt; only its Settings can change it.
+        case blockedInSettings
+    }
+
+    static func optInOutcome(statusBefore: UNAuthorizationStatus, granted: Bool) -> OptIn {
+        if statusBefore == .denied { return .blockedInSettings }
+        return granted ? .allowed : .declined
+    }
+
+    /// Asks for permission when a notification toggle turns on.
+    static func optIn() async -> OptIn {
+        let status = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+        if status == .denied { return .blockedInSettings }
+        let granted = await requestAuthorization()
+        return optInOutcome(statusBefore: status, granted: granted)
+    }
+
     // MARK: - Monthly recap
 
     /// Schedules (or re-schedules) the repeating monthly recap notification.
@@ -149,12 +178,14 @@ enum NotificationService {
     /// Schedules the "estimate has gone quiet" nudge for `date`, replacing any
     /// pending one. Rate-limiting, timing and entitlement live with the caller
     /// (`HealthKitService`); this only refuses to queue against a denied
-    /// authorization. Returns whether a request was queued.
+    /// authorization. Returns when the queued request fires, or nil if none
+    /// was queued. That is never sooner than a second from now, so the caller
+    /// spaces the next nudge from the real fire date.
     @discardableResult
-    static func scheduleFreshnessNudge(at date: Date, daysSinceLatest: Int) async -> Bool {
+    static func scheduleFreshnessNudge(at date: Date, daysSinceLatest: Int) async -> Date? {
         guard await isAuthorized() else {
             logger.info("Freshness nudge skipped — notifications not authorized")
-            return false
+            return nil
         }
 
         let content = UNMutableNotificationContent()
@@ -163,7 +194,8 @@ enum NotificationService {
         content.sound = .default
         content.userInfo = [routeKey: readingRouteValue]
 
-        let interval = max(date.timeIntervalSinceNow, 1)
+        let now = Date.now
+        let interval = max(date.timeIntervalSince(now), 1)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
         let request = UNNotificationRequest(identifier: freshnessNudgeID, content: content, trigger: trigger)
         let center = UNUserNotificationCenter.current()
@@ -171,10 +203,10 @@ enum NotificationService {
         do {
             try await center.add(request)
             logger.info("Freshness nudge scheduled days=\(daysSinceLatest, privacy: .public) in=\(Int(interval), privacy: .public)s")
-            return true
+            return now.addingTimeInterval(interval)
         } catch {
             logger.error("Freshness nudge failed: \(String(describing: error), privacy: .public)")
-            return false
+            return nil
         }
     }
 

@@ -191,7 +191,11 @@ struct PaywallView: View {
     var impressionID = "vo2plus_paywall"
 
     @State private var selectedPackage: Package?
-    @State private var restoreMessage: String?
+    /// The outcome of a purchase or restore started here. Never the shared
+    /// `store.errorMessage` directly: that singleton outlives the surface that
+    /// set it, and a cancel in onboarding or Settings used to replace this
+    /// footer's renewal disclosure on a paywall where nothing had failed.
+    @State private var attemptMessage: String?
 
     private var bullets: [PlusFeature] {
         if let focus {
@@ -225,6 +229,7 @@ struct PaywallView: View {
             selectDefaultPackageIfNeeded()
         }
         .onChange(of: store.packages) { _, _ in selectDefaultPackageIfNeeded() }
+        .onChange(of: selectedPackage?.identifier) { _, _ in attemptMessage = nil }
         .onChange(of: store.isPro) { _, isPro in
             if isPro, !embedded { dismiss() }
         }
@@ -335,7 +340,11 @@ struct PaywallView: View {
         VStack(spacing: 6) {
             Button {
                 guard let package = selectedPackage else { return }
-                Task { await store.purchase(package) }
+                attemptMessage = nil
+                Task {
+                    await store.purchase(package)
+                    attemptMessage = store.errorMessage
+                }
             } label: {
                 ZStack {
                     Text(ctaTitle)
@@ -355,10 +364,8 @@ struct PaywallView: View {
 
             VStack(spacing: 4) {
                 Group {
-                    if let error = store.errorMessage {
-                        Text(error).foregroundStyle(Theme.negative)
-                    } else if let restoreMessage {
-                        Text(restoreMessage).foregroundStyle(Theme.textSecondary)
+                    if let attemptMessage {
+                        Text(attemptMessage).foregroundStyle(Theme.negative)
                     } else {
                         Text(disclosureText).foregroundStyle(Theme.textTertiary)
                     }
@@ -370,11 +377,12 @@ struct PaywallView: View {
 
                 HStack(spacing: 12) {
                     Button("Restore") {
+                        attemptMessage = nil
                         Task {
                             await store.restore()
-                            if !store.isPro {
-                                restoreMessage = VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
-                            }
+                            attemptMessage = store.isPro
+                                ? nil
+                                : VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
                         }
                     }
                     Link("Terms", destination: VO2Links.standardEULA)

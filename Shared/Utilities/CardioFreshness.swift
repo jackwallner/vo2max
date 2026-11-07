@@ -112,8 +112,11 @@ enum CardioFreshnessAnalysis {
     /// Scheduled ahead of time so it reaches people who stopped opening the app,
     /// who are the ones it is for.
     ///
-    /// `lastNudge` is the fire date of the previous nudge. One still in the
-    /// future is the pending request this one replaces, so it is ignored.
+    /// `lastNudge` is the fire date of the last scheduled nudge. One in the
+    /// past was delivered, so the next waits `nudgeSpacingDays` after it. One
+    /// still in the future is the pending request this one replaces: it already
+    /// honours the spacing, so the replacement never moves earlier than it. A
+    /// new estimate still pushes the nudge later.
     static func nextNudgeDate(
         points: [CardioFitnessPoint],
         lastNudge: Date?,
@@ -125,9 +128,12 @@ enum CardioFreshnessAnalysis {
         guard let staleDate = calendar.date(byAdding: .day, value: reference * 2 + 1, to: latest.date) else { return nil }
 
         var date = max(staleDate, now)
-        if let lastNudge, lastNudge <= now,
-           let spaced = calendar.date(byAdding: .day, value: nudgeSpacingDays, to: lastNudge) {
-            date = max(date, spaced)
+        if let lastNudge {
+            if lastNudge > now {
+                date = max(date, lastNudge)
+            } else if let spaced = calendar.date(byAdding: .day, value: nudgeSpacingDays, to: lastNudge) {
+                date = max(date, spaced)
+            }
         }
         return date
     }
