@@ -197,6 +197,7 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     private let logger = Logger(subsystem: "com.jackwallner.vo2max", category: "Store")
     private let defaults = UserDefaults(suiteName: vo2MaxAppGroupID) ?? .standard
     private var isConfigured = false
+    private var isDelegateAttached = false
     /// Dedupes session-scoped paywall impressions (e.g. locked cards the user
     /// can revisit many times per launch).
     private var paywallImpressionsThisSession: Set<String> = []
@@ -389,7 +390,20 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         }
     }
 
-    private func configureIfNeeded() {
+    /// Configures RevenueCat and, unless told not to, attaches the delegate.
+    /// Attaching it replays RevenueCat's cached record into `isPro` at once,
+    /// whatever its age, and that record can read a renewed member as lapsed.
+    /// The foreground paths follow it with a fresh fetch; a background wake
+    /// may get none, so `verifyEntitlementForBackgroundWork` configures
+    /// without it and leaves the delegate to the scene's `start()`.
+    private func configureIfNeeded(attachingDelegate: Bool = true) {
+        configureSDKIfNeeded()
+        guard attachingDelegate, isConfigured, !isDelegateAttached else { return }
+        Purchases.shared.delegate = self
+        isDelegateAttached = true
+    }
+
+    private func configureSDKIfNeeded() {
         guard !isConfigured else { return }
         #if targetEnvironment(simulator)
         #if DEBUG
@@ -404,7 +418,6 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
                     .with(appUserID: RevenueCatProbe.appUserID)
                     .build()
             )
-            Purchases.shared.delegate = self
             isConfigured = true
         }
         #endif
@@ -415,7 +428,6 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
         Purchases.logLevel = .debug
         #endif
         Purchases.configure(withAPIKey: RevenueCatConfig.publicSDKKey)
-        Purchases.shared.delegate = self
         isConfigured = true
         #endif
     }
@@ -424,14 +436,15 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     /// notifications. Only the scene's `start()` verified it, so a subscriber
     /// who lapsed and never opened the app kept getting reading alerts and
     /// nudges on the cached flag. Bounded, because a HealthKit background wake
-    /// has little time; on a timeout or an error the cached flag stands.
+    /// has little time; on a timeout or an error the app's own cached flag
+    /// stands, which is why this configures without the delegate.
     ///
     /// Only this fresh answer withdraws the pending VO2+ requests, because no
     /// scene runs on a background wake to do it. RevenueCat's cached record can
     /// read a renewed member as lapsed, so a cached update never tears down.
     func verifyEntitlementForBackgroundWork(timeout: Duration = .seconds(8)) async {
         guard isPro else { return }
-        configureIfNeeded()
+        configureIfNeeded(attachingDelegate: false)
         guard isConfigured else { return }
         let info: CustomerInfo? = await withCheckedContinuation { continuation in
             let race = CustomerInfoRace(continuation)

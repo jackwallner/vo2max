@@ -171,4 +171,22 @@ struct StateMachineFixTests {
         let packages = try #require(store.range(of: "@Published private(set) var packages"))
         #expect(!store[didSet.upperBound..<packages.lowerBound].contains("cancel"))
     }
+
+    /// The background verify must not attach RevenueCat's delegate: that
+    /// replays the cached record into `isPro` at once, and when the fresh fetch
+    /// then fails or times out, a renewed member read as lapsed would lose
+    /// their reading alert and pending nudge on the same refresh.
+    @Test func sm6_backgroundVerifyKeepsTheAppFlagWithoutAFreshAnswer() throws {
+        let store = try source("Shared/Services/StoreService.swift")
+        let start = try #require(store.range(of: "func verifyEntitlementForBackgroundWork("))
+        let end = try #require(store.range(of: "private func refreshStatus()"))
+        let verify = store[start.upperBound..<end.lowerBound]
+        #expect(verify.contains("configureIfNeeded(attachingDelegate: false)"))
+        #expect(!verify.contains("configureIfNeeded()"))
+        #expect(!verify.contains("delegate = self"))
+
+        let sdk = try #require(store.range(of: "private func configureSDKIfNeeded()"))
+        #expect(!store[sdk.upperBound..<start.lowerBound].contains("delegate = self"))
+        #expect(store.ranges(of: "Purchases.shared.delegate = self").count == 1)
+    }
 }
