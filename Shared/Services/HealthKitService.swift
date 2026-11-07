@@ -361,8 +361,8 @@ final class HealthKitService: ObservableObject {
         let days = Calendar.current.dateComponents([.day], from: latest, to: date).day ?? 0
 
         Task {
-            if await NotificationService.scheduleFreshnessNudge(at: date, daysSinceLatest: days) {
-                defaults.set(date, forKey: Self.lastFreshnessNudgeKey)
+            if let fireDate = await NotificationService.scheduleFreshnessNudge(at: date, daysSinceLatest: days) {
+                defaults.set(fireDate, forKey: Self.lastFreshnessNudgeKey)
             }
         }
     }

@@ -17,9 +17,9 @@ struct StateMachineFixTests {
     }
 
     /// Replays `HealthKitService.syncFreshnessNudge`: read `lastNudge`, compute
-    /// the real `nextNudgeDate`, store it once scheduled (permission granted).
-    /// A pending request delivers once its date has passed; the 1 s floor is
-    /// `NotificationService.scheduleFreshnessNudge`'s.
+    /// the real `nextNudgeDate`, schedule it (permission granted) and store the
+    /// fire date `NotificationService.scheduleFreshnessNudge` returns, which
+    /// carries its 1 s floor. A pending request delivers once its date passes.
     private struct FreshnessNudgeModel {
         var pending: Date?
         var lastNudge: Date?
@@ -31,8 +31,9 @@ struct StateMachineFixTests {
                 pending = nil
                 return
             }
-            pending = max(date, now.addingTimeInterval(1))
-            lastNudge = date
+            let fireDate = max(date, now.addingTimeInterval(1))
+            pending = fireDate
+            lastNudge = fireDate
         }
 
         mutating func deliverDue(by now: Date) {
