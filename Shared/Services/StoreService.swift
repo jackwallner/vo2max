@@ -181,12 +181,6 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
             guard oldValue != isPro else { return }
             defaults.set(isPro, forKey: Self.cachedProKey)
             WidgetCenter.shared.reloadAllTimelines()
-            // A lapse found with no scene connected (a background refresh) must
-            // still withdraw the VO2+ requests a scene would have cancelled.
-            if oldValue {
-                NotificationService.cancelMonthlyRecap()
-                NotificationService.cancelFreshnessNudge()
-            }
         }
     }
     @Published private(set) var packages: [Package] = []
@@ -431,6 +425,10 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
     /// who lapsed and never opened the app kept getting reading alerts and
     /// nudges on the cached flag. Bounded, because a HealthKit background wake
     /// has little time; on a timeout or an error the cached flag stands.
+    ///
+    /// Only this fresh answer withdraws the pending VO2+ requests, because no
+    /// scene runs on a background wake to do it. RevenueCat's cached record can
+    /// read a renewed member as lapsed, so a cached update never tears down.
     func verifyEntitlementForBackgroundWork(timeout: Duration = .seconds(8)) async {
         guard isPro else { return }
         configureIfNeeded()
@@ -443,7 +441,12 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
                 race.finish(nil)
             }
         }
-        if let info { update(customerInfo: info) }
+        guard let info else { return }
+        update(customerInfo: info)
+        if !isPro {
+            NotificationService.cancelMonthlyRecap()
+            NotificationService.cancelFreshnessNudge()
+        }
     }
 
     private func refreshStatus() async {

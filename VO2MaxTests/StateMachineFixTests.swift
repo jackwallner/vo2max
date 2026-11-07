@@ -153,17 +153,9 @@ struct StateMachineFixTests {
 
     // MARK: - SM-6: a lapse reaches the recap tap and background alerts
 
-    /// A recap request scheduled while subscribed still fires after a lapse;
-    /// the sheet it opens must check the live entitlement.
-    @Test func sm6_recapSheetChecksTheEntitlement() throws {
-        let app = try source("VO2Max/App.swift")
-        let sheet = try #require(app.range(of: ".sheet(isPresented: $showRecap)"))
-        let recap = try #require(app.range(of: "MonthlyRecapView()", range: sheet.upperBound..<app.endIndex))
-        #expect(app[sheet.upperBound..<recap.lowerBound].contains("if store.isPro"))
-    }
-
     /// A background refresh re-verifies the entitlement before posting reading
-    /// alerts or rescheduling the nudge, and a lapse withdraws pending requests.
+    /// alerts or rescheduling the nudge. Only that fresh answer withdraws the
+    /// pending requests: a cached record can read a renewed member as lapsed.
     @Test func sm6_backgroundRefreshVerifiesBeforeNotifying() throws {
         let health = try source("Shared/Services/HealthKitService.swift")
         let verify = try #require(health.range(of: "verifyEntitlementForBackgroundWork()"))
@@ -171,6 +163,12 @@ struct StateMachineFixTests {
         #expect(verify.lowerBound < alerts.lowerBound)
 
         let store = try source("Shared/Services/StoreService.swift")
-        #expect(store.contains("if oldValue {\n                NotificationService.cancelMonthlyRecap()"))
+        let fresh = try #require(store.range(of: "getCustomerInfo(fetchPolicy: .fetchCurrent)"))
+        let cancels = store.ranges(of: "NotificationService.cancelMonthlyRecap()")
+        #expect(cancels.count == 1)
+        #expect(cancels.allSatisfy { $0.lowerBound > fresh.upperBound })
+        let didSet = try #require(store.range(of: "@Published private(set) var isPro"))
+        let packages = try #require(store.range(of: "@Published private(set) var packages"))
+        #expect(!store[didSet.upperBound..<packages.lowerBound].contains("cancel"))
     }
 }

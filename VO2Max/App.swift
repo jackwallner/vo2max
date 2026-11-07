@@ -439,14 +439,8 @@ private struct MainTabView: View {
             PaywallView().environmentObject(store)
         }
         .sheet(isPresented: $showRecap) {
-            // A recap request scheduled while subscribed still fires after a
-            // lapse; the tap gets the VO2+ paywall for it, not the recap.
-            if store.isPro {
-                MonthlyRecapView()
-                    .environmentObject(settings)
-            } else {
-                PaywallView(focus: .monthlyRecap).environmentObject(store)
-            }
+            MonthlyRecapView()
+                .environmentObject(settings)
         }
     }
 
