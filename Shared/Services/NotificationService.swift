@@ -62,6 +62,35 @@ enum NotificationService {
         }
     }
 
+    /// True when iOS has notifications turned off for the app. The toggles and
+    /// the freshness card read this so they never claim a feature is on when
+    /// nothing can be delivered.
+    static func isDenied() async -> Bool {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .denied
+    }
+
+    /// What turning a notification feature on got from iOS.
+    enum OptIn: Equatable, Sendable {
+        case allowed
+        /// The user tapped Don't Allow on the prompt just now.
+        case declined
+        /// Denied earlier, so iOS shows no prompt; only its Settings can change it.
+        case blockedInSettings
+    }
+
+    static func optInOutcome(statusBefore: UNAuthorizationStatus, granted: Bool) -> OptIn {
+        if statusBefore == .denied { return .blockedInSettings }
+        return granted ? .allowed : .declined
+    }
+
+    /// Asks for permission when a notification toggle turns on.
+    static func optIn() async -> OptIn {
+        let status = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+        if status == .denied { return .blockedInSettings }
+        let granted = await requestAuthorization()
+        return optInOutcome(statusBefore: status, granted: granted)
+    }
+
     // MARK: - Monthly recap
 
     /// Schedules (or re-schedules) the repeating monthly recap notification.

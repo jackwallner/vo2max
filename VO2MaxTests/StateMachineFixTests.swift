@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import UserNotifications
 @testable import VO2Max
 
 /// Regression guards for the 2026-11-06 state machine audit
@@ -125,5 +126,27 @@ struct StateMachineFixTests {
                 || line.contains("errorMessage: store.errorMessage")
             #expect(copiedAfterAttempt, "renders the shared store error: \(line)")
         }
+    }
+
+    // MARK: - SM-2: notification toggles follow the iOS permission
+
+    /// An earlier denial gets no iOS prompt, so the toggle has to say so and
+    /// offer Settings instead of silently staying on.
+    @Test func sm2_optInSeparatesAFreshDeclineFromAnEarlierDenial() {
+        #expect(NotificationService.optInOutcome(statusBefore: .denied, granted: false) == .blockedInSettings)
+        #expect(NotificationService.optInOutcome(statusBefore: .notDetermined, granted: false) == .declined)
+        #expect(NotificationService.optInOutcome(statusBefore: .notDetermined, granted: true) == .allowed)
+        #expect(NotificationService.optInOutcome(statusBefore: .authorized, granted: true) == .allowed)
+    }
+
+    /// The toggles and the freshness card read the iOS permission, so neither
+    /// says "On" when nothing can be delivered.
+    @Test func sm2_togglesAndFreshnessCardReadTheDenial() throws {
+        let settings = try source("VO2Max/Views/SettingsView.swift")
+        for key in ["readingAlertsEnabled", "freshnessNudgesEnabled", "monthlyRecapEnabled"] {
+            #expect(settings.contains("get: { settings.\(key) && !notificationsDenied }"), "\(key) toggle ignores the iOS permission")
+        }
+        let card = try source("VO2Max/Views/CardioContextViews.swift")
+        #expect(card.contains("settings.freshnessNudgesEnabled && !notificationsDenied"))
     }
 }

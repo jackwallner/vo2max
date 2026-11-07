@@ -1199,6 +1199,8 @@ struct CardioLoadDetailView: View {
 /// there is nothing to say, and the header line already carries the date.
 struct EstimateFreshnessDetailView: View {
     @EnvironmentObject private var settings: GoalSettings
+    /// iOS has notifications off for the app, so no nudge can arrive.
+    @State private var notificationsDenied = false
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
     @ObservedObject private var context = CardioContextService.shared
 
@@ -1222,6 +1224,7 @@ struct EstimateFreshnessDetailView: View {
         .navigationTitle("Estimate Freshness")
         .navigationBarTitleDisplayMode(.inline)
         .task { await context.load() }
+        .task { notificationsDenied = await NotificationService.isDenied() }
     }
 
     private var statusCard: some View {
@@ -1329,7 +1332,7 @@ struct EstimateFreshnessDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             Label("Freshness nudges", systemImage: "bell.badge")
                 .font(.headline)
-            Text(settings.freshnessNudgesEnabled
+            Text(settings.freshnessNudgesEnabled && !notificationsDenied
                  ? "On. You'll get a nudge when an estimate is overdue against your own cadence, at most once every five days."
                  : "Off. Turn nudges on in Settings to be told when your estimate goes overdue against your own cadence.")
                 .font(.subheadline)

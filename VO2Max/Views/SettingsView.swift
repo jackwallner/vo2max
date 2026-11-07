@@ -17,6 +17,7 @@ struct SettingsView: View {
     @StateObject private var health = HealthKitService.shared
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
 
     /// Closes Settings when it is a pane of the unfolded iPhone Duo rather than
@@ -35,6 +36,10 @@ struct SettingsView: View {
     @State private var reportError: String?
     @State private var isRestoring = false
     @State private var restoreResult: String?
+    /// iOS has notifications off for the app: the three notification toggles
+    /// show off whatever was stored, since nothing they schedule can arrive.
+    @State private var notificationsDenied = false
+    @State private var showNotificationsOff = false
 
     private struct ReportPreview: Identifiable {
         let id = UUID()
@@ -95,6 +100,25 @@ struct SettingsView: View {
         .sheet(item: $reportPreview) { preview in
             PDFPreviewSheet(title: preview.title, url: preview.url, shareText: preview.shareText)
         }
+        .alert("Notifications are off", isPresented: $showNotificationsOff) {
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openNotificationSettingsURLString) { openURL(url) }
+            }
+            Button("Not now", role: .cancel) {}
+        }
+        .task { notificationsDenied = await NotificationService.isDenied() }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            Task { notificationsDenied = await NotificationService.isDenied() }
+        }
+    }
+
+    /// Turning a notification toggle on asks iOS. A denial shows the toggle
+    /// off; one made earlier, where iOS no longer prompts, offers its Settings.
+    private func confirmNotificationOptIn() async {
+        let result = await NotificationService.optIn()
+        notificationsDenied = result != .allowed
+        if result == .blockedInSettings { showNotificationsOff = true }
     }
 
     /// Always the yearly package. StoreKit applies the free trial when eligible;
@@ -308,10 +332,10 @@ struct SettingsView: View {
             proToggle(
                 feature: .readingAlerts,
                 isOn: Binding(
-                    get: { settings.readingAlertsEnabled },
+                    get: { settings.readingAlertsEnabled && !notificationsDenied },
                     set: { newValue in
                         settings.readingAlertsEnabled = newValue
-                        if newValue { Task { await NotificationService.requestAuthorization() } }
+                        if newValue { Task { await confirmNotificationOptIn() } }
                     }
                 )
             )
@@ -320,11 +344,11 @@ struct SettingsView: View {
             proToggle(
                 feature: .freshnessNudges,
                 isOn: Binding(
-                    get: { settings.freshnessNudgesEnabled },
+                    get: { settings.freshnessNudgesEnabled && !notificationsDenied },
                     set: { newValue in
                         settings.freshnessNudgesEnabled = newValue
                         Task {
-                            if newValue { await NotificationService.requestAuthorization() }
+                            if newValue { await confirmNotificationOptIn() }
                             HealthKitService.shared.syncFreshnessNudge()
                         }
                     }
@@ -335,8 +359,11 @@ struct SettingsView: View {
             proToggle(
                 feature: .monthlyRecap,
                 isOn: Binding(
-                    get: { settings.monthlyRecapEnabled },
-                    set: { settings.monthlyRecapEnabled = $0 }
+                    get: { settings.monthlyRecapEnabled && !notificationsDenied },
+                    set: { newValue in
+                        settings.monthlyRecapEnabled = newValue
+                        if newValue { Task { await confirmNotificationOptIn() } }
+                    }
                 )
             )
 
