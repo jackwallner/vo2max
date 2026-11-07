@@ -357,7 +357,7 @@ struct PaywallView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
-                .background(Theme.cardioGradient, in: Capsule())
+                .background(Theme.ctaGradient, in: Capsule())
             }
             .buttonStyle(.plain)
             .disabled(store.isLoading || selectedPackage == nil)
@@ -375,18 +375,10 @@ struct PaywallView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
 
-                HStack(spacing: 12) {
-                    Button("Restore") {
-                        attemptMessage = nil
-                        Task {
-                            await store.restore()
-                            attemptMessage = store.isPro
-                                ? nil
-                                : VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
-                        }
-                    }
-                    Link("Terms", destination: VO2Links.standardEULA)
-                    Link("Privacy", destination: VO2Links.privacyPolicy)
+                // Stacks when the three labels no longer fit on one line.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 4) { legalButtons }
+                    VStack(spacing: 0) { legalButtons }
                 }
                 .font(.system(.caption2, design: .rounded, weight: .semibold))
                 .foregroundStyle(Theme.textSecondary)
@@ -403,6 +395,24 @@ struct PaywallView: View {
         // capsule's height explicitly here so the whole footer clears it.
         .padding(.bottom, embedded ? 88 : 10)
         .background(Theme.background)
+    }
+
+    @ViewBuilder
+    private var legalButtons: some View {
+        Button("Restore") {
+            attemptMessage = nil
+            Task {
+                await store.restore()
+                attemptMessage = store.isPro
+                    ? nil
+                    : VO2ConversionCopy.restoreResultMessage(isPro: false, errorMessage: store.errorMessage)
+            }
+        }
+        .minimumTapTarget()
+        Link("Terms", destination: VO2Links.standardEULA)
+            .minimumTapTarget()
+        Link("Privacy", destination: VO2Links.privacyPolicy)
+            .minimumTapTarget()
     }
 
     private var closeButton: some View {
@@ -443,11 +453,11 @@ struct PaywallView: View {
                 .multilineTextAlignment(.center)
             Button("Try Again") { store.start(forceRefresh: true) }
                 .buttonStyle(.borderedProminent)
-                .tint(Theme.cardio)
+                .tint(Theme.cardioDeep)
             #if targetEnvironment(simulator)
             Text("Purchases are disabled in the simulator. Use the local Pro override in Settings to inspect subscriber screens.")
                 .font(.caption2)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Theme.textTertiary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
             #endif
@@ -597,6 +607,6 @@ private struct PlanCard: View {
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(Theme.cardio.opacity(0.15), in: Capsule())
-            .foregroundStyle(Theme.cardio)
+            .foregroundStyle(Theme.cardioText)
     }
 }

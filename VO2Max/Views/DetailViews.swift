@@ -47,7 +47,7 @@ struct ReadingHistoryDetailView: View {
                     .foregroundStyle(Theme.textSecondary)
                 Text(latest.value, format: .number.precision(.fractionLength(1)))
                     .font(Theme.bigNumber(38))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
                 Text("mL/kg/min · \(status.label)")
                     .font(.subheadline)
                     .foregroundStyle(statusColor(status))
@@ -272,7 +272,7 @@ struct TrendDetailView: View {
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
                         .background(Theme.cardio.opacity(0.15), in: Capsule())
-                        .foregroundStyle(Theme.cardio)
+                        .foregroundStyle(Theme.cardioText)
                 }
             }
 
@@ -294,7 +294,7 @@ struct TrendDetailView: View {
                     .foregroundStyle(Theme.textSecondary)
                 Button(store.shortConversionCTALabel) { showPaywall = true }
                     .buttonStyle(.borderedProminent)
-                    .tint(Theme.cardio)
+                    .tint(Theme.cardioDeep)
             }
         }
         .padding(16)
@@ -423,7 +423,7 @@ struct FitnessAgeDetailView: View {
             VStack(spacing: isUnfoldedPane ? 6 : 8) {
                 Text(String(localized: "About \(estimate)"))
                     .font(Theme.bigNumber(44))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
                 Text("Fitness age estimate")
                     .font(.headline)
                 Text("Chronological age: \(settings.chronologicalAge)")
@@ -450,7 +450,7 @@ struct FitnessAgeDetailView: View {
                     .multilineTextAlignment(.center)
                 Button("Open Settings") { showSettings = true }
                     .buttonStyle(.borderedProminent)
-                    .tint(Theme.cardio)
+                    .tint(Theme.cardioDeep)
             }
             .frame(maxWidth: .infinity)
             .padding(20)
@@ -472,7 +472,7 @@ struct FitnessAgeDetailView: View {
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
                             .background(Theme.cardio.opacity(0.15), in: Capsule())
-                            .foregroundStyle(Theme.cardio)
+                            .foregroundStyle(Theme.cardioText)
                     }
                 }
                 if store.isPro {
@@ -483,7 +483,7 @@ struct FitnessAgeDetailView: View {
                     ) {
                         Text(band)
                             .font(.title3.bold())
-                            .foregroundStyle(Theme.cardio)
+                            .foregroundStyle(Theme.cardioText)
                         Text("Your latest Apple Health estimate compared with broad reference values for age \(settings.chronologicalAge) and your selected reference.")
                             .font(.subheadline)
                             .foregroundStyle(Theme.textSecondary)
@@ -498,7 +498,7 @@ struct FitnessAgeDetailView: View {
                         .foregroundStyle(Theme.textSecondary)
                     Button(store.shortConversionCTALabel) { showPaywall = true }
                         .buttonStyle(.borderedProminent)
-                        .tint(Theme.cardio)
+                        .tint(Theme.cardioDeep)
                 }
             }
             .padding(16)

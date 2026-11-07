@@ -91,11 +91,11 @@ struct MonthlyRecapView: View {
                 Spacer()
                 Label(recap.trend.label, systemImage: recap.trend.symbol)
                     .font(.system(.caption2, design: .rounded, weight: .semibold))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
             }
             Text("\(recap.currentAverage.formatted(.number.precision(.fractionLength(1)))) mL/kg/min")
                 .font(.system(.title, design: .rounded, weight: .bold))
-                .foregroundStyle(Theme.cardio)
+                .foregroundStyle(Theme.cardioText)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             if let pct = recap.changePct {

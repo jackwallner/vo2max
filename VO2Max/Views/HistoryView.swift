@@ -193,7 +193,7 @@ struct HistoryView: View {
                 Spacer()
                 Image(systemName: "chevron.forward")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Theme.textTertiary)
             }
             .padding(14)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
@@ -215,7 +215,7 @@ struct HistoryView: View {
             if !samples.isEmpty, ranges.selection != .year {
                 Button("Show 1 Year") { ranges.select(.year) }
                     .buttonStyle(.borderedProminent)
-                    .tint(Theme.cardio)
+                    .tint(Theme.cardioDeep)
             }
         }
         .frame(maxWidth: .infinity)
@@ -248,7 +248,7 @@ struct HistoryView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
                     .background(Theme.cardio.opacity(0.15), in: Capsule())
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
             }
 
             if locked {
@@ -292,7 +292,7 @@ struct HistoryView: View {
                     } else {
                         Text("-")
                             .font(.caption)
-                            .foregroundStyle(.tertiary)
+                            .foregroundStyle(Theme.textTertiary)
                             .frame(width: 44, alignment: .trailing)
                     }
                 }
@@ -343,7 +343,7 @@ struct HistoryView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 11)
-                        .background(Theme.cardioGradient, in: Capsule())
+                        .background(Theme.ctaGradient, in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .padding(.top, 2)

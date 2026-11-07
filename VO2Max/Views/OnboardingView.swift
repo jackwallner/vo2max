@@ -24,6 +24,8 @@ struct OnboardingView: View {
     @EnvironmentObject private var store: StoreService
     @StateObject private var health = HealthKitService.shared
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     @State private var step: Step = .welcome
     @State private var hasRequestedHealthAccess = false
     @State private var isStartingTrial = false
@@ -43,46 +45,12 @@ struct OnboardingView: View {
     @State private var hasEditedTarget = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            if step == .trial {
-                // Trial avoids a ScrollView when it fits: Spacers need a bounded
-                // height to center the pitch above the zero-shift CTA bar. At
-                // accessibility sizes the pitch is taller than the screen and
-                // would push the CTA bar off the bottom, so it scrolls instead.
-                ViewThatFits(in: .vertical) {
-                    trialPage
-                    ScrollView {
-                        trialPage.padding(.vertical, 24)
-                    }
-                    .scrollBounceBehavior(.basedOnSize)
-                }
-                    .padding(.horizontal, 24)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .onAppear {
-                        // Counted here, where the pitch is actually on screen. It
-                        // used to fire on the welcome page, so it measured app
-                        // opens rather than trial-page views.
-                        store.trackPaywallImpression(id: "vo2plus_onboarding_trial", oncePerSession: true)
-                        if store.monthlyPackage == nil { store.start(forceRefresh: true) }
-                    }
+        Group {
+            if typeSize.isAccessibilitySize {
+                accessibilityLayout
             } else {
-                ScrollView {
-                    Group {
-                        switch step {
-                        case .welcome: welcomePage
-                        case .profile: profilePage
-                        case .target: targetPage
-                        case .trial: EmptyView()
-                        }
-                    }
-                    .padding(.top, step == .welcome ? 24 : 48)
-                    .padding(.bottom, 24)
-                    .padding(.horizontal, 24)
-                }
-                .scrollBounceBehavior(.basedOnSize)
+                standardLayout
             }
-
-            bottomBar
         }
         .background(Theme.background.ignoresSafeArea())
         .task {
@@ -104,6 +72,77 @@ struct OnboardingView: View {
             if isPro { finishOnboarding() }
         }
         .sheet(isPresented: $showPaywallFallback) { PaywallView() }
+    }
+
+    /// Page content above a pinned bottom bar. The bar keeps one height on every
+    /// step so the primary button never moves.
+    private var standardLayout: some View {
+        VStack(spacing: 0) {
+            if step == .trial {
+                // Trial avoids a ScrollView when it fits: Spacers need a bounded
+                // height to center the pitch above the zero-shift CTA bar. At
+                // accessibility sizes the pitch is taller than the screen and
+                // would push the CTA bar off the bottom, so it scrolls instead.
+                ViewThatFits(in: .vertical) {
+                    trialPage
+                    ScrollView {
+                        trialPage.padding(.vertical, 24)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                }
+                .padding(.horizontal, 24)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear(perform: trialPageAppeared)
+            } else {
+                ScrollView {
+                    pageContent
+                        .padding(.top, step == .welcome ? 24 : 48)
+                        .padding(.bottom, 24)
+                        .padding(.horizontal, 24)
+                }
+                .scrollBounceBehavior(.basedOnSize)
+            }
+
+            bottomBar
+        }
+    }
+
+    /// At accessibility text sizes the text, the trust line and the buttons are
+    /// taller than the screen. A pinned bar squeezed the page behind it, so the
+    /// bar scrolls with the page instead and nothing can overlap.
+    private var accessibilityLayout: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                pageContent
+                    .padding(.top, step == .welcome ? 24 : 48)
+                    .padding(.horizontal, 24)
+                bottomBar
+            }
+            .padding(.bottom, 24)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .onAppear { if step == .trial { trialPageAppeared() } }
+        .onChange(of: step) { _, newStep in
+            if newStep == .trial { trialPageAppeared() }
+        }
+    }
+
+    @ViewBuilder
+    private var pageContent: some View {
+        switch step {
+        case .welcome: welcomePage
+        case .profile: profilePage
+        case .target: targetPage
+        case .trial: trialPage
+        }
+    }
+
+    private func trialPageAppeared() {
+        // Counted here, where the pitch is actually on screen. It used to fire
+        // on the welcome page, so it measured app opens rather than trial-page
+        // views.
+        store.trackPaywallImpression(id: "vo2plus_onboarding_trial", oncePerSession: true)
+        if store.monthlyPackage == nil { store.start(forceRefresh: true) }
     }
 
     /// Persists edits and hands the app to the main tab view.
@@ -223,7 +262,7 @@ struct OnboardingView: View {
                 Spacer()
                 Text("\(age)")
                     .font(Theme.bigNumber(22))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
             }
             AgeWheelPicker(age: $age)
             Picker("Reference", selection: $referenceSex) {
@@ -252,7 +291,7 @@ struct OnboardingView: View {
                 Spacer()
                 Text("\(Int(targetLower))–\(Int(targetUpper))")
                     .font(Theme.bigNumber(22))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
             }
             Text("Typical for your profile: \(Int(typical.lowerBound.rounded()))–\(Int(typical.upperBound.rounded())) mL/kg/min")
                 .font(.system(.caption, design: .rounded))
@@ -360,10 +399,14 @@ struct OnboardingView: View {
 
             // Fixed legal-footer slot. Identical view on every page so its
             // height never changes; only visible on the trial page.
-            legalFooter
-                .opacity(step == .trial ? 1 : 0)
-                .allowsHitTesting(step == .trial)
-                .accessibilityHidden(step != .trial)
+            if typeSize.isAccessibilitySize {
+                if step == .trial { legalFooter }
+            } else {
+                legalFooter
+                    .opacity(step == .trial ? 1 : 0)
+                    .allowsHitTesting(step == .trial)
+                    .accessibilityHidden(step != .trial)
+            }
         }
         .padding(.top, 12)
         .padding(.bottom, 24)
@@ -434,7 +477,7 @@ struct OnboardingView: View {
             .font(.system(.headline, design: .rounded))
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
-            .background(Theme.cardio, in: RoundedRectangle(cornerRadius: 14))
+            .background(Theme.cardioDeep, in: RoundedRectangle(cornerRadius: 14))
             .foregroundStyle(.white)
     }
 
@@ -464,7 +507,8 @@ struct OnboardingView: View {
                     .font(.system(.footnote, design: .rounded, weight: .semibold))
                     .foregroundStyle(Theme.textSecondary)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 7)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 24)
@@ -489,15 +533,24 @@ struct OnboardingView: View {
     }
 
     private var legalFooter: some View {
-        HStack(spacing: 14) {
-            Button(isRestoring ? String(localized: "Restoring…") : String(localized: "Restore")) { startRestore() }
-                .buttonStyle(.plain)
-                .disabled(isRestoring)
-            Link("Terms", destination: VO2Links.standardEULA)
-            Link("Privacy", destination: VO2Links.privacyPolicy)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 4) { legalButtons }
+            VStack(spacing: 0) { legalButtons }
         }
         .font(.system(.caption2, design: .rounded, weight: .semibold))
         .foregroundStyle(Theme.textTertiary)
+    }
+
+    @ViewBuilder
+    private var legalButtons: some View {
+        Button(isRestoring ? String(localized: "Restoring…") : String(localized: "Restore")) { startRestore() }
+            .buttonStyle(.plain)
+            .disabled(isRestoring)
+            .minimumTapTarget()
+        Link("Terms", destination: VO2Links.standardEULA)
+            .minimumTapTarget()
+        Link("Privacy", destination: VO2Links.privacyPolicy)
+            .minimumTapTarget()
     }
 
     // MARK: - Trial copy

@@ -390,7 +390,7 @@ struct DashboardView: View {
                 .frame(height: 48)
             }
             .buttonStyle(.borderedProminent)
-            .tint(Theme.cardio)
+            .tint(Theme.cardioDeep)
 
             Button("Open Apple Health") { openAppleHealth() }
                 .font(.system(.subheadline, design: .rounded, weight: .semibold))

@@ -198,7 +198,7 @@ struct TrialOfferSheet: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 13)
-                        .background(Theme.cardioGradient, in: Capsule())
+                        .background(Theme.ctaGradient, in: Capsule())
                     }
                     .buttonStyle(.plain)
                     .disabled(isPurchasing)

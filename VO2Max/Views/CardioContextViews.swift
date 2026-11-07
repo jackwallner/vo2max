@@ -31,7 +31,8 @@ struct MetricRangePicker: View {
                     RangeSegmentButton(
                         title: option.label,
                         isSelected: ranges.selection == option,
-                        locked: option == .custom && !store.isPro
+                        locked: option == .custom && !store.isPro,
+                        widthFitsLabel: option == .custom
                     ) {
                         tap(option)
                     }
@@ -85,6 +86,7 @@ private struct RangeSegmentButton: View {
     let title: String
     let isSelected: Bool
     var locked = false
+    var widthFitsLabel = false
     let action: () -> Void
 
     var body: some View {
@@ -97,11 +99,16 @@ private struct RangeSegmentButton: View {
                 Text(title)
                     .font(.caption.bold())
                     .lineLimit(1)
-                    .minimumScaleFactor(0.65)
+                    // The long Custom label ("Benutzerdefiniert") is drawn at its
+                    // natural width instead of being squeezed into an equal share
+                    // and cut off; the short range segments split what is left.
+                    .fixedSize(horizontal: widthFitsLabel, vertical: false)
+                    .minimumScaleFactor(widthFitsLabel ? 1 : 0.65)
             }
             .foregroundStyle(locked ? Theme.textTertiary : (isSelected ? Theme.textPrimary : Theme.textSecondary))
             .padding(.vertical, 8)
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, widthFitsLabel ? 8 : 0)
+            .frame(maxWidth: widthFitsLabel ? nil : .infinity)
             .background(isSelected ? Theme.cardSurfaceLight : .clear, in: Capsule())
             .contentShape(Capsule())
         }
@@ -177,7 +184,7 @@ struct LockedNumber: View {
     var body: some View {
         Text(placeholder)
             .font(Theme.bigNumber(size))
-            .foregroundStyle(Theme.textSecondary.opacity(0.85))
+            .foregroundStyle(Theme.textSecondary)
             // Enough blur that no digit survives, little enough that the reader
             // can still see a number is being withheld.
             .blur(radius: size * 0.22)
@@ -372,8 +379,11 @@ struct CardioSignalCard: View {
                 NavigationLink { destination } label: { card }
                     .buttonStyle(.plain)
             } else {
-                Button { showPaywall = true } label: { card }
-                    .buttonStyle(.plain)
+                // Not wrapped in a Button: the locked card holds its own unlock
+                // button, and a button around a button reported one frame over
+                // the other. The card still opens the paywall on a tap, and the
+                // inner button is the single control VoiceOver sees.
+                card.onTapGesture { showPaywall = true }
             }
         }
         .task { await context.load() }
@@ -450,7 +460,7 @@ struct CardioSignalCard: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
                     .background(Theme.cardio.opacity(0.15), in: Capsule())
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
             }
         }
     }
@@ -497,7 +507,7 @@ struct CardioSignalCard: View {
                 .fixedSize(horizontal: false, vertical: true)
             Button(store.shortConversionCTALabel) { showPaywall = true }
                 .buttonStyle(.borderedProminent)
-                .tint(Theme.cardio)
+                .tint(Theme.cardioDeep)
                 .controlSize(.small)
         }
     }
@@ -630,7 +640,7 @@ struct CardioSignalTile: View {
         VStack(spacing: 3) {
             Text(signal.title)
                 .font(.system(.caption2, design: .rounded, weight: .bold))
-                .foregroundStyle(Theme.cardio)
+                .foregroundStyle(Theme.cardioText)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
                 .fixedSize(horizontal: false, vertical: true)
@@ -748,7 +758,7 @@ struct HeartMetricDetailView: View {
         VStack(spacing: 12) {
             Text(summary.latest, format: .number.precision(.fractionLength(0)))
                 .font(Theme.bigNumber(48))
-                .foregroundStyle(Theme.cardio)
+                .foregroundStyle(Theme.cardioText)
             Text(metric.unitDetail)
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
@@ -956,7 +966,7 @@ struct CardioLoadDetailView: View {
             VStack(spacing: 12) {
                 Text(summary.minutesPerWeek, format: .number.precision(.fractionLength(0)))
                     .font(Theme.bigNumber(48))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
                 Text("min/week over the \(range.phrase)")
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)
@@ -1236,7 +1246,7 @@ struct EstimateFreshnessDetailView: View {
             if let days = state.daysSinceLatest {
                 Text("\(days)")
                     .font(Theme.bigNumber(46))
-                    .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.cardioText)
                 Text(days == 1 ? "day since your last estimate" : "days since your last estimate")
                     .font(.subheadline)
                     .foregroundStyle(Theme.textSecondary)

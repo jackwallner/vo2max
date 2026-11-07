@@ -259,7 +259,7 @@ struct SettingsView: View {
                     Spacer()
                     Text("\(Int(settings.targetLower))–\(Int(settings.targetUpper))")
                         .font(.headline.monospacedDigit())
-                        .foregroundStyle(Theme.cardio)
+                        .foregroundStyle(Theme.cardioText)
                     Text("mL/kg/min")
                         .font(.caption)
                         .foregroundStyle(Theme.textSecondary)
