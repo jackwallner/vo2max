@@ -370,6 +370,12 @@ struct SignalReading {
     }
 }
 
+enum CardioContextLoadingPolicy {
+    static func shouldLoad(isPro: Bool, isActiveTab: Bool) -> Bool {
+        isPro && isActiveTab
+    }
+}
+
 // MARK: - Full-width signal card (Trends)
 
 /// Shows the number without a tap. Locked users see the same card with the
@@ -378,9 +384,14 @@ struct CardioSignalCard: View {
     let signal: CardioSignal
 
     @EnvironmentObject private var store: StoreService
+    @Environment(\.isActiveTab) private var isActiveTab
     @ObservedObject private var context = CardioContextService.shared
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPaywall = false
+
+    private var shouldLoadContext: Bool {
+        CardioContextLoadingPolicy.shouldLoad(isPro: store.isPro, isActiveTab: isActiveTab)
+    }
 
     var body: some View {
         Group {
@@ -395,7 +406,10 @@ struct CardioSignalCard: View {
                 card.onTapGesture { showPaywall = true }
             }
         }
-        .task { await context.load() }
+        .task(id: shouldLoadContext) {
+            guard shouldLoadContext else { return }
+            await context.load()
+        }
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: signal.feature)
         }
@@ -611,9 +625,14 @@ struct CardioSignalTile: View {
     let signal: CardioSignal
 
     @EnvironmentObject private var store: StoreService
+    @Environment(\.isActiveTab) private var isActiveTab
     @ObservedObject private var context = CardioContextService.shared
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPaywall = false
+
+    private var shouldLoadContext: Bool {
+        CardioContextLoadingPolicy.shouldLoad(isPro: store.isPro, isActiveTab: isActiveTab)
+    }
 
     var body: some View {
         Group {
@@ -625,7 +644,10 @@ struct CardioSignalTile: View {
                     .buttonStyle(.plain)
             }
         }
-        .task { await context.load() }
+        .task(id: shouldLoadContext) {
+            guard shouldLoadContext else { return }
+            await context.load()
+        }
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: signal.feature)
         }

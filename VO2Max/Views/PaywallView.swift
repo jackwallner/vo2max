@@ -630,7 +630,7 @@ private struct PlanCard: View {
     private func comparison(_ perMonthLabel: String, stacked: Bool) -> some View {
         // Only strike the monthly price when yearly really is cheaper per
         // month; otherwise it is not an anchor.
-        let anchor = savingsPercent != nil ? monthlyAnchorLabel : nil
+        let anchor: String? = savingsPercent != nil ? monthlyAnchorLabel : nil
         let layout = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2)) : AnyLayout(HStackLayout(spacing: 5))
         layout {
             if let anchor {
