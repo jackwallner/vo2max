@@ -10,7 +10,6 @@ struct HistoryView: View {
     /// window a user picks here is the window they land in.
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPlusPaywall = false
-    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var range: CardioRange { ranges.resolved }
     private var period: Int { range.days }
@@ -90,41 +89,25 @@ struct HistoryView: View {
 
         // No span caption here: the picker states it two rows above, and
         // repeating it that close together reads as a second, different window.
-        let blocks = Group {
-            statBlock(String(localized: "Readings"), "\(values.count)")
-            if typeSize.isAccessibilitySize { Divider() } else { Divider().frame(height: 36) }
-            statBlock(String(localized: "Average"), average.formatted(.number.precision(.fractionLength(1))))
-            if typeSize.isAccessibilitySize { Divider() } else { Divider().frame(height: 36) }
-            statBlock(
-                String(localized: "Change"),
-                change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "-",
-                color: change.map { $0 >= 0 ? Theme.positive : Theme.negative }
-            )
-        }
-        // Three columns break "Readings" mid-word at accessibility sizes, so stack them.
-        return Group {
-            if typeSize.isAccessibilitySize {
-                VStack(spacing: 8) { blocks }.padding(.horizontal, 16)
-            } else {
-                HStack(spacing: 0) { blocks }
-            }
-        }
+        // Three columns break "Readings" mid-word at accessibility sizes, so
+        // `StatStrip` stacks them there.
+        return StatStrip(
+            items: [
+                StatItem(title: String(localized: "Readings"), value: "\(values.count)"),
+                StatItem(title: String(localized: "Average"), value: average.formatted(.number.precision(.fractionLength(1)))),
+                StatItem(
+                    title: String(localized: "Change"),
+                    value: change?.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always())) ?? "-",
+                    color: change.map { $0 >= 0 ? Theme.positive : Theme.negative }
+                ),
+            ],
+            valueSize: 21,
+            captionFont: .caption,
+            dividerHeight: 36
+        )
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private func statBlock(_ title: String, _ value: String, color: Color? = nil) -> some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(Theme.bigNumber(21))
-                .foregroundStyle(color ?? Theme.textPrimary)
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
     }
 
     private var chartCard: some View {

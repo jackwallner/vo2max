@@ -8447,6 +8447,244 @@
         }
       }
     },
+    "%lld-%lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld - %2$lld"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld"
+          }
+        }
+      }
+    },
+    "%lld-%lld mL/kg/min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld～%2$lld mL/kg/min"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-%2$lld mL/kg/min"
+          }
+        }
+      }
+    },
     "%lld–%lld": {
       "extractionState": "manual",
       "localizations": {
@@ -10976,7 +11214,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "關於%1$@"
+            "value": "約 %1$@"
           }
         },
         "ru": {
@@ -11000,19 +11238,19 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@について"
+            "value": "約 %1$@"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เกี่ยวกับ %1$@"
+            "value": "ประมาณ %1$@"
           }
         },
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "O %1$@"
+            "value": "Přibližně %1$@"
           }
         },
         "it": {
@@ -11024,7 +11262,7 @@
         "hu": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ névjegye"
+            "value": "Körülbelül %1$@"
           }
         },
         "ro": {
@@ -11060,7 +11298,7 @@
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "מידע על %1$@"
+            "value": "בערך %1$@"
           }
         }
       }
@@ -17212,6 +17450,125 @@
         }
       }
     },
+    "At age %lld, the typical cardio fitness range for your profile is %lld-%lld mL/kg/min. Adjust it if you like.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At age %lld, the typical cardio fitness range for your profile is %lld-%lld mL/kg/min. Adjust it if you like."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit %1$lld Jahren liegt der typische Cardiofitness-Bereich für dein Profil bei %2$lld-%3$lld mL/kg/min. Du kannst ihn anpassen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À %1$lld ans, la plage habituelle de forme cardio pour votre profil est de %2$lld à %3$lld mL/kg/min. Vous pouvez l’ajuster."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voor je leeftijd van %1$lld jaar is het gebruikelijke cardiofitnessbereik voor je profiel %2$lld-%3$lld mL/kg/min. Je kunt dit aanpassen."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以 %1$lld 歲來看，你的參考個人檔案之一般心肺適能範圍為 %2$lld-%3$lld mL/kg/min。你可以自行調整。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для возраста %1$lld лет типичный диапазон кардиовыносливости для вашего профиля: %2$lld-%3$lld mL/kg/min. При желании измените целевой диапазон."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "في عمر %1$lld عامًا، يتراوح المستوى المعتاد للياقتك القلبية بين %2$lld و%3$lld mL/kg/min. يمكنك تعديل نطاق الهدف كما تشاء."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A los %1$lld años, el rango habitual de capacidad aeróbica para tu perfil es de %2$lld a %3$lld mL/kg/min. Ajusta tu objetivo si quieres."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "年齢が%1$lld歳の場合、心肺機能の一般的な範囲は%2$lld～%3$lld mL/kg/minです。必要に応じて目標範囲を調整できます。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมื่ออายุ %1$lld ปี ช่วงคาร์ดิโอฟิตเนสโดยทั่วไปสำหรับโปรไฟล์ของคุณคือ %2$lld-%3$lld mL/kg/min ปรับช่วงเป้าหมายได้ตามต้องการ"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro věk %1$lld let je obvyklé rozmezí kardiorespirační kondice pro váš profil %2$lld-%3$lld mL/kg/min. Podle potřeby ho upravte."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A %1$lld anni, l’intervallo tipico di fitness cardiovascolare per il tuo profilo è %2$lld-%3$lld mL/kg/min. Puoi modificarlo."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld évesen a profilodra jellemző kardiofitnesz-tartomány %2$lld-%3$lld mL/kg/min. Igény szerint módosíthatod."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La %1$lld ani, intervalul obișnuit de fitness cardiovascular pentru profilul tău este %2$lld-%3$lld mL/kg/min. Îl poți ajusta."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Στην ηλικία των %1$lld ετών, το συνηθισμένο εύρος καρδιοαναπνευστικής φυσικής κατάστασης για το προφίλ σου είναι %2$lld-%3$lld mL/kg/min. Μπορείς να το προσαρμόσεις."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dla wieku %1$lld lat typowy zakres kondycji kardio w Twoim profilu wynosi %2$lld-%3$lld mL/kg/min. Możesz go zmienić."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pre vek %1$lld rokov je obvyklý rozsah kardiorespiračnej kondície v tvojom profile %2$lld-%3$lld mL/kg/min. Môžeš ho upraviť."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vid %1$lld års ålder är det typiska konditionsintervallet för din profil %2$lld-%3$lld mL/kg/min. Du kan justera det."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בגיל %1$lld, הטווח הרגיל של הכושר האירובי לפרופיל שלך הוא %2$lld-%3$lld mL/kg/min. אפשר לשנות אותו לפי הצורך."
+          }
+        }
+      }
+    },
     "At age %lld, the typical cardio fitness range for your profile is %lld–%lld mL/kg/min. Adjust it if you like.": {
       "extractionState": "manual",
       "localizations": {
@@ -20777,6 +21134,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "השוואה כללית"
+          }
+        }
+      }
+    },
+    "Broad typical range for your current profile: %lld-%lld mL/kg/min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Broad typical range for your current profile: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grober typischer Bereich für dein aktuelles Profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Large plage typique pour votre profil actuel : %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebruikelijk bereik voor je profiel: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "依目前參考個人檔案的一般範圍：%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Типичный диапазон для выбранного профиля: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "النطاق المعتاد التقريبي لملفك الحالي: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rango habitual aproximado para tu perfil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在のプロフィールにおける一般的な範囲：%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงทั่วไปโดยประมาณสำหรับโปรไฟล์ปัจจุบัน: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé rozmezí pro váš profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervallo tipico per il tuo profilo: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A profilodra jellemző szokásos tartomány: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervalul obișnuit pentru profilul tău: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνηθισμένο εύρος για το τρέχον προφίλ σου: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typowy zakres dla Twojego profilu: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklý rozsah pre tvoj aktuálny profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typiskt intervall för din profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הטווח הרגיל לפרופיל שלך: %1$lld-%2$lld mL/kg/min"
           }
         }
       }
@@ -26267,7 +26743,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Benutzerdefiniert"
+            "value": "Eigene"
           }
         },
         "fr": {
@@ -32812,7 +33288,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mehr aus VO2+ herausholen"
+            "value": "Mehr mit VO2+"
           }
         },
         "fr": {
@@ -43323,7 +43799,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nicht festgelegt"
+            "value": "Keine Angabe"
           }
         },
         "fr": {
@@ -54100,6 +54576,125 @@
         }
       }
     },
+    "Target %@-%@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target %1$@-%2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziel %1$@-%2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible %1$@-%2$@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doel %1$@-%2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目標%1$@-%2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цель %1$@-%2$@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الهدف %1$@-%2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivo %1$@-%2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目標 %1$@-%2$@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เป้าหมาย %1$@-%2$@"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cíl %1$@-%2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obiettivo %1$@-%2$@"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cél: %1$@-%2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ținta %1$@-%2$@"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Στόχος %1$@-%2$@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cel: %1$@-%2$@"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cieľ: %1$@-%2$@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mål: %1$@-%2$@"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "יעד %1$@-%2$@"
+          }
+        }
+      }
+    },
     "Target %@–%@": {
       "extractionState": "manual",
       "localizations": {
@@ -55167,6 +55762,244 @@
           "stringUnit": {
             "state": "translated",
             "value": "טווח יעד"
+          }
+        }
+      }
+    },
+    "Target range: %@-%@ mL/kg/min.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target range: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zielbereich: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plage cible : %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doelbereik: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目標範圍：%1$@-%2$@ mL/kg/min。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Целевой диапазон: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "النطاق المستهدف: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rango objetivo: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ターゲット範囲: %1$@-%2$@ mL/kg/min。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงเป้าหมาย: %1$@-%2$@ mL/kg/min"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cílové rozmezí: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervallo obiettivo: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Céltartomány: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interval țintă: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εύρος στόχου: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zakres docelowy: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cieľové rozpätie: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Målintervall: %1$@-%2$@ mL/kg/min."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טווח יעד: %1$@-%2$@ mL/kg/min."
+          }
+        }
+      }
+    },
+    "Target range: %@-%@ mL/kg/min. Latest: %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target range: %1$@-%2$@ mL/kg/min. Latest: %3$@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zielbereich: %1$@-%2$@ mL/kg/min. Neueste: %3$@."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plage cible : %1$@-%2$@ mL/kg/min. Dernière estimation : %3$@."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doelbereik: %1$@-%2$@ mL/kg/min. Nieuwste: %3$@."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目標範圍：%1$@-%2$@ mL/kg/min。最新：%3$@。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Целевой диапазон: %1$@-%2$@ mL/kg/min. Последнее: %3$@."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "النطاق المستهدف: %1$@-%2$@ mL/kg/min. الأحدث: %3$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rango objetivo: %1$@-%2$@ mL/kg/min. Último: %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ターゲット範囲: %1$@-%2$@ mL/kg/min。最新: %3$@。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงเป้าหมาย: %1$@-%2$@ mL/kg/min ค่าล่าสุด: %3$@"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cílové rozmezí: %1$@-%2$@ mL/kg/min. Nejnovější hodnota: %3$@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervallo obiettivo: %1$@-%2$@ mL/kg/min. Ultimo valore: %3$@."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Céltartomány: %1$@-%2$@ mL/kg/min. Legutóbbi érték: %3$@."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interval țintă: %1$@-%2$@ mL/kg/min. Cea mai recentă valoare: %3$@."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εύρος στόχου: %1$@-%2$@ mL/kg/min. Πιο πρόσφατη τιμή: %3$@."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zakres docelowy: %1$@-%2$@ mL/kg/min. Najnowszy pomiar: %3$@."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cieľové rozpätie: %1$@-%2$@ mL/kg/min. Najnovšia hodnota: %3$@."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Målintervall: %1$@-%2$@ mL/kg/min. Senaste värde: %3$@."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טווח יעד: %1$@-%2$@ mL/kg/min. המדידה האחרונה: %3$@."
           }
         }
       }
@@ -59292,6 +60125,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "ניסיון נוסף"
+          }
+        }
+      }
+    },
+    "Typical for your profile: %lld-%lld mL/kg/min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typical for your profile: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typisch für dein Profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valeurs habituelles pour votre profil : %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebruikelijk voor je profiel: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "依參考個人檔案的一般範圍：%1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Типичный диапазон для вашего профиля: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "النطاق المعتاد لملفك: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rango habitual para tu perfil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プロフィールの一般的な範囲：%1$lld～%2$lld mL/kg/min"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงทั่วไปสำหรับโปรไฟล์ของคุณ: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé rozmezí pro váš profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervallo tipico per il tuo profilo: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A profilodra jellemző tartomány: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervalul obișnuit pentru profilul tău: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνηθισμένο εύρος για το προφίλ σου: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typowy zakres dla Twojego profilu: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obvyklé rozpätie pre tvoj profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typiskt intervall för din profil: %1$lld-%2$lld mL/kg/min"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הטווח הרגיל לפרופיל שלך: %1$lld-%2$lld mL/kg/min"
           }
         }
       }
@@ -68458,6 +69410,125 @@
         }
       }
     },
+    "Your target range is %@-%@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your target range is %1$@-%2$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Zielbereich liegt bei %1$@-%2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre plage cible est de %1$@ à %2$@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je doelbereik is %1$@-%2$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的目標範圍為 %1$@-%2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваш целевой диапазон: %1$@-%2$@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نطاقك المستهدف هو %1$@-%2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu rango objetivo es %1$@-%2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目標範囲：%1$@～%2$@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงเป้าหมายของคุณคือ %1$@-%2$@"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Váš cílový rozsah je %1$@-%2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo intervallo target è %1$@-%2$@"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A céltartományod: %1$@-%2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervalul tău țintă este %1$@-%2$@"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το εύρος στόχου σου είναι %1$@-%2$@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twój zakres docelowy: %1$@-%2$@"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje cieľové rozpätie je %1$@-%2$@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ditt målintervall är %1$@-%2$@"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "טווח היעד שלך הוא %1$@-%2$@"
+          }
+        }
+      }
+    },
     "Your target range is %@–%@": {
       "extractionState": "manual",
       "localizations": {
@@ -68811,6 +69882,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "נפח האימונים דומה בתקופות שבהן האומדן עלה (%1$lld דקות בשבוע) ובתקופות שבהן לא עלה (%2$lld דקות בשבוע)."
+          }
+        }
+      }
+    },
+    "avg %@ · range %lld-%lld · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "avg %1$@ · range %2$lld-%3$lld · %4$@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ø %1$@ · Bereich %2$lld-%3$lld · %4$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. %1$@ · plage %2$lld-%3$lld · %4$@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gem. %1$@ · bereik %2$lld-%3$lld · %4$@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 %1$@ · 範圍 %2$lld-%3$lld · %4$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Среднее %1$@ · диапазон %2$lld-%3$lld · %4$@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المتوسط %1$@ · النطاق %2$lld-%3$lld · %4$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media %1$@ · intervalo %2$lld-%3$lld · %4$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 %1$@ · 範囲 %2$lld～%3$lld · %4$@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เฉลี่ย %1$@ · ช่วง %2$lld-%3$lld · %4$@"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Průměr %1$@ · rozsah %2$lld-%3$lld · %4$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media %1$@ · intervallo %2$lld-%3$lld · %4$@"
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ממוצע %1$@ · טווח %2$lld-%3$lld · %4$@"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Átl. %1$@ · tartomány %2$lld-%3$lld · %4$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie %1$@ · interval %2$lld-%3$lld · %4$@"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μέσος όρος %1$@ · εύρος %2$lld-%3$lld · %4$@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Średnia %1$@ · zakres %2$lld-%3$lld · %4$@"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priemer %1$@ · rozsah %2$lld-%3$lld · %4$@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snitt %1$@ · intervall %2$lld-%3$lld · %4$@"
           }
         }
       }

@@ -190,7 +190,7 @@ struct LockedNumber: View {
             .hidden()
             .overlay {
                 Capsule()
-                    .fill(Theme.textSecondary)
+                    .fill(Theme.textSecondary.opacity(0.3))
                     .frame(height: size * 0.5)
                     // Enough blur that no digit shape survives, little enough
                     // that the reader can still see a number is being withheld.
@@ -370,6 +370,12 @@ struct SignalReading {
     }
 }
 
+enum CardioContextLoadingPolicy {
+    static func shouldLoad(isPro: Bool, isActiveTab: Bool) -> Bool {
+        isPro && isActiveTab
+    }
+}
+
 // MARK: - Full-width signal card (Trends)
 
 /// Shows the number without a tap. Locked users see the same card with the
@@ -378,9 +384,14 @@ struct CardioSignalCard: View {
     let signal: CardioSignal
 
     @EnvironmentObject private var store: StoreService
+    @Environment(\.isActiveTab) private var isActiveTab
     @ObservedObject private var context = CardioContextService.shared
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPaywall = false
+
+    private var shouldLoadContext: Bool {
+        CardioContextLoadingPolicy.shouldLoad(isPro: store.isPro, isActiveTab: isActiveTab)
+    }
 
     var body: some View {
         Group {
@@ -395,7 +406,10 @@ struct CardioSignalCard: View {
                 card.onTapGesture { showPaywall = true }
             }
         }
-        .task { await context.load() }
+        .task(id: shouldLoadContext) {
+            guard shouldLoadContext else { return }
+            await context.load()
+        }
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: signal.feature)
         }
@@ -512,7 +526,9 @@ struct CardioSignalCard: View {
             // One element at least 44 pt tall, so VoiceOver and the hit-region
             // audit see the locked reading as a row, not a small lock glyph.
             .frame(minHeight: 44)
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(signal.unit)
+            .accessibilityValue("Locked. Included with VO2+")
             sparkline(Self.placeholderSeries).plusBlurred()
             Text(signal.feature.intentSubheadline)
                 .font(.caption)
@@ -611,9 +627,14 @@ struct CardioSignalTile: View {
     let signal: CardioSignal
 
     @EnvironmentObject private var store: StoreService
+    @Environment(\.isActiveTab) private var isActiveTab
     @ObservedObject private var context = CardioContextService.shared
     @ObservedObject private var ranges = CardioRangeStore.shared
     @State private var showPaywall = false
+
+    private var shouldLoadContext: Bool {
+        CardioContextLoadingPolicy.shouldLoad(isPro: store.isPro, isActiveTab: isActiveTab)
+    }
 
     var body: some View {
         Group {
@@ -625,7 +646,10 @@ struct CardioSignalTile: View {
                     .buttonStyle(.plain)
             }
         }
-        .task { await context.load() }
+        .task(id: shouldLoadContext) {
+            guard shouldLoadContext else { return }
+            await context.load()
+        }
         .sheet(isPresented: $showPaywall) {
             PaywallView(focus: signal.feature)
         }
@@ -783,15 +807,12 @@ struct HeartMetricDetailView: View {
 
             Divider()
 
-            HStack(spacing: 0) {
-                    statBlock(String(localized: "Average"), summary.average.formatted(.number.precision(.fractionLength(1))))
-                Divider().frame(height: 34)
-                statBlock(String(localized: "Low"), "\(Int(summary.minimum.rounded()))")
-                Divider().frame(height: 34)
-                statBlock(String(localized: "High"), "\(Int(summary.maximum.rounded()))")
-                Divider().frame(height: 34)
-                statBlock(String(localized: "Readings"), "\(summary.count)")
-            }
+            StatStrip(items: [
+                StatItem(title: String(localized: "Average"), value: summary.average.formatted(.number.precision(.fractionLength(1)))),
+                StatItem(title: String(localized: "Low"), value: "\(Int(summary.minimum.rounded()))"),
+                StatItem(title: String(localized: "High"), value: "\(Int(summary.maximum.rounded()))"),
+                StatItem(title: String(localized: "Readings"), value: "\(summary.count)"),
+            ])
 
             if let change = summary.change {
                 VStack(spacing: 2) {
@@ -816,19 +837,6 @@ struct HeartMetricDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(20)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private func statBlock(_ title: String, _ value: String) -> some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(Theme.bigNumber(19))
-                .foregroundStyle(Theme.textPrimary)
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
     }
 
     private func chartCard(_ summary: MetricSummary) -> some View {
@@ -988,15 +996,12 @@ struct CardioLoadDetailView: View {
 
                 Divider()
 
-                HStack(spacing: 0) {
-                statBlock(String(localized: "Sessions"), "\(summary.sessions)")
-                    Divider().frame(height: 34)
-                statBlock(String(localized: "Per week"), summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1))))
-                    Divider().frame(height: 34)
-                statBlock(String(localized: "Total min"), "\(Int(summary.totalMinutes.rounded()))")
-                    Divider().frame(height: 34)
-                statBlock(String(localized: "Qualifying min/week"), "\(Int(summary.qualifyingMinutesPerWeek.rounded()))")
-                }
+                StatStrip(items: [
+                    StatItem(title: String(localized: "Sessions"), value: "\(summary.sessions)"),
+                    StatItem(title: String(localized: "Per week"), value: summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1)))),
+                    StatItem(title: String(localized: "Total min"), value: "\(Int(summary.totalMinutes.rounded()))"),
+                    StatItem(title: String(localized: "Qualifying min/week"), value: "\(Int(summary.qualifyingMinutesPerWeek.rounded()))"),
+                ])
 
                 if let change = summary.change {
                     VStack(spacing: 2) {
@@ -1040,19 +1045,6 @@ struct CardioLoadDetailView: View {
             .padding(24)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
-    }
-
-    private func statBlock(_ title: String, _ value: String) -> some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(Theme.bigNumber(19))
-                .foregroundStyle(Theme.textPrimary)
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder

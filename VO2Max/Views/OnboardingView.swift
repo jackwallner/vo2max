@@ -350,11 +350,15 @@ struct OnboardingView: View {
                     Text("Go further with VO2+")
                         .font(.system(.title, design: .rounded, weight: .bold))
                         .multilineTextAlignment(.center)
-                    Text("Your Apple Health estimate, cardio fitness trend, and fitness age stay free. VO2+ adds deeper context:")
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundStyle(Theme.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
+                    // At accessibility sizes the pitch alone fills the first
+                    // screen, so the billed amount moves up in its place.
+                    if !typeSize.isAccessibilitySize {
+                        Text("Your Apple Health estimate, cardio fitness trend, and fitness age stay free. VO2+ adds deeper context:")
+                            .font(.system(.subheadline, design: .rounded))
+                            .foregroundStyle(Theme.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
 
                 // At accessibility sizes the selling points push the price below
@@ -484,10 +488,13 @@ struct OnboardingView: View {
     private func primaryLabel(_ title: String) -> some View {
         Text(title)
             .font(.system(.headline, design: .rounded))
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(Theme.cardioDeep, in: RoundedRectangle(cornerRadius: 14))
             .foregroundStyle(.white)
+            .contentShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var welcomeTrustLine: some View {
@@ -547,7 +554,7 @@ struct OnboardingView: View {
             VStack(spacing: 0) { legalButtons }
         }
         .font(.system(.caption2, design: .rounded, weight: .semibold))
-        .foregroundStyle(Theme.textTertiary)
+        .foregroundStyle(Theme.textSecondary)
     }
 
     @ViewBuilder

@@ -2,7 +2,7 @@
 paths:
   - "artifacts/asc-screenshots/**"
   - "fastlane/screenshots/**"
-  - "VO2MaxUITests/ReleaseJourneysUITests.swift"
+  - "VO2MaxUITests/StoreScreenshotsUITests.swift"
   - "VO2MaxUITests/StoreScreenshotLocales.json"
 ---
 
@@ -15,3 +15,7 @@ Screenshots come from XCUITest attachments because headless GH-SIM launch screen
 For a targeted repair, pass `--scenes trends,trend --reuse-job <gh-sim-id>`. The adapter seeds unchanged scenes from that run's attachments, captures only the selected routes, then still composes and gates every managed frame.
 
 Frame 05 is an Apple Watch display and stays English. The localized phone set contains frames 01, 02, 03, 04, and 06. `-DemoPro` is local screenshot state and does not configure RevenueCat.
+
+Second run (2026-11-08): all 15 remaining languages went through one GH-SIM job. GitHub's Mac queue can hold a job for hours when other fleet runs are waiting, and the harness may kill a long foreground wrapper. If the wrapper dies, the gh-sim process keeps running: run `capture.sh --adopt-job <gh-sim-id>` (detached with `nohup`, macOS has no `setsid`) to wait for that job's attachments and compose, gate, sheet and copy every locale. Do not share a log file name with other sessions on the same host.
+
+The capture test is `StoreScreenshotsUITests` (2026-11-08). It stays out of `ReleaseJourneysUITests` so the release gate never runs an 8-minute capture loop as a journey; a screenshot timeout there blocked 1.1.6 as a P0.
