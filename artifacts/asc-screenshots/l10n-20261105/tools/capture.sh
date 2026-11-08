@@ -168,7 +168,7 @@ if [[ -n "$ADOPT_JOB" ]]; then
     until [[ -f "$HOME/.gh-sim/results/$ADOPT_JOB/attachments/manifest.json" ]]; do sleep 20; done
     TEST_STATUS=0
 elif gh-sim test --scheme VO2MaxUITests --device "iPhone 17 Pro Max" \
-    --only VO2MaxUITests/ReleaseJourneysUITests/testLocalizedStoreScreenshots \
+    --only VO2MaxUITests/StoreScreenshotsUITests/testLocalizedStoreScreenshots \
     --id-file "$JOB_ID_FILE"; then
     TEST_STATUS=0
 else
