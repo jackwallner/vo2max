@@ -190,7 +190,7 @@ struct LockedNumber: View {
             .hidden()
             .overlay {
                 Capsule()
-                    .fill(Theme.textSecondary)
+                    .fill(Theme.textSecondary.opacity(0.3))
                     .frame(height: size * 0.5)
                     // Enough blur that no digit shape survives, little enough
                     // that the reader can still see a number is being withheld.
