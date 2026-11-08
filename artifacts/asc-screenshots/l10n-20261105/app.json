@@ -8,15 +8,6 @@
  "targets": [
   {
    "rank": 1,
-   "store_locale": "ar-SA",
-   "lang": "ar",
-   "apple_languages": "(ar)",
-   "apple_locale": "ar_SA",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 2,
    "store_locale": "cs",
    "lang": "cs",
    "apple_languages": "(cs)",
@@ -25,25 +16,7 @@
    "customers": 0
   },
   {
-   "rank": 3,
-   "store_locale": "el",
-   "lang": "el",
-   "apple_languages": "(el)",
-   "apple_locale": "el_GR",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 4,
-   "store_locale": "es-MX",
-   "lang": "es",
-   "apple_languages": "(es)",
-   "apple_locale": "es_MX",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 5,
+   "rank": 2,
    "store_locale": "he",
    "lang": "he",
    "apple_languages": "(he)",
@@ -52,7 +25,7 @@
    "customers": 0
   },
   {
-   "rank": 6,
+   "rank": 3,
    "store_locale": "hu",
    "lang": "hu",
    "apple_languages": "(hu)",
@@ -61,16 +34,7 @@
    "customers": 0
   },
   {
-   "rank": 7,
-   "store_locale": "it",
-   "lang": "it",
-   "apple_languages": "(it)",
-   "apple_locale": "it_IT",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 8,
+   "rank": 4,
    "store_locale": "ja",
    "lang": "ja",
    "apple_languages": "(ja)",
@@ -79,52 +43,7 @@
    "customers": 0
   },
   {
-   "rank": 9,
-   "store_locale": "pl",
-   "lang": "pl",
-   "apple_languages": "(pl)",
-   "apple_locale": "pl_PL",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 10,
-   "store_locale": "ro",
-   "lang": "ro",
-   "apple_languages": "(ro)",
-   "apple_locale": "ro_RO",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 11,
-   "store_locale": "ru",
-   "lang": "ru",
-   "apple_languages": "(ru)",
-   "apple_locale": "ru_RU",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 12,
-   "store_locale": "sk",
-   "lang": "sk",
-   "apple_languages": "(sk)",
-   "apple_locale": "sk_SK",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 13,
-   "store_locale": "sv",
-   "lang": "sv",
-   "apple_languages": "(sv)",
-   "apple_locale": "sv_SE",
-   "regions": [],
-   "customers": 0
-  },
-  {
-   "rank": 14,
+   "rank": 5,
    "store_locale": "th",
    "lang": "th",
    "apple_languages": "(th)",
@@ -133,7 +52,7 @@
    "customers": 0
   },
   {
-   "rank": 15,
+   "rank": 6,
    "store_locale": "zh-Hant",
    "lang": "zh-Hant",
    "apple_languages": "(zh-Hant)",
