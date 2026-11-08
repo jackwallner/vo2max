@@ -18,7 +18,7 @@ private struct StoreScreenshotLocales: Decodable {
 
 /// The release gate's journeys (`qa-gate run`). Each step ends in a
 /// `QA.checkpoint`, which runs the fleet oracles on whatever is on screen.
-/// Journeys assert reachability only.
+/// Core-loop journeys assert outcomes; the rest assert reachability.
 ///
 /// `-DemoData` stands in for Apple Health, and `-rcfunnelprobe` loads plans from
 /// RevenueCat's Test Store (a separate app in the project, never the production
@@ -113,6 +113,73 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.checkpoint(app, "core-trends-after-relaunch")
     }
 
+    /// Core loop: widen the target range in Settings, Today's ring follows
+    /// it, and the new range is still set after the app is killed and reopened.
+    func testCoreLoopTargetRangeDrivesTodayAndPersists() {
+        let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+        QA.launch(app, environment: Self.customer,
+                  arguments: ["-DemoData", "-SeedScreenshotData", "-rcfunnelprobe", "-ScreenshotTab", "0"])
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
+        tap(Self.settings, in: app)
+        let slider = targetSlider(in: app)
+        let (_, upper) = range(of: slider)
+        XCTAssertLessThan(upper, 70, "the target can still widen")
+        dragUpperHandleToEnd(slider, from: upper)
+        let (lower, raised) = range(of: slider)
+        XCTAssertGreaterThan(raised, upper, "the slider moves the top of the range")
+        QA.checkpoint(app, "target-widened")
+        tap(Self.done, in: app)
+        assertTodayTarget(lower, raised, in: app)
+        QA.checkpoint(app, "today-new-target")
+
+        QA.relaunch(app)
+        assertTodayTarget(lower, raised, in: app)
+        tap(Self.settings, in: app)
+        XCTAssertEqual(range(of: targetSlider(in: app)).upper, raised, "the target survives a relaunch")
+        QA.checkpoint(app, "target-after-relaunch")
+        tap(Self.done, in: app)
+    }
+
+    private func targetSlider(in app: XCUIApplication) -> XCUIElement {
+        let slider = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label IN %@ AND elementType != %d", ["Target range", "Zielbereich"],
+                                  XCUIElement.ElementType.staticText.rawValue)).firstMatch
+        let scroller = [app.collectionViews, app.tables, app.scrollViews].map(\.firstMatch).first { $0.exists } ?? app.windows.firstMatch
+        var scrolls = 0
+        while !(slider.exists && slider.isHittable) && scrolls < 8 {
+            QA.swipe(scroller, .up)
+            scrolls += 1
+        }
+        XCTAssertTrue(slider.waitForExistence(timeout: 15), "target range slider")
+        return slider
+    }
+
+    /// Drags the upper handle to the end of the track (the Settings bounds are
+    /// 20...70, with 30-point handles along the top of the control).
+    private func dragUpperHandleToEnd(_ slider: XCUIElement, from upper: Int) {
+        let width = slider.frame.width
+        let handleX = CGFloat(upper - 20) / 50 * (width - 30) + 15
+        let origin = slider.coordinate(withNormalizedOffset: .zero)
+        origin.withOffset(CGVector(dx: handleX, dy: 15))
+            .press(forDuration: 0.05, thenDragTo: origin.withOffset(CGVector(dx: width + 20, dy: 15)),
+                   withVelocity: .slow, thenHoldForDuration: 0.1)
+    }
+
+    /// The slider reads "Target from 40 to 55" (German "Zielbereich von 40 bis 55").
+    private func range(of slider: XCUIElement) -> (lower: Int, upper: Int) {
+        let value = slider.value as? String ?? ""
+        let numbers = value.split(whereSeparator: { !$0.isNumber }).compactMap { Int($0) }
+        XCTAssertEqual(numbers.count, 2, "range in \(value)")
+        return numbers.count == 2 ? (numbers[0], numbers[1]) : (0, 0)
+    }
+
+    /// Today's caption spells the range out ("Target 40 to 70", "Ziel 40 bis 70").
+    private func assertTodayTarget(_ lower: Int, _ upper: Int, in app: XCUIApplication) {
+        XCTAssertTrue(button(Self.today, in: app).waitForExistence(timeout: 20))
+        let caption = app.staticTexts.matching(NSPredicate(format: "label MATCHES %@", ".*\\b\(lower)\\b.*\\b\(upper)\\b.*")).firstMatch
+        XCTAssertTrue(caption.waitForExistence(timeout: 15), "Today shows the \(lower) to \(upper) target")
+    }
+
     func testLocalizedStoreScreenshots() throws {
         let bundles = [Bundle(for: Self.self), Bundle.main]
         let url = try XCTUnwrap(bundles.compactMap {
@@ -142,6 +209,8 @@ final class ReleaseJourneysUITests: XCTestCase {
     }
 
     private static let today = ["Today", "Heute"]
+    private static let settings = ["Settings", "Einstellungen"]
+    private static let done = ["Done", "Fertig"]
 
     private func button(_ labels: [String], in app: XCUIApplication) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch

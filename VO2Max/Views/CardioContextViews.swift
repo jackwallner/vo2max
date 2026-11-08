@@ -783,15 +783,12 @@ struct HeartMetricDetailView: View {
 
             Divider()
 
-            HStack(spacing: 0) {
-                    statBlock(String(localized: "Average"), summary.average.formatted(.number.precision(.fractionLength(1))))
-                Divider().frame(height: 34)
-                statBlock(String(localized: "Low"), "\(Int(summary.minimum.rounded()))")
-                Divider().frame(height: 34)
-                statBlock(String(localized: "High"), "\(Int(summary.maximum.rounded()))")
-                Divider().frame(height: 34)
-                statBlock(String(localized: "Readings"), "\(summary.count)")
-            }
+            StatStrip(items: [
+                StatItem(title: String(localized: "Average"), value: summary.average.formatted(.number.precision(.fractionLength(1)))),
+                StatItem(title: String(localized: "Low"), value: "\(Int(summary.minimum.rounded()))"),
+                StatItem(title: String(localized: "High"), value: "\(Int(summary.maximum.rounded()))"),
+                StatItem(title: String(localized: "Readings"), value: "\(summary.count)"),
+            ])
 
             if let change = summary.change {
                 VStack(spacing: 2) {
@@ -816,19 +813,6 @@ struct HeartMetricDetailView: View {
         .frame(maxWidth: .infinity)
         .padding(20)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
-    }
-
-    private func statBlock(_ title: String, _ value: String) -> some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(Theme.bigNumber(19))
-                .foregroundStyle(Theme.textPrimary)
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
     }
 
     private func chartCard(_ summary: MetricSummary) -> some View {
@@ -988,15 +972,12 @@ struct CardioLoadDetailView: View {
 
                 Divider()
 
-                HStack(spacing: 0) {
-                statBlock(String(localized: "Sessions"), "\(summary.sessions)")
-                    Divider().frame(height: 34)
-                statBlock(String(localized: "Per week"), summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1))))
-                    Divider().frame(height: 34)
-                statBlock(String(localized: "Total min"), "\(Int(summary.totalMinutes.rounded()))")
-                    Divider().frame(height: 34)
-                statBlock(String(localized: "Qualifying min/week"), "\(Int(summary.qualifyingMinutesPerWeek.rounded()))")
-                }
+                StatStrip(items: [
+                    StatItem(title: String(localized: "Sessions"), value: "\(summary.sessions)"),
+                    StatItem(title: String(localized: "Per week"), value: summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1)))),
+                    StatItem(title: String(localized: "Total min"), value: "\(Int(summary.totalMinutes.rounded()))"),
+                    StatItem(title: String(localized: "Qualifying min/week"), value: "\(Int(summary.qualifyingMinutesPerWeek.rounded()))"),
+                ])
 
                 if let change = summary.change {
                     VStack(spacing: 2) {
@@ -1040,19 +1021,6 @@ struct CardioLoadDetailView: View {
             .padding(24)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
         }
-    }
-
-    private func statBlock(_ title: String, _ value: String) -> some View {
-        VStack(spacing: 3) {
-            Text(value)
-                .font(Theme.bigNumber(19))
-                .foregroundStyle(Theme.textPrimary)
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder

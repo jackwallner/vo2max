@@ -35,9 +35,20 @@ enum Theme {
     static let textTertiary = textSecondary
     #endif
 
-    // Cardio fitness palette
+    // Cardio fitness palette. Text and white-on-fill pairings need 4.5:1, so the
+    // light-mode teal is deeper; dark mode keeps the bright teal.
+    #if os(watchOS)
     static let cardio = Color(red: 0.06, green: 0.76, blue: 0.78)      // teal
+    #else
+    static let cardio = adaptive(light: UIColor(red: 0.0, green: 0.40, blue: 0.45, alpha: 1),
+                                 dark: UIColor(red: 0.06, green: 0.76, blue: 0.78, alpha: 1))
+    #endif
+    #if os(watchOS)
     static let cardioBlue = Color(red: 0.08, green: 0.48, blue: 0.95)  // blue
+    #else
+    static let cardioBlue = adaptive(light: UIColor(red: 0.05, green: 0.36, blue: 0.80, alpha: 1),
+                                     dark: UIColor(red: 0.08, green: 0.48, blue: 0.95, alpha: 1))
+    #endif
     static let cardioGlow = Color(red: 0.06, green: 0.76, blue: 0.78).opacity(0.3)
 
     // Teal drawn as text on a white, grouped or tinted-teal surface is about
@@ -115,3 +126,61 @@ extension View {
             .contentShape(Rectangle())
     }
 }
+
+#if !os(watchOS)
+/// One figure in a `StatStrip`.
+struct StatItem {
+    let title: String
+    let value: String
+    var color: Color?
+}
+
+/// Side-by-side figures with dividers. At accessibility text sizes three or
+/// four columns leave each one narrower than its own caption, so the label
+/// broke mid-word ("Read-ings"); there the figures stack as label and value rows.
+struct StatStrip: View {
+    let items: [StatItem]
+    var valueSize: CGFloat = 19
+    var captionFont: Font = .caption2
+    var dividerHeight: CGFloat = 34
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    var body: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(spacing: 10) {
+                ForEach(items.indices, id: \.self) { index in
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Text(items[index].title)
+                            .font(.subheadline)
+                            .foregroundStyle(Theme.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(items[index].value)
+                            .font(Theme.bigNumber(valueSize))
+                            .foregroundStyle(items[index].color ?? Theme.textPrimary)
+                            .lineLimit(1)
+                    }
+                    .accessibilityElement(children: .combine)
+                    if index < items.count - 1 { Divider() }
+                }
+            }
+            .padding(.horizontal, 14)
+        } else {
+            HStack(spacing: 0) {
+                ForEach(items.indices, id: \.self) { index in
+                    VStack(spacing: 3) {
+                        Text(items[index].value)
+                            .font(Theme.bigNumber(valueSize))
+                            .foregroundStyle(items[index].color ?? Theme.textPrimary)
+                        Text(items[index].title)
+                            .font(captionFont)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .accessibilityElement(children: .combine)
+                    if index < items.count - 1 { Divider().frame(height: dividerHeight) }
+                }
+            }
+        }
+    }
+}
+#endif

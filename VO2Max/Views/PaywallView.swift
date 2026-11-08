@@ -185,6 +185,7 @@ struct BilledAmountBlock: View {
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isActiveTab) private var isActiveTab
+    @Environment(\.isUnfoldedPane) private var isUnfoldedPane
     @Environment(\.dynamicTypeSize) private var typeSize
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
@@ -239,18 +240,24 @@ struct PaywallView: View {
     /// Hero, benefits, and plans scroll as one purchase surface. The selected
     /// plan card carries the conspicuous billed amount; the pinned footer keeps
     /// only the CTA and required renewal disclosure, matching the Vitals+ layout.
+    private var largeText: Bool { typeSize.isAccessibilitySize }
+
     private var content: some View {
         ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 12) {
                     header
-                    featureList
+                    // A Duo pane is short: with the benefit list the last plan
+                    // card rested behind the Continue button. Plans and the CTA
+                    // are what the pane needs to show whole.
+                    // At accessibility sizes the benefit list alone fills the screen
+                    // and pushes the plans out of reach, so the plans lead there too.
+                    if !isUnfoldedPane && !largeText { featureList }
                     planCards
-                    // At accessibility sizes the pinned footer would cover most of
-                    // the screen and sit over the plans, so it scrolls with them.
-                    if typeSize.isAccessibilitySize {
-                        checkoutFooter.padding(.horizontal, -22)
-                    }
+                    // The disclosure and links are taller than the page at these
+                    // sizes, so they scroll with the plans instead of being pinned
+                    // over them; the pinned footer keeps only the CTA.
+                    if largeText { legalBlock }
                 }
                 .padding(.horizontal, 22)
                 .padding(.top, embedded ? 20 : 44)
@@ -265,20 +272,25 @@ struct PaywallView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if !typeSize.isAccessibilitySize { checkoutFooter }
+            checkoutFooter
         }
     }
 
     private var header: some View {
         VStack(spacing: 6) {
-            ZStack {
-                Circle()
-                    .fill(Theme.cardioGradient)
-                    .frame(width: 52, height: 52)
-                    .shadow(color: Theme.cardio.opacity(0.3), radius: 10, y: 4)
-                Image(systemName: "sparkles")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.white)
+            // At accessibility sizes the headline alone is two tall lines; the
+            // badge and the long pitch would push every plan below the CTA.
+            if !largeText {
+                ZStack {
+                    Circle()
+                        .fill(Theme.ctaGradient)
+                        .frame(width: 52, height: 52)
+                        .shadow(color: Theme.cardio.opacity(0.3), radius: 10, y: 4)
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+                .accessibilityHidden(true)
             }
             Text(focus?.intentHeadline ?? String(localized: "Go further with VO2+"))
                 .font(.system(.title2, design: .rounded, weight: .bold))
@@ -286,12 +298,14 @@ struct PaywallView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.85)
-            Text(focus?.intentSubheadline ?? String(localized: "Extras that sit on top of your Apple Health estimates."))
-                .font(.system(.footnote, design: .rounded))
-                .foregroundStyle(Theme.textSecondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .minimumScaleFactor(0.88)
+            if !largeText {
+                Text(focus?.intentSubheadline ?? String(localized: "Extras that sit on top of your Apple Health estimates."))
+                    .font(.system(.footnote, design: .rounded))
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.88)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -365,40 +379,22 @@ struct PaywallView: View {
                     Text(ctaTitle)
                         .font(.system(.headline, design: .rounded, weight: .bold))
                         .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(largeText ? 3 : 1)
+                        .minimumScaleFactor(largeText ? 1 : 0.72)
                         .opacity(store.isLoading ? 0 : 1)
                     if store.isLoading { ProgressView().tint(.white) }
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: 50)
-                .background(Theme.ctaGradient, in: Capsule())
+                .padding(.vertical, largeText ? 12 : 0)
+                .padding(.horizontal, largeText ? 16 : 0)
+                .frame(minHeight: 50)
+                .background(Theme.ctaGradient, in: RoundedRectangle(cornerRadius: 25))
             }
             .buttonStyle(.plain)
             .disabled(store.isLoading || selectedPackage == nil)
 
-            VStack(spacing: 4) {
-                Group {
-                    if let attemptMessage {
-                        Text(attemptMessage).foregroundStyle(Theme.negative)
-                    } else {
-                        Text(disclosureText).foregroundStyle(Theme.textTertiary)
-                    }
-                }
-                .font(.system(.caption2, design: .rounded))
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity)
-
-                // Stacks when the three labels no longer fit on one line.
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 4) { legalButtons }
-                    VStack(spacing: 0) { legalButtons }
-                }
-                .font(.system(.caption2, design: .rounded, weight: .semibold))
-                .foregroundStyle(Theme.textSecondary)
-            }
-            .frame(minHeight: 60, alignment: .top)
+            if !largeText { legalBlock }
         }
         .padding(.horizontal, 22)
         .padding(.top, 8)
@@ -410,6 +406,31 @@ struct PaywallView: View {
         // capsule's height explicitly here so the whole footer clears it.
         .padding(.bottom, embedded ? 88 : 10)
         .background(Theme.background)
+    }
+
+    private var legalBlock: some View {
+        VStack(spacing: 4) {
+            Group {
+                if let attemptMessage {
+                    Text(attemptMessage).foregroundStyle(Theme.negative)
+                } else {
+                    Text(disclosureText).foregroundStyle(Theme.textTertiary)
+                }
+            }
+            .font(.system(.caption2, design: .rounded))
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
+
+            // Stacks when the three labels no longer fit on one line.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 4) { legalButtons }
+                VStack(spacing: 0) { legalButtons }
+            }
+            .font(.system(.caption2, design: .rounded, weight: .semibold))
+            .foregroundStyle(Theme.textSecondary)
+        }
+        .frame(minHeight: largeText ? 0 : 60, alignment: .top)
     }
 
     @ViewBuilder
@@ -570,6 +591,7 @@ private struct PlanCard: View {
 
                 priceColumn
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .frame(minHeight: 54)
             .padding(.horizontal, 14)
             .padding(.vertical, 9)
@@ -630,16 +652,16 @@ private struct PlanCard: View {
     private func comparison(_ perMonthLabel: String, stacked: Bool) -> some View {
         // Only strike the monthly price when yearly really is cheaper per
         // month; otherwise it is not an anchor.
-        let anchor = savingsPercent != nil ? monthlyAnchorLabel : nil
+        let struckPrice: String? = savingsPercent != nil ? monthlyAnchorLabel : nil
         let layout = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2)) : AnyLayout(HStackLayout(spacing: 5))
         layout {
-            if let anchor {
-                Text(anchor)
+            if let struckPrice {
+                Text(struckPrice)
                     .foregroundStyle(Theme.textTertiary)
                     .strikethrough(true, color: Theme.textTertiary)
                     // The strikethrough carries meaning VoiceOver cannot see,
                     // so say it.
-                    .accessibilityLabel(String(localized: "Instead of \(anchor)"))
+                    .accessibilityLabel(String(localized: "Instead of \(struckPrice)"))
             }
             Text(perMonthLabel)
                 .foregroundStyle(Theme.textSecondary)
