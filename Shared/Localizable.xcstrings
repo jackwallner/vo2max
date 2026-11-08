@@ -42359,6 +42359,125 @@
         }
       }
     },
+    "No estimates in the last 180 days to report on.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No estimates in the last 180 days to report on."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In den letzten 180 Tagen gibt es keine Schätzwerte für einen Bericht."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune estimation sur les 180 derniers jours pour créer un rapport."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen schattingen in de afgelopen 180 dagen om een rapport van te maken."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "過去 180 天內沒有可用於報告的估算值。"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "За последние 180 дней нет оценок для отчёта."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا توجد تقديرات خلال آخر 180 يومًا لإعداد تقرير."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay estimaciones de los últimos 180 días para crear un informe."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "過去180日間に、レポートに使える推定値がありません。"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีค่าประมาณในช่วง 180 วันที่ผ่านมาสำหรับสร้างรายงาน"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za posledních 180 dnů nejsou k dispozici žádné odhady pro zprávu."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna stima negli ultimi 180 giorni per creare il report."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Az elmúlt 180 napból nincs becslés, amelyből jelentés készülhetne."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nu există estimări din ultimele 180 de zile pentru raport."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν υπάρχουν εκτιμήσεις τις τελευταίες 180 ημέρες για τη δημιουργία αναφοράς."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brak oszacowań z ostatnich 180 dni do utworzenia raportu."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za posledných 180 dní nie sú k dispozícii žiadne odhady pre prehľad."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Det finns inga uppskattningar från de senaste 180 dagarna att göra en rapport av."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין אומדנים מ-180 הימים האחרונים ליצירת דוח."
+          }
+        }
+      }
+    },
     "No estimates in this period": {
       "extractionState": "manual",
       "localizations": {
