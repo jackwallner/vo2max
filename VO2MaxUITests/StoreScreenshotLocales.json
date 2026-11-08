@@ -1,15 +1,36 @@
 {
   "locales": [
-    { "store_locale": "en-US", "language": "en", "apple_locale": "en_US" },
-    { "store_locale": "de-DE", "language": "de", "apple_locale": "de_DE" },
-    { "store_locale": "nl-NL", "language": "nl", "apple_locale": "nl_NL" },
-    { "store_locale": "fr-FR", "language": "fr", "apple_locale": "fr_FR" }
+    {
+      "store_locale": "en-US",
+      "language": "en",
+      "apple_locale": "en_US"
+    },
+    {
+      "store_locale": "el",
+      "language": "el",
+      "apple_locale": "el_GR"
+    }
   ],
   "scenes": [
-    { "name": "trends", "route": "trends" },
-    { "name": "today", "route": "today" },
-    { "name": "readings", "route": "readings" },
-    { "name": "trend", "route": "trend" },
-    { "name": "plus", "route": "plus" }
+    {
+      "name": "trends",
+      "route": "trends"
+    },
+    {
+      "name": "today",
+      "route": "today"
+    },
+    {
+      "name": "readings",
+      "route": "readings"
+    },
+    {
+      "name": "trend",
+      "route": "trend"
+    },
+    {
+      "name": "plus",
+      "route": "plus"
+    }
   ]
 }
