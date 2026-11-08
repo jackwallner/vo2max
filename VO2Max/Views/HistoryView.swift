@@ -133,9 +133,13 @@ struct HistoryView: View {
                 RuleMark(y: .value(String(localized: "Target lower"), settings.targetLower))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Theme.positive.opacity(0.65))
+                    .accessibilityLabel(String(localized: "Target lower"))
+                    .accessibilityValue(String(localized: "\(settings.targetLower.formatted(.number)) mL/kg/min"))
                 RuleMark(y: .value(String(localized: "Target upper"), settings.targetUpper))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                     .foregroundStyle(Theme.positive.opacity(0.65))
+                    .accessibilityLabel(String(localized: "Target upper"))
+                    .accessibilityValue(String(localized: "\(settings.targetUpper.formatted(.number)) mL/kg/min"))
                 ForEach(visibleSamples) { sample in
                     LineMark(
                         x: .value(String(localized: "Date"), sample.date),
