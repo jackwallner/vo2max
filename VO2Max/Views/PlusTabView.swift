@@ -65,7 +65,10 @@ struct PlusTabView: View {
         .navigationBarTitleDisplayMode(.inline)
         // The signal rows print live numbers now, so this tab needs the same
         // read the Today tiles and Trends cards do.
-        .task { await context.load() }
+        .task(id: CardioContextLoadingPolicy.shouldLoad(isPro: store.isPro, isActiveTab: isActiveTab)) {
+            guard CardioContextLoadingPolicy.shouldLoad(isPro: store.isPro, isActiveTab: isActiveTab) else { return }
+            await context.load()
+        }
         .sheet(isPresented: $showRecap) {
             MonthlyRecapView().environmentObject(settings)
         }

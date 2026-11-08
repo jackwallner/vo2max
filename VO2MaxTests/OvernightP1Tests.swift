@@ -1,9 +1,22 @@
 import Foundation
+import HealthKit
 import Testing
 @testable import VO2Max
 
 /// Guards for the 2026-10-30 overnight report's P1 findings (V01 to V04).
 struct OvernightP1Tests {
+    // MARK: - Initial HealthKit permission scope
+
+    @MainActor @Test func initialHealthAuthorizationRequestsOnlyVO2Max() {
+        #expect(Set(HealthKitService.initialReadTypes.map(\.identifier)) == ["HKQuantityTypeIdentifierVO2Max"])
+    }
+
+    @Test func contextLoadingRequiresAnActiveProSurface() {
+        #expect(!CardioContextLoadingPolicy.shouldLoad(isPro: false, isActiveTab: true))
+        #expect(!CardioContextLoadingPolicy.shouldLoad(isPro: true, isActiveTab: false))
+        #expect(CardioContextLoadingPolicy.shouldLoad(isPro: true, isActiveTab: true))
+    }
+
     // MARK: - V01: Settings restore always reports an outcome
 
     @Test func restoreWithNothingFoundSaysSo() {

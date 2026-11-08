@@ -22,6 +22,9 @@ final class HealthKitService: ObservableObject {
     private let unit = HKUnit.literUnit(with: .milli)
         .unitDivided(by: .gramUnit(with: .kilo))
         .unitDivided(by: .minute())
+    static var initialReadTypes: Set<HKObjectType> {
+        [HKQuantityType(.vo2Max)]
+    }
     private var observerQuery: HKObserverQuery?
     private var refreshTask: Task<Void, Never>?
 
@@ -98,14 +101,9 @@ final class HealthKitService: ObservableObject {
             lastError = String(localized: "Apple Health is not available on this device.")
             return
         }
-        // Ask for the estimate and its supporting cardio signals in one sheet.
-        // Only VO2 max gates the connected state and the dashboard; resting heart
-        // rate, recovery, and workouts feed VO2+ context and degrade to empty
-        // states if the user declines them individually.
-        var readTypes: Set<HKObjectType> = [vo2Type]
-        readTypes.formUnion(CardioContextService.extendedReadTypes)
-        try await store.requestAuthorization(toShare: [], read: readTypes)
-        CardioContextService.markExtendedTypesRequested()
+        // Initial access is limited to the estimate the core app displays.
+        // Supporting signals are requested when an active VO2+ screen needs them.
+        try await store.requestAuthorization(toShare: [], read: Self.initialReadTypes)
         // Prompt complete: show the connected state right away (matches Vitals),
         // then load data. A denial can't be distinguished here, but the dashboard
         // reads cached samples independently so that stays graceful.
