@@ -258,6 +258,7 @@ private struct MainTabView: View {
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @Environment(\.requestReview) private var requestReview
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var selection = 0
     /// The container's width and fold, measured so the unfolded iPhone Duo can
@@ -395,6 +396,14 @@ private struct MainTabView: View {
         .task(id: split != nil) { await runDuoTour(split: split != nil) }
         #endif
         .task(id: recapSchedulingKey) { await syncMonthlyRecapSchedule() }
+        // Turning the recap on while iOS has notifications denied schedules
+        // nothing, and the key above does not change when the user then allows
+        // them in iOS Settings, so the toggle read on with no recap queued
+        // until the next cold launch. Re-queue on return; never prompts.
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active, store.isPro, settings.monthlyRecapEnabled else { return }
+            Task { await NotificationService.scheduleMonthlyRecapIfAuthorized() }
+        }
         .task(id: freshnessSchedulingKey) { HealthKitService.shared.syncFreshnessNudge() }
         .onChange(of: routeCoordinator.pendingRecap) { _, pending in
             guard pending else { return }
