@@ -11214,7 +11214,7 @@
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "關於%1$@"
+            "value": "約 %1$@"
           }
         },
         "ru": {
@@ -11238,19 +11238,19 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@について"
+            "value": "約 %1$@"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เกี่ยวกับ %1$@"
+            "value": "ประมาณ %1$@"
           }
         },
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "O %1$@"
+            "value": "Přibližně %1$@"
           }
         },
         "it": {
@@ -11262,7 +11262,7 @@
         "hu": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ névjegye"
+            "value": "Körülbelül %1$@"
           }
         },
         "ro": {
@@ -11298,7 +11298,7 @@
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "מידע על %1$@"
+            "value": "בערך %1$@"
           }
         }
       }
