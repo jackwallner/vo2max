@@ -509,6 +509,10 @@ struct CardioSignalCard: View {
                     .foregroundStyle(Theme.textSecondary)
                 Spacer(minLength: 4)
             }
+            // One element at least 44 pt tall, so VoiceOver and the hit-region
+            // audit see the locked reading as a row, not a small lock glyph.
+            .frame(minHeight: 44)
+            .accessibilityElement(children: .combine)
             sparkline(Self.placeholderSeries).plusBlurred()
             Text(signal.feature.intentSubheadline)
                 .font(.caption)
@@ -679,6 +683,8 @@ struct CardioSignalTile: View {
                 // Keeps all three tiles the same height whether or not a
                 // comparison window exists.
                 Text(" ").font(.subheadline.monospacedDigit())
+                    .hidden()
+                    .accessibilityHidden(true)
             }
         }
         .frame(maxWidth: .infinity)

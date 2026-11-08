@@ -555,6 +555,8 @@ private struct PlanCard: View {
                             Text(String(localized: "\(trialLabel), then the price shown."))
                         } else if !typeSize.isAccessibilitySize {
                             Text(" ")
+                                .hidden()
+                                .accessibilityHidden(true)
                         }
                     }
                     .font(.system(size: 11, design: .rounded))
