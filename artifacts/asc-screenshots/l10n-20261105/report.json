@@ -1,53 +1,33 @@
 {
   "locales": [
-    "ar-SA",
     "cs",
-    "el",
-    "es-MX",
     "he",
     "hu",
-    "it",
     "ja",
-    "pl",
-    "ro",
-    "ru",
-    "sk",
-    "sv",
     "th",
     "zh-Hant"
   ],
   "frames": 5,
   "gate": {
-    "ar-SA": "PASS",
     "cs": "PASS",
-    "el": "PASS",
-    "es-MX": "PASS",
     "he": "PASS",
     "hu": "PASS",
-    "it": "PASS",
     "ja": "PASS",
-    "pl": "PASS",
-    "ro": "PASS",
-    "ru": "PASS",
-    "sk": "PASS",
-    "sv": "PASS",
     "th": "PASS",
     "zh-Hant": "PASS"
   },
-  "gh_sim_jobs": 1,
+  "gh_sim_jobs": 2,
   "gh_sim_job_ids": [
+    "health-l10nshots-mbair33dd-1108-082438-13071",
     "health-l10nshots@20261108-022907-2cee-claude-mbpro0565-1108-032653-7409"
   ],
   "app_code_changed": [],
-  "defects": [
-    "el: Cardio Fitness Trend nav title truncates on frame 04 ('Τάση καρδιοαναπνευστικής φυσικής κατ...'); app string, not fixed per run override",
-    "es-MX/it/ru/cs and others: a few secondary UI labels truncate with an ellipsis in the VO2+ and Trends screens (e.g. es-MX 'Recuperación de la frecuencia c...'); app strings, not fixed per run override"
-  ],
+  "defects": [],
   "left_out": [],
   "excluded_by_design": [
     "05-keep-supporting-detail-close.png: Apple Watch display stays English and is outside the localized phone set"
   ],
-  "adapter": "xcuitest",
+  "adapter": "GH-SIM localized UI test screenshot attachments, 14-second post-readiness wait",
   "captured_scenes": [
     "trends",
     "today",
@@ -55,6 +35,5 @@
     "trend",
     "plus"
   ],
-  "reused_from_job": null,
-  "note": "One gh-sim job for en-US plus 15 locales. A first job (el only) was cancelled while queued on GitHub and produced nothing."
+  "reused_from_job": null
 }
