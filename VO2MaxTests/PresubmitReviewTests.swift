@@ -42,4 +42,23 @@ struct PresubmitReviewTests {
     @Test func pr1_requeueWithoutAGrantQueuesNothing() async {
         #expect(await NotificationService.scheduleMonthlyRecapIfAuthorized() == false)
     }
+
+    /// PR-7: the empty-report error was a bare literal stored in a `String`
+    /// state, so `Text(reportError)` drew it verbatim and every locale saw
+    /// English. It goes through the catalog now.
+    @Test func pr7_emptyReportErrorIsLocalized() throws {
+        let settings = try source("VO2Max/Views/SettingsView.swift")
+        #expect(settings.contains(#"reportError = String(localized: "No estimates in the last 180 days to report on.")"#))
+        #expect(!settings.contains(#"reportError = "No estimates"#))
+
+        let marker = Bundle(for: PresubmitBundleMarker.self)
+        let host = [marker, Bundle.main] + Bundle.allBundles
+        let german = try #require(host.lazy.compactMap { $0.path(forResource: "de", ofType: "lproj") }.first.flatMap(Bundle.init(path:)))
+        #expect(
+            String(localized: "No estimates in the last 180 days to report on.", bundle: german, locale: Locale(identifier: "de"))
+                == "In den letzten 180 Tagen gibt es keine Schätzwerte für einen Bericht."
+        )
+    }
 }
+
+private final class PresubmitBundleMarker: NSObject {}

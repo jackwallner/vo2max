@@ -552,7 +552,7 @@ struct SettingsView: View {
         let previous = points.filter { $0.date >= previousStart && $0.date < windowStart }
         guard !current.isEmpty else {
             isGeneratingReport = false
-            reportError = "No estimates in the last 180 days to report on."
+            reportError = String(localized: "No estimates in the last 180 days to report on.")
             return
         }
         let periodStart = current.map(\.date).min() ?? windowStart
