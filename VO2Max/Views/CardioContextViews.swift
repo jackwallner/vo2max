@@ -526,7 +526,9 @@ struct CardioSignalCard: View {
             // One element at least 44 pt tall, so VoiceOver and the hit-region
             // audit see the locked reading as a row, not a small lock glyph.
             .frame(minHeight: 44)
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(signal.unit)
+            .accessibilityValue("Locked. Included with VO2+")
             sparkline(Self.placeholderSeries).plusBlurred()
             Text(signal.feature.intentSubheadline)
                 .font(.caption)
