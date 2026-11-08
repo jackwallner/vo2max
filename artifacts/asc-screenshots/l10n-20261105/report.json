@@ -1,50 +1,60 @@
 {
   "locales": [
-    "de-DE",
-    "nl-NL",
-    "fr-FR"
+    "ar-SA",
+    "cs",
+    "el",
+    "es-MX",
+    "he",
+    "hu",
+    "it",
+    "ja",
+    "pl",
+    "ro",
+    "ru",
+    "sk",
+    "sv",
+    "th",
+    "zh-Hant"
   ],
   "frames": 5,
   "gate": {
-    "de-DE": "PASS",
-    "nl-NL": "PASS",
-    "fr-FR": "PASS"
+    "ar-SA": "PASS",
+    "cs": "PASS",
+    "el": "PASS",
+    "es-MX": "PASS",
+    "he": "PASS",
+    "hu": "PASS",
+    "it": "PASS",
+    "ja": "PASS",
+    "pl": "PASS",
+    "ro": "PASS",
+    "ru": "PASS",
+    "sk": "PASS",
+    "sv": "PASS",
+    "th": "PASS",
+    "zh-Hant": "PASS"
   },
-  "gh_sim_jobs": 16,
+  "gh_sim_jobs": 1,
   "gh_sim_job_ids": [
-    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-223436-5922",
-    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-225516-13066",
-    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-232158-2564",
-    "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-233549-1646"
+    "health-l10nshots@20261108-022907-2cee-claude-mbpro0565-1108-032653-7409"
   ],
-  "app_code_changed": [
-    "VO2Max/Views/DetailViews.swift",
-    "Shared/Utilities/CardioMetricAnalysis.swift",
-    "Shared/Localizable.xcstrings"
-  ],
-  "defects": [],
-  "resolved": [
-    "fr-FR: changed Change by window to Évolution par période.",
-    "de-DE, nl-NL, fr-FR: cross-year date ranges show both years using localized date formatting.",
-    "fr-FR: shortened the resting-heart-rate comparison caption so it fits.",
-    "fr-FR: kept mL/kg/min together when the target projection wraps.",
-    "All five managed phone frames were recomposed with the revised headers and gated."
+  "app_code_changed": [],
+  "defects": [
+    "el: Cardio Fitness Trend nav title truncates on frame 04 ('Τάση καρδιοαναπνευστικής φυσικής κατ...'); app string, not fixed per run override",
+    "es-MX/it/ru/cs and others: a few secondary UI labels truncate with an ellipsis in the VO2+ and Trends screens (e.g. es-MX 'Recuperación de la frecuencia c...'); app strings, not fixed per run override"
   ],
   "left_out": [],
   "excluded_by_design": [
     "05-keep-supporting-detail-close.png: Apple Watch display stays English and is outside the localized phone set"
   ],
-  "adapter": "GH-SIM localized UI test screenshot attachments, 14-second post-readiness wait",
+  "adapter": "xcuitest",
   "captured_scenes": [
     "trends",
-    "trend"
+    "today",
+    "readings",
+    "trend",
+    "plus"
   ],
-  "reused_from_job": "health-shots@20261105-201645-ef00-codex-mbpro3c86-1105-215038-23510",
-  "unit_tests": {
-    "status": "PASS",
-    "target": "VO2MaxTests",
-    "passed": 134,
-    "failed": 0,
-    "gh_sim_job_id": "health-shots@20261105-222241-f91b-codex-mbprodac6-1105-233549-1646"
-  }
+  "reused_from_job": null,
+  "note": "One gh-sim job for en-US plus 15 locales. A first job (el only) was cancelled while queued on GitHub and produced nothing."
 }

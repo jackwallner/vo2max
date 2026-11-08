@@ -7,10 +7,15 @@ REPO_ROOT="$(cd -- "$KIT_DIR/../../.." && pwd)"
 REQUESTED_LOCALES=""
 SCENE_LIST="trends,today,readings,trend,plus"
 REUSE_JOB=""
+ADOPT_JOB=""
 while (($#)); do
     case "$1" in
         --scenes)
             SCENE_LIST="$2"
+            shift 2
+            ;;
+        --adopt-job)
+            ADOPT_JOB="$2"
             shift 2
             ;;
         --reuse-job)
@@ -157,7 +162,12 @@ PY
 
 JOB_ID_FILE="$KIT_DIR/raw/.last-job-id"
 rm -f "$JOB_ID_FILE"
-if gh-sim test --scheme VO2MaxUITests --device "iPhone 17 Pro Max" \
+if [[ -n "$ADOPT_JOB" ]]; then
+    # Post-process a gh-sim job already started (or finished) for these locales and scenes.
+    printf '%s\n' "$ADOPT_JOB" > "$JOB_ID_FILE"
+    until [[ -f "$HOME/.gh-sim/results/$ADOPT_JOB/attachments/manifest.json" ]]; do sleep 20; done
+    TEST_STATUS=0
+elif gh-sim test --scheme VO2MaxUITests --device "iPhone 17 Pro Max" \
     --only VO2MaxUITests/ReleaseJourneysUITests/testLocalizedStoreScreenshots \
     --id-file "$JOB_ID_FILE"; then
     TEST_STATUS=0
@@ -311,19 +321,8 @@ report = {
     'gate': {locale: gates.get(locale, 'FAIL') for locale in selected},
     'gh_sim_jobs': job_count,
     'gh_sim_job_ids': all_job_ids,
-    'app_code_changed': [
-        'VO2Max/Views/DetailViews.swift',
-        'Shared/Utilities/CardioMetricAnalysis.swift',
-        'Shared/Localizable.xcstrings',
-    ],
+    'app_code_changed': [],
     'defects': failures,
-    'resolved': [
-        'fr-FR: changed Change by window to Évolution par période.',
-        'de-DE, nl-NL, fr-FR: cross-year date ranges show both years using localized date formatting.',
-        'fr-FR: shortened the resting-heart-rate comparison caption so it fits.',
-        'fr-FR: kept mL/kg/min together when the target projection wraps.',
-        'All five managed phone frames were recomposed with the revised headers and gated.',
-    ],
     'left_out': [],
     'excluded_by_design': [
         '05-keep-supporting-detail-close.png: Apple Watch display stays English and is outside the localized phone set'

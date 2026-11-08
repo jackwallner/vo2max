@@ -22,5 +22,125 @@
     "04-see-the-change-by-time-window.png": "Évolution selon\nla période",
     "05-keep-supporting-detail-close.png": "Votre mesure sur\nvotre Apple Watch",
     "06-review-your-supporting-signals.png": "Explorez vos\nautres signaux"
+  },
+  "ar-SA": {
+    "01-see-cardio-fitness-moving.png": "تابع اتجاه\nلياقتك القلبية",
+    "02-make-the-daily-number-easier-to-read.png": "رقمك اليومي\nبنظرة واحدة",
+    "03-read-your-score-history.png": "سجل تقديراتك\nفي مكان واحد",
+    "04-see-the-change-by-time-window.png": "التغيير حسب\nالفترة الزمنية",
+    "05-keep-supporting-detail-close.png": "قياسك على\nساعتك",
+    "06-review-your-supporting-signals.png": "إشاراتك الداعمة\nفي مكان واحد"
+  },
+  "cs": {
+    "01-see-cardio-fitness-moving.png": "Sledujte trend\nkardio kondice",
+    "02-make-the-daily-number-easier-to-read.png": "Poslední měření\nna první pohled",
+    "03-read-your-score-history.png": "Historie všech\nvašich měření",
+    "04-see-the-change-by-time-window.png": "Změna za\nzvolené období",
+    "05-keep-supporting-detail-close.png": "Hodnota na\nvašich hodinkách",
+    "06-review-your-supporting-signals.png": "Další ukazatele\nna jednom místě"
+  },
+  "el": {
+    "01-see-cardio-fitness-moving.png": "Παρακολουθήστε την\nτάση της φόρμας σας",
+    "02-make-the-daily-number-easier-to-read.png": "Η τελευταία μέτρηση\nμε μια ματιά",
+    "03-read-your-score-history.png": "Το ιστορικό των\nμετρήσεών σας",
+    "04-see-the-change-by-time-window.png": "Η μεταβολή ανά\nπερίοδο",
+    "05-keep-supporting-detail-close.png": "Η τιμή σας στο\nApple Watch",
+    "06-review-your-supporting-signals.png": "Δείτε και τους\nάλλους δείκτες σας"
+  },
+  "es-MX": {
+    "01-see-cardio-fitness-moving.png": "Así evoluciona tu\ncapacidad aeróbica",
+    "02-make-the-daily-number-easier-to-read.png": "Tu última estimación\nde un vistazo",
+    "03-read-your-score-history.png": "Todo tu historial\nde estimaciones",
+    "04-see-the-change-by-time-window.png": "El cambio según\nel período",
+    "05-keep-supporting-detail-close.png": "Tu cifra en\nel Apple Watch",
+    "06-review-your-supporting-signals.png": "Revisa tus\notras señales"
+  },
+  "he": {
+    "01-see-cardio-fitness-moving.png": "כך משתנה הכושר\nהאירובי שלך",
+    "02-make-the-daily-number-easier-to-read.png": "המדידה האחרונה\nבמבט אחד",
+    "03-read-your-score-history.png": "היסטוריית\nהמדידות שלך",
+    "04-see-the-change-by-time-window.png": "השינוי\nלפי תקופה",
+    "05-keep-supporting-detail-close.png": "הערך שלך\nבשעון Apple Watch",
+    "06-review-your-supporting-signals.png": "האותות התומכים\nשלך במקום אחד"
+  },
+  "hu": {
+    "01-see-cardio-fitness-moving.png": "Így alakul a\nkardiofitneszed",
+    "02-make-the-daily-number-easier-to-read.png": "Legutóbbi mérésed\negy pillantásra",
+    "03-read-your-score-history.png": "Összes mérésed\nelőzményei",
+    "04-see-the-change-by-time-window.png": "A változás\nidőszakonként",
+    "05-keep-supporting-detail-close.png": "Az értéked az\nApple Watchon",
+    "06-review-your-supporting-signals.png": "További mutatóid\negy helyen"
+  },
+  "it": {
+    "01-see-cardio-fitness-moving.png": "Segui l’andamento\ndel tuo fitness cardio",
+    "02-make-the-daily-number-easier-to-read.png": "L’ultima misurazione\nin un colpo d’occhio",
+    "03-read-your-score-history.png": "Tutta la cronologia\ndelle misurazioni",
+    "04-see-the-change-by-time-window.png": "La variazione\nnel periodo",
+    "05-keep-supporting-detail-close.png": "Il tuo valore su\nApple Watch",
+    "06-review-your-supporting-signals.png": "Esplora gli altri\ntuoi segnali"
+  },
+  "ja": {
+    "01-see-cardio-fitness-moving.png": "心肺機能の推移を\nチェック",
+    "02-make-the-daily-number-easier-to-read.png": "最新の推定値を\nひと目で確認",
+    "03-read-your-score-history.png": "推定値の履歴を\nすべて振り返る",
+    "04-see-the-change-by-time-window.png": "期間ごとの\n変化を確認",
+    "05-keep-supporting-detail-close.png": "推定値を\nApple Watchで",
+    "06-review-your-supporting-signals.png": "関連する指標も\nまとめてチェック"
+  },
+  "pl": {
+    "01-see-cardio-fitness-moving.png": "Śledź trend\nswojej kondycji kardio",
+    "02-make-the-daily-number-easier-to-read.png": "Ostatni pomiar\nna pierwszy rzut oka",
+    "03-read-your-score-history.png": "Historia wszystkich\nTwoich pomiarów",
+    "04-see-the-change-by-time-window.png": "Zmiana\nw wybranym okresie",
+    "05-keep-supporting-detail-close.png": "Twój wynik na\nApple Watch",
+    "06-review-your-supporting-signals.png": "Pozostałe wskaźniki\nw jednym miejscu"
+  },
+  "ro": {
+    "01-see-cardio-fitness-moving.png": "Urmărește tendința\nfitnessului cardio",
+    "02-make-the-daily-number-easier-to-read.png": "Ultima măsurătoare\ndintr-o privire",
+    "03-read-your-score-history.png": "Istoricul tuturor\nmăsurătorilor",
+    "04-see-the-change-by-time-window.png": "Schimbarea\npe perioade",
+    "05-keep-supporting-detail-close.png": "Valoarea ta pe\nApple Watch",
+    "06-review-your-supporting-signals.png": "Vezi și celelalte\nsemnale"
+  },
+  "ru": {
+    "01-see-cardio-fitness-moving.png": "Динамика вашей\nкардиовыносливости",
+    "02-make-the-daily-number-easier-to-read.png": "Последняя оценка\nс первого взгляда",
+    "03-read-your-score-history.png": "История всех\nваших оценок",
+    "04-see-the-change-by-time-window.png": "Изменения\nза период",
+    "05-keep-supporting-detail-close.png": "Значение на\nApple Watch",
+    "06-review-your-supporting-signals.png": "Другие показатели\nв одном месте"
+  },
+  "sk": {
+    "01-see-cardio-fitness-moving.png": "Sledujte trend\nkardio kondície",
+    "02-make-the-daily-number-easier-to-read.png": "Posledné meranie\nna prvý pohľad",
+    "03-read-your-score-history.png": "História všetkých\nvašich meraní",
+    "04-see-the-change-by-time-window.png": "Zmena\nza obdobie",
+    "05-keep-supporting-detail-close.png": "Vaša hodnota\nna Apple Watch",
+    "06-review-your-supporting-signals.png": "Ďalšie ukazovatele\nna jednom mieste"
+  },
+  "sv": {
+    "01-see-cardio-fitness-moving.png": "Följ din\nkonditionstrend",
+    "02-make-the-daily-number-easier-to-read.png": "Senaste värdet\npå ett ögonkast",
+    "03-read-your-score-history.png": "Hela din\nmäthistorik",
+    "04-see-the-change-by-time-window.png": "Förändringen\nper period",
+    "05-keep-supporting-detail-close.png": "Ditt värde på\nApple Watch",
+    "06-review-your-supporting-signals.png": "Dina övriga\nsignaler"
+  },
+  "th": {
+    "01-see-cardio-fitness-moving.png": "ดูแนวโน้มสมรรถภาพ\nหัวใจและหลอดเลือด",
+    "02-make-the-daily-number-easier-to-read.png": "ค่าประมาณล่าสุด\nเห็นได้ในพริบตา",
+    "03-read-your-score-history.png": "ดูประวัติค่าประมาณ\nทั้งหมดของคุณ",
+    "04-see-the-change-by-time-window.png": "การเปลี่ยนแปลง\nตามช่วงเวลา",
+    "05-keep-supporting-detail-close.png": "ค่าของคุณ\nบน Apple Watch",
+    "06-review-your-supporting-signals.png": "ดูสัญญาณอื่น ๆ\nที่เกี่ยวข้อง"
+  },
+  "zh-Hant": {
+    "01-see-cardio-fitness-moving.png": "一覽心肺適能\n的變化趨勢",
+    "02-make-the-daily-number-easier-to-read.png": "最新估算值\n一眼就看懂",
+    "03-read-your-score-history.png": "完整查看\n估算值紀錄",
+    "04-see-the-change-by-time-window.png": "各期間的\n變化一目瞭然",
+    "05-keep-supporting-detail-close.png": "在 Apple Watch\n上查看數值",
+    "06-review-your-supporting-signals.png": "查看其他\n輔助訊號"
   }
 }
