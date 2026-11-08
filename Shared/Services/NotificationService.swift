@@ -126,6 +126,15 @@ enum NotificationService {
         }
     }
 
+    /// Re-queues the recap only when iOS already allows notifications, so a
+    /// foreground return never raises the permission prompt. Returns whether
+    /// a request was queued.
+    @discardableResult
+    static func scheduleMonthlyRecapIfAuthorized() async -> Bool {
+        guard await isAuthorized() else { return false }
+        return await scheduleMonthlyRecap()
+    }
+
     /// Cancels the pending monthly recap notification (toggle off, or subscription lapsed).
     static func cancelMonthlyRecap() {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [monthlyRecapID])
