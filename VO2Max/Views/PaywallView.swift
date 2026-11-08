@@ -185,6 +185,7 @@ struct BilledAmountBlock: View {
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isActiveTab) private var isActiveTab
+    @Environment(\.dynamicTypeSize) private var typeSize
     @EnvironmentObject private var store: StoreService
     var focus: PlusFeature?
     var embedded = false
@@ -245,6 +246,11 @@ struct PaywallView: View {
                     header
                     featureList
                     planCards
+                    // At accessibility sizes the pinned footer would cover most of
+                    // the screen and sit over the plans, so it scrolls with them.
+                    if typeSize.isAccessibilitySize {
+                        checkoutFooter.padding(.horizontal, -22)
+                    }
                 }
                 .padding(.horizontal, 22)
                 .padding(.top, embedded ? 20 : 44)
@@ -259,7 +265,7 @@ struct PaywallView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            checkoutFooter
+            if !typeSize.isAccessibilitySize { checkoutFooter }
         }
     }
 
@@ -515,6 +521,7 @@ struct PaywallView: View {
 }
 
 private struct PlanCard: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let package: Package
     let isSelected: Bool
     let savingsPercent: Int?
@@ -528,7 +535,7 @@ private struct PlanCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
+            cardLayout {
                 ZStack {
                     Circle()
                         .stroke(isSelected ? Theme.cardio : Theme.textSecondary.opacity(0.35), lineWidth: 2)
@@ -539,62 +546,27 @@ private struct PlanCard: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 6) {
-                        Text(package.vo2DisplayName)
-                            .font(.system(.subheadline, design: .rounded, weight: .bold))
-                            .foregroundStyle(Theme.textPrimary)
-                        if let savingsPercent {
-                            badge(String(localized: "Save \(savingsPercent.formatted())%"))
-                        } else if package.vo2PackageKind == .yearly {
-                            badge(String(localized: "Best value"))
-                        }
-                    }
+                    titleRow
                     // Apple 3.1.2(c): trial framing is a secondary pricing
                     // element, so it stays smaller and quieter than the billed
                     // amount on the trailing edge of the card.
                     Group {
                         if let trialLabel {
                             Text(String(localized: "\(trialLabel), then the price shown."))
-                        } else {
+                        } else if !typeSize.isAccessibilitySize {
                             Text(" ")
                         }
                     }
                     .font(.system(size: 11, design: .rounded))
                     .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(1)
+                    .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
                     .minimumScaleFactor(0.8)
+                    .fixedSize(horizontal: false, vertical: typeSize.isAccessibilitySize)
                 }
 
-                Spacer(minLength: 8)
+                if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
 
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(package.vo2PriceLabel)
-                        .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
-                        .foregroundStyle(Theme.textPrimary)
-                        .multilineTextAlignment(.trailing)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.8)
-                    if let perMonthLabel {
-                        HStack(spacing: 5) {
-                            // Only strike the monthly price when yearly really is
-                            // cheaper per month; otherwise it is not an anchor.
-                            if let monthlyAnchorLabel, savingsPercent != nil {
-                                Text(monthlyAnchorLabel)
-                                    .foregroundStyle(Theme.textTertiary)
-                                    .strikethrough(true, color: Theme.textTertiary)
-                                    // The strikethrough carries meaning VoiceOver
-                                    // cannot see, so say it.
-                                .accessibilityLabel(String(localized: "Instead of \(monthlyAnchorLabel)"))
-                            }
-                            Text(perMonthLabel)
-                                .foregroundStyle(Theme.textSecondary)
-                                .accessibilityLabel(perMonthLabel)
-                        }
-                        .font(.system(size: 11, design: .rounded).monospacedDigit())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                    }
-                }
+                priceColumn
             }
             .frame(minHeight: 54)
             .padding(.horizontal, 14)
@@ -608,6 +580,73 @@ private struct PlanCard: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
+    }
+
+    /// Side by side normally; stacked at accessibility sizes so the price and the
+    /// per-month comparison wrap instead of truncating or colliding.
+    @ViewBuilder
+    private func cardLayout<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) { content() }
+                .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            HStack(spacing: 12) { content() }
+        }
+    }
+
+    private var titleRow: some View {
+        HStack(spacing: 6) {
+            Text(package.vo2DisplayName)
+                .font(.system(.subheadline, design: .rounded, weight: .bold))
+                .foregroundStyle(Theme.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+            if let savingsPercent {
+                badge(String(localized: "Save \(savingsPercent.formatted())%"))
+            } else if package.vo2PackageKind == .yearly {
+                badge(String(localized: "Best value"))
+            }
+        }
+    }
+
+    private var priceColumn: some View {
+        let stacked = typeSize.isAccessibilitySize
+        return VStack(alignment: stacked ? .leading : .trailing, spacing: 2) {
+            Text(package.vo2PriceLabel)
+                .font(.system(.headline, design: .rounded, weight: .heavy).monospacedDigit())
+                .foregroundStyle(Theme.textPrimary)
+                .multilineTextAlignment(stacked ? .leading : .trailing)
+                .lineLimit(stacked ? nil : 2)
+                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: false, vertical: stacked)
+            if let perMonthLabel {
+                comparison(perMonthLabel, stacked: stacked)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func comparison(_ perMonthLabel: String, stacked: Bool) -> some View {
+        // Only strike the monthly price when yearly really is cheaper per
+        // month; otherwise it is not an anchor.
+        let anchor = savingsPercent != nil ? monthlyAnchorLabel : nil
+        let layout = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2)) : AnyLayout(HStackLayout(spacing: 5))
+        layout {
+            if let anchor {
+                Text(anchor)
+                    .foregroundStyle(Theme.textTertiary)
+                    .strikethrough(true, color: Theme.textTertiary)
+                    // The strikethrough carries meaning VoiceOver cannot see,
+                    // so say it.
+                    .accessibilityLabel(String(localized: "Instead of \(anchor)"))
+            }
+            Text(perMonthLabel)
+                .foregroundStyle(Theme.textSecondary)
+                .accessibilityLabel(perMonthLabel)
+        }
+        .font(stacked ? .system(.caption, design: .rounded).monospacedDigit() : .system(size: 11, design: .rounded).monospacedDigit())
+        .lineLimit(stacked ? nil : 1)
+        .minimumScaleFactor(0.8)
+        .fixedSize(horizontal: false, vertical: stacked)
     }
 
     private func badge(_ text: String) -> some View {

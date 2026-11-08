@@ -72,24 +72,31 @@ struct ReadingHistoryDetailView: View {
             Text("Every cached Apple Health estimate, shown read-only.\(recordedSpanCaption)")
                 .font(.caption)
                 .foregroundStyle(Theme.textSecondary)
-            Chart(samples) { sample in
+            Chart {
                 RuleMark(y: .value("Target lower", settings.targetLower))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                    .foregroundStyle(Theme.positive.opacity(0.6))
+                    .foregroundStyle(Theme.positive.opacity(0.65))
                 RuleMark(y: .value("Target upper", settings.targetUpper))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                    .foregroundStyle(Theme.positive.opacity(0.6))
-                LineMark(
-                    x: .value("Date", sample.date),
-                    y: .value(String(localized: "Cardio Fitness"), sample.value)
-                )
-                .foregroundStyle(Theme.cardioGradient)
-                .interpolationMethod(.catmullRom)
-                PointMark(
-                    x: .value("Date", sample.date),
-                    y: .value(String(localized: "Cardio Fitness"), sample.value)
-                )
-                .foregroundStyle(Theme.cardio)
+                    .foregroundStyle(Theme.positive.opacity(0.65))
+                ForEach(samples) { sample in
+                    LineMark(
+                        x: .value("Date", sample.date),
+                        y: .value(String(localized: "Cardio Fitness"), sample.value)
+                    )
+                    .foregroundStyle(Theme.cardioGradient)
+                    .interpolationMethod(.catmullRom)
+                    // Left unlabelled, Swift Charts announced each reading as a
+                    // bare date interval with no number attached. The list below
+                    // already reads every reading, so the plot stays one element.
+                    .accessibilityHidden(true)
+                    PointMark(
+                        x: .value("Date", sample.date),
+                        y: .value(String(localized: "Cardio Fitness"), sample.value)
+                    )
+                    .foregroundStyle(Theme.cardio)
+                    .accessibilityHidden(true)
+                }
             }
             .chartYAxisLabel("mL/kg/min")
             .frame(height: 210)

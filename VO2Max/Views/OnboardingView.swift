@@ -319,6 +319,23 @@ struct OnboardingView: View {
         targetUpper = typical.upperBound.rounded()
     }
 
+    @ViewBuilder
+    private var billedAmount: some View {
+        // Apple 3.1.2(c): the billed amount is the largest pricing
+        // element on this step, bigger than the CTA label and the
+        // disclosure. It lives in the page body, not the bottom bar, so
+        // the primary button keeps the exact frame Continue occupied.
+        if let monthly = store.monthlyPackage {
+            BilledAmountBlock(
+                amount: VO2ConversionCopy.billedAmount(priceLabel: monthly.vo2PriceLabel),
+                note: VO2ConversionCopy.billedNote(
+                    trialLabel: monthly.vo2IntroOfferLabel,
+                    eligibleForTrial: store.isEligibleForIntroOffer(monthly)
+                )
+            )
+        }
+    }
+
     /// Final step: compact pitch centered above the zero-shift CTA bar.
     private var trialPage: some View {
         VStack(spacing: 0) {
@@ -339,6 +356,10 @@ struct OnboardingView: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+
+                // At accessibility sizes the selling points push the price below
+                // the fold, so the billed amount leads the page there.
+                if typeSize.isAccessibilitySize { billedAmount }
 
                 VStack(alignment: .leading, spacing: 12) {
                     TrialSellingPoint(
@@ -367,19 +388,7 @@ struct OnboardingView: View {
                     )
                 }
 
-                // Apple 3.1.2(c): the billed amount is the largest pricing
-                // element on this step — bigger than the CTA label and the
-                // disclosure. It lives in the page body, not the bottom bar, so
-                // the primary button keeps the exact frame Continue occupied.
-                if let monthly = store.monthlyPackage {
-                    BilledAmountBlock(
-                        amount: VO2ConversionCopy.billedAmount(priceLabel: monthly.vo2PriceLabel),
-                        note: VO2ConversionCopy.billedNote(
-                            trialLabel: monthly.vo2IntroOfferLabel,
-                            eligibleForTrial: store.isEligibleForIntroOffer(monthly)
-                        )
-                    )
-                }
+                if !typeSize.isAccessibilitySize { billedAmount }
             }
 
             // Capped so the pitch settles just above the CTA bar and the billed

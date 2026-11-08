@@ -182,18 +182,27 @@ struct LockedNumber: View {
     let size: CGFloat
 
     var body: some View {
+        // The placeholder is only a size reference. Drawing it as text handed the
+        // contrast and text audits a blurred glyph run, so a blurred bar stands
+        // in for the withheld digits instead.
         Text(placeholder)
             .font(Theme.bigNumber(size))
-            .foregroundStyle(Theme.textSecondary)
-            // Enough blur that no digit survives, little enough that the reader
-            // can still see a number is being withheld.
-            .blur(radius: size * 0.22)
+            .hidden()
+            .overlay {
+                Capsule()
+                    .fill(Theme.textSecondary)
+                    .frame(height: size * 0.5)
+                    // Enough blur that no digit shape survives, little enough
+                    // that the reader can still see a number is being withheld.
+                    .blur(radius: size * 0.22)
+            }
             .overlay {
                 Image(systemName: "lock.fill")
                     .font(.system(size: size * 0.42, weight: .bold))
                     .foregroundStyle(Theme.cardio)
                     .shadow(color: Theme.background, radius: 3)
             }
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel("Locked. Included with VO2+")
     }
 }

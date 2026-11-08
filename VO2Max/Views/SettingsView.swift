@@ -231,12 +231,14 @@ struct SettingsView: View {
                     systemImage: health.isAuthorized ? "arrow.clockwise" : "heart.fill"
                 )
             }
+            .tint(Theme.cardioText)
 
             Button {
                 openAppleHealth()
             } label: {
                 Label("Open Apple Health", systemImage: "arrow.up.forward.app")
             }
+            .tint(Theme.cardioText)
 
             if let error = health.lastError {
                 Text(error)

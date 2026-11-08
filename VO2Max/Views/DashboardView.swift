@@ -18,6 +18,7 @@ struct DashboardView: View {
     /// content from colliding with the status bar (nav bar is hidden here).
     @State private var topSafeAreaInset: CGFloat = 0
     @Environment(\.isUnfoldedPane) private var isUnfoldedPane
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -207,6 +208,22 @@ struct DashboardView: View {
             offset: ringSize * 0.2
         ) - 24, 0)
 
+        @ViewBuilder var captions: some View {
+            Text(status.label)
+                .font(.system(.subheadline, design: .rounded, weight: .bold))
+                .foregroundStyle(statusColor(status))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(maxWidth: typeSize.isAccessibilitySize ? .infinity : captionWidth)
+                .padding(.top, 2)
+            Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
+                .font(.system(.caption2, design: .rounded))
+                .foregroundStyle(Theme.textTertiary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(maxWidth: typeSize.isAccessibilitySize ? .infinity : captionWidth)
+        }
+
         return NavigationLink {
             ReadingHistoryDetailView()
         } label: {
@@ -227,21 +244,12 @@ struct DashboardView: View {
                         Text("mL/kg/min")
                             .font(.system(.caption, design: .rounded, weight: .medium))
                             .foregroundStyle(Theme.textSecondary)
-                        Text(status.label)
-                            .font(.system(.subheadline, design: .rounded, weight: .bold))
-                            .foregroundStyle(statusColor(status))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: captionWidth)
-                            .padding(.top, 2)
-                        Text("Target \(settings.targetLower, format: .number.precision(.fractionLength(0)))–\(settings.targetUpper, format: .number.precision(.fractionLength(0)))")
-                            .font(.system(.caption2, design: .rounded))
-                            .foregroundStyle(Theme.textTertiary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: captionWidth)
+                        if !typeSize.isAccessibilitySize { captions }
                     }
                 }
+                // At accessibility sizes the captions no longer fit the ring's
+                // open centre, so they sit under it.
+                if typeSize.isAccessibilitySize { captions }
             }
             .contentShape(Rectangle())
         }
@@ -261,7 +269,11 @@ struct DashboardView: View {
         return NavigationLink {
             TrendDetailView()
         } label: {
-            HStack(spacing: 14) {
+            // Icon, text and chevron stack at accessibility sizes so the text
+            // keeps the card's full width instead of wrapping word by word.
+            (typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                : AnyLayout(HStackLayout(spacing: 14))) {
                 Image(systemName: trend.symbol)
                     .font(.title2.bold())
                     .foregroundStyle(color(for: trend))
@@ -285,11 +297,14 @@ struct DashboardView: View {
                             .lineLimit(2)
                     }
                 }
-                Spacer(minLength: 8)
-                Image(systemName: "chevron.forward")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.textTertiary)
+                if !typeSize.isAccessibilitySize {
+                    Spacer(minLength: 8)
+                    Image(systemName: "chevron.forward")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.textTertiary)
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Theme.cardPadding)
             .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
             .contentShape(Rectangle())
