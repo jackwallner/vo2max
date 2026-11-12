@@ -12,6 +12,16 @@
 - [VO2 Max Chart by Age and Sex: Apple Watch Levels](https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html.md): VO2 max percentiles by age and sex from the FRIEND registry, how Apple Watch cardio fitness levels use them, and how to read your own number. Sourced and plain.
 - [Where to Find VO2 Max on iPhone (Health App Steps)](https://jackwallner.com/ios/vo2max/where-to-find-vo2-max-on-iphone.html.md): VO2 max is in the Health app under Browse, Heart, Cardio Fitness. Which Apple Watch you need, the workouts that count, and why no reading shows yet.
 
+## Other languages
+
+- [VO2max auf dem iPhone finden (Anleitung für die Health-App)](https://jackwallner.com/ios/vo2max/de/where-to-find-vo2-max-on-iphone.html.md): VO2max steht in der Health-App unter Entdecken, Herz, Cardiofitness. Welche Apple Watch du brauchst, welche Trainings zählen und warum noch kein Wert da ist.
+- [Dónde ver el VO2 máx en el iPhone (pasos en la app Salud)](https://jackwallner.com/ios/vo2max/es/where-to-find-vo2-max-on-iphone.html.md): El VO2 máx está en la app Salud, en Explorar, Corazón, Capacidad aeróbica. Qué Apple Watch necesitas, qué entrenos cuentan y por qué aún no aparece ningún dato.
+- [Où trouver la VO2 max sur iPhone (étapes dans l’app Santé)](https://jackwallner.com/ios/vo2max/fr/where-to-find-vo2-max-on-iphone.html.md): La VO2 max se trouve dans l’app Santé, sous Parcourir, Cœur, Santé cardiovasculaire. Quelle Apple Watch il vous faut, quels exercices comptent et pourquoi rien ne s’affiche.
+- [Dove trovare il VO2 max su iPhone (app Salute, passaggi)](https://jackwallner.com/ios/vo2max/it/where-to-find-vo2-max-on-iphone.html.md): Il VO2 max è nell’app Salute, in Sfoglia, Cuore, Tono cardiovascolare. Quale Apple Watch serve, quali allenamenti contano e perché non compare ancora nessun valore.
+- [iPhoneでVO2maxを確認する方法（ヘルスケアアプリの手順）](https://jackwallner.com/ios/vo2max/ja/where-to-find-vo2-max-on-iphone.html.md): VO2maxはヘルスケアアプリの「ブラウズ」>「心臓」>「心肺機能」にあります。必要なApple Watch、対象のワークアウト、表示されない原因を解説します。
+- [아이폰 VO2max 확인하는 곳 (건강 앱 단계별 안내)](https://jackwallner.com/ios/vo2max/ko/where-to-find-vo2-max-on-iphone.html.md): VO2max는 건강 앱의 검색 > 심장 > 유산소 피트니스에 있습니다. 필요한 Apple Watch, 반영되는 운동, 값이 안 보이는 이유를 알려드립니다.
+- [Onde ver o VO2 máx no iPhone (passo a passo no app Saúde)](https://jackwallner.com/ios/vo2max/pt-BR/where-to-find-vo2-max-on-iphone.html.md): O VO2 máx fica no app Saúde, em Explorar, Coração, Preparo Cardiovascular. Qual Apple Watch você precisa, quais treinos contam e por que nenhum valor aparece.
+
 ## Optional
 
 - [VO2 Max Android Privacy Policy](https://jackwallner.github.io/vo2max/android/privacy-policy.html.md)
