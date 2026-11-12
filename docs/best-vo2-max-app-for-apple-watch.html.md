@@ -6,11 +6,11 @@ Web page: https://jackwallner.com/ios/vo2max/best-vo2-max-app-for-apple-watch.ht
 
 ## Best VO2 Max App for Apple Watch
 
-By Jack Wallner · Last updated October 25, 2026
+By Jack Wallner · Last updated November 11, 2026
 
 **Best for recovery and training guidance built around VO2 max: Athlytic. Best for a fitness age with peer comparison and a shareable card: VO2 Max Pro. Best for charts, race-time estimates and widgets: VO2 Max: Widget Notifications. Best for comparing with a large pool of other users: Health Hive. Best for a calm, read-only VO2 max view on the watch face with no account: VO2 Max & Cardio Fitness.** VO2 max is a measure of cardio fitness that the Apple Watch estimates from outdoor walks, runs and hikes. They all read the same Apple Health estimate, so the difference is what they build on top.
 
-**How we compared.** We read each app's App Store listing and pulled rating, rating count and update date on October 12, 2026. We also ran VO2 Max Pro through first launch. We did not subscribe to anything. None of these apps measures VO2 max itself. They read the estimate your Apple Watch writes to Apple Health. **Disclosure:** Jack Wallner makes VO2 Max & Cardio Fitness, so read its entry with that in mind.
+**How we compared.** We read each app's App Store listing and pulled rating, rating count and update date on November 11, 2026. We also ran VO2 Max Pro through first launch. We did not subscribe to anything. None of these apps measures VO2 max itself. They read the estimate your Apple Watch writes to Apple Health. **Disclosure:** Jack Wallner makes VO2 Max & Cardio Fitness, so read its entry with that in mind.
 
 General information, not medical advice. VO2 max estimates are broad fitness figures. Apple notes that certain conditions or medications that limit heart rate can cause an overestimate. Talk to a clinician about health concerns.
 
@@ -20,13 +20,13 @@ All five read the same Apple Health estimate and differ in what they add: recove
 
 | App | Best for | Price model | Apple Watch | iPad | Account | Rating (count) | Last updated |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| [Athlytic: Fitness & Recovery](https://apps.apple.com/us/app/id1543571755) | Recovery and training guidance | Free + subscription | Yes | Yes | Not stated | 4.79 (11,105) | Oct 6, 2026 |
-| [VO2 Max Pro: Track Fitness Age](https://apps.apple.com/us/app/id6740225781) | Fitness age, peer comparison and a share card | Free + one-time purchase | Not listed | Not listed | Apple sign-in required in our test | 4.43 (56) | Oct 12, 2026 |
-| [VO2 Max: Widget Notifications](https://apps.apple.com/us/app/id1394840943) | Charts, race-time and cycling estimates | Free + subscription or lifetime | Yes | Yes | Not stated | 3.79 (129) | Oct 12, 2026 |
-| [Health Hive: Fitness Age](https://apps.apple.com/us/app/id1613535038) | Benchmarking against other users | Free + subscription | Not listed | Yes | None required (per listing) | 4.6 (953) | Sep 7, 2026 |
-| [VO2 Max & Cardio Fitness](https://apps.apple.com/us/app/id6791235742?pt=128748779&ct=jw-vo2max-best-vo2-max-app-for-apple-wat&mt=8) | Calm, read-only VO2 max view with no account | Free + subscription or lifetime | Yes | Not listed | None | No ratings yet | Oct 10, 2026 |
+| [Athlytic: Fitness & Recovery](https://apps.apple.com/us/app/id1543571755) | Recovery and training guidance | Free + subscription | Yes | Yes | Not stated | 4.79 (11,265) | Nov 11, 2026 |
+| [VO2 Max Pro: Track Fitness Age](https://apps.apple.com/us/app/id6740225781) | Fitness age, peer comparison and a share card | Free + one-time purchase | Not listed | Not listed | Apple sign-in required in our test | 4.44 (57) | Oct 12, 2026 |
+| [VO2 Max: Widget Notifications](https://apps.apple.com/us/app/id1394840943) | Charts, race-time and cycling estimates | Free + subscription or lifetime | Yes | Yes | Not stated | 3.81 (131) | Oct 26, 2026 |
+| [Health Hive: Fitness Age](https://apps.apple.com/us/app/id1613535038) | Benchmarking against other users | Free + subscription | Not listed | Yes | None required (per listing) | 4.59 (961) | Sep 7, 2026 |
+| [VO2 Max & Cardio Fitness](https://apps.apple.com/us/app/id6791235742?pt=128748779&ct=jw-vo2max-best-vo2-max-app-for-apple-wat&mt=8) | Calm, read-only VO2 max view with no account | Free + subscription or lifetime | Yes | Not listed | None | No ratings yet | Nov 10, 2026 |
 
-Ratings and update dates are from each app's App Store listing as of October 12, 2026. Apple Watch and iPad show the devices each listing names; "Not listed" means the listing does not name them. Price models describe the structure only, because prices vary by region and change.
+Ratings and update dates are from each app's App Store listing as of November 11, 2026. Apple Watch and iPad show the devices each listing names; "Not listed" means the listing does not name them. Price models describe the structure only, because prices vary by region and change.
 
 ## The apps, one by one
 
