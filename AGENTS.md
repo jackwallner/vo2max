@@ -60,6 +60,7 @@ Shared iOS conventions come from the global agent rules and the `ios-dev` skill.
 ## Rules index
 
 - `.claude/rules/android.md`: Android port, Health Connect gaps, billing and Pro verification.
+- `.claude/rules/ipad-layout.md`: iPad readable column, landscape-only split, ring sizing, iPad capture test.
 - `.claude/rules/iphone-duo.md`: unfolded iPhone Duo split (Today beside Trends), Settings pane, capture tour.
 - `.claude/rules/localization.md`: String catalog setup, translated UI copy, and localization checks.
 - `.claude/rules/screenshots.md`: localized App Store sets, GH-SIM capture and frame mapping.

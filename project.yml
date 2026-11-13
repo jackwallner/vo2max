@@ -72,7 +72,7 @@ targets:
         INFOPLIST_FILE: VO2Max/Info.plist
         CODE_SIGN_ENTITLEMENTS: VO2Max/VO2Max.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        TARGETED_DEVICE_FAMILY: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
     dependencies:
       - package: RevenueCat
         product: RevenueCat

@@ -215,7 +215,7 @@ struct PaywallView: View {
             } else if store.packages.isEmpty {
                 emptyState
             } else {
-                content
+                content.iPadReadableColumn(maxWidth: 560)
             }
 
             if !embedded {

@@ -81,9 +81,10 @@ struct DashboardView: View {
         // gaps give way, so the signal row ends above the tab bar.
         let reserved: CGFloat = isUnfoldedPane ? 510 : 485
         let isShort = availableHeight - reserved < 140
-        let ringSize: CGFloat = min(availableHeight * 0.32, 260, max(availableHeight - reserved, 140))
-        let numberSize: CGFloat = min(availableHeight * 0.085, 72, ringSize * 0.3)
-        let ringLineWidth: CGFloat = min(availableHeight * 0.022, 18)
+        let roomy = IPadLayout.isPad && !isUnfoldedPane
+        let ringSize: CGFloat = min(availableHeight * 0.32, roomy ? 340 : 260, max(availableHeight - reserved, 140))
+        let numberSize: CGFloat = min(availableHeight * 0.085, roomy ? 96 : 72, ringSize * 0.3)
+        let ringLineWidth: CGFloat = min(availableHeight * 0.022, roomy ? 24 : 18)
 
         return VStack(spacing: 0) {
             header

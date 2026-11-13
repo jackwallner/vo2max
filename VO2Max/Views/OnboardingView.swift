@@ -52,6 +52,7 @@ struct OnboardingView: View {
                 standardLayout
             }
         }
+        .iPadReadableColumn()
         .background(Theme.background.ignoresSafeArea())
         .task {
             age = settings.chronologicalAge > 0 ? settings.chronologicalAge : 35
@@ -101,6 +102,7 @@ struct OnboardingView: View {
                         .padding(.horizontal, 24)
                 }
                 .scrollBounceBehavior(.basedOnSize)
+                .defaultScrollAnchor(IPadLayout.isPad ? .center : .top)
             }
 
             bottomBar

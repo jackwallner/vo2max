@@ -263,7 +263,7 @@ private struct MainTabView: View {
     @State private var selection = 0
     /// The container's width and fold, measured so the unfolded iPhone Duo can
     /// put Today and Trends on opposite sides of the fold.
-    @State private var paneGeometry = PaneGeometry(width: 0, fold: nil)
+    @State private var paneGeometry = PaneGeometry(width: 0, height: 0, fold: nil)
     /// Settings, from Today's gear or What's New: a sheet, or the trailing pane
     /// while split.
     @State private var showSettings = false
@@ -294,7 +294,10 @@ private struct MainTabView: View {
 
     /// Unfolded, Trends has its own pane beside Today, so it is never a tab.
     private var split: UnfoldedSplit? {
-        UnfoldedSplit.make(
+        // iPad splits Today and Trends side by side in landscape only; portrait
+        // and narrow Split View windows keep the single readable column.
+        if IPadLayout.isPad, paneGeometry.width <= paneGeometry.height { return nil }
+        return UnfoldedSplit.make(
             width: paneGeometry.width,
             isRegularWidth: horizontalSizeClass == .regular,
             fold: paneGeometry.fold
@@ -367,7 +370,7 @@ private struct MainTabView: View {
             .frame(maxWidth: split?.primaryWidth ?? .infinity)
         }
         .onGeometryChange(for: PaneGeometry.self) { proxy in
-            PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
+            PaneGeometry(width: proxy.size.width, height: proxy.size.height, fold: proxy.verticalFold())
         } action: { paneGeometry = $0 }
         #if DEBUG
         .onChange(of: paneGeometry) { _, geometry in
@@ -550,9 +553,9 @@ private struct MainTabView: View {
                     if tab == 0 { tabBarBandTop = top }
                 }
         }
-        .frame(maxWidth: paneWidth ?? .infinity, maxHeight: .infinity)
+        .frame(maxWidth: paneWidth ?? (IPadLayout.isPad ? IPadLayout.columnWidth : .infinity), maxHeight: .infinity)
         .padding(.leading, paneX)
-        .tabVisibility(isVisible)
+        .tabVisibility(isVisible, centered: IPadLayout.isPad && split == nil)
     }
 
     /// Folded, every tab keeps 92 pt under its content, as before. Split, the
@@ -642,6 +645,7 @@ private struct MainTabView: View {
 
 private struct PaneGeometry: Equatable, Sendable {
     var width: CGFloat
+    var height: CGFloat
     var fold: ClosedRange<CGFloat>?
 }
 
@@ -696,8 +700,8 @@ private extension View {
         }
     }
 
-    func tabVisibility(_ isVisible: Bool) -> some View {
-        frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    func tabVisibility(_ isVisible: Bool, centered: Bool = false) -> some View {
+        frame(maxWidth: .infinity, maxHeight: .infinity, alignment: centered ? .center : .leading)
             .opacity(isVisible ? 1 : 0)
             .allowsHitTesting(isVisible)
             .accessibilityHidden(!isVisible)
