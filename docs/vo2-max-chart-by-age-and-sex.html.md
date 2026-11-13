@@ -6,13 +6,15 @@ Web page: https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html
 
 ## VO2 Max Chart by Age and Sex (Apple Watch Cardio Fitness Levels)
 
-By Jack Wallner. Last updated October 28, 2026.
+By Jack Wallner. Last updated November 12, 2026.
 
 VO2 max is a cardio fitness measure, in mL/kg/min, that labs test from oxygen use during a maximal treadmill test. Lab-measured VO2 max falls with age and differs by sex: the median is about 48 mL/kg/min for men and 38 for women in their twenties, dropping to about 24 and 18 in their seventies. Apple Watch shows an estimate (14 to 65 mL/kg/min) and compares it with people of your age and sex. Apple flags a result as low when it is in the bottom fifth for your sex and decade of age, or below 18 (men) or 15 (women) from age 60.
 
 ## What is the average VO2 max by age and sex?
 
 The median falls from about 48 mL/kg/min for men and 38 for women in their twenties to about 24 and 18 in their seventies. These are percentiles of lab-measured VO2 max (mL/kg/min) from the Fitness Registry and the Importance of Exercise National Database (FRIEND). The 2015 reference standards are built from 7,783 maximal treadmill tests, with oxygen use measured directly, on adults aged 20 to 79 without known cardiovascular disease. Apple cites this same registry when it describes how Apple Watch judges a low result. Read your row by age, then find where your number lands between the columns. The 50th percentile means half of the tested group scored lower.
+
+FRIEND published updated reference standards in 2022, from 34 US laboratories and tests run through March 2021. Its treadmill percentiles are 1.5 to 4.6 mL/kg/min lower than the 2015 table below, so against the newer standards each cutoff sits slightly lower ([Kaminsky and others, Mayo Clinic Proceedings, 2022](https://doi.org/10.1016/j.mayocp.2021.08.020)).
 
 ### Men
 
