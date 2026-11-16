@@ -258,6 +258,9 @@ struct PaywallView: View {
                     // sizes, so they scroll with the plans instead of being pinned
                     // over them; the pinned footer keeps only the CTA.
                     if largeText { legalBlock }
+                    // Pinned, the CTA covered the lower plan card at these sizes;
+                    // it follows the plans in the scroll instead.
+                    if largeText { checkoutFooter.padding(.horizontal, -22) }
                 }
                 .padding(.horizontal, 22)
                 .padding(.top, embedded ? 20 : 44)
@@ -272,7 +275,7 @@ struct PaywallView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            checkoutFooter
+            if !largeText { checkoutFooter }
         }
     }
 
