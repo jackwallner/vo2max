@@ -11,6 +11,7 @@ Developer notes and historical audits for this repository. The published site re
 - [state-machines-2026-11-06-fixes.md](audits/state-machines-2026-11-06-fixes.md): fixes for the state machine review's confirmed claims, with regression tests and test runs
 - [state-machines-2026-11-06-verify.md](audits/state-machines-2026-11-06-verify.md): independent verify of the state machine fixes: route walk, regression check, reverted-fix and full-suite runs
 - [presubmit-review-2026-11-07.md](audits/presubmit-review-2026-11-07.md): pre-submit review of 1.1.6 against live 1.1.5: findings, fixes and test run
+- [2026-11-20-bug-ux.html](audits/2026-11-20-bug-ux.html): Bug and UX catalog, 2026-11-20: 9 bugs (3 medium, 6 low; 7 confirmed), 21 UX items, October audit items rechecked. Catalog only, nothing fixed.
 
 ## ASO
 
