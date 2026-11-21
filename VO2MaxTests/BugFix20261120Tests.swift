@@ -176,4 +176,23 @@ struct BugFix20261120Tests {
         #expect(!message.localizedCaseInsensitiveContains("try again"))
         #expect(message != VO2ConversionCopy.purchaseFailedMessage(eligibleForTrial: true))
     }
+
+    // MARK: - B7: Estimate Freshness rereads the notification setting
+
+    private func source(_ path: String) throws -> String {
+        let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        return try String(contentsOf: repo.appendingPathComponent(path), encoding: .utf8)
+    }
+
+    /// Same pattern as Settings: on returning to the app, ask iOS again.
+    @Test func b7_freshnessScreenRereadsDenialOnReturn() throws {
+        let file = try source("VO2Max/Views/CardioContextViews.swift")
+        let start = try #require(file.range(of: "struct EstimateFreshnessDetailView"))
+        let view = file[start.lowerBound...]
+        let body = String(view[..<(view.range(of: "private var statusCard")?.lowerBound ?? view.endIndex)])
+        #expect(body.contains("@Environment(\\.scenePhase)"))
+        #expect(body.contains(".onChange(of: scenePhase)"))
+        #expect(body.contains("phase == .active"))
+        #expect(body.components(separatedBy: "NotificationService.isDenied()").count == 3)
+    }
 }

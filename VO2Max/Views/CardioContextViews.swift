@@ -1271,6 +1271,7 @@ struct CardioLoadDetailView: View {
 /// there is nothing to say, and the header line already carries the date.
 struct EstimateFreshnessDetailView: View {
     @EnvironmentObject private var settings: GoalSettings
+    @Environment(\.scenePhase) private var scenePhase
     /// iOS has notifications off for the app, so no nudge can arrive.
     @State private var notificationsDenied = false
     @Query(sort: \CardioFitnessSample.date, order: .reverse) private var samples: [CardioFitnessSample]
@@ -1297,6 +1298,11 @@ struct EstimateFreshnessDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await context.load() }
         .task { notificationsDenied = await NotificationService.isDenied() }
+        // Back from iOS Settings, where notifications may just have been allowed.
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            Task { notificationsDenied = await NotificationService.isDenied() }
+        }
     }
 
     private var statusCard: some View {
