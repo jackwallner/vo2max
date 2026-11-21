@@ -135,10 +135,11 @@ enum CardioDriverAnalysis {
     static func activityTotals(
         workouts: [WorkoutSummary],
         days: Int,
+        start: Date? = nil,
         now: Date = .now,
         calendar: Calendar = .current
     ) -> [ActivityTotal] {
-        let cutoff = calendar.date(byAdding: .day, value: -days, to: now) ?? .distantPast
+        let cutoff = start ?? calendar.date(byAdding: .day, value: -days, to: now) ?? .distantPast
         let recent = workouts.filter { $0.date >= cutoff && $0.date <= now }
         let grouped = Dictionary(grouping: recent, by: \.kind)
         return grouped
@@ -158,16 +159,18 @@ enum CardioDriverAnalysis {
     static func loadSummary(
         workouts: [WorkoutSummary],
         days: Int,
+        start rangeStart: Date? = nil,
         now: Date = .now,
         calendar: Calendar = .current
     ) -> CardioLoadSummary? {
-        guard days > 0, let start = calendar.date(byAdding: .day, value: -days, to: now) else { return nil }
+        guard days > 0,
+              let start = rangeStart ?? calendar.date(byAdding: .day, value: -days, to: now) else { return nil }
         let window = workouts.filter { $0.date >= start && $0.date <= now }
         guard !window.isEmpty else { return nil }
 
         let weeks = Double(days) / 7
         var previousMinutesPerWeek: Double?
-        if let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: now) {
+        if let priorStart = calendar.date(byAdding: .day, value: -days, to: start) {
             let prior = workouts.filter { $0.date >= priorStart && $0.date < start }
             if !prior.isEmpty {
                 previousMinutesPerWeek = prior.reduce(0) { $0 + $1.minutes } / weeks

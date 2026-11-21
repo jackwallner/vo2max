@@ -78,6 +78,83 @@ struct BugFix20261120Tests {
         #expect(long.days == CardioRange.maximumCustomDays)
     }
 
+    // MARK: - B6: VO2+ statistics read the same window as Trends
+
+    /// The catalog's case: a custom range from Oct 10 10:00 to Nov 20 09:00 and
+    /// a reading on Oct 10 at 15:00, which Trends lists.
+    @Test func b6_signalSummaryAgreesWithRangeContains() throws {
+        let range = CardioRange.custom(start: date(10, 10, 10), end: date(11, 20, 9), calendar: calendar)
+        let reading = CardioFitnessPoint(date: date(10, 10, 15), value: 58)
+        #expect(range.contains(reading.date))
+        // Read exactly as `SignalReading.make` and the detail screen read it.
+        let summary = CardioMetricAnalysis.summarize(
+            points: [reading, CardioFitnessPoint(date: date(10, 10, 8), value: 60)],
+            days: range.days,
+            start: range.start,
+            now: range.end,
+            calendar: calendar
+        )
+        // The 08:00 reading is before the range starts and stays out.
+        #expect(summary?.count == 1)
+        let months = CardioMetricAnalysis.monthlyAverages(
+            points: [reading], days: range.days, start: range.start, now: range.end, calendar: calendar
+        )
+        #expect(months.first?.count == 1)
+    }
+
+    @Test func b6_cardioLoadAgreesWithRangeContains() {
+        let range = CardioRange.custom(start: date(10, 10, 10), end: date(11, 20, 9), calendar: calendar)
+        let workout = WorkoutSummary(id: "w", date: date(10, 10, 15), kind: .run, minutes: 30, isIndoor: false)
+        #expect(range.contains(workout.date))
+        let summary = CardioDriverAnalysis.loadSummary(
+            workouts: [workout],
+            days: range.days,
+            start: range.start,
+            now: range.end,
+            calendar: calendar
+        )
+        #expect(summary?.sessions == 1)
+        let totals = CardioDriverAnalysis.activityTotals(
+            workouts: [workout],
+            days: range.days,
+            start: range.start,
+            now: range.end,
+            calendar: calendar
+        )
+        #expect(totals.first?.sessions == 1)
+    }
+
+    /// Trends' Change figure starts from the same first reading Trends lists.
+    @Test func b6_trendsChangeStartsAtTheRangeStart() {
+        let range = CardioRange.custom(start: date(10, 10, 10), end: date(11, 20, 9), calendar: calendar)
+        let points = [
+            CardioFitnessPoint(date: date(10, 10, 8), value: 40),
+            CardioFitnessPoint(date: date(10, 10, 15), value: 44),
+            CardioFitnessPoint(date: date(11, 15, 9), value: 46),
+        ]
+        let change = CardioFitnessAnalysis.change(points: points, days: range.days, start: range.start, now: range.end)
+        #expect(change == 2)
+    }
+
+    /// The vs-previous window sits directly before the range, for a fixed
+    /// window exactly where it always was.
+    @Test func b6_previousWindowEndsWhereTheRangeStarts() throws {
+        let range = CardioRange.custom(start: date(10, 10, 10), end: date(11, 20, 9), calendar: calendar)
+        let before = CardioFitnessPoint(date: date(10, 9, 20), value: 50)
+        let inside = CardioFitnessPoint(date: date(10, 10, 15), value: 58)
+        let summary = try #require(CardioMetricAnalysis.summarize(
+            points: [before, inside], days: range.days, start: range.start, now: range.end, calendar: calendar
+        ))
+        #expect(summary.previousAverage == 50)
+
+        let fixed = CardioRange.fixed(.month, now: date(11, 20, 9), calendar: calendar)
+        let points = [CardioFitnessPoint(date: date(10, 1, 9), value: 41), CardioFitnessPoint(date: date(11, 1, 9), value: 43)]
+        #expect(
+            CardioMetricAnalysis.summarize(points: points, days: fixed.days, start: fixed.start, now: fixed.end, calendar: calendar)
+                == CardioMetricAnalysis.summarize(points: points, days: fixed.days, now: fixed.end, calendar: calendar)
+        )
+    }
+
     // MARK: - B4: a purchase waiting for approval is not a failure
 
     /// RevenueCat's error codes (`ErrorCode` raw values, stable public API):

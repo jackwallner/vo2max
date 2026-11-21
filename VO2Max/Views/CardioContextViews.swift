@@ -347,6 +347,7 @@ struct SignalReading {
             guard let summary = CardioMetricAnalysis.summarize(
                 points: points,
                 days: range.days,
+                start: range.start,
                 now: range.end
             ) else { return nil }
             let low = Int(summary.minimum.rounded())
@@ -364,6 +365,7 @@ struct SignalReading {
             guard let summary = CardioDriverAnalysis.loadSummary(
                 workouts: context.workouts,
                 days: range.days,
+                start: range.start,
                 now: range.end
             ) else { return nil }
             let sessions = summary.sessionsPerWeek.formatted(.number.precision(.fractionLength(1)))
@@ -796,6 +798,7 @@ struct HeartMetricDetailView: View {
                 if let summary = CardioMetricAnalysis.summarize(
                     points: points,
                     days: range.days,
+                    start: range.start,
                     now: range.end
                 ) {
                     summaryCard(summary)
@@ -901,7 +904,9 @@ struct HeartMetricDetailView: View {
 
     @ViewBuilder
     private var monthlyCard: some View {
-        let months = CardioMetricAnalysis.monthlyAverages(points: points, days: range.days, now: range.end)
+        let months = CardioMetricAnalysis.monthlyAverages(
+            points: points, days: range.days, start: range.start, now: range.end
+        )
         if months.count > 1 {
             VStack(alignment: .leading, spacing: 10) {
                 Label("Monthly averages", systemImage: "calendar")
@@ -1021,6 +1026,7 @@ struct CardioLoadDetailView: View {
         if let summary = CardioDriverAnalysis.loadSummary(
             workouts: context.workouts,
             days: range.days,
+            start: range.start,
             now: range.end
         ) {
             VStack(spacing: 12) {
@@ -1205,6 +1211,7 @@ struct CardioLoadDetailView: View {
         let totals = CardioDriverAnalysis.activityTotals(
             workouts: context.workouts,
             days: range.days,
+            start: range.start,
             now: range.end
         )
         if !totals.isEmpty {

@@ -84,6 +84,7 @@ struct HistoryView: View {
         let change = CardioFitnessAnalysis.change(
             points: samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) },
             days: period,
+            start: range.start,
             now: range.end
         )
 

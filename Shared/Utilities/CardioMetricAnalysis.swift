@@ -188,10 +188,10 @@ struct CardioRange: Sendable, Equatable {
     }
 
     /// The equivalent window immediately before this one, for "vs." captions.
+    /// Ends just before `start`, the same window the vs-previous figures read.
     func priorSpanLabel(calendar: Calendar = .current) -> String? {
-        guard let priorEnd = calendar.date(byAdding: .day, value: -days, to: end),
-              let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: end) else { return nil }
-        return localizedDateSpan(from: priorStart, to: priorEnd)
+        guard let priorStart = calendar.date(byAdding: .day, value: -days, to: start) else { return nil }
+        return localizedDateSpan(from: priorStart, to: start.addingTimeInterval(-0.001))
     }
 
     func contains(_ date: Date) -> Bool { date >= start && date <= end }
@@ -315,21 +315,25 @@ struct MonthlyAverage: Sendable, Equatable, Identifiable {
 enum CardioMetricAnalysis {
     /// nil when the selected window holds no samples at all, so callers can show
     /// an empty state instead of a zeroed-out card.
+    /// `start` is the range's own first moment. A custom range's day count is
+    /// rounded, so rebuilding the start from it dropped (or added) part of the
+    /// first day that `CardioRange.contains` counts.
     static func summarize(
         points: [CardioFitnessPoint],
         days: Int,
+        start rangeStart: Date? = nil,
         now: Date = .now,
         calendar: Calendar = .current
     ) -> MetricSummary? {
         guard days > 0,
-              let start = calendar.date(byAdding: .day, value: -days, to: now) else { return nil }
+              let start = rangeStart ?? calendar.date(byAdding: .day, value: -days, to: now) else { return nil }
 
         let window = points.filter { $0.date >= start && $0.date <= now }
         guard let latest = window.max(by: { $0.date < $1.date }) else { return nil }
         let values = window.map(\.value)
 
         var previousAverage: Double?
-        if let priorStart = calendar.date(byAdding: .day, value: -days * 2, to: now) {
+        if let priorStart = calendar.date(byAdding: .day, value: -days, to: start) {
             let prior = points.filter { $0.date >= priorStart && $0.date < start }.map(\.value)
             if !prior.isEmpty { previousAverage = prior.reduce(0, +) / Double(prior.count) }
         }
@@ -349,10 +353,12 @@ enum CardioMetricAnalysis {
     static func monthlyAverages(
         points: [CardioFitnessPoint],
         days: Int,
+        start rangeStart: Date? = nil,
         now: Date = .now,
         calendar: Calendar = .current
     ) -> [MonthlyAverage] {
-        guard days > 0, let start = calendar.date(byAdding: .day, value: -days, to: now) else { return [] }
+        guard days > 0,
+              let start = rangeStart ?? calendar.date(byAdding: .day, value: -days, to: now) else { return [] }
         let window = points.filter { $0.date >= start && $0.date <= now }
         let grouped = Dictionary(grouping: window) { point in
             calendar.dateInterval(of: .month, for: point.date)?.start ?? point.date
