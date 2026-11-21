@@ -74208,6 +74208,125 @@
           }
         }
       }
+    },
+    "If VO2 max is off, open Apple Health, tap your profile picture, then Privacy > Apps > VO2 Max Daily Tracker and turn VO2 max on.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If VO2 max is off, open Apple Health, tap your profile picture, then Privacy > Apps > VO2 Max Daily Tracker and turn VO2 max on."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إذا كان VO2 max متوقفًا، فافتح Apple Health واضغط صورة ملفك الشخصي، ثم «الخصوصية» > «التطبيقات» > VO2 Max Daily Tracker وفعّل VO2 max."
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokud je VO2 max vypnuté, otevřete Apple Health, klepněte na profilovou fotku a přejděte na Soukromí > Aplikace > VO2 Max Daily Tracker. Potom zapněte VO2 max."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ist VO2max deaktiviert, öffne Apple Health, tippe auf dein Profilbild und gehe zu Datenschutz > Apps > VO2 Max Daily Tracker. Aktiviere dort VO2max."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αν το VO2 max είναι απενεργοποιημένο, άνοιξε το Apple Health, πάτησε την εικόνα προφίλ σου και μετά Απόρρητο > Εφαρμογές > VO2 Max Daily Tracker. Ενεργοποίησε το VO2 max."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si VO2 max está desactivado, abre Apple Health, toca tu foto de perfil y ve a «Privacidad» > «Apps» > VO2 Max Daily Tracker. Activa VO2 max."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si VO2 max est désactivé, ouvrez Apple Health, touchez votre photo de profil, puis accédez à Confidentialité > Apps > VO2 Max Daily Tracker et activez VO2 max."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אם VO2 max כבוי, יש לפתוח את Apple Health, ללחוץ על תמונת הפרופיל, לעבור אל פרטיות > אפליקציות > VO2 Max Daily Tracker ולהפעיל VO2 max."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha a VO2 max ki van kapcsolva, nyisd meg az Apple Health appot, koppints a profilképedre, majd válaszd az Adatvédelem > Appok > VO2 Max Daily Tracker menüpontot, és kapcsold be a VO2 maxot."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se VO2 max è disattivato, apri Apple Health, tocca la foto del profilo e vai su Privacy > App > VO2 Max Daily Tracker. Poi attiva VO2 max."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO2 maxがオフの場合は、Apple Healthを開き、プロフィール写真をタップして、「プライバシー」>「アプリ」>「VO2 Max Daily Tracker」の順に開き、VO2 maxを有効にしてください。"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staat VO2max uit, open dan Apple Health, tik op je profielfoto en ga naar Privacy > Apps > VO2 Max Daily Tracker. Schakel daar VO2max in."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeśli VO2 max jest wyłączone, otwórz Apple Health, stuknij swoje zdjęcie profilowe, a następnie Prywatność > Aplikacje > VO2 Max Daily Tracker i włącz VO2 max."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dacă VO2 max este dezactivat, deschide Apple Health, atinge fotografia de profil, apoi Confidențialitate > Aplicații > VO2 Max Daily Tracker și activează VO2 max."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Если VO2 max выключен, откройте Apple Health, нажмите на фото профиля, затем выберите «Конфиденциальность» > «Приложения» > VO2 Max Daily Tracker и включите VO2 max."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ak je VO2 max vypnuté, otvor Apple Health, ťukni na profilovú fotku, potom Súkromie > Aplikácie > VO2 Max Daily Tracker a zapni VO2 max."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Om VO2 max är avstängt öppnar du Apple Health, trycker på din profilbild och väljer Integritet > Appar > VO2 Max Daily Tracker. Slå sedan på VO2 max."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หาก VO2 max ปิดอยู่ ให้เปิด Apple Health แตะรูปโปรไฟล์ แล้วไปที่ «ความเป็นส่วนตัว» > «แอป» > VO2 Max Daily Tracker จากนั้นเปิด VO2 max"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "若 VO2 max 已關閉，請開啟 Apple Health，點選個人頭像，再前往「隱私權」>「App」>「VO2 Max Daily Tracker」，並開啟 VO2 max。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

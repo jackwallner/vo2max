@@ -381,6 +381,15 @@ struct DashboardView: View {
                     .foregroundStyle(Theme.textSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
+                // "Authorized" only means the prompt was answered; a decline looks
+                // the same, so the way back has to be on this card too.
+                if health.isAuthorized {
+                    Text("If VO2 max is off, open Apple Health, tap your profile picture, then Privacy > Apps > VO2 Max Daily Tracker and turn VO2 max on.")
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             Button {
