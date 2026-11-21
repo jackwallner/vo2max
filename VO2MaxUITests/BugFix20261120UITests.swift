@@ -86,4 +86,22 @@ final class BugFix20261120UITests: XCTestCase {
         XCTAssertTrue(element(containing: "No active VO2+ purchase", in: app).waitForExistence(timeout: 15),
                       "Restore finished with no visible outcome")
     }
+
+    /// B10: at the largest text size the plans-unavailable state scrolls, so
+    /// its whole message and the buttons under it stay reachable.
+    func testB10PlansUnavailableAtLargestTextReachesEveryControl() {
+        let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+        app.launchArguments += [
+            "-PaywallSnapshot",
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["VO2+ Plans Unavailable"].waitForExistence(timeout: 30))
+        attach(app, "b10-paywall-unavailable-axxxl-top")
+        let privacy = app.links["Privacy"].exists ? app.links["Privacy"] : app.buttons["Privacy"]
+        scrollTo(privacy, in: app)
+        attach(app, "b10-paywall-unavailable-axxxl-bottom")
+        XCTAssertTrue(privacy.exists && privacy.isHittable, "Privacy link out of reach at the largest text size")
+    }
 }

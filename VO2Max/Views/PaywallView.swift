@@ -480,43 +480,54 @@ struct PaywallView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    /// Scrolls, so the largest text sizes never truncate the message or push
+    /// the buttons off screen. Restore needs no plans, so it stays here with
+    /// the Terms and Privacy links.
     private var emptyState: some View {
-        VStack(spacing: 14) {
-            Image(systemName: "wifi.exclamationmark")
-                .font(.system(size: 42))
-                .foregroundStyle(Theme.textSecondary)
-            Text("VO2+ Plans Unavailable").font(.title3.bold())
-            Text("Purchases are temporarily unavailable. Your free features are still ready to use.")
-                .font(.subheadline)
-                .foregroundStyle(Theme.textSecondary)
-                .multilineTextAlignment(.center)
-            Button("Try Again") { store.start(forceRefresh: true) }
-                .buttonStyle(.borderedProminent)
-                .tint(Theme.cardioDeep)
-            // Restore needs no plans, so it stays here with Terms and Privacy.
-            if let attemptMessage {
-                Text(attemptMessage)
-                    .font(.system(.caption2, design: .rounded))
-                    .foregroundStyle(Theme.negative)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 14) {
+                    Image(systemName: "wifi.exclamationmark")
+                        .font(.system(size: 42))
+                        .foregroundStyle(Theme.textSecondary)
+                    Text("VO2+ Plans Unavailable").font(.title3.bold())
+                        .multilineTextAlignment(.center)
+                    Text("Purchases are temporarily unavailable. Your free features are still ready to use.")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button("Try Again") { store.start(forceRefresh: true) }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Theme.cardioDeep)
+                    if let attemptMessage {
+                        Text(attemptMessage)
+                            .font(.system(.caption2, design: .rounded))
+                            .foregroundStyle(Theme.negative)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 4) { legalButtons }
+                        VStack(spacing: 0) { legalButtons }
+                    }
+                    .font(.system(.caption2, design: .rounded, weight: .semibold))
+                    .foregroundStyle(Theme.textSecondary)
+                    #if targetEnvironment(simulator)
+                    Text("Purchases are disabled in the simulator. Use the local Pro override in Settings to inspect subscriber screens.")
+                        .font(.caption2)
+                        .foregroundStyle(Theme.textTertiary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal)
+                    #endif
+                }
+                .frame(maxWidth: .infinity)
+                .padding(24)
+                .frame(minHeight: proxy.size.height)
             }
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 4) { legalButtons }
-                VStack(spacing: 0) { legalButtons }
-            }
-            .font(.system(.caption2, design: .rounded, weight: .semibold))
-            .foregroundStyle(Theme.textSecondary)
-            #if targetEnvironment(simulator)
-            Text("Purchases are disabled in the simulator. Use the local Pro override in Settings to inspect subscriber screens.")
-                .font(.caption2)
-                .foregroundStyle(Theme.textTertiary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            #endif
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(24)
     }
 
     private var ctaTitle: String {
