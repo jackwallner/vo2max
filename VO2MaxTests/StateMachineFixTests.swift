@@ -46,10 +46,17 @@ struct StateMachineFixTests {
 
     // MARK: - SM-1: freshness nudge spacing
 
+    /// Today at noon. Nudges only fire between 10:00 and 19:00 (2026-11-20
+    /// B8), so a clock-dependent `Date.now` made these exact spacing checks
+    /// depend on the hour the suite ran.
+    private var midday: Date {
+        calendar.date(bySettingHour: 12, minute: 0, second: 0, of: .now)!
+    }
+
     /// Model-free: a second sync seconds after a spaced one (a cold launch runs
     /// two) must keep the spaced date, not pull it forward to now.
     @Test func sm1_secondSyncSecondsLaterKeepsSpacing() throws {
-        let now = Date.now
+        let now = midday
         let points = staleEstimate(now: now)
         let delivered = try #require(calendar.date(byAdding: .day, value: -1, to: now))
 
@@ -62,7 +69,7 @@ struct StateMachineFixTests {
     }
 
     @Test func sm1_secondForegroundDoesNotPullTheSpacedNudgeForward() throws {
-        let t0 = Date.now
+        let t0 = midday
         let points = staleEstimate(now: t0)
         var model = FreshnessNudgeModel()
         model.sync(points: points, now: t0)
@@ -77,7 +84,7 @@ struct StateMachineFixTests {
     }
 
     @Test func sm1_staleUserOpeningDailyForTwoWeeksGetsAtMostOneNudgePerFiveDays() throws {
-        let start = Date.now
+        let start = midday
         let points = staleEstimate(now: start)
         var model = FreshnessNudgeModel()
         for day in 0..<14 {
@@ -96,7 +103,7 @@ struct StateMachineFixTests {
 
     /// A new estimate still pushes a pending nudge back.
     @Test func sm1_newEstimatePushesPendingNudgeLater() throws {
-        let now = Date.now
+        let now = midday
         let stale = staleEstimate(now: now)
         let pending = try #require(calendar.date(byAdding: .day, value: 3, to: now))
         let fresh = stale + [CardioFitnessPoint(date: now, value: 41)]

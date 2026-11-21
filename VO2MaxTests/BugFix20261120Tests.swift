@@ -177,6 +177,58 @@ struct BugFix20261120Tests {
         #expect(message != VO2ConversionCopy.purchaseFailedMessage(eligibleForTrial: true))
     }
 
+    // MARK: - B8: the freshness nudge arrives in the daytime
+
+    /// Weekly cadence and a last estimate written at 5:40 after a dawn run.
+    @Test func b8_nudgeAfterADawnEstimateWaitsForDaytime() throws {
+        let latest = date(11, 3, 5, 40)
+        let points = [21, 14, 7, 0].map {
+            CardioFitnessPoint(date: calendar.date(byAdding: .day, value: -$0, to: latest)!, value: 42)
+        }
+        let nudge = try #require(CardioFreshnessAnalysis.nextNudgeDate(
+            points: points, lastNudge: nil, now: date(11, 4, 12), calendar: calendar
+        ))
+        let hour = calendar.component(.hour, from: nudge)
+        #expect((10..<19).contains(hour), "nudge at \(nudge)")
+        // Never earlier than the day the estimate goes stale.
+        #expect(CardioFreshnessAnalysis.assess(points: points, now: nudge, calendar: calendar).isStale)
+    }
+
+    /// Already stale, synced by a background wake at 2:00.
+    @Test func b8_staleNudgeFromANightWakeWaitsForMorning() throws {
+        let points = [61, 54, 47, 40].map {
+            CardioFitnessPoint(date: calendar.date(byAdding: .day, value: -$0, to: date(11, 4, 12))!, value: 42)
+        }
+        let wake = date(11, 4, 2)
+        let nudge = try #require(CardioFreshnessAnalysis.nextNudgeDate(
+            points: points, lastNudge: nil, now: wake, calendar: calendar
+        ))
+        #expect(nudge == date(11, 4, 10))
+    }
+
+    @Test func b8_lateEveningNudgeMovesToNextMorning() throws {
+        let points = [61, 54, 47, 40].map {
+            CardioFitnessPoint(date: calendar.date(byAdding: .day, value: -$0, to: date(11, 4, 12))!, value: 42)
+        }
+        let nudge = try #require(CardioFreshnessAnalysis.nextNudgeDate(
+            points: points, lastNudge: nil, now: date(11, 4, 21, 15), calendar: calendar
+        ))
+        #expect(nudge == date(11, 5, 10))
+    }
+
+    /// The five-day spacing still holds after the move.
+    @Test func b8_daytimeMoveKeepsTheSpacing() throws {
+        let points = [61, 54, 47, 40].map {
+            CardioFitnessPoint(date: calendar.date(byAdding: .day, value: -$0, to: date(11, 4, 12))!, value: 42)
+        }
+        let delivered = date(11, 1, 22)
+        let nudge = try #require(CardioFreshnessAnalysis.nextNudgeDate(
+            points: points, lastNudge: delivered, now: date(11, 4, 12), calendar: calendar
+        ))
+        #expect(nudge == date(11, 7, 10))
+        #expect(nudge >= calendar.date(byAdding: .day, value: 5, to: delivered)!)
+    }
+
     // MARK: - B7: Estimate Freshness rereads the notification setting
 
     private func source(_ path: String) throws -> String {

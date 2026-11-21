@@ -167,7 +167,11 @@ struct OvernightP1Tests {
 
     // MARK: - Helpers
 
-    private var now: Date { Date(timeIntervalSince1970: 1_760_000_000) }
+    /// Noon on Oct 9 2025. Nudges only fire between 10:00 and 19:00 (2026-11-20
+    /// B8), so the nudge checks below need a daytime clock to stay exact.
+    private var now: Date {
+        Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date(timeIntervalSince1970: 1_760_000_000))!
+    }
 
     private func day(_ offset: Int) -> Date {
         Calendar.current.date(byAdding: .day, value: offset, to: now) ?? now

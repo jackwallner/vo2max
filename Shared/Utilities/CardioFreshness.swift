@@ -106,6 +106,11 @@ enum CardioFreshnessAnalysis {
     /// produces a reminder rather than a nag.
     static let nudgeSpacingDays = 5
 
+    /// Local hours a nudge may arrive in, 10:00 up to 19:00. The stale moment
+    /// carries the clock time of the last estimate (a dawn run, a late walk) and
+    /// a background wake can land at night, so the date is moved into daytime.
+    static let nudgeHours = 10..<19
+
     /// When the next "your estimate has gone quiet" nudge should fire: the day
     /// `assess` first calls the estimate stale, or now if it already is, and
     /// never sooner than `nudgeSpacingDays` after a nudge that was delivered.
@@ -116,7 +121,8 @@ enum CardioFreshnessAnalysis {
     /// past was delivered, so the next waits `nudgeSpacingDays` after it. One
     /// still in the future is the pending request this one replaces: it already
     /// honours the spacing, so the replacement never moves earlier than it. A
-    /// new estimate still pushes the nudge later.
+    /// new estimate still pushes the nudge later. The result is then moved
+    /// later, never earlier, into `nudgeHours`.
     static func nextNudgeDate(
         points: [CardioFitnessPoint],
         lastNudge: Date?,
@@ -135,7 +141,17 @@ enum CardioFreshnessAnalysis {
                 date = max(date, spaced)
             }
         }
-        return date
+        return daytime(date, calendar: calendar)
+    }
+
+    /// The first moment at or after `date` inside `nudgeHours`.
+    static func daytime(_ date: Date, calendar: Calendar = .current) -> Date {
+        let hour = calendar.component(.hour, from: date)
+        if nudgeHours.contains(hour) { return date }
+        let day = hour < nudgeHours.lowerBound
+            ? date
+            : calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date)) ?? date
+        return calendar.date(bySettingHour: nudgeHours.lowerBound, minute: 0, second: 0, of: day) ?? date
     }
 
     /// Median gap between consecutive estimates over the last year. Needs four
