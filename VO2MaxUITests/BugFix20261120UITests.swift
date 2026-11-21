@@ -68,4 +68,22 @@ final class BugFix20261120UITests: XCTestCase {
         XCTAssertTrue(open.waitForExistence(timeout: 15), "detail screen has no way to open Health")
         attach(app, "b2-detail-empty")
     }
+
+    /// B5: the plans-unavailable paywall still offers Restore, Terms and Privacy.
+    func testB5PlansUnavailableKeepsRestoreAndLegalLinks() {
+        let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+        app.launchArguments += ["-PaywallSnapshot"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["VO2+ Plans Unavailable"].waitForExistence(timeout: 30))
+        attach(app, "b5-paywall-unavailable")
+        XCTAssertTrue(app.buttons["Try Again"].exists)
+        XCTAssertTrue(app.buttons["Restore"].exists, "no Restore")
+        XCTAssertTrue(app.links["Terms"].exists || app.buttons["Terms"].exists, "no Terms")
+        XCTAssertTrue(app.links["Privacy"].exists || app.buttons["Privacy"].exists, "no Privacy")
+
+        app.buttons["Restore"].tap()
+        XCTAssertTrue(element(containing: "No active VO2+ purchase", in: app).waitForExistence(timeout: 15),
+                      "Restore finished with no visible outcome")
+    }
 }

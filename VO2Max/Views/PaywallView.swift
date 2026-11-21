@@ -493,6 +493,20 @@ struct PaywallView: View {
             Button("Try Again") { store.start(forceRefresh: true) }
                 .buttonStyle(.borderedProminent)
                 .tint(Theme.cardioDeep)
+            // Restore needs no plans, so it stays here with Terms and Privacy.
+            if let attemptMessage {
+                Text(attemptMessage)
+                    .font(.system(.caption2, design: .rounded))
+                    .foregroundStyle(Theme.negative)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 4) { legalButtons }
+                VStack(spacing: 0) { legalButtons }
+            }
+            .font(.system(.caption2, design: .rounded, weight: .semibold))
+            .foregroundStyle(Theme.textSecondary)
             #if targetEnvironment(simulator)
             Text("Purchases are disabled in the simulator. Use the local Pro override in Settings to inspect subscriber screens.")
                 .font(.caption2)
