@@ -30,10 +30,14 @@ final class CardioRangeStore: ObservableObject {
         let now = Date.now
         let storedEnd = defaults.object(forKey: Self.customEndKey) as? Double
         let storedStart = defaults.object(forKey: Self.customStartKey) as? Double
-        customEnd = storedEnd.map(Date.init(timeIntervalSince1970:)) ?? now
-        customStart = storedStart.map(Date.init(timeIntervalSince1970:))
+        let end = storedEnd.map(Date.init(timeIntervalSince1970:)) ?? now
+        let start = storedStart.map(Date.init(timeIntervalSince1970:))
             ?? Calendar.current.date(byAdding: .day, value: -MetricRange.quarter.days, to: now)
             ?? now
+        // A pick stored before ranges were whole days carries clock times.
+        let days = CardioRange.customDays(start: start, end: end)
+        customStart = days.start
+        customEnd = days.end
     }
 
     /// The current selection resolved into real dates. Recomputed on read so the
@@ -50,16 +54,11 @@ final class CardioRangeStore: ObservableObject {
         defaults.set(range.rawValue, forKey: Self.selectionKey)
     }
 
-    /// Applies a hand-picked window and switches to it. Dates are ordered and
-    /// clamped here so no caller can install a backwards or oversized range.
+    /// Applies a hand-picked window and switches to it. Dates are ordered,
+    /// widened to whole days and clamped here so no caller can install a
+    /// backwards or oversized range.
     func applyCustom(start: Date, end: Date, now: Date = .now, calendar: Calendar = .current) {
-        let cappedEnd = min(max(start, end), now)
-        let earliest = calendar.date(
-            byAdding: .day,
-            value: -CardioRange.maximumCustomDays,
-            to: cappedEnd
-        ) ?? cappedEnd
-        let cappedStart = max(min(start, cappedEnd), earliest)
+        let (cappedStart, cappedEnd) = CardioRange.customDays(start: start, end: end, now: now, calendar: calendar)
 
         customStart = cappedStart
         customEnd = cappedEnd

@@ -91,7 +91,8 @@ struct MetricRangePicker: View {
             return
         }
         draftStart = ranges.customStart
-        draftEnd = ranges.customEnd
+        // The stored end is the last moment of its day, past the picker's limit today.
+        draftEnd = min(ranges.customEnd, .now)
         showCustomSheet = true
     }
 }
@@ -141,12 +142,13 @@ private struct CustomRangeSheet: View {
     let onApply: () -> Void
     @Environment(\.dismiss) private var dismiss
 
+    /// Whole days, both ends included, so picking one date twice is one day.
     private var spanDays: Int {
-        Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
+        CardioRange.customDayCount(start: start, end: end)
     }
 
     private var isValid: Bool {
-        start < end && spanDays <= CardioRange.maximumCustomDays
+        spanDays >= 1 && spanDays <= CardioRange.maximumCustomDays
     }
 
     var body: some View {
@@ -162,7 +164,7 @@ private struct CustomRangeSheet: View {
                     }
                 } else {
                     Section {
-                        Text(start >= end
+                        Text(spanDays < 1
                              ? "Start date must be before end date."
                              : "Maximum range is 2 years.")
                             .font(.caption)
