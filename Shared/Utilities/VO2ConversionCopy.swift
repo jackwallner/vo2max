@@ -76,6 +76,12 @@ enum VO2ConversionCopy {
             : String(localized: "Purchase wasn't completed. Tap again to continue.")
     }
 
+    /// Ask to Buy or a bank check is holding the purchase. Not a failure, so
+    /// it never invites a second attempt.
+    static var purchasePendingMessage: String {
+        String(localized: "Waiting for approval. VO2+ unlocks once the purchase is approved.")
+    }
+
     static func purchaseFailedMessage(eligibleForTrial: Bool) -> String {
         eligibleForTrial
             ? String(localized: "Couldn't start your trial. Please try again.")

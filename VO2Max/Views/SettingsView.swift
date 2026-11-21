@@ -175,6 +175,9 @@ struct SettingsView: View {
         Task { @MainActor in
             defer { trialPurchaseInFlight = false }
             switch await store.purchase(package) {
+            case .pending where store.errorMessage != nil:
+                // Waiting for Ask to Buy approval: say so on the sheet.
+                trialPurchaseError = store.errorMessage
             case .purchased, .pending:
                 showTrialOffer = false
             case .cancelled, .none:

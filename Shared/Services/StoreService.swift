@@ -309,18 +309,35 @@ final class StoreService: NSObject, ObservableObject, PurchasesDelegate {
             }
             return .pending
         } catch {
-            let nsError = error as NSError
-            if nsError.code == ErrorCode.purchaseCancelledError.rawValue {
+            switch Self.outcome(ofThrown: error) {
+            case .cancelled:
                 errorMessage = VO2ConversionCopy.purchaseCancelledMessage(
                     eligibleForTrial: isEligibleForIntroOffer(package)
                 )
                 return .cancelled
+            case .pending:
+                // Ask to Buy or a bank check: Apple holds the purchase, and the
+                // delegate unlocks VO2+ when it goes through.
+                errorMessage = VO2ConversionCopy.purchasePendingMessage
+                return .pending
+            case .purchased, nil:
+                break
             }
             await refreshIntroEligibility()
             errorMessage = VO2ConversionCopy.purchaseFailedMessage(
                 eligibleForTrial: isEligibleForIntroOffer(package)
             )
             return nil
+        }
+    }
+
+    /// What a thrown purchase error means. RevenueCat reports a purchase that
+    /// is waiting for approval as an error, not as a result.
+    nonisolated static func outcome(ofThrown error: Error) -> PurchaseState? {
+        switch (error as NSError).code {
+        case ErrorCode.purchaseCancelledError.rawValue: .cancelled
+        case ErrorCode.paymentPendingError.rawValue: .pending
+        default: nil
         }
     }
 

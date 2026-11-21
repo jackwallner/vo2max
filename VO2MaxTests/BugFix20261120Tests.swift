@@ -77,4 +77,26 @@ struct BugFix20261120Tests {
         let long = applied(start: calendar.date(byAdding: .year, value: -5, to: now)!, end: now, now: now)
         #expect(long.days == CardioRange.maximumCustomDays)
     }
+
+    // MARK: - B4: a purchase waiting for approval is not a failure
+
+    /// RevenueCat's error codes (`ErrorCode` raw values, stable public API):
+    /// 20 paymentPendingError, 1 purchaseCancelledError, 10 networkError. The
+    /// test bundle does not link RevenueCat, so they are written out here.
+    private func revenueCatError(_ code: Int) -> NSError {
+        NSError(domain: "RevenueCat.ErrorCode", code: code)
+    }
+
+    @Test func b4_deferredPurchaseIsPending() {
+        #expect(StoreService.outcome(ofThrown: revenueCatError(20)) == .pending)
+        #expect(StoreService.outcome(ofThrown: revenueCatError(1)) == .cancelled)
+        #expect(StoreService.outcome(ofThrown: revenueCatError(10)) == nil)
+    }
+
+    @Test func b4_pendingCopyDoesNotInviteARetry() {
+        let message = VO2ConversionCopy.purchasePendingMessage
+        #expect(message.contains("approv"))
+        #expect(!message.localizedCaseInsensitiveContains("try again"))
+        #expect(message != VO2ConversionCopy.purchaseFailedMessage(eligibleForTrial: true))
+    }
 }

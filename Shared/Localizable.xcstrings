@@ -74446,6 +74446,125 @@
           }
         }
       }
+    },
+    "Waiting for approval. VO2+ unlocks once the purchase is approved.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for approval. VO2+ unlocks once the purchase is approved."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بانتظار الموافقة. يُفتح VO2+ بعد الموافقة على الشراء."
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čeká se na schválení. VO2+ se odemkne po schválení nákupu."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warte auf Bestätigung. VO2+ wird freigeschaltet, sobald der Kauf bestätigt ist."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναμονή έγκρισης. Το VO2+ ξεκλειδώνεται μόλις εγκριθεί η αγορά."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando aprobación. VO2+ se desbloquea cuando se apruebe la compra."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En attente d’approbation. VO2+ se débloque dès que l’achat est approuvé."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ממתין לאישור. VO2+ ייפתח לאחר אישור הרכישה."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jóváhagyásra vár. A VO2+ a vásárlás jóváhagyása után oldódik fel."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In attesa di approvazione. VO2+ si sblocca appena l’acquisto viene approvato."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "承認を待っています。購入が承認されるとVO2+のロックが解除されます。"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wacht op goedkeuring. VO2+ wordt ontgrendeld zodra de aankoop is goedgekeurd."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oczekiwanie na zgodę. VO2+ odblokuje się po zatwierdzeniu zakupu."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se așteaptă aprobarea. VO2+ se deblochează după ce achiziția este aprobată."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ожидается одобрение. VO2+ откроется, как только покупку одобрят."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čaká sa na schválenie. VO2+ sa odomkne po schválení nákupu."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Väntar på godkännande. VO2+ låses upp när köpet har godkänts."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังรอการอนุมัติ VO2+ จะปลดล็อกเมื่อการซื้อได้รับอนุมัติ"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在等待核准。購買獲得核准後，VO2+ 即會解鎖。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
