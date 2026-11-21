@@ -9,6 +9,20 @@ private func formattedWorkoutDuration(_ minutes: Double) -> String {
     return formatter.string(from: minutes.rounded() * 60) ?? "–"
 }
 
+/// A declined (or switched off) Health type returns no samples at all, the
+/// same as having no data, and iOS never shows the permission sheet again. So
+/// when a whole series is empty, the empty state names where to turn it on.
+private let supportingTypesOffMessage = String(
+    localized: "If resting heart rate, recovery, or workouts are off, open Apple Health, tap your profile picture, then Privacy > Apps > VO2 Max Daily Tracker and turn them on."
+)
+
+/// Read-only access toggles live in the Health app (profile > Privacy > Apps).
+private func openAppleHealth() {
+    if let url = URL(string: "x-apple-health://") {
+        UIApplication.shared.open(url)
+    }
+}
+
 // MARK: - Shared range
 
 /// Range control for every window-scoped screen, plus the date span it resolves
@@ -574,8 +588,18 @@ struct CardioSignalCard: View {
         }
     }
 
-    private var emptyMessage: String {
+    /// Nothing at all in two years of history (not just in this range).
+    private var seriesIsEmpty: Bool {
+        guard context.lastLoaded != nil else { return false }
         switch signal {
+        case .heart(let metric): return context.points(for: metric).isEmpty
+        case .load: return context.workouts.isEmpty
+        }
+    }
+
+    private var emptyMessage: String {
+        if seriesIsEmpty { return supportingTypesOffMessage }
+        return switch signal {
         case .heart(.restingHeartRate):
             String(localized: "No resting heart rate readings in \(range.phrase). Choose a longer range, or check that Apple Health has this data.")
         case .heart(.heartRateRecovery):
@@ -907,6 +931,16 @@ struct HeartMetricDetailView: View {
                 .foregroundStyle(Theme.cardio)
             Text("No readings in the \(range.phrase)")
                 .font(.headline)
+            if points.isEmpty, context.lastLoaded != nil {
+                Text(supportingTypesOffMessage)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button("Open Apple Health") { openAppleHealth() }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.cardioBlue)
+            } else {
                 Text(metric == .restingHeartRate
                      ? String(localized: "Apple Watch records resting heart rate in the background as you wear it. Choose a longer range, or check that Apple Health has this data.")
                      : String(localized: "Apple Watch records the one-minute drop after a recorded workout. Choose a longer range, or record a workout with your Watch on."))
@@ -914,6 +948,7 @@ struct HeartMetricDetailView: View {
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(24)
@@ -1035,11 +1070,22 @@ struct CardioLoadDetailView: View {
                     .foregroundStyle(Theme.cardio)
                 Text("No cardio workouts in the \(range.phrase)")
                     .font(.headline)
-                Text("Walks, runs, hikes, rides, swims, rows, elliptical, and interval sessions recorded in Apple Health all count here.")
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                if context.workouts.isEmpty, context.lastLoaded != nil {
+                    Text(supportingTypesOffMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button("Open Apple Health") { openAppleHealth() }
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.cardioBlue)
+                } else {
+                    Text("Walks, runs, hikes, rides, swims, rows, elliptical, and interval sessions recorded in Apple Health all count here.")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(maxWidth: .infinity)
             .padding(24)

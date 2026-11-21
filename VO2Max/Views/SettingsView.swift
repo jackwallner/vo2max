@@ -248,7 +248,13 @@ struct SettingsView: View {
         } header: {
             Text("Apple Health")
         } footer: {
-            Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. iOS shows the permission prompt only once. If VO2 max isn't connecting, open Apple Health › profile picture › Privacy › Apps › VO2 Max Daily Tracker and turn VO2 max on. \"Connected\" appears once a reading has been read.")
+            VStack(alignment: .leading, spacing: 6) {
+                Text("VO2 Max reads cardio fitness estimates from Apple Health, read-only. iOS shows the permission prompt only once. If VO2 max isn't connecting, open Apple Health › profile picture › Privacy › Apps › VO2 Max Daily Tracker and turn VO2 max on. \"Connected\" appears once a reading has been read.")
+                // VO2+ asks for these in a second, one-time Health sheet.
+                if store.isPro {
+                    Text("If resting heart rate, recovery, or workouts are off, open Apple Health, tap your profile picture, then Privacy > Apps > VO2 Max Daily Tracker and turn them on.")
+                }
+            }
         }
     }
 

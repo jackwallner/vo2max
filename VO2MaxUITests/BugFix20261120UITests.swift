@@ -44,4 +44,28 @@ final class BugFix20261120UITests: XCTestCase {
         XCTAssertTrue(steps.exists, "no way to turn VO2 max back on")
         XCTAssertTrue(app.buttons["Open Apple Health"].exists)
     }
+
+    /// B2: a VO2+ subscriber whose supporting Health types return nothing (the
+    /// second Health sheet was declined). The empty cards point at the setting
+    /// instead of blaming the Health data, and the detail screen opens Health.
+    func testB2DeclinedSupportingTypesShowTheWayBack() {
+        let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+        app.launchArguments += [
+            "-ScreenshotTab", "1", "-DemoPro",
+            "-hasGrantedHealthAccess", "YES", "-hasRequestedExtendedHealthTypes", "YES"
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.navigationBars["Trends"].waitForExistence(timeout: 30))
+        let steps = element(containing: "Privacy > Apps > VO2 Max Daily Tracker", in: app)
+        scrollTo(steps, in: app)
+        attach(app, "b2-trends-empty-signals")
+        XCTAssertTrue(steps.waitForExistence(timeout: 15), "empty signal cards never mention Health access")
+        XCTAssertFalse(element(containing: "check that Apple Health has this data", in: app).exists)
+
+        steps.tap()
+        let open = app.buttons["Open Apple Health"].firstMatch
+        XCTAssertTrue(open.waitForExistence(timeout: 15), "detail screen has no way to open Health")
+        attach(app, "b2-detail-empty")
+    }
 }
