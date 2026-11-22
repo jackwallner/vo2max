@@ -13,6 +13,7 @@ Developer notes and historical audits for this repository. The published site re
 - [presubmit-review-2026-11-07.md](audits/presubmit-review-2026-11-07.md): pre-submit review of 1.1.6 against live 1.1.5: findings, fixes and test run
 - [2026-11-20-bug-ux.html](audits/2026-11-20-bug-ux.html): Bug and UX catalog, 2026-11-20: 9 bugs (3 medium, 6 low; 7 confirmed), 21 UX items, October audit items rechecked. Catalog only, nothing fixed.
 - [2026-11-20-bug-fixes.md](audits/2026-11-20-bug-fixes.md): bug fix status after independent review, 2026-11-20: verdict, commits and test proof for each of the 10 catalog bugs
+- [2026-11-21-android-bug-port.md](audits/2026-11-21-android-bug-port.md): Android port of the 2026-11-20 fixes: 4 ported, 4 already fine, 2 not applicable
 
 ## ASO
 
