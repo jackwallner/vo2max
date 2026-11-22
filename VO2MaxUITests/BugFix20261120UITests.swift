@@ -69,10 +69,15 @@ final class BugFix20261120UITests: XCTestCase {
         attach(app, "b2-detail-empty")
     }
 
+    /// Every launch that wants a free user overrides the App Group's cached
+    /// entitlement: `-DemoPro` (the B2 test) writes it, and a later launch on
+    /// the same simulator would otherwise start as a subscriber.
+    private static let freeUser = ["-isPro", "NO"]
+
     /// B5: the plans-unavailable paywall still offers Restore, Terms and Privacy.
     func testB5PlansUnavailableKeepsRestoreAndLegalLinks() {
         let app = XCUIApplication(bundleIdentifier: Self.bundleID)
-        app.launchArguments += ["-PaywallSnapshot"]
+        app.launchArguments += ["-PaywallSnapshot"] + Self.freeUser
         app.launch()
 
         XCTAssertTrue(app.staticTexts["VO2+ Plans Unavailable"].waitForExistence(timeout: 30))
@@ -87,6 +92,26 @@ final class BugFix20261120UITests: XCTestCase {
                       "Restore finished with no visible outcome")
     }
 
+    /// B5 and B10 on the VO2+ tab, the other way a free user reaches the
+    /// paywall: at the largest text size Restore, Terms and Privacy are still
+    /// reachable above the tab bar.
+    func testB5EmbeddedPlansUnavailableAtLargestTextKeepsRestore() {
+        let app = XCUIApplication(bundleIdentifier: Self.bundleID)
+        app.launchArguments += [
+            "-ScreenshotTab", "2",
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
+        ] + Self.freeUser
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["VO2+ Plans Unavailable"].waitForExistence(timeout: 30))
+        attach(app, "b5-plus-tab-unavailable-axxxl-top")
+        let privacy = app.links["Privacy"].exists ? app.links["Privacy"] : app.buttons["Privacy"]
+        scrollTo(privacy, in: app)
+        attach(app, "b5-plus-tab-unavailable-axxxl-bottom")
+        XCTAssertTrue(privacy.exists && privacy.isHittable, "Privacy link out of reach on the VO2+ tab")
+        XCTAssertTrue(app.buttons["Restore"].isHittable, "Restore out of reach on the VO2+ tab")
+    }
+
     /// B10: at the largest text size the plans-unavailable state scrolls, so
     /// its whole message and the buttons under it stay reachable.
     func testB10PlansUnavailableAtLargestTextReachesEveryControl() {
@@ -94,7 +119,7 @@ final class BugFix20261120UITests: XCTestCase {
         app.launchArguments += [
             "-PaywallSnapshot",
             "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
-        ]
+        ] + Self.freeUser
         app.launch()
 
         XCTAssertTrue(app.staticTexts["VO2+ Plans Unavailable"].waitForExistence(timeout: 30))
