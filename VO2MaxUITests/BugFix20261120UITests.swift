@@ -105,11 +105,16 @@ final class BugFix20261120UITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["VO2+ Plans Unavailable"].waitForExistence(timeout: 30))
         attach(app, "b5-plus-tab-unavailable-axxxl-top")
+        // The tab bar band (`MainTabView.tabBarBandHeight`, 92 pt folded) is
+        // opaque but ignores touches, so `isHittable` alone passes for a link
+        // drawn underneath it. Scroll until the link sits above the band.
+        let bandTop = app.windows.firstMatch.frame.maxY - 92
         let privacy = app.links["Privacy"].exists ? app.links["Privacy"] : app.buttons["Privacy"]
-        scrollTo(privacy, in: app)
+        let restore = app.buttons["Restore"]
+        for _ in 0..<8 where !(privacy.exists && privacy.frame.maxY <= bandTop) { app.swipeUp() }
         attach(app, "b5-plus-tab-unavailable-axxxl-bottom")
-        XCTAssertTrue(privacy.exists && privacy.isHittable, "Privacy link out of reach on the VO2+ tab")
-        XCTAssertTrue(app.buttons["Restore"].isHittable, "Restore out of reach on the VO2+ tab")
+        XCTAssertTrue(privacy.exists && privacy.frame.maxY <= bandTop, "Privacy link stays under the tab bar on the VO2+ tab")
+        XCTAssertTrue(restore.frame.minY >= 0 && restore.frame.maxY <= bandTop, "Restore out of view on the VO2+ tab")
     }
 
     /// B10: at the largest text size the plans-unavailable state scrolls, so
