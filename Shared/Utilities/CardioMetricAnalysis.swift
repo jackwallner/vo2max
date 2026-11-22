@@ -134,10 +134,11 @@ struct CardioRange: Sendable, Equatable {
     }
 
     /// The whole days a pick covers: from the start of the first picked day to
-    /// the last moment of the last one, ordered, no later than today and no
-    /// longer than `maximumCustomDays`. The pickers show dates only but hand
-    /// back the clock time of the date they were seeded with, which used to cut
-    /// readings off both ends and made a same-day pick an empty range.
+    /// the last moment of the last one, ordered, no later than today, and the
+    /// last day no more than `maximumCustomDays` after the first. The pickers
+    /// show dates only but hand back the clock time of the date they were
+    /// seeded with, which used to cut readings off both ends and made a
+    /// same-day pick an empty range.
     static func customDays(
         start: Date,
         end: Date,
@@ -145,7 +146,7 @@ struct CardioRange: Sendable, Equatable {
         calendar: Calendar = .current
     ) -> (start: Date, end: Date) {
         let lastDay = min(calendar.startOfDay(for: max(start, end)), calendar.startOfDay(for: now))
-        let earliest = calendar.date(byAdding: .day, value: -(maximumCustomDays - 1), to: lastDay) ?? lastDay
+        let earliest = calendar.date(byAdding: .day, value: -maximumCustomDays, to: lastDay) ?? lastDay
         let firstDay = max(min(calendar.startOfDay(for: min(start, end)), lastDay), earliest)
         let nextDay = calendar.date(byAdding: .day, value: 1, to: lastDay) ?? lastDay
         return (firstDay, nextDay.addingTimeInterval(-0.001))

@@ -148,7 +148,9 @@ private struct CustomRangeSheet: View {
     }
 
     private var isValid: Bool {
-        spanDays >= 1 && spanDays <= CardioRange.maximumCustomDays
+        // The limit is on the gap between the two dates, so the same date two
+        // years apart is still allowed.
+        spanDays >= 1 && spanDays - 1 <= CardioRange.maximumCustomDays
     }
 
     var body: some View {

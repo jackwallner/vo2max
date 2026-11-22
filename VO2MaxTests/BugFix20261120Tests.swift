@@ -75,7 +75,13 @@ struct BugFix20261120Tests {
         #expect(range.contains(date(4, 15, 23)))
         #expect(!range.contains(date(4, 16, 1)))
         let long = applied(start: calendar.date(byAdding: .year, value: -5, to: now)!, end: now, now: now)
-        #expect(long.days == CardioRange.maximumCustomDays)
+        #expect(long.days == CardioRange.maximumCustomDays + 1)
+        // Two dates exactly two years apart were accepted before ranges became
+        // whole days, and still are, with neither end cut off.
+        let twoYears = calendar.date(byAdding: .day, value: -CardioRange.maximumCustomDays, to: now)!
+        let exact = applied(start: twoYears, end: now, now: now)
+        #expect(exact.contains(calendar.startOfDay(for: twoYears)))
+        #expect(CardioRange.customDayCount(start: twoYears, end: now, calendar: calendar) - 1 == CardioRange.maximumCustomDays)
     }
 
     // MARK: - B6: VO2+ statistics read the same window as Trends
