@@ -18,7 +18,7 @@ import com.jackwallner.vo2max.model.*
 import com.jackwallner.vo2max.ui.theme.*
 
 @Composable fun RestingScreen(graph: AppGraph,health: HealthState,connect: ()->Unit) {
-    val range=graph.settings.range();val summary=MetricAnalysis.summarize(health.resting,range.days,range.end)
+    val range=graph.settings.range();val summary=MetricAnalysis.summarize(health.resting,range.days,range.end,range.start)
     Page {
         RangePicker(graph,true,{})
         CardBlock {
@@ -29,7 +29,7 @@ import com.jackwallner.vo2max.ui.theme.*
                 LineChart(health.resting.filter{range.contains(it.date)},unit="bpm")
             }
         }
-        val months=MetricAnalysis.monthlyAverages(health.resting,range.days,range.end)
+        val months=MetricAnalysis.monthlyAverages(health.resting,range.days,range.end,range.start)
         if(months.isNotEmpty())CardBlock{Title("Monthly averages");months.forEach{m->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(m.monthStart.date("MMMM yyyy"));Text("${m.average.fmt(0)} bpm · ${m.count} readings")}}}
         CardBlock{Title("About this signal");Text("A lower resting heart rate can accompany improving cardio fitness. Many factors affect this signal, so it cannot establish a cause.");Small("A fitness-awareness signal, not a medical measurement. This app does not diagnose, treat, or monitor any condition. Discuss heart health concerns with a qualified clinician.")}
     }
@@ -41,7 +41,7 @@ import com.jackwallner.vo2max.ui.theme.*
     }
 }
 @Composable fun LoadScreen(graph: AppGraph,health: HealthState,connect: ()->Unit) {
-    val range=graph.settings.range();val load=DriverAnalysis.loadSummary(health.workouts,range.days,range.end)
+    val range=graph.settings.range();val load=DriverAnalysis.loadSummary(health.workouts,range.days,range.end,range.start)
     val selected=health.workouts.filter{range.contains(it.date)}
     val weeks=DriverAnalysis.weeklyLoad(selected,range.chartWeeks,range.end)
     Page {
@@ -55,7 +55,7 @@ import com.jackwallner.vo2max.ui.theme.*
                 Small("Blue shows all cardio minutes. Teal shows walks, runs, and hikes, excluding explicitly indoor exercise types. Health Connect does not always identify indoor sessions. Whether a session produces an estimate depends on your fitness source.")
             }
         }
-        ActivityTotals(selected,range.days,range.end)
+        ActivityTotals(selected,range.days,range.end,range.start)
         Small("Total recorded cardio minutes divided by the selected range's length in weeks. Empty weeks stay visible.")
     }
 }
@@ -71,8 +71,8 @@ import com.jackwallner.vo2max.ui.theme.*
         Small(weeks.first().weekStart.date("MMM d"));Small(weeks.last().weekStart.date("MMM d"))
     }
 }
-@Composable fun ActivityTotals(workouts: List<Workout>,days: Int,end: java.time.Instant) {
-    val totals=DriverAnalysis.activityTotals(workouts,days,end)
+@Composable fun ActivityTotals(workouts: List<Workout>,days: Int,end: java.time.Instant,start: java.time.Instant) {
+    val totals=DriverAnalysis.activityTotals(workouts,days,end,start)
     if(totals.isEmpty())return
     CardBlock{Title("Activity mix");totals.forEach{total->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Column{Text(total.kind.label);Small("${total.sessions} sessions")};Text("${total.minutes.fmt(0)} min",fontWeight=FontWeight.Bold)}}}
 }
@@ -91,7 +91,7 @@ import com.jackwallner.vo2max.ui.theme.*
             }
             if(health.workouts.isEmpty())Button(onClick=connect){Text("Allow supporting signals")}
         }
-        ActivityTotals(workouts,range.days,range.end)
+        ActivityTotals(workouts,range.days,range.end,range.start)
         CardBlock{Title("How this comparison works");Text("Each pair of consecutive estimates forms a stretch of 3 to 60 days. The workouts inside it are converted to minutes per week, and the stretches where your estimate rose by more than 0.1 are averaged separately from the ones where it stayed flat or fell.");Small("This describes patterns in your own history. It does not establish cause, and it is not a training plan or medical advice.")}
     }
 }

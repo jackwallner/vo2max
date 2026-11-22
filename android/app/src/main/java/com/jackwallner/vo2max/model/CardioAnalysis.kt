@@ -23,7 +23,7 @@ data class CardioRange(val selection: MetricRange, val start: Instant, val end: 
     val weeks get() = maxOf(days / 7, 4)
     val chartWeeks get() = if (selection == MetricRange.custom) maxOf(ceil(days / 7.0).toInt(), 1) else weeks
     val spanLabel get() = "${start.atZone(ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("MMM d"))} – ${end.atZone(ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofPattern("MMM d, yyyy"))}"
-    fun priorSpanLabel() = CardioRange(selection, end.daysBack(days * 2), end.daysBack(days), days).spanLabel
+    fun priorSpanLabel() = CardioRange(selection, start.daysBack(days), start.minusMillis(1), days).spanLabel
     val priorPhrase get() = if (selection == MetricRange.custom) "previous $days ${if (days == 1) "day" else "days"}" else selection.priorPhrase
     fun contains(date: Instant) = date >= start && date <= end
     companion object {
@@ -115,18 +115,20 @@ object FitnessAnalysis {
     }
 }
 object MetricAnalysis {
-    fun summarize(points: List<Point>, days: Int, now: Instant = Instant.now()): MetricSummary? {
+    // `rangeStart` is the range's own first moment. A hand-picked range starts at a day boundary,
+    // which is not always `days` back from its end, so range-scoped callers pass it.
+    fun summarize(points: List<Point>, days: Int, now: Instant = Instant.now(), rangeStart: Instant? = null): MetricSummary? {
         if (days <= 0) return null
-        val start = now.daysBack(days)
+        val start = rangeStart ?: now.daysBack(days)
         val window = points.filter { it.date >= start && it.date <= now }
         val latest = window.maxByOrNull { it.date } ?: return null
         val values = window.map { it.value }
-        val previous = points.filter { it.date >= now.daysBack(days * 2) && it.date < start }.map { it.value }.averageOrNull()
+        val previous = points.filter { it.date >= start.daysBack(days) && it.date < start }.map { it.value }.averageOrNull()
         return MetricSummary(latest.value, latest.date, values.average(), values.min(), values.max(), values.size, previous)
     }
-    fun monthlyAverages(points: List<Point>, days: Int, now: Instant = Instant.now()): List<MonthlyAverage> {
+    fun monthlyAverages(points: List<Point>, days: Int, now: Instant = Instant.now(), rangeStart: Instant? = null): List<MonthlyAverage> {
         if (days <= 0) return emptyList()
-        return points.filter { it.date >= now.daysBack(days) && it.date <= now }.groupBy {
+        return points.filter { it.date >= (rangeStart ?: now.daysBack(days)) && it.date <= now }.groupBy {
             it.date.atZone(ZoneId.systemDefault()).withDayOfMonth(1).toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
         }.map { (date, samples) -> MonthlyAverage(date, samples.map { it.value }.average(), samples.size) }.sortedByDescending { it.monthStart }
     }

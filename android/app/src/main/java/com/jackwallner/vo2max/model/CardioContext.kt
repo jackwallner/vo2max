@@ -51,13 +51,13 @@ object DriverAnalysis {
             else -> "Your training volume looks similar whether the estimate rose ($rising min/week) or not ($other min/week)."
         }
     }
-    fun activityTotals(workouts: List<Workout>, days: Int, now: Instant = Instant.now()) = workouts.filter { it.date >= now.daysBack(days) }.groupBy { it.kind }
+    fun activityTotals(workouts: List<Workout>, days: Int, now: Instant = Instant.now(), rangeStart: Instant? = null) = workouts.filter { it.date >= (rangeStart ?: now.daysBack(days)) }.groupBy { it.kind }
         .map { (kind, entries) -> ActivityTotal(kind, entries.sumOf { it.minutes }, entries.size) }.sortedByDescending { it.minutes }
-    fun loadSummary(workouts: List<Workout>, days: Int, now: Instant = Instant.now()): LoadSummary? {
+    fun loadSummary(workouts: List<Workout>, days: Int, now: Instant = Instant.now(), rangeStart: Instant? = null): LoadSummary? {
         if (days <= 0) return null
-        val start = now.daysBack(days); val selected = workouts.filter { it.date >= start && it.date <= now }
+        val start = rangeStart ?: now.daysBack(days); val selected = workouts.filter { it.date >= start && it.date <= now }
         if (selected.isEmpty()) return null
-        val prior = workouts.filter { it.date >= now.daysBack(days * 2) && it.date < start }
+        val prior = workouts.filter { it.date >= start.daysBack(days) && it.date < start }
         val weeks = days / 7.0; val total = selected.sumOf { it.minutes }
         return LoadSummary(total / weeks, selected.size / weeks, selected.filter { it.refreshesEstimate }.sumOf { it.minutes } / weeks, total, selected.size, if (prior.isEmpty()) null else prior.sumOf { it.minutes } / weeks)
     }

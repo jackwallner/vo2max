@@ -84,7 +84,7 @@ import com.jackwallner.vo2max.ui.theme.*
         CardBlock { Title("Cardio fitness trend");Small("Health Connect estimates");LineChart(selected,settings.lower,settings.upper);if(selected.isEmpty())Small("Choose a longer window, or return after your connected fitness source records another estimate.") }
         LinkCard("All Readings","View every estimate","Read-only history and source dates",{push(Route.History)})
         if(isPro && settings.enabled("showDeepTrends"))DeepTrends(health.points) else if(!isPro)LockedCard("Compare every period","See matching-window averages, direction toward target, broad age-reference context, and personal bests.",{gated(Route.Paywall)})
-        LinkCard("Heart Signals","Resting Heart Rate",if(isPro)MetricAnalysis.summarize(health.resting,range.days,range.end)?.let{"${it.average.fmt(0)} bpm average"} ?: "No readings in this range" else "VO2+",{gated(Route.Resting)})
+        LinkCard("Heart Signals","Resting Heart Rate",if(isPro)MetricAnalysis.summarize(health.resting,range.days,range.end,range.start)?.let{"${it.average.fmt(0)} bpm average"} ?: "No readings in this range" else "VO2+",{gated(Route.Resting)})
         LinkCard("Heart Signals","Heart Rate Recovery","One-minute recovery context",{gated(Route.Recovery)})
         LinkCard("Cardio Load","Your recorded training","Minutes and sessions per week",{gated(Route.Load)})
         LinkCard("What Moved It","Compare your own history","Training between consecutive estimates",{gated(Route.Drivers)})
@@ -147,7 +147,7 @@ import com.jackwallner.vo2max.ui.theme.*
             HorizontalDivider()
             ActionRow("Heart Rate Recovery","Unavailable",{push(Route.Recovery)})
             HorizontalDivider()
-            ActionRow("Cardio Load",DriverAnalysis.loadSummary(health.workouts,graph.settings.range().days,graph.settings.range().end)?.let{"${it.minutesPerWeek.fmt(0)} min/week"} ?: "No workouts",{push(Route.Load)})
+            ActionRow("Cardio Load",graph.settings.range().let{DriverAnalysis.loadSummary(health.workouts,it.days,it.end,it.start)}?.let{"${it.minutesPerWeek.fmt(0)} min/week"} ?: "No workouts",{push(Route.Load)})
         }
         CardBlock {
             Title("Your estimate")

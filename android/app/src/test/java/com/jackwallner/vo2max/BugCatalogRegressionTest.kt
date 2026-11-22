@@ -24,6 +24,28 @@ class BugCatalogRegressionTest {
     @Before fun calendar() { TimeZone.setDefault(TimeZone.getTimeZone(zone)); Locale.setDefault(Locale.US) }
     @After fun restore() { TimeZone.setDefault(saved) }
 
+    // B6: range statistics count exactly the readings the range holds.
+    private val picked = CardioRange.custom(at("2026-11-01T00:00:00"), at("2026-11-03T14:00:00"))
+    @Test fun b6_signalSummaryAgreesWithRangeContains() {
+        val points = listOf(Point(at("2026-10-31T20:00:00"), 70.0), Point(at("2026-11-01T06:00:00"), 60.0), Point(at("2026-11-03T09:00:00"), 62.0))
+        val summary = MetricAnalysis.summarize(points, picked.days, picked.end, picked.start)!!
+        assertEquals(points.count { picked.contains(it.date) }, summary.count)
+        assertEquals(61.0, summary.average, 0.001); assertEquals(70.0, summary.previousAverage!!, 0.001)
+        assertEquals(2, MetricAnalysis.monthlyAverages(points, picked.days, picked.end, picked.start).sumOf { it.count })
+    }
+    @Test fun b6_cardioLoadAgreesWithRangeContains() {
+        val workouts = listOf(Workout("a", at("2026-10-31T20:00:00"), ActivityKind.run, 40.0), Workout("b", at("2026-11-01T06:00:00"), ActivityKind.run, 30.0), Workout("c", at("2026-11-03T09:00:00"), ActivityKind.walk, 20.0))
+        val load = DriverAnalysis.loadSummary(workouts, picked.days, picked.end, picked.start)!!
+        assertEquals(workouts.count { picked.contains(it.date) }, load.sessions)
+        assertEquals(50.0, load.totalMinutes, 0.001)
+        assertEquals(50.0, DriverAnalysis.activityTotals(workouts, picked.days, picked.end, picked.start).sumOf { it.minutes }, 0.001)
+    }
+    @Test fun b6_fixedRangesComputeAsBefore() {
+        val now = at("2026-11-20T15:00:00")
+        val points = (0 until 80).map { Point(now.daysBack(it), 40.0 + it % 7) }
+        assertEquals(MetricAnalysis.summarize(points, 30, now), MetricAnalysis.summarize(points, 30, now, now.daysBack(30)))
+    }
+
     // B4: a purchase waiting for payment or approval is pending, never a failure.
     @Test fun b4_pendingPurchaseIsPending() {
         assertEquals(PurchaseOutcome.PENDING, PurchaseOutcome.forFailure(false, PurchasesErrorCode.PaymentPendingError))

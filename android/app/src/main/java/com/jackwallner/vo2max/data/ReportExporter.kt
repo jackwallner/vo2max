@@ -18,7 +18,7 @@ class ReportExporter(private val context: Context) {
     fun pdf(points: List<Point>,range: CardioRange,lower: Double,upper: Double,age: Int,sex: ReferenceSex): File {
         val selected=points.filter{range.contains(it.date)}.sortedBy{it.date}
         require(selected.isNotEmpty()){ "No estimates in the selected range." }
-        val summary=MetricAnalysis.summarize(points,range.days,range.end)!!
+        val summary=MetricAnalysis.summarize(points,range.days,range.end,range.start)!!
         val document=PdfDocument()
         try {
             val page=document.startPage(PdfDocument.PageInfo.Builder(612,792,1).create())

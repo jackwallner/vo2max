@@ -14,7 +14,7 @@ import com.jackwallner.vo2max.model.*
 import com.jackwallner.vo2max.ui.theme.*
 
 @Composable fun ReportScreen(graph: AppGraph,health: HealthState) {
-    val range=graph.settings.range();val summary=MetricAnalysis.summarize(health.points,range.days,range.end)
+    val range=graph.settings.range();val summary=MetricAnalysis.summarize(health.points,range.days,range.end,range.start)
     val context=LocalContext.current;val scope=rememberCoroutineScope();var busy by remember{mutableStateOf(false)};var error by remember{mutableStateOf<String?>(null)}
     fun export() { scope.launch{busy=true;error=null;try{val exporter=ReportExporter(context);val file=withContext(Dispatchers.IO){exporter.pdf(health.points,range,graph.settings.lower,graph.settings.upper,graph.settings.age,graph.settings.sex)};exporter.share(file,"application/pdf")}catch(failure: Exception){error=failure.message ?: "Couldn't create report. Please try again."}finally{busy=false}} }
     Page {
