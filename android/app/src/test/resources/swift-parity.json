@@ -154,7 +154,7 @@
   },
   {
     "age" : 20,
-    "band" : "Around typical range",
+    "band" : "Within typical range",
     "change" : 0.38954677437025254,
     "comparison" : {
       "count" : 2,
@@ -327,7 +327,7 @@
   },
   {
     "age" : 26,
-    "band" : "Around typical range",
+    "band" : "Within typical range",
     "change" : -0.083824649459678824,
     "comparison" : {
       "count" : 7,
@@ -540,7 +540,7 @@
   },
   {
     "age" : 32,
-    "band" : "Above typical range",
+    "band" : "Within typical range",
     "change" : -5.4563644544274723,
     "comparison" : {
       "count" : 10,
@@ -619,7 +619,7 @@
   },
   {
     "age" : 34,
-    "band" : "Around typical range",
+    "band" : "Within typical range",
     "change" : -3.2632063332668118,
     "comparison" : {
       "count" : 11,
@@ -789,7 +789,7 @@
   },
   {
     "age" : 38,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 1.1919321449842286,
     "comparison" : {
       "count" : 6,
@@ -880,7 +880,7 @@
   },
   {
     "age" : 40,
-    "band" : "Above typical range",
+    "band" : "Within typical range",
     "change" : 5.9330908596403802,
     "comparison" : {
       "count" : 10,
@@ -1074,7 +1074,7 @@
   },
   {
     "age" : 44,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : null,
     "comparison" : null,
     "days" : 30,
@@ -1098,7 +1098,7 @@
   },
   {
     "age" : 46,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : null,
     "comparison" : {
       "count" : 1,
@@ -1180,7 +1180,7 @@
   },
   {
     "age" : 50,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 1.5127892280477084,
     "comparison" : {
       "count" : 3,
@@ -1227,7 +1227,7 @@
   },
   {
     "age" : 52,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -1.4501052930244072,
     "comparison" : {
       "count" : 3,
@@ -1337,7 +1337,7 @@
   },
   {
     "age" : 56,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.28767728239894197,
     "comparison" : {
       "count" : 6,
@@ -1400,7 +1400,7 @@
   },
   {
     "age" : 58,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 1.7761753505403206,
     "comparison" : {
       "count" : 7,
@@ -1538,7 +1538,7 @@
   },
   {
     "age" : 62,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.85936787655330704,
     "comparison" : {
       "count" : 3,
@@ -1613,7 +1613,7 @@
   },
   {
     "age" : 64,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -1.199323705835095,
     "comparison" : {
       "count" : 6,
@@ -1775,7 +1775,7 @@
   },
   {
     "age" : 68,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 0.74290695841914101,
     "comparison" : {
       "count" : 5,
@@ -1862,7 +1862,7 @@
   },
   {
     "age" : 70,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 5.3766921221819075,
     "comparison" : {
       "count" : 10,
@@ -2048,7 +2048,7 @@
   },
   {
     "age" : 74,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -4.0428177932915403,
     "comparison" : {
       "count" : 15,
@@ -2147,7 +2147,7 @@
   },
   {
     "age" : 76,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : null,
     "comparison" : null,
     "days" : 30,
@@ -2210,7 +2210,7 @@
   },
   {
     "age" : 80,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 0.87244129544237126,
     "comparison" : {
       "count" : 2,
@@ -2253,7 +2253,7 @@
   },
   {
     "age" : 82,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.96721077195229554,
     "comparison" : {
       "count" : 3,
@@ -2351,7 +2351,7 @@
   },
   {
     "age" : 86,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.22704074859237977,
     "comparison" : {
       "count" : 5,
@@ -2410,7 +2410,7 @@
   },
   {
     "age" : 88,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 1.2623227176010587,
     "comparison" : {
       "count" : 6,
@@ -2540,7 +2540,7 @@
   },
   {
     "age" : 92,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.33907937092468643,
     "comparison" : {
       "count" : 2,
@@ -2611,7 +2611,7 @@
   },
   {
     "age" : 94,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.71615177742060609,
     "comparison" : {
       "count" : 5,
@@ -2765,7 +2765,7 @@
   },
   {
     "age" : 98,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 2.9367936667331875,
     "comparison" : {
       "count" : 11,
@@ -2848,7 +2848,7 @@
   },
   {
     "age" : 100,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : null,
     "comparison" : {
       "count" : 1,
@@ -3026,7 +3026,7 @@
   },
   {
     "age" : 104,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -3.9039498889520097,
     "comparison" : {
       "count" : 14,
@@ -3121,7 +3121,7 @@
   },
   {
     "age" : 106,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 0.29718220670845952,
     "comparison" : {
       "count" : 15,
@@ -3244,7 +3244,7 @@
   },
   {
     "age" : 110,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : null,
     "comparison" : {
       "count" : 1,
@@ -3283,7 +3283,7 @@
   },
   {
     "age" : 112,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.36755870455763073,
     "comparison" : {
       "count" : 2,
@@ -3373,7 +3373,7 @@
   },
   {
     "age" : 116,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : null,
     "comparison" : {
       "count" : 1,
@@ -3424,7 +3424,7 @@
   },
   {
     "age" : 118,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 0.12017002335991833,
     "comparison" : {
       "count" : 3,
@@ -3546,7 +3546,7 @@
   },
   {
     "age" : 122,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -3.8038246494596777,
     "comparison" : {
       "count" : 7,
@@ -3613,7 +3613,7 @@
   },
   {
     "age" : 124,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : -0.13522673798542328,
     "comparison" : {
       "count" : 3,
@@ -3759,7 +3759,7 @@
   },
   {
     "age" : 128,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 2.9136355455725251,
     "comparison" : {
       "count" : 10,
@@ -3838,7 +3838,7 @@
   },
   {
     "age" : 130,
-    "band" : "Well above typical range",
+    "band" : "Above typical range",
     "change" : 6.036793666733189,
     "comparison" : {
       "count" : 11,

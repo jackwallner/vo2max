@@ -108,7 +108,8 @@ object FitnessAnalysis {
     }
     fun fitnessBand(value: Double, age: Int, sex: ReferenceSex): String? {
         val ratio = value / (referenceValue(age, sex) ?: return null)
-        return when { ratio < 0.85 -> "Below typical range"; ratio < 1 -> "Around typical range"; ratio < 1.15 -> "Above typical range"; else -> "Well above typical range" }
+        // Same bounds as typicalRange, so the band never contradicts the range Settings and onboarding state.
+        return when { ratio < 0.85 -> "Below typical range"; ratio <= 1.15 -> "Within typical range"; else -> "Above typical range" }
     }
     fun estimatedFitnessAge(value: Double, sex: ReferenceSex): Int? {
         val values = references(sex) ?: return null
