@@ -12,6 +12,7 @@ import com.revenuecat.purchases.PackageType
 import com.revenuecat.purchases.PurchaseParams
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
+import com.revenuecat.purchases.PurchasesErrorCode
 import com.revenuecat.purchases.PurchasesTransactionException
 import com.revenuecat.purchases.awaitCustomerInfo
 import com.revenuecat.purchases.awaitOfferings
@@ -40,7 +41,17 @@ data class PlanOption(val id: String, val displayName: String, val priceLabel: S
     val isPurchasable: Boolean get() = pkg != null
 }
 
-enum class PurchaseOutcome { PURCHASED, PENDING, CANCELLED }
+enum class PurchaseOutcome { PURCHASED, PENDING, CANCELLED;
+    companion object {
+        // What a thrown purchase error means. RevenueCat reports a purchase that is waiting for
+        // payment or approval as an error, not as a result. Null is a real failure.
+        fun forFailure(userCancelled: Boolean, code: PurchasesErrorCode): PurchaseOutcome? = when {
+            userCancelled || code == PurchasesErrorCode.PurchaseCancelledError -> CANCELLED
+            code == PurchasesErrorCode.PaymentPendingError -> PENDING
+            else -> null
+        }
+    }
+}
 
 data class StoreState(
     val isPro: Boolean = false,
@@ -156,7 +167,7 @@ class StoreService(private val context: Context, private val diagnostics: Conver
                 PurchaseOutcome.PENDING
             }
         } catch (error: PurchasesTransactionException) {
-            if (error.userCancelled) return PurchaseOutcome.CANCELLED
+            PurchaseOutcome.forFailure(error.userCancelled, error.code)?.let { return it }
             val message = "Couldn't complete the purchase. Please try again."
             _state.update { it.copy(lastError = message) }
             throw IllegalStateException(message)
