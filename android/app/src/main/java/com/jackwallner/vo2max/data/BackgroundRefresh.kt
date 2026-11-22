@@ -54,7 +54,7 @@ class BackgroundRefresh(context: Context,parameters: WorkerParameters): Coroutin
             }
             val freshness=FreshnessAnalysis.assess(state.points)
             val last=values.long("lastFreshnessNudge") ?: 0
-            if(settings.enabled("freshnessNudgesEnabled",false) && freshness.isStale && System.currentTimeMillis()-last>=7L*86400000) {
+            if(FreshnessAnalysis.shouldNudge(settings.enabled("freshnessNudgesEnabled",false),freshness.isStale,last)) {
                 notifications.send("Check your estimate source","Your estimate is older than your usual cadence. Check your connected fitness app.",3);values.put("lastFreshnessNudge",System.currentTimeMillis().toString())
             }
         }

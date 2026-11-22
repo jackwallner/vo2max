@@ -88,6 +88,12 @@ object FreshnessAnalysis {
     const val defaultGapDays = 10
     const val minimumGapDays = 5
     const val maximumGapDays = 30
+    // Local hours a freshness nudge may arrive in, 10:00 up to 19:00. A background read can land at night.
+    val nudgeHours = 10 until 19
+    const val nudgeSpacingMillis = 7L * 86_400_000
+    fun isNudgeHour(now: Instant = Instant.now(), zone: java.time.ZoneId = java.time.ZoneId.systemDefault()) = now.atZone(zone).hour in nudgeHours
+    fun shouldNudge(enabled: Boolean, isStale: Boolean, lastNudgeMillis: Long, now: Instant = Instant.now(), zone: java.time.ZoneId = java.time.ZoneId.systemDefault()) =
+        enabled && isStale && now.toEpochMilli() - lastNudgeMillis >= nudgeSpacingMillis && isNudgeHour(now, zone)
     const val refreshInstruction = "Check that your compatible fitness app or wearable shares VO2 max with Health Connect. Recording requirements depend on that source."
     fun assess(points: List<Point>, now: Instant = Instant.now()): Freshness {
         val latest = points.maxByOrNull { it.date } ?: return Freshness(FreshnessState.noReadings, null, null)

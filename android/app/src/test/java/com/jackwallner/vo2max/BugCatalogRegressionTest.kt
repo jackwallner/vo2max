@@ -32,4 +32,16 @@ class BugCatalogRegressionTest {
         assertNull(PurchaseOutcome.forFailure(false, PurchasesErrorCode.NetworkError))
         assertNull(PurchaseOutcome.forFailure(false, PurchasesErrorCode.StoreProblemError))
     }
+
+    // B8: the freshness nudge arrives only from 10:00 up to 19:00 local.
+    private val weekAgo = at("2026-11-10T12:00:00").toEpochMilli()
+    private fun nudges(time: String) = FreshnessAnalysis.shouldNudge(true, true, weekAgo, at(time), zone)
+    @Test fun b8_noNudgeAtNight() { assertFalse(nudges("2026-11-20T05:40:00")); assertFalse(nudges("2026-11-20T02:00:00")); assertFalse(nudges("2026-11-20T21:15:00")); assertFalse(nudges("2026-11-20T19:00:00")) }
+    @Test fun b8_nudgeInTheDaytime() { assertTrue(nudges("2026-11-20T10:00:00")); assertTrue(nudges("2026-11-20T18:59:00")) }
+    @Test fun b8_daytimeStillHonoursTheOtherRules() {
+        val noon = at("2026-11-20T12:00:00")
+        assertFalse(FreshnessAnalysis.shouldNudge(false, true, weekAgo, noon, zone))
+        assertFalse(FreshnessAnalysis.shouldNudge(true, false, weekAgo, noon, zone))
+        assertFalse(FreshnessAnalysis.shouldNudge(true, true, at("2026-11-16T12:00:00").toEpochMilli(), noon, zone))
+    }
 }
