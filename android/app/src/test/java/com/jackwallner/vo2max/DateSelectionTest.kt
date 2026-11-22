@@ -29,7 +29,8 @@ class DateSelectionTest {
     @Test fun customSettingCapsLongSpanAtTwoYears() {
         val now=Instant.parse("2026-10-18T15:00:00Z")
         val range=DateSelection.boundedCustom(now.daysBack(1000),now,now)
-        assertEquals(730,range.days);assertEquals(now.daysBack(730),range.start)
+        val lastDay=now.atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
+        assertEquals(lastDay.daysBack(730),range.start);assertEquals(731,range.days)
     }
     @Test fun eligibleTrialUsesReadableStorePeriod() {
         assertEquals("7-day free trial",ConversionCopy.trialLabel("P7D"));assertEquals("1-month free trial",ConversionCopy.trialLabel("P1M"));assertNull(ConversionCopy.trialLabel("P0D"));assertNull(ConversionCopy.trialLabel("invalid"))

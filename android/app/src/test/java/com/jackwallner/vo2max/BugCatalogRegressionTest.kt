@@ -24,6 +24,26 @@ class BugCatalogRegressionTest {
     @Before fun calendar() { TimeZone.setDefault(TimeZone.getTimeZone(zone)); Locale.setDefault(Locale.US) }
     @After fun restore() { TimeZone.setDefault(saved) }
 
+    // B3: a picked range covers its first and last day whole, and a part day counts as a day.
+    @Test fun b3_wholeDayPickCountsBothEndDays() {
+        val range = CardioRange.custom(DateSelection.localStart(millis("2026-03-01"), zone), DateSelection.localEnd(millis("2026-03-31"), zone))
+        assertEquals(31, range.days)
+        assertTrue(range.contains(at("2026-03-01T00:05:00"))); assertTrue(range.contains(at("2026-03-31T23:50:00")))
+        assertFalse(range.contains(at("2026-02-28T23:59:00"))); assertFalse(range.contains(at("2026-04-01T00:00:00")))
+    }
+    @Test fun b3_firstDayPickedExactlyTwoYearsBackKeepsItsReadings() {
+        val now = at("2026-11-20T15:00:00")
+        val range = DateSelection.boundedCustom(DateSelection.localStart(millis("2024-11-20"), zone), DateSelection.localEnd(millis("2026-11-20"), zone), now)
+        assertTrue(range.contains(at("2024-11-20T06:00:00")))
+        assertFalse(range.contains(at("2024-11-19T23:00:00")))
+    }
+    // B9: the same date picked twice is a one-day range.
+    @Test fun b9_sameDayPickCoversTheWholeDay() {
+        val range = CardioRange.custom(DateSelection.localStart(millis("2026-11-03"), zone), DateSelection.localEnd(millis("2026-11-03"), zone))
+        assertEquals(1, range.days); assertEquals("previous 1 day", range.priorPhrase)
+        assertTrue(range.contains(at("2026-11-03T00:10:00"))); assertTrue(range.contains(at("2026-11-03T23:40:00")))
+    }
+
     // B6: range statistics count exactly the readings the range holds.
     private val picked = CardioRange.custom(at("2026-11-01T00:00:00"), at("2026-11-03T14:00:00"))
     @Test fun b6_signalSummaryAgreesWithRangeContains() {

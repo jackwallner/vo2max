@@ -10,7 +10,9 @@ object DateSelection {
     fun localEnd(millis: Long,zone: ZoneId = ZoneId.systemDefault()): Instant = Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate().plusDays(1).atStartOfDay(zone).toInstant().minusMillis(1)
     fun boundedCustom(start: Instant,end: Instant,now: Instant = Instant.now()): CardioRange {
         val last=minOf(maxOf(start,end),now)
-        val first=maxOf(minOf(start,end,last),last.daysBack(CardioRange.maximumCustomDays))
+        // The two-year limit counts from the start of the last day, so a first day picked exactly two years back keeps its readings.
+        val lastDay=last.atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()
+        val first=maxOf(minOf(start,end,last),lastDay.daysBack(CardioRange.maximumCustomDays))
         return CardioRange.custom(first,last)
     }
 }

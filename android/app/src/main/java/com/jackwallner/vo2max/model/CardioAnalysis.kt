@@ -7,6 +7,7 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 fun Instant.daysBack(days: Int): Instant = atZone(ZoneId.systemDefault()).minusDays(days.toLong()).toInstant()
+fun Instant.daysForward(days: Int): Instant = atZone(ZoneId.systemDefault()).plusDays(days.toLong()).toInstant()
 fun dayGap(start: Instant, end: Instant): Int = ChronoUnit.DAYS.between(start.atZone(ZoneId.systemDefault()), end.atZone(ZoneId.systemDefault())).toInt()
 data class Point(val date: Instant, val value: Double, val id: String = "", val source: String = "Health Connect")
 enum class Trend(val label: String) { improving("Improving"), stable("Stable"), declining("Declining"), insufficientData("Building trend") }
@@ -38,7 +39,10 @@ data class CardioRange(val selection: MetricRange, val start: Instant, val end: 
         }
         fun custom(start: Instant, end: Instant): CardioRange {
             val first = minOf(start, end); val last = maxOf(start, end)
-            return CardioRange(MetricRange.custom, first, last, maxOf(dayGap(first, last), 1))
+            // A part day counts as a day: Mar 1 00:00 to the end of Mar 31 is 31.
+            val whole = dayGap(first, last)
+            val span = if (first.daysForward(whole) < last) whole + 1 else whole
+            return CardioRange(MetricRange.custom, first, last, maxOf(span, 1))
         }
     }
 }
