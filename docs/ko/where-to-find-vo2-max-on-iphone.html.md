@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/ko/where-to-find-vo2-max-on-iphone.
 
 ## 아이폰에서 VO2max 확인하는 방법
 
-작성: Jack Wallner. 최종 업데이트: 2026. 10. 28.
+작성: Jack Wallner. 최종 업데이트: 2026. 11. 24.
 
 아이폰에서 VO2max(최대산소섭취량)를 확인하려면 건강 앱에서 '검색', '심장', '유산소 피트니스' 순서로 누르세요. Apple은 VO2max를 '유산소 피트니스'라고 부르며, Apple Watch Series 3 이후 모델이 실외 걷기, 실외 달리기, 하이킹을 기록한 뒤에야 표시됩니다.
 

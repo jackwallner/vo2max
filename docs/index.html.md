@@ -8,7 +8,7 @@ Web page: https://jackwallner.com/ios/vo2max/
 
 VO2 Max & Cardio Fitness is a VO2 max app for iPhone and Apple Watch. Apple Health already estimates your VO2 max; this app makes it readable with the trend, a target range, a year of history, and a fitness-age estimate.
 
-iPhone · Apple Watch · Widgets
+iPhone · Apple Watch · Android · Widgets
 
 [Download for free](https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&ct=jw-vo2max-home&mt=8)
 
@@ -134,6 +134,6 @@ VO2 max and fitness age are broad estimates for fitness awareness. This app does
 
 ## See where your fitness is heading
 
-Free on the App Store. No account required. VO2+ optional.
+Free on the App Store and Google Play. No account required. VO2+ optional.
 
 [Download for free](https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&ct=jw-vo2max-home&mt=8)

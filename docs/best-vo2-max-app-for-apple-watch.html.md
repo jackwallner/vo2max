@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/best-vo2-max-app-for-apple-watch.ht
 
 ## Best VO2 Max App for Apple Watch
 
-By Jack Wallner · Last updated November 12, 2026
+By Jack Wallner · Last updated November 24, 2026
 
 **Best for recovery and training guidance built around VO2 max: Athlytic. Best for a fitness age with peer comparison and a shareable card: VO2 Max Pro. Best for charts, race-time estimates and widgets: VO2 Max: Widget Notifications. Best for comparing with a large pool of other users: Health Hive. Best for a calm, read-only VO2 max view on the watch face with no account: VO2 Max & Cardio Fitness.** VO2 max is a measure of cardio fitness that the Apple Watch estimates from outdoor walks, runs and hikes. They all read the same Apple Health estimate, so the difference is what they build on top.
 

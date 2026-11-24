@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/it/where-to-find-vo2-max-on-iphone.
 
 ## Dove trovare il VO2 max su iPhone
 
-Di Jack Wallner. Ultimo aggiornamento: 28/10/2026.
+Di Jack Wallner. Ultimo aggiornamento: 24/11/2026.
 
 Per trovare il VO2 max su iPhone, apri l’app Salute, tocca Sfoglia, poi Cuore e quindi Tono cardiovascolare. Apple chiama il VO2 max “tono cardiovascolare”, e compare solo dopo che un Apple Watch Series 3 o successivo ha registrato camminate, corse o escursioni all’aperto.
 

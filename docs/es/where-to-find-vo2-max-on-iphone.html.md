@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/es/where-to-find-vo2-max-on-iphone.
 
 ## Dónde ver el VO2 máx en el iPhone
 
-Por Jack Wallner. Última actualización: 28/10/2026.
+Por Jack Wallner. Última actualización: 24/11/2026.
 
 Para ver el VO2 máx en el iPhone, abre la app Salud, toca Explorar, luego Corazón y después Capacidad aeróbica. Apple llama al VO2 máx Capacidad aeróbica, y solo aparece cuando un Apple Watch Series 3 o posterior ha registrado caminatas, carreras o rutas de senderismo al aire libre.
 

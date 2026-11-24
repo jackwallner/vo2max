@@ -40,11 +40,11 @@
                 "alternateName": "VO2 Max",
                 "description": "VO2 Max & Cardio Fitness is a VO2 max app for iPhone and Apple Watch. It reads your Apple Health cardio fitness estimate and shows the current value, trend, one-year history, a target range, and a broad fitness-age estimate. It includes widgets and Apple Watch complications, and it is for fitness awareness only.",
                 "applicationCategory": "HealthApplication",
-                "operatingSystem": "iOS 17+, watchOS 10+",
+                "operatingSystem": "iOS 17+, watchOS 10+, Android 9+",
                 "url": "https://jackwallner.com/ios/vo2max/",
-                "downloadUrl": "https://apps.apple.com/us/app/id6791235742",
-                "installUrl": "https://apps.apple.com/us/app/id6791235742",
-                "sameAs": "https://apps.apple.com/us/app/id6791235742",
+                "downloadUrl": ["https://apps.apple.com/us/app/id6791235742", "https://play.google.com/store/apps/details?id=com.jackwallner.vo2max"],
+                "installUrl": ["https://apps.apple.com/us/app/id6791235742", "https://play.google.com/store/apps/details?id=com.jackwallner.vo2max"],
+                "sameAs": ["https://apps.apple.com/us/app/id6791235742", "https://play.google.com/store/apps/details?id=com.jackwallner.vo2max"],
                 "screenshot": [
                     "https://jackwallner.github.io/vo2max/appstore-screenshot-01.png",
                     "https://jackwallner.github.io/vo2max/appstore-screenshot-02.png",
@@ -582,6 +582,14 @@
             color: #077aa3;
         }
             summary > h2.faq-q { display: inline; margin: 0; font: inherit; letter-spacing: inherit; color: inherit; }
+.store-badges { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+.store-badges.start { justify-content: flex-start; }
+.play-badge { display: inline-flex; transition: opacity 0.15s; }
+.play-badge:hover { opacity: 0.85; }
+.play-badge img { display: block; height: 46px; width: auto; }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.nav-actions .play-badge img { height: 36px; }
+@media (max-width: 480px) { .nav-actions .play-badge { display: none; } }
 </style>
 </head>
 <body>
@@ -592,15 +600,17 @@
                 <img src="icon_64.webp" alt="" width="32" height="32">
                 <span>VO2 Max</span>
             </a>
-            <a class="nav-link" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&amp;ct=jw-vo2max-home&amp;mt=8">Download</a>
+            <div class="nav-actions"><a class="nav-link" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&amp;ct=jw-vo2max-home&amp;mt=8">Download</a>
+<a class="play-badge" href="https://play.google.com/store/apps/details?id=com.jackwallner.vo2max" rel="noopener"><img src="google-play-badge.webp" alt="Get it on Google Play" width="121" height="36"></a></div>
         </div>
     </nav>
 
     <section class="hero">
         <h1>Your cardio fitness, <span>in one number</span></h1>
         <p class="tagline">VO2 Max &amp; Cardio Fitness is a VO2 max app for iPhone and Apple Watch. Apple Health already estimates your VO2 max; this app makes it readable with the trend, a target range, a year of history, and a fitness-age estimate.</p>
-        <p class="platforms">iPhone &middot; Apple Watch &middot; Widgets</p>
-        <a class="download-btn" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&amp;ct=jw-vo2max-home&amp;mt=8">Download for free</a>
+        <p class="platforms">iPhone &middot; Apple Watch &middot; Android &middot; Widgets</p>
+        <div class="store-badges"><a class="download-btn" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&amp;ct=jw-vo2max-home&amp;mt=8">Download for free</a>
+<a class="play-badge" href="https://play.google.com/store/apps/details?id=com.jackwallner.vo2max" rel="noopener"><img src="google-play-badge.webp" alt="Get it on Google Play" width="155" height="46"></a></div>
     </section>
 
     <section class="showcase">
@@ -748,8 +758,9 @@
 
     <section class="cta">
         <h2>See where your fitness is heading</h2>
-        <p>Free on the App Store. No account required. VO2+ optional.</p>
-        <a class="download-btn" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&amp;ct=jw-vo2max-home&amp;mt=8">Download for free</a>
+        <p>Free on the App Store and Google Play. No account required. VO2+ optional.</p>
+        <div class="store-badges"><a class="download-btn" href="https://apps.apple.com/us/app/vo2-max-cardio-fitness/id6791235742?pt=128748779&amp;ct=jw-vo2max-home&amp;mt=8">Download for free</a>
+<a class="play-badge" href="https://play.google.com/store/apps/details?id=com.jackwallner.vo2max" rel="noopener"><img src="google-play-badge.webp" alt="Get it on Google Play" width="155" height="46"></a></div>
     </section>
 
     <footer>

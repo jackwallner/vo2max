@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/pt-BR/where-to-find-vo2-max-on-ipho
 
 ## Onde ver o VO2 máx no iPhone
 
-Por Jack Wallner. Última atualização em 28/10/2026.
+Por Jack Wallner. Última atualização em 24/11/2026.
 
 Para ver o VO2 máx no iPhone, abra o app Saúde, toque em Explorar, depois em Coração e em Preparo Cardiovascular. A Apple chama o VO2 máx de Preparo Cardiovascular, e ele só aparece depois que um Apple Watch Series 3 ou posterior registra caminhadas, corridas ou trilhas ao ar livre.
 

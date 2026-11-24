@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/ja/where-to-find-vo2-max-on-iphone.
 
 ## iPhoneでVO2maxを確認する方法
 
-執筆：Jack Wallner。最終更新日：2026年10月28日。
+執筆：Jack Wallner。最終更新日：2026年11月24日。
 
 iPhoneでVO2max（最大酸素摂取量）を確認するには、ヘルスケアアプリで「ブラウズ」、「心臓」、「心肺機能」の順にタップします。AppleはVO2maxを「心肺機能」と呼んでおり、Apple Watch Series 3以降で屋外ウォーキング、屋外ランニング、ハイキングを記録した後に表示されます。
 

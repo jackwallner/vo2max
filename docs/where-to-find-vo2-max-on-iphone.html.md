@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/where-to-find-vo2-max-on-iphone.htm
 
 ## Where to Find VO2 Max on iPhone
 
-By Jack Wallner. Last updated October 28, 2026.
+By Jack Wallner. Last updated November 24, 2026.
 
 Open the Health app, tap Browse, then Heart, then Cardio Fitness. Apple calls VO2 max Cardio Fitness, and it only appears after an Apple Watch Series 3 or later has recorded outdoor walks, runs or hikes.
 

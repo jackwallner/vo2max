@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/vo2max/vo2-max-chart-by-age-and-sex.html
 
 ## VO2 Max Chart by Age and Sex (Apple Watch Cardio Fitness Levels)
 
-By Jack Wallner. Last updated November 12, 2026.
+By Jack Wallner. Last updated November 24, 2026.
 
 VO2 max is a cardio fitness measure, in mL/kg/min, that labs test from oxygen use during a maximal treadmill test. Lab-measured VO2 max falls with age and differs by sex: the median is about 48 mL/kg/min for men and 38 for women in their twenties, dropping to about 24 and 18 in their seventies. Apple Watch shows an estimate (14 to 65 mL/kg/min) and compares it with people of your age and sex. Apple flags a result as low when it is in the bottom fifth for your sex and decade of age, or below 18 (men) or 15 (women) from age 60.
 
