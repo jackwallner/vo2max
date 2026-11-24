@@ -18,3 +18,7 @@ Developer notes and historical audits for this repository. The published site re
 ## ASO
 
 - [ASO pass index](aso/README.md): App Store keyword and listing metadata decisions
+
+## Marketing
+
+- [new-year-event-2027](marketing/new-year-event-2027/README.md): New Year 2027 in-app event: copy, media, schedule and review status
