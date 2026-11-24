@@ -2,6 +2,11 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
+/// The custom URL scheme registered in Info.plist (CFBundleURLTypes).
+enum DeepLinkScheme {
+    static let name = "vo2maxcardio"
+}
+
 @main
 struct VO2MaxApp: App {
     @Environment(\.scenePhase) private var scenePhase
@@ -52,6 +57,11 @@ struct VO2MaxApp: App {
                     }
                     #endif
                     await HealthKitService.shared.synchronizeAuthorization()
+                }
+                // `vo2maxcardio://today`, the App Store in-app event link, lands on Today.
+                .onOpenURL { url in
+                    guard url.scheme?.lowercased() == DeepLinkScheme.name else { return }
+                    NotificationRouteCoordinator.shared.requestToday()
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard phase == .active else { return }
