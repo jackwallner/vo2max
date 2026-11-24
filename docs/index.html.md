@@ -40,13 +40,9 @@ Check the number on your wrist, with complications for your watch face.
 
 A personal target range for your age and sex, so the number has a reference point.
 
-Included with VO2+
-
 ### A broader read
 
 A fitness-age estimate derived from your cardio fitness, with the methodology explained in the app.
-
-Included with VO2+
 
 ### When there's no data
 
@@ -74,13 +70,15 @@ This app pulls that estimate to the front: the current value, whether it's impro
 
 ### VO2+
 
-The dashboard, trend, widgets, and Apple Watch app are free. VO2+ is a monthly or yearly plan (both with a 7-day free trial for eligible new subscribers), or a one-time lifetime purchase. Prices are shown in the app before you buy and vary by region.
+The dashboard, trend, target range, fitness age, a year of history, widgets, and Apple Watch app are free. VO2+ is a monthly or yearly plan (both with a 7-day free trial for eligible new subscribers), or a one-time lifetime purchase. Prices are shown in the app before you buy and vary by region.
 
-**Target range.** A personal range for your age and sex, so you can see how much headroom you have.
+**Heart context.** Resting heart rate, heart rate recovery and weekly cardio minutes, trended next to your VO2 max.
 
-**Fitness age.** A broad estimate from your cardio fitness, with the methodology written out rather than hidden.
+**Comparisons.** Every period compared with the one before, a trend for any date range you pick, and your direction toward your target range.
 
-**Full history.** Every estimate Apple Health holds, going back further than the recent window.
+**Recaps and alerts.** A monthly recap and your personal bests, an alert for each new estimate, and a heads-up when your estimate is overdue.
+
+**Shareable report.** A fitness report you can share.
 
 ### Frequently asked questions
 
@@ -98,7 +96,7 @@ Usually there is no estimate yet, because Apple Watch needs enough outdoor walk,
 
 ## What is fitness age in the VO2 Max app?
 
-Fitness age is a broad estimate derived from your cardio fitness, and it is part of the optional VO2+ upgrade. The methodology is spelled out in the app instead of hidden.
+Fitness age is a broad estimate derived from your cardio fitness, your age and a reference option you choose, and it is free. The methodology is spelled out in the app instead of hidden.
 
 ## Does the VO2 max app have widgets and an Apple Watch app?
 
@@ -106,7 +104,7 @@ Yes. Home Screen and Lock Screen widgets show your current VO2 max and trend, an
 
 ## Is the VO2 max app free, and does it need an account?
 
-The dashboard, trend, widgets, and Apple Watch app are free, and no account is needed. VO2+ is optional and adds a target range, fitness age, and full history, with prices shown in the app before you buy and varying by region.
+The dashboard, trend, target range, fitness age, a year of history, widgets, and Apple Watch app are free, and no account is needed. VO2+ is optional and adds resting heart rate and recovery trends, period comparisons, a monthly recap and a shareable report, with prices shown in the app before you buy and varying by region.
 
 ## How accurate is the VO2 max estimate, and is it medical advice?
 
