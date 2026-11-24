@@ -681,24 +681,43 @@ private struct PlanCard: View {
         // Only strike the monthly price when yearly really is cheaper per
         // month; otherwise it is not an anchor.
         let struckPrice: String? = savingsPercent != nil ? monthlyAnchorLabel : nil
-        let layout = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2)) : AnyLayout(HStackLayout(spacing: 5))
-        layout {
-            if let struckPrice {
-                Text(struckPrice)
-                    .foregroundStyle(Theme.textTertiary)
-                    .strikethrough(true, color: Theme.textTertiary)
-                    // The strikethrough carries meaning VoiceOver cannot see,
-                    // so say it.
-                    .accessibilityLabel(String(localized: "Instead of \(struckPrice)"))
+        Group {
+            if stacked {
+                VStack(alignment: .leading, spacing: 2) {
+                    comparisonParts(struckPrice: struckPrice, perMonthLabel: perMonthLabel)
+                }
+            } else {
+                // Side by side when both prices fit; on a narrow phone the two
+                // stack right-aligned instead of truncating ("$9.99 per m...").
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 5) {
+                        comparisonParts(struckPrice: struckPrice, perMonthLabel: perMonthLabel)
+                    }
+                    VStack(alignment: .trailing, spacing: 1) {
+                        comparisonParts(struckPrice: struckPrice, perMonthLabel: perMonthLabel)
+                    }
+                }
             }
-            Text(perMonthLabel)
-                .foregroundStyle(Theme.textSecondary)
-                .accessibilityLabel(perMonthLabel)
         }
         .font(stacked ? .system(.caption, design: .rounded).monospacedDigit() : .system(size: 11, design: .rounded).monospacedDigit())
         .lineLimit(stacked ? nil : 1)
         .minimumScaleFactor(0.8)
         .fixedSize(horizontal: false, vertical: stacked)
+    }
+
+    @ViewBuilder
+    private func comparisonParts(struckPrice: String?, perMonthLabel: String) -> some View {
+        if let struckPrice {
+            Text(struckPrice)
+                .foregroundStyle(Theme.textTertiary)
+                .strikethrough(true, color: Theme.textTertiary)
+                // The strikethrough carries meaning VoiceOver cannot see,
+                // so say it.
+                .accessibilityLabel(String(localized: "Instead of \(struckPrice)"))
+        }
+        Text(perMonthLabel)
+            .foregroundStyle(Theme.textSecondary)
+            .accessibilityLabel(perMonthLabel)
     }
 
     private func badge(_ text: String) -> some View {
