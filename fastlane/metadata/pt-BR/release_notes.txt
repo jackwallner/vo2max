@@ -1,1 +1,1 @@
-Melhorias nos bastidores e correções de erros para o VO2 Max funcionar melhor. Obrigado por estar aqui.
+Correções de bugs e melhorias.

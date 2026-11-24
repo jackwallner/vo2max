@@ -1,1 +1,1 @@
-Háttérbeli fejlesztések és hibajavítások, hogy a VO2 Max gördülékenyen működjön. Köszönjük, hogy itt vagy.
+Hibajavítások és fejlesztések.
