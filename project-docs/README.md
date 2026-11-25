@@ -14,6 +14,7 @@ Developer notes and historical audits for this repository. The published site re
 - [2026-11-20-bug-ux.html](audits/2026-11-20-bug-ux.html): Bug and UX catalog, 2026-11-20: 9 bugs (3 medium, 6 low; 7 confirmed), 21 UX items, October audit items rechecked. Catalog only, nothing fixed.
 - [2026-11-20-bug-fixes.md](audits/2026-11-20-bug-fixes.md): bug fix status after independent review, 2026-11-20: verdict, commits and test proof for each of the 10 catalog bugs
 - [2026-11-21-android-bug-port.md](audits/2026-11-21-android-bug-port.md): Android port of the 2026-11-20 fixes: 4 ported, 4 already fine, 2 not applicable
+- [rollout-2026-11-24.md](audits/rollout-2026-11-24.md): fleet rollouts S (star prompt at a good moment, done) and C (remote config trial_cta, n/a), with the full-suite run
 
 ## ASO
 
