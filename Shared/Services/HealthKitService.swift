@@ -305,8 +305,9 @@ final class HealthKitService: ObservableObject {
         let wasInRange = priorLatest.value >= targetLower && priorLatest.value <= targetUpper
         let enteredTarget = nowInRange && !wasInRange
 
-        if ReviewMoment.isGoodResult(
+        if ReviewMoment.isGoodMoment(
             newest: newest.value,
+            newestDate: newest.date,
             priorLatest: priorLatest.value,
             priorBest: priorBest,
             targetLower: targetLower,

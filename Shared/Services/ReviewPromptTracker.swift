@@ -33,6 +33,43 @@ enum ReviewMoment {
         let wasInRange = priorLatest >= targetLower && priorLatest <= targetUpper
         return isNewPersonalBest || (nowInRange && !wasInRange)
     }
+
+    /// The frequent moment: a new Apple Health estimate just arrived after a
+    /// workout and it held or rose against the one before. Every user who
+    /// works out outdoors with their Watch reaches it, far more often than a
+    /// personal best. A drop never asks, and an estimate dated more than
+    /// `maxAgeDays` ago is a late sync of old data, not something the user
+    /// just earned.
+    static func isFreshEstimateThatHolds(
+        newest: Double,
+        newestDate: Date,
+        priorLatest: Double,
+        now: Date = .now,
+        maxAgeDays: Int = 3
+    ) -> Bool {
+        guard newest >= priorLatest else { return false }
+        let age = now.timeIntervalSince(newestDate)
+        return age < TimeInterval(maxAgeDays) * 86_400
+    }
+
+    /// Any moment that may ask: a rare one (personal best, entering the
+    /// target range) or the frequent one (a fresh estimate that held).
+    static func isGoodMoment(
+        newest: Double,
+        newestDate: Date,
+        priorLatest: Double,
+        priorBest: Double?,
+        targetLower: Double,
+        targetUpper: Double,
+        now: Date = .now
+    ) -> Bool {
+        isGoodResult(
+            newest: newest, priorLatest: priorLatest, priorBest: priorBest,
+            targetLower: targetLower, targetUpper: targetUpper
+        ) || isFreshEstimateThatHolds(
+            newest: newest, newestDate: newestDate, priorLatest: priorLatest, now: now
+        )
+    }
 }
 
 /// Persists launch counts, positive moments, and review-prompt eligibility in the app group.
