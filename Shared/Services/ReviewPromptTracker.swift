@@ -1,10 +1,9 @@
 import Foundation
 
 extension Notification.Name {
-    /// Posted after a positive cardio moment (new personal best, entering the
-    /// target range, or the first return visit with an estimate on screen).
-    /// The host may call the system rating prompt after a short delay, with no
-    /// question in front of it.
+    /// Posted after a positive cardio moment (a new personal best or entering
+    /// the target range). The host may call the system rating prompt after a
+    /// short delay, with no question in front of it.
     static let vo2PositiveMomentForReview = Notification.Name("com.jackwallner.vo2max.positiveMomentForReview")
 }
 
@@ -17,6 +16,25 @@ enum ReviewPromptOutcome: String, Sendable {
     case submittedFeedback
 }
 
+/// The good results that may ask for a rating. Pure, so the rule is tested
+/// without HealthKit: a new personal best, or a reading that moves the user
+/// into their target range from outside it. Backfills, flat readings and
+/// readings that fall out of range never ask.
+enum ReviewMoment {
+    static func isGoodResult(
+        newest: Double,
+        priorLatest: Double,
+        priorBest: Double?,
+        targetLower: Double,
+        targetUpper: Double
+    ) -> Bool {
+        let isNewPersonalBest = priorBest.map { newest > $0 + 0.01 } ?? false
+        let nowInRange = newest >= targetLower && newest <= targetUpper
+        let wasInRange = priorLatest >= targetLower && priorLatest <= targetUpper
+        return isNewPersonalBest || (nowInRange && !wasInRange)
+    }
+}
+
 /// Persists launch counts, positive moments, and review-prompt eligibility in the app group.
 @MainActor
 enum ReviewPromptTracker {
@@ -27,9 +45,6 @@ enum ReviewPromptTracker {
     private static let lastShownKey = "reviewPrompt.lastShownDate"
     private static let outcomeKey = "reviewPrompt.outcome"
     private static let positiveMomentCountKey = "reviewPrompt.positiveMomentCount"
-    private static let pendingPositiveMomentKey = "reviewPrompt.pendingPositiveMoment"
-    private static let hasSeenReadingKey = "reviewPrompt.hasSeenReading"
-    private static let returnMomentFiredKey = "reviewPrompt.returnWithReadingFired"
 
     /// Ask early. Most installs are gone within a week, so the only tenure
     /// gate is "not the first session": a second cold start.
@@ -37,6 +52,10 @@ enum ReviewPromptTracker {
     /// Days between our calls. Apple shows the prompt at most three times a
     /// year per device and decides each time, so this paces the asks.
     static let cooldownDays = 30
+    /// How long a good result stays worth asking about. Past this the result is
+    /// old news, and an ask on a later visit would be a launch trigger in
+    /// disguise.
+    static let momentFreshnessDays = 3
 
     static var appLaunchCount: Int {
         get { max(defaults.integer(forKey: launchCountKey), 0) }
@@ -84,16 +103,18 @@ enum ReviewPromptTracker {
         set { defaults.set(newValue, forKey: positiveMomentCountKey) }
     }
 
-    /// Set when a positive moment fires; cleared when a passive prompt is shown or consumed.
-    static var hasPendingPositiveMoment: Bool {
-        get { defaults.bool(forKey: pendingPositiveMomentKey) }
-        set { defaults.set(newValue, forKey: pendingPositiveMomentKey) }
-    }
+    /// When this process saw a good result that has not been asked about yet.
+    /// Memory only, on purpose: a result a past launch left behind is old
+    /// news, and asking about it on the next open would be a launch trigger.
+    /// (The old persisted flag from earlier builds is never read.)
+    private static var pendingMomentAt: Date?
 
-    /// True once Apple Health has handed us at least one estimate.
-    static var hasSeenReading: Bool {
-        get { defaults.bool(forKey: hasSeenReadingKey) }
-        set { defaults.set(newValue, forKey: hasSeenReadingKey) }
+    /// A good result is waiting for a calm moment to ask. Cleared when a prompt
+    /// is shown, and ignored once it is older than `momentFreshnessDays`.
+    static func hasPendingPositiveMoment(now: Date = .now) -> Bool {
+        guard let at = pendingMomentAt else { return false }
+        guard at <= now else { return true }
+        return now.timeIntervalSince(at) < TimeInterval(momentFreshnessDays) * 86_400
     }
 
     /// Call once per process launch (e.g. from `VO2MaxApp.init`).
@@ -104,44 +125,14 @@ enum ReviewPromptTracker {
         appLaunchCount += 1
     }
 
-    /// Call after a satisfaction moment (new personal best, entering target range).
-    static func recordPositiveMoment() {
+    /// Call after a good result (new personal best, entering target range).
+    static func recordPositiveMoment(now: Date = .now) {
         positiveMomentCount += 1
-        hasPendingPositiveMoment = true
-    }
-
-    /// Call whenever a refresh returns at least one estimate.
-    static func recordReadingsAvailable() {
-        guard !hasSeenReading else { return }
-        hasSeenReading = true
-    }
-
-    /// True once the return-visit moment has fired.
-    static var returnWithReadingFired: Bool {
-        get { defaults.bool(forKey: returnMomentFiredKey) }
-        set { defaults.set(newValue, forKey: returnMomentFiredKey) }
-    }
-
-    /// VO2 max moves too slowly for a personal best or a target crossing to
-    /// reach most users, so the first return visit with an estimate on screen
-    /// also counts, once ever. Returns whether it fired.
-    ///
-    /// `appIsVisible` is false for a HealthKit background relaunch: nothing is
-    /// on screen there, and spending the once-ever moment on it left the
-    /// user's real return with no ask.
-    @discardableResult
-    static func recordReturnWithReading(appIsVisible: Bool) -> Bool {
-        guard appIsVisible,
-              hasSeenReading,
-              appLaunchCount >= minimumLaunchCount,
-              !returnWithReadingFired else { return false }
-        returnWithReadingFired = true
-        recordPositiveMoment()
-        return true
+        pendingMomentAt = now
     }
 
     static func consumePendingPositiveMoment() {
-        hasPendingPositiveMoment = false
+        pendingMomentAt = nil
     }
 
     static func passivePromptAllowed(now: Date = .now) -> Bool {
@@ -164,7 +155,7 @@ enum ReviewPromptTracker {
         hasCompletedSetup: Bool,
         now: Date = .now
     ) -> Bool {
-        guard hasPendingPositiveMoment else { return false }
+        guard hasPendingPositiveMoment(now: now) else { return false }
         return canRequestReview(hasCompletedSetup: hasCompletedSetup, now: now)
     }
 

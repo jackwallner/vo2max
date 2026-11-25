@@ -492,10 +492,12 @@ private struct MainTabView: View {
         showWhatsNew = true
     }
 
-    /// The rating ask after a positive cardio moment: Apple's own prompt, no
-    /// question in front of it. Waits for the dashboard to settle, then asks
-    /// only if Today is still clear. A blocked ask keeps the moment pending in
-    /// the tracker for the next one; it never retries off a sheet dismissal.
+    /// The rating ask after a good cardio result (a new personal best or
+    /// entering the target range), the only automatic trigger: Apple's own
+    /// prompt, no question in front of it. Waits about 3s for the result to
+    /// land, then asks only if Today is still on screen with nothing over it.
+    /// A blocked ask keeps the moment pending for this process only; it never
+    /// retries off a sheet dismissal, and a later launch does not revive it.
     private func scheduleReviewPromptAfterPositiveMoment() {
         guard ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup),
               !reviewPromptShownThisSession,
@@ -503,7 +505,7 @@ private struct MainTabView: View {
         else { return }
 
         Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 3_500_000_000)
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
             guard isTodayClear,
                   !reviewPromptShownThisSession,
                   ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: settings.hasCompletedSetup)
@@ -518,7 +520,8 @@ private struct MainTabView: View {
     /// or Settings sheet, including sheets opened from Today's cards and the
     /// detail screens pushed from them.
     private var isTodayClear: Bool {
-        selection == 0
+        scenePhase == .active
+            && selection == 0
             && !showWhatsNew
             && !showSettings
             && !showPaywallFromWhatsNew

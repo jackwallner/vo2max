@@ -172,10 +172,6 @@ final class HealthKitService: ObservableObject {
             // Lock in the connected state so a later flaky probe can't undo it.
             if !readings.isEmpty {
                 markAuthorized()
-                ReviewPromptTracker.recordReadingsAvailable()
-                if ReviewPromptTracker.recordReturnWithReading(appIsVisible: Self.appIsVisible) {
-                    NotificationCenter.default.post(name: .vo2PositiveMomentForReview, object: nil)
-                }
             }
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
@@ -309,7 +305,13 @@ final class HealthKitService: ObservableObject {
         let wasInRange = priorLatest.value >= targetLower && priorLatest.value <= targetUpper
         let enteredTarget = nowInRange && !wasInRange
 
-        if isNewPersonalBest || enteredTarget {
+        if ReviewMoment.isGoodResult(
+            newest: newest.value,
+            priorLatest: priorLatest.value,
+            priorBest: priorBest,
+            targetLower: targetLower,
+            targetUpper: targetUpper
+        ) {
             ReviewPromptTracker.recordPositiveMoment()
             NotificationCenter.default.post(name: .vo2PositiveMomentForReview, object: nil)
         }
