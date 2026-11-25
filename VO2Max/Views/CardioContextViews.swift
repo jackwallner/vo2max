@@ -1129,6 +1129,8 @@ struct CardioLoadDetailView: View {
                 }
                 .chartYAxisLabel("minutes")
                 .frame(height: 150)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(String(localized: "Weekly cardio minutes"))
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)

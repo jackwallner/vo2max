@@ -176,7 +176,7 @@ struct DashboardView: View {
     }
 
     private func latestStatusLine(for date: Date) -> String {
-        let dateLabel = date.formatted(.relative(presentation: .named))
+        let dateLabel = Calendar.current.startOfDay(for: date).formatted(.relative(presentation: .named))
         guard let typical = CardioFreshnessAnalysis.typicalGapDays(points: points) else {
             return String(localized: "Latest estimate \(dateLabel).")
         }
@@ -295,7 +295,7 @@ struct DashboardView: View {
                         Text("Four readings within 90 days build a trend")
                             .font(.system(.subheadline, design: .rounded))
                             .foregroundStyle(Theme.textSecondary)
-                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 if !typeSize.isAccessibilitySize {
@@ -345,7 +345,7 @@ struct DashboardView: View {
                         Text("Used to calculate this broad estimate")
                             .font(.system(.subheadline, design: .rounded))
                             .foregroundStyle(Theme.textSecondary)
-                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 Spacer(minLength: 8)

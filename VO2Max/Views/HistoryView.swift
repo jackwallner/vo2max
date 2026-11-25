@@ -14,6 +14,11 @@ struct HistoryView: View {
     private var range: CardioRange { ranges.resolved }
     private var period: Int { range.days }
 
+    private var chartSummary: String {
+        guard let latest = visibleSamples.max(by: { $0.date < $1.date }) else { return "" }
+        return String(localized: "\(latest.value.formatted(.number.precision(.fractionLength(1)))) mL/kg/min")
+    }
+
     private var visibleSamples: [CardioFitnessSample] {
         samples.filter { range.contains($0.date) }
     }
@@ -164,6 +169,9 @@ struct HistoryView: View {
             .chartYAxisLabel("mL/kg/min")
             .chartYScale(domain: chartDomain)
             .frame(height: 156)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(String(localized: "Cardio Fitness"))
+            .accessibilityValue(chartSummary)
         }
         .padding(16)
         .background(Theme.cardSurface, in: RoundedRectangle(cornerRadius: Theme.cardRadius))
