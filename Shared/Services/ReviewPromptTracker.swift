@@ -1,8 +1,8 @@
 import Foundation
 
 extension Notification.Name {
-    /// Posted after a positive cardio moment (a new personal best or entering
-    /// the target range). The host may call the system rating prompt after a
+    /// Posted after a positive cardio moment (a new estimate that holds or
+    /// improves on the last, a new personal best, or entering the target range). The host may call the system rating prompt after a
     /// short delay, with no question in front of it.
     static let vo2PositiveMomentForReview = Notification.Name("com.jackwallner.vo2max.positiveMomentForReview")
 }
@@ -17,10 +17,21 @@ enum ReviewPromptOutcome: String, Sendable {
 }
 
 /// The good results that may ask for a rating. Pure, so the rule is tested
-/// without HealthKit: a new personal best, or a reading that moves the user
-/// into their target range from outside it. Backfills, flat readings and
-/// readings that fall out of range never ask.
+/// without HealthKit. Three moments, the first the one a typical user reaches
+/// early: a new estimate that holds or improves on the last one (Apple only
+/// writes an estimate after a qualifying outdoor workout, so this is "the
+/// workout paid off"), a new personal best, or a reading that moves the user
+/// into their target range from outside it. Backfills (the caller skips them)
+/// and any reading lower than the last one never ask.
 enum ReviewMoment {
+    /// Readings within this of each other count as the same estimate.
+    static let steadyTolerance = 0.01
+
+    /// A new estimate that is not lower than the one before it.
+    static func holdsOrImproves(newest: Double, priorLatest: Double) -> Bool {
+        newest >= priorLatest - steadyTolerance
+    }
+
     static func isGoodResult(
         newest: Double,
         priorLatest: Double,
@@ -31,7 +42,9 @@ enum ReviewMoment {
         let isNewPersonalBest = priorBest.map { newest > $0 + 0.01 } ?? false
         let nowInRange = newest >= targetLower && newest <= targetUpper
         let wasInRange = priorLatest >= targetLower && priorLatest <= targetUpper
-        return isNewPersonalBest || (nowInRange && !wasInRange)
+        return holdsOrImproves(newest: newest, priorLatest: priorLatest)
+            || isNewPersonalBest
+            || (nowInRange && !wasInRange)
     }
 }
 
@@ -125,7 +138,7 @@ enum ReviewPromptTracker {
         appLaunchCount += 1
     }
 
-    /// Call after a good result (new personal best, entering target range).
+    /// Call after a good result (see `ReviewMoment`).
     static func recordPositiveMoment(now: Date = .now) {
         positiveMomentCount += 1
         pendingMomentAt = now

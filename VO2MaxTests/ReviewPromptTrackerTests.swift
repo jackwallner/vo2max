@@ -171,12 +171,25 @@ struct ReviewMomentTests {
         #expect(!good(38, prior: 40, best: 41))
     }
 
-    @Test func tieWithTheBestDoesNotAsk() {
-        #expect(!good(46, prior: 44, best: 46, lower: 50, upper: 60))
+    @Test func smallRiseBelowTheBestAndOutsideTheRangeAsks() {
+        // The frequent moment: the workout's new estimate is higher than the last.
+        #expect(good(46, prior: 44, best: 48, lower: 50, upper: 60))
     }
 
-    @Test func firstEverReadingIsNotABest() {
-        #expect(!good(40, prior: 40, best: nil))
+    @Test func steadyEstimateAsks() {
+        #expect(good(40, prior: 40, best: 42))
+        #expect(good(39.995, prior: 40, best: 42))
+    }
+
+    @Test func anyDropDoesNotAsk() {
+        #expect(!good(39.9, prior: 40, best: 42))
+        #expect(!good(30, prior: 31, best: 31, lower: 50, upper: 60))
+    }
+
+    @Test func holdsOrImprovesRule() {
+        #expect(ReviewMoment.holdsOrImproves(newest: 41, priorLatest: 40))
+        #expect(ReviewMoment.holdsOrImproves(newest: 40, priorLatest: 40))
+        #expect(!ReviewMoment.holdsOrImproves(newest: 39.5, priorLatest: 40))
     }
 }
 

@@ -280,7 +280,7 @@ final class HealthKitService: ObservableObject {
     }
 
     /// Reacts to genuinely new Apple Health estimates: records rating-ask
-    /// positive moments (new personal best or entering target range) and, for
+    /// positive moments (a new estimate that holds or improves, a new personal best, or entering target range) and, for
     /// entitled opted-in users, posts a new-reading notification with context.
     ///
     /// Guards on `priorLatest`: the first-ever sync backfills a year of history,

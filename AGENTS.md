@@ -30,8 +30,10 @@ HealthKitService reads Apple Health VO2 max estimates and caches them as `Cardio
 - Always say "Apple Health estimate" and "cardio fitness trend". Never claim diagnosis, treatment, longevity prediction, or clinical accuracy.
 - Fitness age is explicitly labeled a broad estimate and shows its methodology.
 - **Ratings:** App Store ID `6791235742`. No in-app rating question (App
-  Review 5.6.1). The only automatic triggers are good results: a new
-  personal best, or entering the target range (`ReviewMoment.isGoodResult`).
+  Review 5.6.1). The only automatic triggers are good results
+  (`ReviewMoment.isGoodResult`): a new estimate that holds or improves on the
+  last one (the frequent moment: an estimate only arrives after a workout), a
+  new personal best, or entering the target range. A lower reading never asks.
   Launches, opens and the first return visit never ask. `MainTabView` calls
   the system `requestReview()` about 3s later if Today is still active and
   clear of sheets (from the 2nd launch, 30-day cooldown, a result from this
