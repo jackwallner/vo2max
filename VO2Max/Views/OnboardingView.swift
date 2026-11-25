@@ -25,6 +25,7 @@ struct OnboardingView: View {
     @StateObject private var health = HealthKitService.shared
 
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var step: Step = .welcome
     @State private var hasRequestedHealthAccess = false
@@ -443,7 +444,7 @@ struct OnboardingView: View {
         case .welcome:
             Button {
                 Task { await requestHealthAccessIfNeeded() }
-                withAnimation(.easeInOut(duration: 0.25)) { step = .profile }
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.25)) { step = .profile }
             } label: {
                 primaryLabel(String(localized: "Continue"))
             }
@@ -453,7 +454,7 @@ struct OnboardingView: View {
                 settings.chronologicalAge = age
                 settings.referenceSex = referenceSex
                 anchorTargetToAge()
-                withAnimation(.easeInOut(duration: 0.25)) { step = .target }
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.25)) { step = .target }
             } label: {
                 primaryLabel(String(localized: "Continue"))
             }
@@ -462,7 +463,7 @@ struct OnboardingView: View {
             Button {
                 settings.targetLower = targetLower
                 settings.targetUpper = targetUpper
-                withAnimation(.easeInOut(duration: 0.25)) { step = .trial }
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.25)) { step = .trial }
             } label: {
                 primaryLabel(String(localized: "Continue"))
             }

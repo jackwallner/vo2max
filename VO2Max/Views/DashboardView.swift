@@ -19,6 +19,7 @@ struct DashboardView: View {
     @State private var topSafeAreaInset: CGFloat = 0
     @Environment(\.isUnfoldedPane) private var isUnfoldedPane
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var points: [CardioFitnessPoint] {
         samples.map { CardioFitnessPoint(date: $0.date, value: $0.value) }
@@ -55,7 +56,8 @@ struct DashboardView: View {
         .overlay(alignment: .top) { statusBarMask }
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
-            withAnimation(.spring(duration: 1.0, bounce: 0.15).delay(0.3)) { animateRing = true }
+            // Reduce Motion shows the ring already filled.
+            withAnimation(reduceMotion ? nil : .spring(duration: 1.0, bounce: 0.15).delay(0.3)) { animateRing = true }
         }
     }
 
