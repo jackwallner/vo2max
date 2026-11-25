@@ -431,6 +431,11 @@ private struct MainTabView: View {
         .onReceive(NotificationCenter.default.publisher(for: .vo2PositiveMomentForReview)) { _ in
             scheduleReviewPromptAfterPositiveMoment()
         }
+        // A good result a background wake recorded waits in this process; ask
+        // when the user comes back to it. Only a pending good result asks.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { scheduleReviewPromptAfterPositiveMoment() }
+        }
         .sheet(isPresented: $showWhatsNew, onDismiss: {
             if pendingSettingsAfterWhatsNew {
                 pendingSettingsAfterWhatsNew = false

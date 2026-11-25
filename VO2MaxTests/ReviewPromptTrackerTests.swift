@@ -180,6 +180,49 @@ struct ReviewMomentTests {
     }
 }
 
+/// The frequent moment: a new estimate after a workout that held or rose.
+@Suite("Review moment, fresh estimate")
+struct FreshEstimateMomentTests {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+    private func fresh(_ newest: Double, prior: Double, ageDays: Double = 0) -> Bool {
+        ReviewMoment.isFreshEstimateThatHolds(
+            newest: newest, newestDate: now.addingTimeInterval(-ageDays * 86_400),
+            priorLatest: prior, now: now
+        )
+    }
+
+    @Test func risingEstimateAsks() {
+        #expect(fresh(41, prior: 40))
+    }
+
+    @Test func heldEstimateAsks() {
+        #expect(fresh(40, prior: 40))
+    }
+
+    @Test func droppedEstimateDoesNotAsk() {
+        #expect(!fresh(39.9, prior: 40))
+    }
+
+    @Test func lateSyncOfOldEstimateDoesNotAsk() {
+        #expect(fresh(41, prior: 40, ageDays: 2))
+        #expect(!fresh(41, prior: 40, ageDays: 4))
+    }
+
+    @Test func combinedMomentAsksForEitherKindAndNeverForADrop() {
+        func moment(_ newest: Double, prior: Double, best: Double?) -> Bool {
+            ReviewMoment.isGoodMoment(
+                newest: newest, newestDate: now, priorLatest: prior, priorBest: best,
+                targetLower: 35, targetUpper: 45, now: now
+            )
+        }
+        #expect(moment(47, prior: 44, best: 46))      // personal best
+        #expect(moment(36, prior: 33, best: 40))      // entered target
+        #expect(moment(38, prior: 37, best: 41))      // fresh, held
+        #expect(!moment(33, prior: 36, best: 40))     // slipped out of range
+        #expect(!moment(38, prior: 40, best: 41))     // lower reading
+    }
+}
+
 /// The clear-screen check behind the rating ask: any sheet opened below the
 /// tab root (a locked-feature paywall on a Today card or pushed detail screen)
 /// holds the ask until it closes.
